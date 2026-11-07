@@ -1,0 +1,18 @@
+test_boolean_window_is_not_introduced_from_untyped_input (test_consent_projection_04.ConsentBoundaryProjectionTests.test_boolean_window_is_not_introduced_from_untyped_input) ... ok
+test_broad_expired_event_has_inactive_mask (test_consent_projection_04.ConsentBoundaryProjectionTests.test_broad_expired_event_has_inactive_mask) ... ok
+test_broad_wrong_actor_reaches_rust_as_wrong_actor (test_consent_projection_04.ConsentBoundaryProjectionTests.test_broad_wrong_actor_reaches_rust_as_wrong_actor) ... ok
+test_malformed_native_permission_index_is_refused (test_consent_projection_04.ConsentBoundaryProjectionTests.test_malformed_native_permission_index_is_refused) ... ok
+test_malformed_reply_never_becomes_accepted (test_consent_projection_04.ConsentBoundaryProjectionTests.test_malformed_reply_never_becomes_accepted) ... ok
+test_multiple_scoped_exceptions_and_provenance_projection (test_consent_projection_04.ConsentBoundaryProjectionTests.test_multiple_scoped_exceptions_and_provenance_projection) ... ok
+test_narrow_expired_event_has_inactive_mask_and_preserves_evidence (test_consent_projection_04.ConsentBoundaryProjectionTests.test_narrow_expired_event_has_inactive_mask_and_preserves_evidence) ... ok
+test_permission_window_expired_refusal_cannot_erase_still_active_permission (test_consent_projection_04.ConsentBoundaryProjectionTests.test_permission_window_expired_refusal_cannot_erase_still_active_permission) ... ok
+test_read_fails_closed_when_native_absent (test_consent_projection_04.ConsentBoundaryProjectionTests.test_read_fails_closed_when_native_absent) ... ok
+test_read_op_cannot_be_used_to_authorize_writer (test_consent_projection_04.ConsentBoundaryProjectionTests.test_read_op_cannot_be_used_to_authorize_writer) ... ok
+test_restricted_permission_from_unrelated_speaker_must_not_grant (test_consent_projection_04.ConsentBoundaryProjectionTests.test_restricted_permission_from_unrelated_speaker_must_not_grant) ... ok
+test_revoke_evidence_projects_existing_original_rows (test_consent_projection_04.ConsentBoundaryProjectionTests.test_revoke_evidence_projects_existing_original_rows) ... ok
+test_unconfirmed_exception_stays_unconfirmed (test_consent_projection_04.ConsentBoundaryProjectionTests.test_unconfirmed_exception_stays_unconfirmed) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.003s
+
+OK

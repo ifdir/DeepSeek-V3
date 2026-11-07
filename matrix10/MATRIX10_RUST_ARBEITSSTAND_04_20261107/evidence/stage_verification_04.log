@@ -1,0 +1,26 @@
+{
+  "kind": "SOURCE_STAGING_ONLY_NOT_RELEASE",
+  "original_archive_sha256": "5158df268ab7f9105428b26c90932998e5b7b10fb8a3926e97ff2c4aa382efed",
+  "unchanged_original_files": 2100,
+  "changed_original_files": [
+    "matrix_api/scene_state.py",
+    "matrix_api/repos.py"
+  ],
+  "original_total_files": 2102,
+  "added_files": [
+    "RUST_MIGRATION_STATUS.json",
+    "matrix_api/native_boundary.py",
+    "native_core/matrix-boundary-core/Cargo.lock",
+    "native_core/matrix-boundary-core/Cargo.toml",
+    "native_core/matrix-boundary-core/src/boundary.rs",
+    "native_core/matrix-boundary-core/src/consent.rs",
+    "native_core/matrix-boundary-core/src/lib.rs",
+    "native_core/matrix-boundary-core/src/restriction.rs",
+    "native_core/matrix-boundary-core/src/value.rs"
+  ],
+  "product_release": false,
+  "native_build_executed": false,
+  "original_database_hashes": {
+    "data/matrix10.sqlite": "9be11b8410c4396eb731254f997dfed3095cd6c65c048bc04e80cd3e8c2d4003"
+  }
+}

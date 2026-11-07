@@ -1,0 +1,18 @@
+test_all_truncated_prefixes (test_transport_02.TransportTests.test_all_truncated_prefixes) ... ok
+test_depth_is_error_not_truncation (test_transport_02.TransportTests.test_depth_is_error_not_truncation) ... ok
+test_deterministic_random_roundtrips (test_transport_02.TransportTests.test_deterministic_random_roundtrips) ... ok
+test_golden_binary_protocol (test_transport_02.TransportTests.test_golden_binary_protocol) ... ok
+test_huge_collection_count_rejected (test_transport_02.TransportTests.test_huge_collection_count_rejected) ... ok
+test_invalid_scope_query_never_returns_false_as_a_verdict (test_transport_02.TransportTests.test_invalid_scope_query_never_returns_false_as_a_verdict) ... ok
+test_json_types_and_unicode (test_transport_02.TransportTests.test_json_types_and_unicode) ... ok
+test_missing_library_never_authorizes (test_transport_02.TransportTests.test_missing_library_never_authorizes) ... ok
+test_no_six_component_truncation (test_transport_02.TransportTests.test_no_six_component_truncation) ... ok
+test_nonfinite_and_out_of_range (test_transport_02.TransportTests.test_nonfinite_and_out_of_range) ... ok
+test_scope_query_cannot_be_used_as_writer_authorization (test_transport_02.TransportTests.test_scope_query_cannot_be_used_as_writer_authorization) ... ok
+test_scope_query_does_not_fallback_without_rust (test_transport_02.TransportTests.test_scope_query_does_not_fallback_without_rust) ... ok
+test_trailing_unknown_and_duplicate (test_transport_02.TransportTests.test_trailing_unknown_and_duplicate) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.012s
+
+OK
