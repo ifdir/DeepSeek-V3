@@ -1,0 +1,40 @@
+MATRIX10: NAECHSTE TECHNISCHE SCHRITTE, OHNE PRODUKTPATCH
+
+01 NORMATIVE BASIS KLAEREN
+Aus dem Kettenvertrag §0 die zwei genannten Quelldokumente und Hashes
+mit dem aktuellen 2_7master.txt und dem SPS-Blatt vertraglich abgleichen.
+Ein unveraendertes, signiertes/haschfixiertes Inputregister festlegen.
+Keine stillen Ersatzquellen, keine Testaenderungen wegen rot.
+
+02 PRUEFUMGEBUNG REPRODUZIERBAR MACHEN
+Frisch entpacktes P25. Windows-Standardstarter, Flask/Python, Node/npm,
+Frontend-Build, DB-Migration in isoliertem Klon, Providerkonfiguration in UI.
+Alte testsuite + audit tests + Browser-Suite laufen. Jeder Exitcode im Bericht.
+
+03 ECHTEN END-TO-END-PRUEFER ALS GETRENNTES PROJEKT ERSTELLEN
+Der E2E-Pruefer muss jede Pflichtachse nach §16 automatisiert betreiben und
+20 konkrete Kettenglieder mit direkten Belegen zuordnen. Dabei muss er
+jeweils eine positive und negative Probe mit der realen UI bedienen,
+die danach erzeugten SQLite-Facts und Sessionstate aus GETRENNTER Verbindung
+lesen und mindestens einen Folgeturn und Reload/Neustart pruefen.
+
+04 UNABHAENGIGE NEGATIVTESTS
+Akteur/Target/Scope/Sitzungsisolation; keine fremden Empfaenger;
+God/Regie wirklich vollziehen; Abwesenheit/Witness; Ablehnung/Einwilligung;
+R2 mehrere Adressaten; R1 Verneinung plus Rede; P25 Zeitgrenzen;
+Frontend-Bedienbarkeit jeder produktwirksamen Backend-Route.
+
+05 FREIGABESTARKE PRUEFEN
+Den E2E-Pruefer mit ABSICHTLICH fehlerhaften Kopien testen. Wenn der
+Pruefer einen absichtlich gebrochenen Folgeturn, falschen Adressaten,
+fehlenden SQLite-Commit oder wirkungslose UI nicht ROT meldet, ist
+DIE PRUEFMASCHINE SELBST ROT.
+
+06 Erst dann: P25 weiter reparieren und unabhaengig abnehmen
+Reparatur nur an erster falscher Naht. Geaenderte Kette einschliesslich
+UI-Folge. Kein Produkt-ZIP bei ROT; nur benanntes Arbeitsmaterial.
+Finales Release-ZIP frisch entpacken und exakt dasselbe E2E nachmessen.
+
+WICHTIG: Auch diese sechs Punkte sind kein Nachweis ihrer Erfuellung,
+sondern ein Arbeitsauftrag. Die automatische Freigabesperre V1 verhindert
+bis zu ihrem Nachweis jede GRUEN-Ausgabe.

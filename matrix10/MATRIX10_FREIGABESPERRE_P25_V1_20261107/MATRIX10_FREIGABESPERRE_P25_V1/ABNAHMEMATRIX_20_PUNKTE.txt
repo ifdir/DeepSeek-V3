@@ -1,0 +1,36 @@
+MATRIX10 VERBINDLICHE KETTENMATRIX (Quelle: Reparatur-Kettenvertrag §16)
+
+Fuer JEDE Pflichtachse im AMASTER/SPS ist Folgendes an der echten Installation
+und am frisch entpackten Kandidaten separat zu beweisen:
+
+01 SOLL-Vertrag und konkrete fachliche Erwartung
+02 Ausgangs-ZIP, Hash und Datenbank
+03 Reale UI-Bedienung
+04 Gesendete IDs, Rolle, Modus, Actor, Target, Scope, Authority
+05 Backendroute und erste serverseitige Bindung
+06 Kanonischer Owner und Writer
+07 Vor dem Write gemessener Zustand
+08 Nach dem Write gemessener Zustand
+09 Erzeugte Fact-/Proposition-/Goal-/Memory-/Relationship-IDs
+10 Wissensverteilung und ausdrücklich Unwissende
+11 Runtime-/Körper-/Beziehungs-/SceneState-Folgen
+12 Zuständiger Recall/Reader
+13 Relevanter BrainContext
+14 Sichtbare Antwort und Komponentencommit
+15 Zustand im Folgeturn
+16 Zustand nach Reload/Neustart
+17 Sichtbare UI-Rückanzeige
+18 Negative Isolation anderer User/Welten/Sessions/Figuren
+19 Test am frisch entpackten Release-ZIP
+20 Status mit konkreter Begründung
+
+NACHWEISART:
+Die echten UI-Bedienhandlungen, HTTP-Requests, getrennten SQLite-Verbindungen,
+Modelleingaben/-antworten, gespeicherten Figuren- und Zustandseintraege,
+Folgeturn-Reader, UI-Reloads und negativen Isolationsergebnisse muessen mit
+reproduzierbaren Belegen nachgewiesen sein. Keine Test-Helper oder Mocks duerfen
+die erwartete Wirkung selbst vorab schreiben.
+
+Wichtig: Diese Liste ist nicht selbst ein Test. Sie ist die nicht kuerzbare
+Freigabebedingung fuer jedes E2E-Skript. Alle 20 Glieder bleiben UNGEPRUEFT,
+solange nicht eine echte durchgaengige Kette bewiesen ist.
