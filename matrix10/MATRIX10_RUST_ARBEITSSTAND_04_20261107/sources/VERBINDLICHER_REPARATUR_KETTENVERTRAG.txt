@@ -1,0 +1,765 @@
+MATRIX10 / CHATHERE
+VERBINDLICHER REPARATUR- UND KETTENPRÜFVERTRAG
+
+Stand: 3. September 2026
+Status: verbindliche Arbeits-, Reparatur- und Abnahmeregel
+Geltungsbereich: jeder Vergleich und jede Reparatur des gelieferten Code-IST gegen den vollständigen SOLL-Zustand von AMASTERv2 und Matrix10
+
+======================================================================
+0. ZWECK UND VERBINDLICHKEIT
+======================================================================
+
+Dieses Dokument legt nicht erneut fest, was Matrix10 fachlich sein soll.
+Der fachliche und architektonische SOLL-Zustand wird gemeinsam beschrieben durch:
+
+1. AMASTERv2.md(1).txt
+   SHA-256: fb4f2015783dafe9474ee77d26b23fafb7c2c76a1c6ba923727f3aaedba5721d
+
+2. Matrix10.txt
+   SHA-256: 1465980a0675a36b3143175c216048dae04d615c9e174d5821a8a2bb94917bc8
+
+AMASTERv2 ist der normative Architektur- und Produktmaster.
+Matrix10 beschreibt denselben SOLL-Zustand als zusammenhängenden Produkt-,
+Figuren- und Kausalfluss und präzisiert insbesondere:
+
+- vollständige und sinnvolle Befüllung aller vorhandenen Frontendfelder,
+- Vorrang belegter EPUB-Informationen,
+- quellenplausible, als abgeleitet erkennbare Ergänzung fehlender Werte,
+- psychologische Wirkung neuen Wissens auf die konkrete Figur,
+- Fate als weltlogischen Storydruck ohne Avatarsteuerung,
+- und die zwingende Wirkung jedes Writes im zuständigen Folgereader.
+
+Beide Dokumente sind vor jeder Gesamtbewertung vollständig zu lesen.
+Eine Zusammenfassung, Suchwortliste oder frühere Kenntnis ersetzt das Lesen nicht.
+
+Der gelieferte Code ist ausschließlich der IST-Zustand:
+
+AMASTER_V2_V3_PRODUKTION_CLEAN_PYTHON_ONLY_START.zip
+SHA-256 der geprüften Ausgangsdatei:
+3de8b42288ef22b52ccf1b11225c1a8bb3761a251c2b80041a3f97ccbcf56352
+
+Vorhandener Code, vorhandene Tests, vorhandene UI-Texte und Behauptungen in einem
+README definieren niemals den SOLL-Zustand. Sie sind zu prüfender IST-Bestand.
+
+Dieser Vertrag ist bei jeder Reparatur verbindlich. Er verhindert Teilreparaturen,
+bei denen ein Wert zwar geschrieben wird, aber nicht beim zuständigen Leser, bei
+der Figurenreaktion, beim Folgeturn oder in der Oberfläche ankommt.
+
+======================================================================
+1. OBERSTE PRÜFREGEL: IMMER DIE GESCHLOSSENE KETTE
+======================================================================
+
+Jede Produktfunktion und jede reparierte Wirkung wird ausschließlich als
+geschlossene End-to-End-Kette bewertet:
+
+sichtbare Frontendbedienung
+-> ausdrücklich gewählte User-, Welt-, Charakter-, Session- und Szenen-IDs
+-> ausdrücklich gewählter Modus, Actor, Target, Scope und Authority
+-> Request und serverseitige Validierung
+-> zuständiger kanonischer Owner und Writer
+-> persistenter SQLite-Zustand oder append-only Evidenz
+-> berechtigte Wissens-, Memory-, Runtime-, Körper-, Beziehungs- und Szenenfolgen
+-> zuständiger Reader und Recall
+-> BrainContext als reiner Spiegel
+-> LLM/Narrator formuliert innerhalb des gebundenen Zustands
+-> Komponentenvalidierung und Commit des tatsächlich Gesagten/Getanen
+-> Timeline, Diagnose und sichtbare UI-Aktualisierung
+-> Folgeturn liest und trägt genau diesen fortgeschriebenen Zustand weiter
+-> fremde User, Welten, Sessions und nicht berechtigte Figuren bleiben unverändert.
+
+Fehlt ein Glied, ist die Kette nicht geschlossen.
+
+Ein gespeicherter Wert ohne realen Folgereader ist ROT.
+Ein Reader ohne kanonischen Writer ist ROT.
+Ein überzeugender Chattext ohne korrekten Zustand ist ROT.
+Ein korrektes Backend ohne bedienbares Frontend ist ROT.
+Ein sichtbares Frontendfeld ohne echte Backendwirkung ist ROT.
+Eine Wirkung, die im selben Turn sichtbar ist, aber nach Reload oder im Folgeturn
+verschwindet, ist ROT.
+Eine Funktion, die nur durch Terminal, Testfixture, direkten Datenbankeingriff oder
+geheimen API-Aufruf erreichbar ist, erfüllt den Produktvertrag nicht.
+
+======================================================================
+2. WAS NICHT ALS NACHWEIS GILT
+======================================================================
+
+Folgendes darf niemals allein zu PASS oder GRÜN führen:
+
+- Dateiname, Funktionsname, Route oder Tabellenname vorhanden,
+- Suchtreffer oder null Suchtreffer,
+- Anzahl von Writern oder Readern,
+- Kommentar, README-Behauptung oder UI-Text,
+- Marker wie "AMASTER", "CANONICAL" oder "commitOk",
+- HTTP 200 ohne Prüfung des geschriebenen Zustands,
+- ein einzelner Datenbankdatensatz,
+- ein isolierter Unit-Test,
+- ein Mock- oder Stub-Ergebnis,
+- ein schöner LLM-Satz,
+- Prompttext, der eine fehlende Zustandskette behauptet,
+- Testzahlen aus einem früheren ZIP oder Arbeitsbaum,
+- grüne Tests, deren Assertions den SOLL-Vertrag nicht beweisen,
+- Erfolg im Frontend ohne Rücklesen aus dem kanonischen Backend,
+- Erfolg im Backend ohne sichtbare und bedienbare Oberfläche.
+
+Suche darf Dateien und Kandidaten finden. Danach muss der reale Codefluss gelesen,
+ausgeführt und bis zum Folgeturn nachgemessen werden.
+
+Auch die Prüfmaschine selbst ist zu prüfen. Ein E2E-Skript, Fixture, Test-Helper,
+Seed oder Fixpoint-Runner darf keine erwartete Wirkung selbst vorab setzen, aus
+localStorage übernehmen, aus einem Client-Blob als Wahrheit einspeisen oder nur
+seine eigene Behauptung zurücklesen.
+
+======================================================================
+3. VERBINDLICHE STATUSSPRACHE
+======================================================================
+
+Für jede Achse ist genau einer dieser Zustände zu verwenden:
+
+UNGEPRÜFT
+  Die vollständige Kette wurde noch nicht gelesen und ausgeführt.
+
+ROT
+  Mindestens ein verbindliches Kettenglied ist falsch, fehlt, wird umgangen oder
+  besitzt den falschen Wahrheitsowner.
+
+TEILGESCHLOSSEN
+  Bestimmte Glieder sind nachgewiesen, die End-to-End-Kette bis UI, Commit,
+  Folgeturn und Isolation ist aber noch nicht vollständig bewiesen.
+  TEILGESCHLOSSEN ist keine Freigabe.
+
+GRÜN
+  Alle positiven und negativen Kettenglieder sind am exakt ausgelieferten Build
+  nachgewiesen. Writer, Speicher, Folgereader, sichtbares Verhalten, Reload,
+  Folgeturn und Isolation stimmen.
+
+BLOCKIERT
+  Ein konkret benannter technischer oder autoritativer Blocker verhindert die
+  Prüfung. BLOCKIERT darf nicht als GRÜN oder als vermutetes PASS umformuliert
+  werden.
+
+Keine Prozentwerte, Trefferquoten oder PASS-Summen dürfen einen ROT-Punkt
+verdecken. Eine Achse mit einem gebrochenen Pflichtglied bleibt ROT.
+
+"Gesamtsystem GRÜN" ist nur zulässig, wenn sämtliche Pflichtachsen GRÜN sind und
+der exakt paketierte Release nach frischem Entpacken erneut dieselben Nachweise
+liefert.
+
+======================================================================
+4. WAHRHEITSEIGENTÜMER UND VERBOTENE ABKÜRZUNGEN
+======================================================================
+
+Jede Wahrheitsart bleibt bei ihrem AMASTER-Owner:
+
+- Userprofil: reale Bedienperson, Einstellungen, Rollen-/Avatarzuordnung
+- Welt: dauerhafter Kanon, Regeln, Orte, Geschichte, Fraktionen
+- Charakterstamm: stabile Identität und Grundprofil
+- SceneFact/Commit: append-only Evidenz des Gesagten, Getanen oder Gesetzten
+- Proposition/Goal/Lifecycle: dieselbe Angelegenheit und ihr aktueller Verlauf
+- SceneState: aktuelle kausale Szene
+- Memory: figurenbezogenes Erinnern und gespeichertes Wissen
+- WitnessKnowledge: epistemischer Zugriff durch Wahrnehmung/Informationsweg
+- RuntimeState: aktueller Zustand einer Figur in genau einer Session
+- PhysicalState/Capability: körperliche Lage und tatsächlich mögliche Handlungen
+- RelationshipState: gerichtete aktuelle Sessionbeziehung
+- Social/Synapsen: abgeleitete Aktivierung, niemals zweite Wahrheit
+- God/Regie: gescopte bindende Wirkung über zuständige kanonische Writer
+- Fate: Storydruck und Möglichkeiten, niemals eigener Wahrheitsmaster
+- BrainContext: reiner Lesespiegel
+- LLM: Interpretation und Formulierung
+- Renderer/Narrator/Finalizer: Darstellung, keine neue Wahrheit
+
+Verboten sind insbesondere:
+
+- Client-Sessionblobs als kanonischer Ersatz für Server-/SQLite-Zustand,
+- localStorage als zweite aktuelle Produktwahrheit,
+- JSON-Cache als heimlicher Master neben SQLite,
+- Prompt-only-Fakten ohne Writer,
+- LLM-Ausgaben als unvalidierter kanonischer Zustand,
+- getrennte Kurzpipelines für AutoChat, Puppet, Regie, God oder Upload,
+- SceneBehaviorEngine oder Keyword-Automat als zweite Verhaltensmaschine,
+- Namensnennung als Ersatz für Anwesenheit, Hören oder Sehen,
+- historische Evidenz als Ersatz für reduzierten Current State,
+- globale Wirkung aus unklarem Scope,
+- Vermischung von Stamm- und Sessionzustand,
+- Vermischung von User-ID, Avatar-ID und Charakter-ID.
+
+Server-/Kernelwahrheit wird serverseitig gebunden. Der Client darf Bedienabsicht,
+Auswahl und erwartete Revision senden, aber keine kanonischen runtimes, scene,
+turnIndex, currentState, witnessKnowledge oder Zeitwahrheit überschreiben.
+
+======================================================================
+5. FRONTEND-BACKEND-VOLLSTÄNDIGKEIT
+======================================================================
+
+Die Oberfläche ist Teil der Architektur und kein nachträgliches Bedienblatt.
+
+Für jede produktwirksame Backendfunktion muss dokumentiert und nachgewiesen sein:
+
+- Auf welcher sichtbaren Seite befindet sich die Bedienung?
+- Welche verständlich beschriftete Kontrolle löst sie aus?
+- Welche IDs, Modi und Scopes kann der Nutzer dort wählen?
+- Welche Validierungen und Fehlermeldungen sind sichtbar?
+- Welcher Request wird tatsächlich gesendet?
+- Welcher Backendpfad verarbeitet ihn?
+- Welcher kanonische Owner wird geschrieben?
+- Wo kann der Nutzer den gespeicherten Zustand nach Reload sehen oder prüfen?
+- Welcher reale Reader benutzt ihn danach?
+
+Für jedes produktwirksame Frontendfeld muss umgekehrt nachgewiesen sein:
+
+- aus welchem kanonischen Backendowner es geladen wird,
+- wohin eine Änderung geschrieben wird,
+- wie Scope und Ownership geprüft werden,
+- dass Speicherung einen Reload überlebt,
+- und welcher Systemreader den Wert tatsächlich benutzt.
+
+Es darf keine inhaltliche Backendfunktion geben, die das Frontend nicht bedienen,
+konfigurieren oder sichtbar prüfen kann. Technische Schutzmaßnahmen wie Pfad-,
+Archiv-, Größen- oder Ausführungsschutz bleiben zulässig, dürfen aber nicht als
+versteckter Inhalts- oder Figurenfilter wirken.
+
+Es gibt keine versteckten Produktfilter. Genre, Ton, Inhaltsgrenzen und sonstige
+Verhaltenssteuerungen müssen im Frontend sichtbar, gescopet, gespeichert und nach
+Reload wieder sichtbar sein. Ein Darstellungsfilter darf keine kanonische Wahrheit
+verändern. Backend-Defaults dürfen nicht heimlich eine nicht bedienbare inhaltliche
+Entscheidung erzwingen.
+
+Die Frontend-Backend-Matrix ist Bestandteil jeder Gesamtprüfung. Nicht zugeordnete
+produktwirksame Routen, Writer, Konfigurationswerte oder UI-Felder sind ROT, bis
+ihre Kette eindeutig geschlossen oder nachweislich rein intern und ohne
+Produktwirkung ist.
+
+======================================================================
+6. VERBINDLICHER REPARATURABLAUF
+======================================================================
+
+6.1 Basis einfrieren
+
+Vor jeder Änderung werden festgehalten:
+
+- exakter Eingabe-ZIP-Name,
+- SHA-256,
+- Dateigröße,
+- Dateianzahl,
+- tatsächlicher Projektroot,
+- aktive Datenbank,
+- Startweg,
+- Laufzeitvoraussetzungen,
+- und vorhandene Arbeitsbaumänderungen.
+
+Es wird niemals still auf ein anderes ZIP, einen anderen Branch, einen alten
+Arbeitsordner oder eine andere Datenbank gewechselt.
+
+6.2 Inputs vollständig lesen
+
+AMASTERv2 und Matrix10 werden vollständig gelesen. Der konkrete Auftrag, bekannte
+NO-TOUCH-Bereiche, Logs, Test-EPUB und Buildhinweise kommen in ein Inputregister.
+Widersprüche werden vor dem Patch benannt; sie werden nicht still nach persönlicher
+Vermutung aufgelöst.
+
+6.3 System semantisch kartieren
+
+Für die betroffene Achse wird vor dem Patch die reale Kette kartiert:
+
+UI-Komponente und Feld
+-> Frontend-Handler
+-> API-Client
+-> Route
+-> Validierung und Authority
+-> Repository/Writer
+-> Tabelle/JSON-Feld
+-> abgeleitete Folgen
+-> Recall/Reader
+-> BrainContext/LLM/Narrator
+-> Commit
+-> Folgeturn
+-> UI-Hydration.
+
+Dies ist Codeflusslesen, keine Wortzählung.
+
+6.4 Defekt reproduzieren
+
+Der Defekt wird am unveränderten IST mit einer realen Bedien- oder API-Kette und
+direkter Zustandsmessung reproduziert. Erwartung, tatsächliches Ergebnis, IDs,
+Scopes und erste falsche Naht werden dokumentiert.
+
+6.5 Erste falsche Naht bestimmen
+
+Repariert wird die früheste nachgewiesene Stelle, an der korrekte Eingabe in einen
+falschen Zustand übergeht. Eine spätere Promptkorrektur ist keine Reparatur, wenn
+der falsche Actor, Target, Scope, Witness, Current State oder Owner bereits vorher
+gebunden wurde.
+
+6.6 Kette vollständig reparieren
+
+Der Patch darf klein sein, aber seine Prüfung endet nicht an der geänderten Datei.
+Er muss alle betroffenen Schichten bis zum Folgeturn und zur Oberfläche schließen.
+Notwendige Änderungen an Readern, Hydration, Schema, Migration, Tests oder UI sind
+Teil derselben Reparatur. Unverwandtes Redesign bleibt ausgeschlossen.
+
+6.7 Negative Grenzen prüfen
+
+Zusätzlich zum gewünschten Erfolg wird geprüft, was ausdrücklich nicht geschehen
+darf: kein Wissen für Abwesende, keine Avatarhandlung, keine fremde Sessionwirkung,
+kein Stammwrite aus Sessiondrift, keine globale Godwirkung aus Szenenscope, keine
+Mode-B-Prägung, keine ungültige Komponente als vollzogene Wahrheit.
+
+6.8 Frisch entpackt abnehmen
+
+Die Abnahme erfolgt am neu gebauten, anschließend frisch entpackten ZIP mit der
+mitgelieferten Startprozedur und der mitgelieferten Datenbank/Migration. Ein grüner
+Arbeitsbaum beweist nicht das Paket.
+
+======================================================================
+7. PFLICHTKETTE: EPUB ZUR SPIELBAREN WELT
+======================================================================
+
+Verbindliche reale Testquelle:
+
+Swift_Die-mustergueltige-Ehefrau-(Ein_9798341511293.epub
+SHA-256: 32cf5c85010f448ee3257e3146d731f96ea400bce9a02ed7216372cd73c18c2a
+
+Die Testdatei ist ein deutsches EPUB2. Sie enthält OPF-Metadaten, eine geordnete
+Spine, NCX-Inhaltsnavigation, Prolog, Kapitel und einen Werbe-/Buchanhang. Gerade
+deshalb muss die Kette Buchinhalt, Vorspann und Fremdwerbung korrekt trennen.
+
+Die EPUB-Achse ist erst GRÜN, wenn folgende Kette vollständig bewiesen ist:
+
+1. Der Nutzer kann die EPUB-Datei im Frontend ohne Pfadeingabe auswählen.
+2. Typ, Größe, Archivpfade und Entpackgrenzen werden sicher geprüft.
+3. container.xml führt zur korrekten OPF-Datei.
+4. Titel, Sprache, Manifest, Spine, NCX/Nav und Landmarks werden gelesen.
+5. Kapitel werden in echter Buchreihenfolge extrahiert.
+6. Prolog/Kapitel, Vorspann, Nachspann und Werbeanhang sind sichtbar unterscheidbar.
+7. Der Nutzer sieht Teile, Reihenfolge, Textstatus und Vorauswahl und kann Teile
+   an- oder abwählen.
+8. Leere, beschädigte oder nur als Scan vorliegende Teile werden sichtbar gemeldet.
+9. Keine abgeschnittene Analyse wird als vollständiges Buch ausgegeben. Limits und
+   ausgelassene Teile werden sichtbar benannt.
+10. Der Nutzer wählt vor dem Commit neue Welt oder bestehende Zielwelt, Mode A/B,
+    Analysebereiche und Behandlung der Figurenkandidaten.
+11. Analyse erzeugt zunächst einen nicht-kanonischen, editierbaren Entwurf.
+12. Quelle, Kapitel/Teil, Beleg, Unsicherheit und Ableitungsstatus bleiben erhalten.
+13. Autorinnenbiografie, Werbung und andere Bücher werden nicht als Romanfigur,
+    Weltereignis oder Charakterbiografie übernommen.
+14. Namen, Ich-Erzähler, Aliasnamen und Rollen werden identitätsstabil aufgelöst.
+15. Welt, Orte, Unterorte, Regeln, Geschichte, Kultur, Konflikte, Gegenstände,
+    Geheimnisse, Wissensgrenzen, Timeline, Startlagen, Storyziele und Fate-Seeds
+    werden fachlich strukturiert statt nur als zufällige Satzfragmente abgelegt.
+16. Der Nutzer kann jeden Entwurfsbereich bearbeiten, ablehnen, zusammenführen und
+    auswählen.
+17. Erst bewusster Commit schreibt den gewählten Zielowner.
+18. Erneute Analyse oder erneuter Commit erzeugt keine unkontrollierten Dubletten.
+19. Bei Erweiterung wird exakt die gewählte bestehende Welt geändert und keine
+    zweite Welt heimlich angelegt.
+20. Die Weltseite lädt nach Reload genau die committed Werte aus SQLite.
+21. Spawn-Kandidaten bleiben bis zur Auswahl Kandidaten.
+22. Ausgewählte Figuren werden mit stabiler ID und vollständigem Stamm angelegt.
+23. Beziehungen, Wissen und Geheimnisse werden nicht blind symmetrisch oder global.
+24. Eine neue Session übernimmt Welt und Stämme, nicht fremde Sessionerlebnisse.
+25. Chat, Fate, Recall und Figurenreaktion lesen die tatsächlich importierten und
+    committed Welt-/Charakterwerte.
+26. Ein Folgeturn beweist, dass die EPUB-abgeleitete Welt nicht nur angezeigt,
+    sondern im Verhalten wirksam ist.
+
+Der lokale Fallback-Analyzer darf eine fehlende oder unvollständige LLM-Analyse
+nicht als vollständige SOLL-Erfüllung ausgeben. Ein technisches "ok: true" reicht
+nicht, wenn Pflichtfelder leer, falsch klassifiziert, verstümmelt oder aus dem
+Werbeanhang kontaminiert sind.
+
+======================================================================
+8. PFLICHTKETTE: VOLLSTÄNDIGES CHARAKTERPROFIL UND SPAWN
+======================================================================
+
+Jedes im Frontend tatsächlich vorhandene Charakterfeld gehört zur Produktkette.
+Es darf nach Welterstellung/Spawn nicht unbegründet leer bleiben.
+
+Die Pflichtkette lautet:
+
+EPUB-Beleg oder plausible Ableitungsgrundlage
+-> Charakter-/Alias-/Erzähleridentität
+-> feldbezogener Analysewert
+-> Kennzeichnung "belegt", "abgeleitet" oder "unsicher"
+-> sichtbarer editierbarer Spawn-Entwurf
+-> bewusste Kandidatenauswahl
+-> Charakterstamm-Writer
+-> SQLite
+-> Charakterseite nach Reload
+-> Sessionkopie ohne Stammverfälschung
+-> Kompass/Memory/Goal/Relationship/BrainContext lesen zuständige Werte
+-> Figurenrede und Verhalten zeigen charakterbezogene Wirkung
+-> Folgeturn behält Identität und Zustand.
+
+Zu prüfen sind sämtliche tatsächlich angebotenen Felder, insbesondere Name,
+Anrede, Alter/Alterswirkung, Geschlecht/Selbstverständnis, Spezies, Herkunft,
+Biografie, Kanon, Kernfakten, Persönlichkeit, Werte, Ziele, Ängste, Geheimnisse,
+Vorlieben, Abneigungen, Bindungsmuster, Konfliktverhalten, Humor, Sprache,
+Lieblingswörter, Tabus, Körpergrunddaten, Fähigkeiten, Einschränkungen,
+Grundwissen, Beziehungen, Quellen, Unsicherheit und Freigabestatus.
+
+Was aus dem Buch hervorgeht, hat Vorrang. Was fehlt, wird durch das konfigurierte
+LLM welt- und charakterplausibel ergänzt, sofern der Nutzer diesen Analysepfad
+ausgelöst hat. Eine Ergänzung wird nicht als wörtlicher Buchbeleg ausgegeben.
+
+Ein Parser, der nur Name und einige zufällige Sätze erzeugt, ist nicht GRÜN.
+Ein Backendwert ohne sichtbares Frontendfeld ist nicht GRÜN.
+Ein Frontendfeld ohne persistierenden Writer und realen Reader ist nicht GRÜN.
+
+======================================================================
+9. PFLICHTKETTE: SESSION, SZENE UND NORMALER TURN
+======================================================================
+
+Die normale Turnkette lautet:
+
+aktive Bedienperson
+-> gewählte Welt und Session
+-> Rolle und gegebenenfalls Avatar
+-> SceneState mit Ort, Zeit und Anwesenheit
+-> UI-Ziel und Eingabe
+-> serverseitige TurnTruth
+-> Actor/Target/Authority/Perception/Time/Uploadbindung
+-> relevanter kanonischer Recall
+-> BrainContext
+-> zulässige Figuren- oder Narratorformulierung
+-> Trennung zusammengesetzter Komponenten
+-> Validierung und Effect-Authorization je Komponente
+-> SceneFacts/Proposition/Goal/Memory/Runtime/Körper/Beziehung/SceneState
+-> Timeline und UI
+-> nächster Turn liest alle gültigen Komponenten.
+
+TurnTruth wird für jeden produktiven Eingang serverseitig gebildet. Dieselbe ID
+darf nicht unterwegs ihre Bedeutung wechseln. Clientdaten sind Bedienabsicht,
+nicht Masterwahrheit.
+
+Ein sichtbarer Output kann Rede, Handlung, Ablehnung, Offenbarung, Rückzug oder
+Grenzsetzung gleichzeitig enthalten. Jede eigenständige Komponente wird getrennt
+typisiert, validiert und unter derselben source_turn_id committed. Eine ungültige
+Komponente darf eine unabhängig gültige nicht vernichten. Sie darf aber auch keine
+körperliche, Welt-, Lifecycle-, Beziehungs- oder Lernwirkung erhalten.
+
+======================================================================
+10. PFLICHTKETTE: WISSEN, MEMORY UND PSYCHOLOGISCHE WIRKUNG
+======================================================================
+
+Die Wissenskette lautet:
+
+kanonisches Ereignis oder Informationsquelle
+-> Anwesenheit, Hören, Sehen, Betroffenheit oder späterer Informationsweg
+-> WitnessKnowledge als Zugriff, nicht als zweiter Fact-Store
+-> figurenbezogenes Memory mit Quelle, Zeit und Vertrauensgrad
+-> Verbindung zu Proposition, Beteiligten und bestehenden Erinnerungen
+-> Bedeutung relativ zu Persönlichkeit, Zielen, Ängsten, Geheimnissen und Beziehung
+-> zulässige Runtime-, Goal-, Relationship- oder Socialfolge
+-> Recall für genau diese Figur
+-> nächste Reaktion zeigt diese Bedeutung
+-> abwesende/uninformierte Figuren bleiben unwissend.
+
+Gespeichertes Wissen ohne psychologische und verhaltensmäßige Lesewirkung ist nur
+TEILGESCHLOSSEN. Eine spontan vom LLM erfundene Emotion ohne kanonische Ursache ist
+ebenfalls falsch.
+
+Eine Mitteilung "Clara sagte, Mara habe X getan" wird nicht automatisch zur
+objektiven Wahrheit "Mara tat X". Redeereignis, geglaubter Inhalt, Zweifel und
+Weltwahrheit bleiben getrennt.
+
+======================================================================
+11. PFLICHTKETTE: RELATIONSHIP, RUNTIME, KÖRPER UND CAPABILITY
+======================================================================
+
+Beziehungsänderungen benötigen ein kanonisches Ereignis oder einen ausdrücklich
+bestätigten Stammwrite. Jede Richtung wird getrennt geprüft:
+
+Actor -> Target ist nicht Target -> Actor.
+
+Ereignis
+-> Betroffene und Wahrnehmung
+-> Effect-Authorization
+-> gerichteter Session-Relationship-Writer
+-> Runtime/Social-Ableitung
+-> SQLite
+-> Beziehungsseite mit Quelle und Ebene
+-> Recall/BrainContext
+-> veränderte Reaktion im Folgeturn
+-> Stamm und andere Sessions unverändert.
+
+PhysicalState begrenzt Capability in Planung, LLM-Kontext, Renderer, Finalizer,
+Commit, AutoChat, Regie und God-Vollzug. Eine bewegungsunfähige Figur darf nicht
+durch bloße Formulierung normal handeln. Eine neue mögliche Handlung benötigt eine
+neue kausale Zustandsänderung.
+
+======================================================================
+12. PFLICHTKETTE: AVATAR, PUPPET, REGIE, GOD, FATE UND AUTOCHAT
+======================================================================
+
+12.1 Avatar
+
+Der Nutzer steuert seine konkrete Avatarfigur. Das System erzeugt niemals
+selbstständig deren Rede, Entscheidung, Einwilligung, Ablehnung, Absicht, Emotion,
+Beziehungserklärung oder körperliche Handlung. Äußere Wirkung, Wahrnehmung und vom
+Nutzer ausdrücklich gesetzter Vollzug bleiben möglich.
+
+Die Negativprüfung "kein Avatar-Output/kein Avatar-Speaker-Fact" ist Pflicht.
+
+12.2 Puppet
+
+Die UI bindet eine ausgewählte Figur für genau diesen Turn. Die Eingabe ist deren
+tatsächliche Rede oder Handlung und läuft durch dieselbe Komponenten-, Commit-,
+Wissens- und Folgeturnkette. Es entsteht kein dauerhafter Rollenwechsel.
+
+12.3 Regie
+
+Regie ist keine Figurenrede. Actor, Target, Handlung/Rede und Scope werden
+ausdrücklich gebunden. Die angeordnete Wirkung wird über zuständige kanonische
+Writer vollzogen. Die Figur erlebt die Folge und kann entsprechend ihrem Zustand
+darauf reagieren. Das System erfindet keine zusätzliche nicht angeordnete Tat.
+
+12.4 God
+
+God setzt eine bindende Tatsache in einem ausdrücklich gewählten Scope. Die
+Wirkung wird in den fachlich zuständigen Owner geschrieben, nach Reload gelesen und
+im Folgeturn beachtet. God ist nicht bloß eine Promptzeile. Unklarer Scope wird
+nicht globalisiert.
+
+12.5 Fate
+
+Fate liest Weltkonflikte, Storyziele, Szene, Beziehungen, Erinnerungen,
+Geheimnisse, Wissen/Nichtwissen, Körper, offene Propositionen und bisherige Beats.
+Es erzeugt weltlogische Möglichkeiten und Druck. Bei Abweichung vom Buch sucht es
+nach möglichen Wegen, ursprüngliche Storyziele weiter erreichbar zu halten, ohne
+den Avatar zurückzuzwingen. Fate besitzt keine eigene Masterwahrheit, macht keine
+Figur allwissend, bricht God/Weltregeln nicht und spricht nicht als Chatfigur.
+
+Fate-Konfiguration und Seeds sind im Frontend sichtbar, editierbar, gescopet,
+persistiert und von der echten Fate-Lesekette benutzt.
+
+12.6 AutoChat
+
+AutoChat benutzt denselben kanonischen Turnpfad. Es wählt nur zulässige anwesende
+Nicht-Avatar-Figuren oder erlaubte Narration, beachtet Wissen, Ziele, Körper,
+Beziehungen, SceneState, Fate und Stopbedingungen und führt keine verkürzte
+Parallelpipeline ein.
+
+======================================================================
+13. PFLICHTKETTE: UPLOAD MODE A UND MODE B
+======================================================================
+
+Mode A:
+
+sichtbare Datei
+-> sichtbares eindeutiges Ziel und Scope
+-> Extraktion mit Fehlerstatus
+-> feldbezogene quellengebundene Vorschau
+-> Review und Bearbeitung
+-> bewusster Commit
+-> exakt zuständiger Welt-/Stammowner
+-> Reload
+-> realer Reader
+-> Folgewirkung.
+
+Mode A ohne Ziel schreibt nichts dauerhaft.
+
+Mode B:
+
+sichtbare Datei
+-> Session-/Szenenbezug
+-> Betrachter/Hörer/Leser ausdrücklich oder durch Szene gebunden
+-> Wissen/Referenz mit Quelle
+-> WitnessKnowledge/Memory für Berechtigte
+-> keine Stamm-, Biografie-, Persönlichkeits- oder Weltprägung
+-> Recall und Folgeturn für Berechtigte
+-> Unberechtigte bleiben unverändert.
+
+Mode B verteilt nicht blind an alle Anwesenden und macht Dokumentinhalt nicht zur
+objektiven Weltwahrheit.
+
+======================================================================
+14. PFLICHTKETTE: KONFIGURATION, PROVIDER UND FILTERFREIHEIT
+======================================================================
+
+Provider, API-Key, Modell und sämtliche vorgesehenen Modellparameter werden im
+Frontend eingegeben, mit erkennbarem Scope gespeichert, nach Reload wieder geladen
+und vom tatsächlich aufgerufenen Backendprovider benutzt.
+
+Die Prüfung misst:
+
+UI-Wert
+-> Request
+-> Config-Owner
+-> persistierter gescopter Wert
+-> Providerauflösung
+-> realer Aufruf mit gewähltem Modell/Parametern
+-> sichtbarer Providerstatus und verständlicher Fehler.
+
+API-Keys erscheinen nicht im Klartext in Logs, Reports oder Exporten.
+
+Es gibt keine versteckten inhaltlichen Filter. Jede beabsichtigte Genre-, Ton-,
+Inhalts- oder Verhaltenssteuerung ist sichtbar im Frontend bedienbar. Technische
+Sicherheit darf Upload- und Ausführungsrisiken begrenzen, aber keine heimliche
+Charakter-, Story- oder Inhaltslenkung erzeugen.
+
+======================================================================
+15. PFLICHTKETTE: RESET, SNAPSHOT, BACKUP, REVIEW UND ISOLATION
+======================================================================
+
+Jede Resetart hat ein sichtbares, eindeutiges Ziel und einen atomaren serverseitigen
+Owner. Vor Ausführung wird angezeigt, was betroffen ist. Danach werden Ergebnis und
+Fehler sichtbar zurückgegeben und aus SQLite rückgelesen.
+
+Getrennt zu prüfen sind mindestens:
+
+- Chat-Reset,
+- Runtime-Reset,
+- Memory-Reset,
+- Uploadkontext-Reset,
+- vollständiger Sessionreset,
+- User-Hard-Reset,
+- gezielte Welt-/Charakterbereinigung.
+
+Der gewählte Avatar darf nicht unbeabsichtigt verschwinden. Fremde User, Welten,
+Sessions und Charaktere bleiben unverändert.
+
+Snapshots, Backup, Restore, Import, Export und Review werden nicht nur auf
+Dateierzeugung geprüft. Nach Wiederherstellung muss die komplette fortsetzbare
+Kausalität inklusive Current State, SceneState, Runtime, Memory, Beziehungen,
+Wissen, Turns und Scopes beim nächsten Reader vorhanden sein.
+
+Sessionerfahrung geht nur nach sichtbarem Review und bewusster Freigabe in Stamm
+oder Weltkanon über.
+
+======================================================================
+16. TEST- UND ABNAHMEMATRIX JE REPARATUR
+======================================================================
+
+Für jeden reparierten Defekt enthält der Bericht mindestens folgende Zeilen:
+
+1. SOLL-Vertrag und konkrete fachliche Erwartung
+2. Ausgangs-ZIP, Hash und Datenbank
+3. Reale UI-Bedienung
+4. gesendete IDs, Rolle, Modus, Actor, Target, Scope, Authority
+5. Backendroute und erste serverseitige Bindung
+6. kanonischer Owner und Writer
+7. vor dem Write gemessener Zustand
+8. nach dem Write gemessener Zustand
+9. erzeugte Fact-/Proposition-/Goal-/Memory-/Relationship-IDs
+10. Wissensverteilung und ausdrücklich Unwissende
+11. Runtime-/Körper-/Beziehungs-/SceneState-Folgen
+12. zuständiger Recall/Reader
+13. relevanter BrainContext
+14. sichtbare Antwort und Komponentencommit
+15. Zustand im Folgeturn
+16. Zustand nach Reload/Neustart
+17. sichtbare UI-Rückanzeige
+18. negative Isolation anderer User/Welten/Sessions/Figuren
+19. Test am frisch entpackten Release-ZIP
+20. Status mit konkreter Begründung.
+
+Fehlende Zeilen werden als UNGEPRÜFT oder ROT ausgewiesen, nicht still ausgelassen.
+
+======================================================================
+17. REPARATURBERICHT: ERLAUBTE UND VERBOTENE AUSSAGEN
+======================================================================
+
+Erlaubt und erforderlich:
+
+- "Diese Kette ist ROT, weil der Writer X schreibt, der Folgereader aber Y liest."
+- "Diese Achse ist TEILGESCHLOSSEN; Persistenz ist bewiesen, UI-Reload fehlt."
+- "Test nicht ausgeführt, weil pytest nicht installiert ist."
+- "Die Ursache ist noch nicht bewiesen; folgende Kettenglieder sind geprüft."
+- "Der erste falsche Übergang liegt zwischen Funktion A und Owner B."
+
+Verboten:
+
+- "müsste funktionieren",
+- "wahrscheinlich vollständig",
+- "Route vorhanden, daher umgesetzt",
+- "0 Treffer, daher fehlt die Funktion",
+- "Tests grün, daher AMASTER grün",
+- "LLM antwortete richtig, daher Zustand korrekt",
+- "Backend kann es, daher Produktfunktion vorhanden",
+- "UI zeigt es, daher Backend benutzt es".
+
+Jede Behauptung muss erkennen lassen, ob sie aus Codefluss, direkter
+Zustandsmessung, realer Ausführung oder nur aus einer noch ungeprüften Annahme
+stammt.
+
+======================================================================
+18. RELEASE- UND PAKETVERTRAG
+======================================================================
+
+Ein Reparaturrelease enthält nur das lauffähige Produkt und ausdrücklich verlangte
+Übergabedokumente. Nicht hinein gehören Arbeitsverzeichnisse, alte ZIPs, Logs mit
+Schlüsseln, Attachments, Caches, Testdownloads, temporäre Daten oder frühere
+Kandidaten, sofern sie nicht ausdrücklich als Fixture verlangt sind.
+
+Vor Übergabe werden gemessen:
+
+- finaler Dateiname,
+- Bytes,
+- SHA-256,
+- Dateianzahl,
+- ZIP-Integrität,
+- frischer Entpacktest,
+- Starttest über den ausgelieferten Standardstarter,
+- aktive Datenbank,
+- Produkt- und Laufzeitvoraussetzungen,
+- sämtliche verpflichtenden Testresultate mit Exitcode,
+- bekannte ROT-, BLOCKIERT- oder UNGEPRÜFT-Punkte.
+
+Ein Releasebericht darf keine alten Ergebnisse übernehmen. Jeder Messwert gehört
+zum exakt ausgelieferten ZIP.
+
+======================================================================
+19. DEFINITION EINER ABGESCHLOSSENEN REPARATUR
+======================================================================
+
+Eine Reparatur ist erst abgeschlossen, wenn:
+
+1. der Sollvertrag vollständig verstanden und der betroffene Abschnitt benannt ist,
+2. der Defekt am unveränderten IST reproduziert wurde,
+3. die erste falsche Naht bewiesen wurde,
+4. der zuständige Wahrheitsowner erhalten oder korrekt hergestellt wurde,
+5. UI und Backend dieselbe Funktion mit denselben IDs und Scopes bedienen,
+6. der kanonische Zustand persistent geschrieben und rückgelesen wird,
+7. Wissen und Folgezustände nur berechtigte Entitäten erreichen,
+8. der reale Reader und BrainContext den Wert erhalten,
+9. die sichtbare Reaktion dem gebundenen Zustand entspricht,
+10. der tatsächliche Output korrekt committed wird,
+11. der Folgeturn die Wirkung weiterträgt,
+12. Reload und Neustart die Persistenz beweisen,
+13. negative Grenzen und Isolation halten,
+14. Tests nicht nur grün, sondern fachlich aussagekräftig sind,
+15. das frisch entpackte finale ZIP denselben Zustand nachweist,
+16. und keine neue nicht bedienbare Backendwirkung oder wirkungslose UI entsteht.
+
+Bis dahin lautet der Status nicht FERTIG und nicht GRÜN.
+
+======================================================================
+20. VERBINDLICHE KURZFORM FÜR JEDEN WEITEREN AUFTRAG
+======================================================================
+
+Prüfe und repariere niemals nur eine Funktion oder Datei.
+
+Prüfe immer:
+
+Bedienung
+-> Identität/Scope/Authority
+-> Backend
+-> kanonischer Owner/Writer
+-> SQLite
+-> Wissen und Zustandsfolgen
+-> echter Reader/Recall
+-> BrainContext
+-> Darstellung
+-> Komponentencommit
+-> Folgeturn
+-> Reload/UI
+-> Isolation.
+
+Ein fehlendes Glied hält die Achse ROT.
+Keine Suchstatistik ersetzt Codefluss.
+Kein Prompt ersetzt Zustand.
+Kein schöner Satz ersetzt Kausalität.
+Kein Backend ersetzt die Bedienoberfläche.
+Keine Oberfläche ersetzt Backendwirkung.
+Keine Reparatur ist fertig, bevor die geschlossene Kette am ausgelieferten ZIP
+nachgewiesen ist.

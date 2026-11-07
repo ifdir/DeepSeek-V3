@@ -1,0 +1,240 @@
+--- /mnt/data/matrix_rust_work/reference_v67/MATRIX10_V67_ABHAENGIGKEIT_20261031/matrix_api/repos.py	2026-11-07 19:30:18.771464385 +0000
++++ /mnt/data/matrix_rust_work/work_04/integration/repos.py	2026-11-07 19:48:48.179888290 +0000
+@@ -3254,17 +3254,8 @@
+     return ""
+ 
+ 
+-def _check_ids(conn: sqlite3.Connection, row: sqlite3.Row, payload: dict[str, Any], keys: tuple[str, ...], *,
+-               required: tuple[str, ...] = (), system: frozenset | set = frozenset(), code: str) -> None:
+-    """V65Y (Gesamtpruefung V65X N02 "Referentielle Integritaet serverseitig"; AMASTER §8, §71.1.3): the person IDs of a
+-    NEW session child are figures of the session's world (or one of the given kernel authorities)."""
+-    cast = _session_cast_ids(conn, row)
+-    for k in keys:
+-        v = payload.get(k)
+-        if (v is None or v == "") and k not in required:
+-            continue
+-        if str(v or "") not in cast and str(v or "") not in system:
+-            raise WriterError(f"{k} {v!r} is no figure of this world", 422, code)
++def _check_ids(conn, row, payload, keys, *, required=(), system=frozenset(), code):
++    _native_boundary(conn, row, "ids", payload, keys=list(keys), required=list(required), system=sorted(system), code=code)
+ 
+ 
+ def _session_cast_ids(conn: sqlite3.Connection, row: sqlite3.Row) -> set[str]:
+@@ -3305,22 +3296,8 @@
+     return src
+ 
+ 
+-def _check_sources(conn: sqlite3.Connection, row: sqlite3.Row, payload: dict[str, Any], *, code: str,
+-                   keys: tuple = _SOURCE_KEYS, required: bool = True) -> None:
+-    """V65Z (A01): every source a new row names is of its kind in this session (a Quellturn is a TurnTruth, a cause or
+-    answered fact is a SceneFact, an upload an upload of this session); a row never names itself; with `required` at least
+-    one source is named. Fail-closed: one wrong reference refuses the row, even next to a right one."""
+-    src = _session_sources(conn, row)
+-    own = str(payload.get("id") or "")
+-    named = [(k, str(payload.get(k)), kind) for k, kind in keys if payload.get(k) not in (None, "")]
+-    for k, v, kind in named:
+-        if v not in src[kind] or (kind == "fact" and v == own):
+-            raise WriterError(f"source {k}={v!r} is no {kind} of this session", 422, code.replace("UNBOUND", "INVALID"))
+-    if required and not any(kind in ("turnTruth", "upload") for _, _, kind in named):
+-        # V66 (Audit5 E04; AMASTER §34 "SceneFact bindet Quellturn", §34.2): a cause or answered fact is provenance IN ADDITION
+-        # to the Quellturn or upload, never instead of it (V65Z accepted a fact with only cause_fact_id)
+-        raise WriterError("row has no Quellturn or upload of this session (sourceTurnId/sourceUploadId); a cause_fact_id or "
+-                          "responds_to_fact_id alone is no source", 422, code)
++def _check_sources(conn, row, payload, *, code, keys=_SOURCE_KEYS, required=True):
++    _native_boundary(conn, row, "sources", payload, keys=[list(pair) for pair in keys], required=required, code=code)
+ 
+ 
+ def _operator_ids() -> frozenset[str]:
+@@ -3339,18 +3316,8 @@
+     return v in cast or (system and v in SYSTEM_ACTOR_IDS) or (operator and v in _operator_ids())
+ 
+ 
+-def _check_fact_boundary(conn: sqlite3.Connection, row: sqlite3.Row, payload: dict[str, Any]) -> None:
+-    """A NEW SceneFact: Actor a figure of the session's world, a kernel authority or the Bedienperson; Target (if any) a
+-    figure or the Bedienperson; at least
+-    one source that exists in this session (Quellturn / beantworteter Fact / Ursache / Upload). Fail-closed."""
+-    cast = _session_cast_ids(conn, row)
+-    actor = payload.get("actorId") if "actorId" in payload else payload.get("actor_id")
+-    if not _bound_id(actor, cast, system=True, operator=True):
+-        raise WriterError(f"fact actor {actor!r} is no figure of this world", 422, "FACT_ACTOR_UNBOUND")
+-    target = payload.get("targetId") or payload.get("target_id")
+-    if target and not _bound_id(target, cast, system=False, operator=True):
+-        raise WriterError(f"fact target {target!r} is no figure of this world", 422, "FACT_TARGET_UNBOUND")
+-    _check_sources(conn, row, payload, code="FACT_SOURCE_UNBOUND")   # V65Z (A01): typed, every reference
++def _check_fact_boundary(conn, row, payload):
++    _native_boundary(conn, row, "fact", payload)
+ 
+ 
+ def _turn_truth_row(conn: sqlite3.Connection, sid: str, tt_id: str) -> dict[str, Any] | None:
+@@ -3362,27 +3329,8 @@
+     return (_loads(r[0]) or {}) if r is not None else None
+ 
+ 
+-def _check_god_fact_boundary(conn: sqlite3.Connection, row: sqlite3.Row, payload: dict[str, Any]) -> None:
+-    """A NEW God fact: its Quellturn is a God TurnTruth of this session (role and authority "god", §46 "God benoetigt
+-    gueltige Authority"), it carries a scope and the three scope axes exactly as the kernel derives them from that scope
+-    (§46.3-§46.5: Welt/dauerhaft only with the world choice); Target (if any) a figure. Fail-closed.
+-    V65Z (SPS-Audit V65Y A02): V65Y took ANY TurnTruth of the session (a puppet's, or one without role) and any axes."""
+-    sid = row["id"]
+-    src = str(payload.get("sourceTurnId") or payload.get("source_turn_id") or "")
+-    tt = _turn_truth_row(conn, sid, src) if src else None
+-    if tt is None:
+-        raise WriterError("god fact has no TurnTruth of this session", 422, "GODFACT_SOURCE_UNBOUND")
+-    if str(tt.get("role") or "") != "god" or str(tt.get("authority") or "") != "god":
+-        raise WriterError("god fact source is no God TurnTruth (role/authority god)", 422, "GODFACT_AUTHORITY_UNBOUND")
+-    if not str(payload.get("scope") or "").strip():
+-        raise WriterError("god fact has no scope", 422, "GODFACT_SCOPE_UNBOUND")
+-    from matrix_api import kernel as _kernel
+-    want = _kernel.god_scope_axes(_kernel._god_scope_key(str(payload.get("scope"))))
+-    if any(payload.get(k) != want[k] for k in ("truthScope", "persistenceScope", "epistemicScope")):
+-        raise WriterError("god fact scope axes do not follow its scope", 422, "GODFACT_SCOPE_AXES")
+-    target = payload.get("targetId")
+-    if target and not _bound_id(target, _session_cast_ids(conn, row), system=False):
+-        raise WriterError(f"god fact target {target!r} is no figure of this world", 422, "GODFACT_TARGET_UNBOUND")
++def _check_god_fact_boundary(conn, row, payload):
++    _native_boundary(conn, row, "god", payload)
+ 
+ 
+ _TT_PERSON_KEYS = ("speaker_id", "speakerId", "target_id", "targetId", "input_actor_id", "avatar_id", "puppet_id",
+@@ -3390,80 +3338,21 @@
+ _TT_LIST_KEYS = ("present_ids", "hears_ids", "sees_ids")
+ 
+ 
+-def _check_turn_truth_boundary(conn: sqlite3.Connection, row: sqlite3.Row, payload: dict[str, Any]) -> None:
+-    """V65Z (SPS-Audit V65Y A02; AMASTER §23 "Alle produktiven Eingangswege erzeugen eine gemeinsame kanonische TurnTruth",
+-    sie trennt Bedienperson, Rolle, Avatar, Puppet-Sprecher, tatsaechlichen Sprecher; §46 Authority): a NEW TurnTruth binds
+-    a role and an authority, its persons are figures of the world, a kernel authority or the Bedienperson, its perception
+-    lists name figures, and the God / Regie authority is only that role's (a God TurnTruth speaks as "god"). V65Y stored a
+-    TurnTruth without any of this, and a God fact could then name it as its Quellturn."""
+-    role, auth = str(payload.get("role") or "").strip(), str(payload.get("authority") or "").strip()
+-    if not role or not auth:
+-        raise WriterError("turn truth binds no role/authority", 422, "TURNTRUTH_UNBOUND")
+-    cast = _session_cast_ids(conn, row)
+-    for k in _TT_PERSON_KEYS:
+-        v = payload.get(k)
+-        if v not in (None, "") and not _bound_id(v, cast, system=True, operator=True):
+-            raise WriterError(f"turn truth {k} {v!r} is no figure of this world", 422, "TURNTRUTH_PERSON_UNBOUND")
+-    for k in _TT_LIST_KEYS:
+-        bad = [x for x in (payload.get(k) or []) if str(x or "") not in cast] if isinstance(payload.get(k), list) else []
+-        if bad:
+-            raise WriterError(f"turn truth {k} names {bad[0]!r}, no figure of this world", 422, "TURNTRUTH_PERSON_UNBOUND")
+-    if (auth == "god") != (role == "god") or (auth == "god" and str(payload.get("speaker_id") or "") not in ("god", "")):
+-        raise WriterError("god authority only in a God TurnTruth", 422, "TURNTRUTH_AUTHORITY")
+-    if auth == "regie" and role != "regie":
+-        raise WriterError("regie authority only in a Regie TurnTruth", 422, "TURNTRUTH_AUTHORITY")
+-
+-
+-def _check_relation_boundary(conn: sqlite3.Connection, row: sqlite3.Row, from_id: str, to_id: str,
+-                             payload: dict[str, Any], *, new: bool) -> None:
+-    """A directed relation is between two different figures of the session's world (§44, §8). A NEW relation names its
+-    origin: a SceneFact of this session (sourceFactId / appliedCauses), the character stem at session start, or the
+-    manual Social seed of the owner (stamped by the route, never by the client). Fail-closed."""
+-    cast = _session_cast_ids(conn, row)
+-    if from_id == to_id or from_id not in cast or to_id not in cast:
+-        raise WriterError(f"relation {from_id!r} -> {to_id!r} is not between two figures of this world", 422, "RELATION_UNBOUND")
+-    if not new:
+-        return
+-    prov = payload.get("provenienz") if isinstance(payload.get("provenienz"), dict) else {}
+-    if prov.get("quelle") in _RELATION_PROVENANCE:
+-        return
+-    # V65Z (A01): the origin by kind - a SceneFact (sourceFactId / appliedCauses) or a TurnTruth (sourceTurnId) of this session
+-    rel = {"sourceFactId": payload.get("sourceFactId"), "sourceTurnId": payload.get("sourceTurnId")}
+-    keys = [("sourceFactId", "fact"), ("sourceTurnId", "turnTruth")]
+-    for i, c in enumerate(payload.get("appliedCauses") or []):
+-        rel[f"appliedCauses[{i}]"] = c.get("factId") if isinstance(c, dict) else c
+-        keys.append((f"appliedCauses[{i}]", "fact"))
+-    try:
+-        _check_sources(conn, row, rel, code="RELATION_SOURCE_UNBOUND", keys=tuple(keys), required=False)
+-        if not any(v not in (None, "") for v in rel.values()):
+-            raise WriterError("relation has no origin", 422, "RELATION_SOURCE_UNBOUND")
+-    except WriterError as e:
+-        raise WriterError(e.message if e.error.endswith("INVALID") else "relation has no origin (SceneFact, stamm or manual seed)",
+-                          422, e.error) from None
++def _check_turn_truth_boundary(conn, row, payload):
++    _native_boundary(conn, row, "truth", payload)
++
+ 
++def _check_relation_boundary(conn, row, from_id, to_id, payload, *, new):
++    _native_boundary(conn, row, "relation", payload, from_id=from_id, to_id=to_id, new=new)
+ 
+ 
+-def _check_witness_boundary(conn: sqlite3.Connection, row: sqlite3.Row, payload: dict[str, Any]) -> None:
+-    """V65Z (SPS-Audit V65Y §3 "Andere Wege umgehen sie weiterhin"; AMASTER §39 Wissen nur aus Wahrnehmung, §8): a NEW
+-    WitnessKnowledge row: the knower is a figure of the world (the Bedienperson is outside it and knows nothing in it) and
+-    the known fact is a SceneFact of this session. V65Y checked neither. Fail-closed."""
+-    who = payload.get("characterId") or payload.get("character_id")
+-    if not who or str(who) not in _session_cast_ids(conn, row):
+-        raise WriterError(f"witness {who!r} is no figure of this world", 422, "WITNESS_PERSON_UNBOUND")
+-    _fid = payload.get("factId") or payload.get("fact_id")
+-    if not _fid:
+-        raise WriterError("witness names no fact", 422, "WITNESS_FACT_UNBOUND")
+-    _check_sources(conn, row, {"factId": _fid}, code="WITNESS_FACT_UNBOUND", keys=(("factId", "fact"),), required=False)
+-
+-
+-def _check_patch_ids(conn: sqlite3.Connection, row: sqlite3.Row, existing: dict[str, Any], merged: dict[str, Any],
+-                     keys: tuple[str, ...], *, system: frozenset | set = frozenset(), code: str) -> None:
+-    """V65Z (SPS-Audit V65Y A03; AMASTER §6.2, §71.1.3 "User-ID und Character-ID als austauschbare Identitaet"): a PATCH
+-    that CHANGES a person of a stored row runs the same identity check as a new row (V65Y: PATCH took any ID). A patch that
+-    leaves the persons as stored is not re-checked, so a listed legacy row keeps its lifecycle (no migration)."""
+-    changed = tuple(k for k in keys if str(merged.get(k) or "") != str(existing.get(k) or ""))
+-    if changed:
+-        _check_ids(conn, row, merged, changed, system=system, code=code)
++
++def _check_witness_boundary(conn, row, payload):
++    _native_boundary(conn, row, "witness", payload)
++
++
++def _check_patch_ids(conn, row, existing, merged, keys, *, system=frozenset(), code):
++    _native_boundary(conn, row, "patch_ids", merged, existing=existing, keys=list(keys), required=[], system=sorted(system), code=code)
+ 
+ 
+ def _boundary_rows(conn: sqlite3.Connection, session_id: str) -> list[tuple[str, str, str]]:
+@@ -5742,3 +5631,48 @@
+ def add_snapshot(conn: sqlite3.Connection, actor_id: str, session_id: str, name: str) -> dict:
+     """POST /api/sessions/<id>/snapshots (UI "Snapshot erstellen"): the server capture (V66: stamped, _server_snapshot)."""
+     return _server_snapshot(conn, actor_id, session_id, snap_id=uid("snap"), name=name, weg="POST /api/sessions/<id>/snapshots")
++
++
++# Rust migration source work; no Python fallback.
++def _native_boundary(conn, row, operation, payload, **options):
++    from matrix_api.native_boundary import NativeBoundaryError, validate
++    # Send only referenced identities, not the entire session history on every
++    # row. Intersection is with the existing server-owned SQL/cache indexes.
++    # This is a transport projection, not a client-supplied permission list.
++    candidate_ids = set()
++    pending = [payload, options]
++    seen = set()
++    count = 0
++    while pending:
++        value = pending.pop()
++        count += 1
++        if count > 1_000_000:
++            raise WriterError("Native identity projection exceeds transport limit", 503, "NATIVE_FRAME_LIMIT")
++        if isinstance(value, str):
++            candidate_ids.add(value)
++        elif isinstance(value, (dict, list, tuple)):
++            identity = id(value)
++            if identity in seen:
++                continue
++            seen.add(identity)
++            pending.extend(value.values() if isinstance(value, dict) else value)
++    context = {
++        "user_id": str(row["user_id"]),
++        "world_id": str(row["world_id"]),
++        "session_id": str(row["id"]),
++        "cast": sorted(_session_cast_ids(conn, row) & candidate_ids),
++        "operators": sorted(_operator_ids()),
++        "sources": {},
++    }
++    if operation in ("fact", "sources", "relation", "witness"):
++        context["sources"] = {kind: sorted(ids & candidate_ids) for kind, ids in _session_sources(conn, row).items()}
++    if operation == "god":
++        from matrix_api import kernel as _kernel
++        src = str(payload.get("sourceTurnId") or payload.get("source_turn_id") or "")
++        context["god_truth_id"] = src
++        context["god_truth"] = _turn_truth_row(conn, row["id"], src) if src else None
++        context["god_axes"] = _kernel.god_scope_axes(_kernel._god_scope_key(str(payload.get("scope") or "")))
++    try:
++        validate(operation, context, payload, options)
++    except NativeBoundaryError as exc:
++        raise WriterError(exc.message, exc.status, exc.code) from exc

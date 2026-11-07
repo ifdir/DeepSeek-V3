@@ -1,0 +1,48 @@
+{
+  "package": "MATRIX10_RUST_ARBEITSSTAND_04_20261107.zip",
+  "package_sha256": "04b870cb7bf2edd23c1822d6b2eca751c33318b4768ddd8b6163acf9df0ca66b",
+  "files": 48,
+  "all_hashes_verified": true,
+  "zip_integrity": "PASS",
+  "product_release": false,
+  "rust_native_executed": false,
+  "native_tests_executed": 0,
+  "rust_test_definitions": 78,
+  "python_adapter_tests_passed": 39,
+  "original_v67_sqlite_counterprobes": {
+    "tested": 4,
+    "existing_failures_reproduced": 4
+  },
+  "rust_build": "BLOCKIERT_MISSING_RUSTC_CARGO",
+  "original_v67_sha256": "5158df268ab7f9105428b26c90932998e5b7b10fb8a3926e97ff2c4aa382efed",
+  "staged_v67_diff": {
+    "unchanged_original_files": 2100,
+    "modified_original_files": [
+      "matrix_api/repos.py",
+      "matrix_api/scene_state.py"
+    ]
+  },
+  "next_phase": "Cargo offline test/build, native Writer/SQLite, complete AMASTER/V12 E2E; no release until all pass",
+  "fresh_extraction": {
+    "verified": true,
+    "manifest_files_checked": 46,
+    "original_v67_stage_diff_verified": true,
+    "python_tests_reexecuted": [
+      {
+        "name": "test_transport_02",
+        "passed": 13
+      },
+      {
+        "name": "test_consent_transport_03",
+        "passed": 8
+      },
+      {
+        "name": "test_consent_projection_04",
+        "passed": 18
+      }
+    ],
+    "native_build_exit": 3,
+    "native_sqlite_exit": 3,
+    "rust_native_pass": false
+  }
+}

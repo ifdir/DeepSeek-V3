@@ -1,0 +1,17 @@
+[package]
+name = "matrix-boundary-core"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.70"
+publish = false
+description = "Unreleased Matrix10 native write-boundary migration; not a complete product"
+
+[lib]
+name = "matrix_boundary_core"
+crate-type = ["rlib", "cdylib"]
+
+[profile.release]
+panic = "unwind"
+strip = "debuginfo"
+
+[dependencies]

@@ -1,0 +1,129 @@
+{
+ "schema": "1.2",
+ "erstellt": "2026-11-07",
+ "hinweis": "Eingefroren. Änderung nur als neue Maschinenversion mit eigener Selbstabnahme (SELBSTABNAHME_V12.py -> ABNAHME_V12.json).",
+ "sollquellen": {
+  "2_7master.txt": "095d455460390dfd0ae46e6938126e44a51293461d070204358d301f00609a7f",
+  "MATRIX10_SPS_MASTER.md": "1f0cb05dc1d7fc9afccd0e14a9e851d9340f9bbf56fe9ee8e8f0ddc46363969d",
+  "VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt": "e62cf6bc606a13a72044ab135697e209f7cb0bcfbc0a2b36ff7e1f153bf290bd"
+ },
+ "quellen_entscheidung": {
+  "bestaetigt_von_vertragseigner": false,
+  "text": "Kettenvertrag §0 nennt AMASTERv2.md(1).txt (fb4f2015…) und Matrix10.txt (1465980a…); beide liegen nicht vor. Verwendet werden 2_7master.txt, MATRIX10_SPS_MASTER.md und der Kettenvertrag selbst. Diese Abweichung ist KEIN gleichwertiger Ersatz und gilt erst nach Bestätigung durch den Vertragseigner (Ajp) in einem versionierten Nachtrag."
+ },
+ "pflichtachsen": [
+  "EPUB zu Welt (§7)",
+  "Charakterprofil und Spawn (§8)",
+  "Normale Session/Scene/Turn (§9)",
+  "Wissen, Memory, psychologische Wirkung (§10)",
+  "Relationship, Runtime, Koerper (§11)",
+  "Avatar (§12.1)",
+  "Puppet (§12.2)",
+  "Regie (§12.3)",
+  "God (§12.4)",
+  "Fate (§12.5)",
+  "AutoChat (§12.6)",
+  "Upload Modus A (§13)",
+  "Upload Modus B (§13)",
+  "Provider, Modell und Konfiguration (§14)",
+  "Reset, Snapshot, Backup, Review, Isolation (§15)",
+  "Frontend-Backend-Bidirektionalitaet (§5)"
+ ],
+ "pflichtfaelle": {
+  "EPUB zu Welt (§7)": [],
+  "Charakterprofil und Spawn (§8)": [],
+  "Normale Session/Scene/Turn (§9)": [],
+  "Wissen, Memory, psychologische Wirkung (§10)": [],
+  "Relationship, Runtime, Koerper (§11)": [],
+  "Avatar (§12.1)": [
+   "AV1_frage_und_antwort",
+   "AV2_fremde_rede_im_avatar"
+  ],
+  "Puppet (§12.2)": [
+   "PU1_handlung_eigenes_subjekt",
+   "PU2_anrede_gegen_ui_auswahl",
+   "PU3_fremde_rede_abgelehnt",
+   "PU4_verneinung_mit_rede"
+  ],
+  "Regie (§12.3)": [
+   "RE1_figur_verlaesst_raum",
+   "RE2_unbekannte_figur"
+  ],
+  "God (§12.4)": [
+   "GO1_bewusstlos",
+   "GO2_verneinter_zustand"
+  ],
+  "Fate (§12.5)": [],
+  "AutoChat (§12.6)": [],
+  "Upload Modus A (§13)": [],
+  "Upload Modus B (§13)": [],
+  "Provider, Modell und Konfiguration (§14)": [],
+  "Reset, Snapshot, Backup, Review, Isolation (§15)": [],
+  "Frontend-Backend-Bidirektionalitaet (§5)": []
+ },
+ "epub_testdatei": {
+  "name": "Swift_Die-mustergueltige-Ehefrau-(Ein_9798341511293.epub",
+  "sha256": "32cf5c85010f448ee3257e3146d731f96ea400bce9a02ed7216372cd73c18c2a",
+  "status": "FEHLT – blockiert die Achse EPUB zu Welt (§7)"
+ },
+ "basis_typfehler": "basis/basis_P22_typfehler.txt",
+ "basis_fehlschlaege": "basis/basis_P22_fehlschlaege.txt",
+ "basis_herkunft": "Erzeugt am 07.11.2026 mit genau dem Verfahren der Sperre: P22-ZIP SHA-256 f21a46d3fc2f921ad44c668c10ec5eba52241cdde8f88156f69b0b6281814b43 frisch entpackt, Frontend gebaut, pytest --continue-on-collection-errors (415 gelaufen, 9 rot), typecheck (605 Fehler).",
+ "basis_sha256": {
+  "basis/basis_P22_typfehler.txt": "0bd6c7173ac97b081a0b1be9ed87ec2138519b522b92caf86a1c44197ac3e66e",
+  "basis/basis_P22_fehlschlaege.txt": "1897af50451c0f4fefe2bda2aec119829a6c2b3111e2043b7bd813ab51f81a6f"
+ },
+ "kettenpruefer": {
+  "skript": "kettenpruefer/kettenpruefer.py",
+  "sha256": "fd3583d71869c8a6dfe80ca4fb6dae53d08ca8d108f612c468fe7d9e655f62c3",
+  "dateien": {
+   "kettenpruefer/kettenpruefer.py": "fd3583d71869c8a6dfe80ca4fb6dae53d08ca8d108f612c468fe7d9e655f62c3",
+   "kettenpruefer/kp_ui.js": "c0343b9caf07da6c8692d927fdb118987fdc3275b40f7f78085a02669fe71992",
+   "kettenpruefer/kp_modellproxy.py": "c95667b33a6f701ea6b53fa4aaad3bc324ba6001f261698065f831466d57c243",
+   "kettenpruefer/kp_faelle.json": "fd352b89881c44c331804960f17db255f9afdf2511a90f46da8f20f20c10c11d",
+   "kettenpruefer/kp_mutationen.py": "9fd8ec49d26e0771f933ad5171bbf66b3d20e23368469ffc6415d570c5127526",
+   "kettenpruefer/kp_vergleich.py": "d474610bf56dc4648b6af29e56e8841fb669f39a09fa5a82e7011f2dab5fdabc",
+   "kettenpruefer/kp_selbstabnahme_soll.json": "aa76cbe328f25fcec9929cb44e8ae8e163c953ee97a27bcde1047d0c81678c62",
+   "pm_auswertung.py": "3b9c618935478cc7d4df1bb4fa0848bb5debad24dde8db7116f1f516e4c49039"
+  }
+ },
+ "offene_vorbefunde": [
+  {
+   "id": "R-1",
+   "hinweis": "Regie-Ortswechsel: Szene zieht um, Zurückbleibende bleiben in der Anwesenheitsliste",
+   "beweisfaelle": [
+    "RE1_figur_verlaesst_raum"
+   ]
+  },
+  {
+   "id": "G-5",
+   "hinweis": "God-Vollzug nach AMASTER offen (Umfang nicht durch GO1/GO2 abgedeckt)",
+   "beweisfaelle": []
+  },
+  {
+   "id": "E-1",
+   "hinweis": "Einwilligungs-/Grenzenkette offen",
+   "beweisfaelle": []
+  },
+  {
+   "id": "S-1",
+   "hinweis": "Alte Sessions ungeklärt",
+   "beweisfaelle": []
+  },
+  {
+   "id": "god_extract-Wortliste",
+   "hinweis": "Vertragsprüfung der Wortliste offen",
+   "beweisfaelle": []
+  },
+  {
+   "id": "D-Fehlermeldung",
+   "hinweis": "Inhalt der Fehlermeldung bei Fremdrede (Fälle prüfen nur, dass eine Meldung erscheint)",
+   "beweisfaelle": []
+  },
+  {
+   "id": "8-alte-Vertragstests",
+   "hinweis": "werden über 06_unveraendert_rot gegen die P22-Basis gezählt",
+   "beweisfaelle": []
+  }
+ ]
+}

@@ -1,0 +1,219 @@
+MATRIX10 / ChatHere – Beschreibung des KI-Universums
+
+Grundidee
+
+MATRIX10 / ChatHere ist kein gewöhnlicher Chatbot. Es ist ein lokales, persistentes und zustandsbasiertes KI-Universum.
+
+Aus einem E-Book, Roman, Dokument oder anderem Ausgangsmaterial wird nicht einfach ein Chatprompt erzeugt. Das Material wird in eine spielbare Welt übersetzt: mit Orten, Geschichte, Regeln, Zeit, Figuren, Beziehungen, Geheimnissen, Konflikten, Wissen und Storylinien.
+
+Die Figuren darin sollen sich nicht wie austauschbare LLM-Assistenten verhalten. Jede Figur besitzt eine eigene Identität, Vergangenheit, Persönlichkeit, Sprache, Erinnerungen, Ziele, Ängste, Beziehungen und einen gegenwärtigen emotionalen und körperlichen Zustand. Sie reagiert deshalb auf das, was für genau diese Figur wahrnehmbar, bekannt, erinnerbar und persönlich bedeutsam ist. Genau darin liegt der Unterschied zwischen ChatHere und einem normalen Rollenspiel-Chat. AMASTERv2 definiert das ausdrücklich als „lokales, zustandsbasiertes KI-Universum“ statt als reaktiven Chatbot.
+
+Der vollständige Ablauf
+
+1. Das System startet beim realen Nutzer und seiner Konfiguration.
+   
+   Zuerst existiert ein lokales Userprofil. Der reale Benutzer und eine Figur in der Welt sind zwei verschiedene Dinge. Der User kann später eine Figur als Avatar übernehmen, aber seine User-ID wird dadurch nicht zur Charakter-ID.
+   
+   Zur Grundkonfiguration gehört zwingend auch die LLM-Konfiguration im Frontend: Provider, API-Key, Modell und die vorgesehenen Modellparameter. Diese Werte müssen gespeichert werden, nach einem Neustart wieder vorhanden sein und tatsächlich vom Backend benutzt werden. Der API-Key darf nicht bloß irgendwo im Backend erwartet werden, während die Oberfläche keine Möglichkeit zur Eingabe bietet. Genau diese Config mit Provider, API-Key und Modell ist bereits Teil von AMASTERv2.
+
+2. Der Nutzer gibt dem System das Ausgangsmaterial für seine Welt.
+   
+   Das kann beispielsweise ein EPUB/E-Book, Text, PDF, Bild, Screenshot, JSON, eine Präsentation oder anderes unterstütztes Material sein.
+   
+   Ein Roman ist dabei nicht einfach „Text für das LLM“. Er ist eine Quelle, aus der eine strukturierte Welt entstehen soll. Das System muss den Inhalt extrahieren, seine Reihenfolge und Quellen erhalten und sichtbar melden, wenn ein Dokument nicht korrekt gelesen werden konnte. Ein leerer oder fehlgeschlagener Parse darf niemals als erfolgreiche Weltanalyse ausgegeben werden.
+
+3. Aus dem E-Book wird zuerst die Welt verstanden.
+   
+   Die Analyse ermittelt unter anderem Orte und Unterorte, historische Ereignisse, Timeline, gesellschaftliche und physikalische Regeln, Fraktionen, Figuren, Beziehungen, Konflikte, Verbote, Möglichkeiten, Kultur, Sprache, Genre, geheimes Wissen, mögliche Startsituationen, Storyziele und mögliche Fate-Beats. AMASTERv2 verlangt dafür zunächst einen prüfbaren Analyseentwurf und erst danach den bewussten Commit in die Welt.
+   
+   Entscheidend ist die Trennung zwischen Weltwahrheit und Figurenwissen. Nur weil im E-Book steht, wer der Mörder ist, weiß das nicht automatisch jede Figur. Der Roman darf für das System die vollständige Quelle sein, während eine einzelne Figur nur den Ausschnitt kennt, den sie aufgrund ihrer Biografie, Erlebnisse und Informationswege kennen kann.
+
+4. Aus der Analyse entsteht der Weltstamm.
+   
+   Die Welt erhält eine stabile Identität und ihren Kanon: Epoche, Orte, Geschichte, Regeln, politische oder gesellschaftliche Ordnung, Technik oder Übernatürlichkeit, Fraktionen, Konflikte, Gegenstände, Spezies, Storyachsen und andere dauerhafte Grundlagen.
+   
+   Damit kann dieselbe Engine völlig verschiedene Universen darstellen. Eine Pinocchio-Welt darf sich nicht wie ein Jack-the-Ripper-Szenario verhalten. Ein Horrorroman darf nicht auf dieselbe allgemeine Reaktionslogik reduziert werden wie ein historisches Drama oder ein Erotikthriller. Genre, Ton, Moralvorstellungen, Gefahren, gesellschaftliche Regeln und die Figuren selbst stammen aus der jeweiligen Welt und ihrer Konfiguration.
+
+5. Danach entstehen aus der Welt die Charaktere.
+   
+   Spawning bedeutet ausdrücklich nicht, lediglich einen Namen und drei Eigenschaften zu generieren. Das Ziel ist ein vollständiger Charakterstamm.
+   
+   Alle im Frontend vorhandenen Charakterfelder sollen nach der Welterstellung sinnvoll gefüllt sein: Name, Alter, Geschlecht beziehungsweise Selbstverständnis, Herkunft, Biografie, Persönlichkeit, Werte, Ziele, Ängste, Geheimnisse, Vorlieben, Abneigungen, Bindungsmuster, Konfliktverhalten, Humor, Sprachstil, typische Wörter, körperliche Eigenschaften, Fähigkeiten, Einschränkungen, Grundwissen, Beziehungen und weitere tatsächlich vorhandene Profilfelder.
+   
+   Was aus dem E-Book hervorgeht, hat Vorrang. Was dort nicht ausdrücklich vorhanden ist, darf das LLM welt-, charakter- und quellenplausibel ergänzen, damit kein halbfertiges Charakterprofil entsteht. Intern muss aber nachvollziehbar bleiben, ob ein Wert direkt aus der Quelle stammt oder vom System plausibel abgeleitet wurde. So ist das Frontend vollständig, ohne eine LLM-Schätzung fälschlich als wörtlich belegte Romaninformation auszugeben. AMASTERv2 fordert beim Spawning bereits Quellenbezug, Unsicherheiten sowie die Unterscheidung zwischen belegten und abgeleiteten Informationen.
+
+6. Der Charakterkompass macht aus den Profildaten eine persönliche Verhaltenslinie.
+   
+   Der Chathere-Kompass verbindet beispielsweise Vertrauen, Misstrauen, Mut, Angst, Nähe, Distanz, Härte, Sanftheit, Impulsivität, Aggression, Scham, Dominanz, Loyalität, Bindungsstil, Konfliktstil, Humor und Sprachstil.
+   
+   Er bestimmt nicht mechanisch eine Antwort. Er beeinflusst vielmehr, wie diese konkrete Person mit einer Situation umgeht.
+   
+   Zwei Figuren können dasselbe Ereignis erleben und vollkommen unterschiedlich reagieren. Die eine wird aggressiv, die andere bekommt Angst, die dritte versucht zu manipulieren und die vierte schweigt. Der Kompass darf aber niemals selbst Ereignisse, Wissen oder Weltfakten erfinden. Er ist Charakter, nicht Wahrheitsspeicher.
+
+7. Uploads haben zwei grundsätzlich unterschiedliche Bedeutungen: Mode A und Mode B.
+   
+   Upload A ist prägend. Er verändert bewusst einen ausgewählten dauerhaften Bereich: beispielsweise Welt, Kanon, Charakterstamm, Biografie, Grundbeziehung, dauerhaftes Wissen oder eine tiefe Erinnerung.
+   
+   Upload B ist Wissen oder Referenz. Eine Figur kann beispielsweise ein Buch lesen, ein Foto sehen oder ein Dokument erhalten, ohne dass dessen Inhalt dadurch plötzlich ihre Persönlichkeit oder Vergangenheit wird.
+   
+   Ein Krimi, den eine Figur liest, macht sie nicht selbst zum Mörder. Ein Charakterdokument, das ausdrücklich seinen Stamm prägen soll, kann dagegen Mode A sein. Prägende Uploads brauchen immer ein eindeutiges Ziel, Scope, Quelle und einen bewussten Commit.
+
+8. Aus dem Weltstamm und den Charakterstämmen wird eine neue Session erzeugt.
+   
+   Eine Session ist ein eigener möglicher Verlauf derselben Welt.
+   
+   Beim Start übernimmt sie die Welt und die unveränderten Charakterstämme. Sie übernimmt aber nicht automatisch die Erlebnisse einer anderen Session. Verletzungen, Streit, Liebe, Hass, Versprechen, Geheimnisoffenbarungen oder andere Veränderungen aus Session 1 dürfen nicht plötzlich in Session 2 vorhanden sein.
+   
+   Deshalb kann man dieselbe Welt immer wieder neu beginnen: gleiche Ausgangswelt und gleiche Ausgangsfiguren, aber ein neuer Verlauf.
+   
+   Optional können spätere Sessionerfahrungen nach einem bewussten Review dauerhaft in den Stamm übernommen werden. Das geschieht aber niemals heimlich.
+
+9. Beim Sessionstart wird festgelegt, wer wo ist und welche Rolle der User übernimmt.
+   
+   Eine Szene besitzt einen konkreten Ort, eine Zeit, anwesende Figuren, sichtbare und hörbare Reichweiten, offene Konflikte, Handlungen, Fragen, Versprechen und körperliche Positionen.
+   
+   Der User kann beispielsweise Beobachter, Teilnehmer oder Avatar sein. Als Avatar übernimmt er eine konkrete Weltfigur mit deren Persönlichkeit und Stamm. Der User entscheidet aber selbst, was sein Avatar sagt, will oder tut. Das System darf ihm keine Entscheidung, Zustimmung, Ablehnung, Emotion oder Handlung unterschieben. AMASTERv2 macht diese Avatargrenze ausdrücklich verbindlich.
+
+10. Bei jedem einzelnen Chat-Turn wird zuerst festgestellt, was tatsächlich passiert.
+
+Bevor ein LLM antworten darf, muss das System den Eingang binden: Wer ist der User? Welche Welt? Welche Session? Welche Szene? In welchem Modus? Wer spricht? Wer ist das Ziel? Wer ist anwesend? Wer hört? Wer sieht? Welche Authority gilt? Welcher Zeitbezug und welcher Upload gehören dazu?
+
+Daraus entsteht die gemeinsame TurnTruth.
+
+Erst damit wird verhindert, dass beispielsweise „du“ zufällig der falschen Figur zugeordnet wird oder eine Figur auf eine Unterhaltung reagiert, die sie gar nicht gehört hat.
+
+11. Wissen funktioniert wie Wissen zwischen Menschen, nicht wie ein gemeinsamer Gruppenprompt.
+
+Wenn Mara und Clara in einem Raum reden und Alrik nicht dort ist, dann weiß Alrik von diesem Gespräch nichts.
+
+Eine Figur bekommt Wissen nur, wenn sie einen gültigen Informationsweg besitzt: Sie erlebt etwas selbst, sieht es, hört es, ist betroffen, liest es, bekommt es später erzählt oder erhält es aufgrund einer ausdrücklich gesetzten Authority.
+
+Namensnennung allein reicht nicht.
+
+Und ein späteres Erzählen ist wiederum ein eigenes Ereignis. Clara kann Alrik wahrheitsgemäß berichten, was Mara getan hat – sie kann ihn aber ebenso belügen. Dann lautet die kanonische Information nicht automatisch „Mara hat X getan“, sondern zunächst: Clara hat Alrik erzählt, Mara habe X getan. Ob Alrik ihr glaubt, zweifelt oder nachforscht, hängt von Wissen, Erinnerung, Beziehung und Persönlichkeit ab. AMASTERv2 trennt deshalb objektive Weltwahrheit, Figurenwissen und WitnessKnowledge ausdrücklich.
+
+12. Regie, God und Fate haben drei völlig verschiedene Aufgaben.
+
+Die Regie erzwingt eine konkrete Szenenwirkung. Wenn die Regie Clara anweist, Mara etwas Bestimmtes zu tun oder zu sagen, ist das kein freundlicher Vorschlag an Clara. Actor und Target werden gebunden, die angeordnete Handlung wird über den kanonischen Handlungspfad vollzogen und die Figur erlebt anschließend die Konsequenz dieser Handlung. Sie kann entsprechend ihrer Persönlichkeit darauf reagieren, sich darüber wundern, erschrecken oder innerlich dagegen sein. Die Regie darf aber nicht zusätzlich beliebige weitere Taten erfinden.
+
+God ist stärker und anders: God setzt eine Tatsache. Wird in einem gewählten Scope festgelegt, dass etwas ab jetzt gilt, wird diese Tatsache in den zuständigen kanonischen Zustand geschrieben. Ein LLM darf sie in einem späteren Turn nicht einfach vergessen oder wegformulieren.
+
+Fate ist dagegen kein Gott und kein versteckter Puppenspieler. Fate liest Welt, Ziele, Beziehungen, Geheimnisse, Wissen, Nichtwissen, offene Konflikte und den bisherigen Verlauf und erzeugt daraus Storydruck.
+
+13. Fate hält die Geschichte lebendig, ohne dem Avatar seine Freiheit zu nehmen.
+
+Ist Fate eingeschaltet und versucht der User als Avatar bewusst, gegen die ursprüngliche Geschichte zu arbeiten, lautet die Aufgabe von Fate nicht: „Zwinge ihn zurück auf das Buch.“
+
+Fate soll vielmehr beurteilen: Welche weltlogische Entwicklung könnte jetzt eintreten, damit ein ursprüngliches Storyziel noch erreichbar bleibt?
+
+Es kann Konsequenzen zurückbringen, Nebenfiguren aktivieren, Konflikte verschärfen, Möglichkeiten eröffnen, Ortswechsel vorbereiten oder offene Storyfäden wieder relevant machen.
+
+Der Avatar kann trotzdem anders entscheiden und damit die Geschichte tatsächlich verändern. Fate darf ihn nicht steuern, keine Figur plötzlich allwissend machen und keine Weltregel oder God-Wahrheit brechen. Es erzeugt Druck und Möglichkeiten, keine alternative Masterwahrheit.
+
+14. Was geschieht, wird als Ereignis gespeichert – nicht nur als Chattext.
+
+Eine Figurenantwort kann gleichzeitig aus mehreren Dingen bestehen: Rede, Handlung, Ablehnung, Offenbarung, Rückzug oder einer gesetzten Grenze.
+
+Diese Bestandteile werden semantisch getrennt und als kanonische Ereignisse beziehungsweise SceneFacts gebunden. Der sichtbare Satz ist also nicht selbst die Datenbankwahrheit.
+
+Dadurch kann das System unterscheiden zwischen „Clara behauptet, sie sei unschuldig“ und „Clara ist unschuldig“. Eine Lüge bleibt eine reale Redehandlung, ohne deshalb zur objektiven Weltwahrheit zu werden.
+
+Auch frühere Ereignisse werden nicht gelöscht, wenn später etwas anderes geschieht. Ein gebrochenes Versprechen bleibt historisch ein früheres Versprechen plus späterer Bruch. Das macht Verhalten nachvollziehbar statt technisch vergesslich.
+
+15. Das konjunktive Gedächtnis verbindet Erlebnisse zu Bedeutung.
+
+Eine Figur besitzt nicht nur einen großen Textblock „Memory“.
+
+Erinnerungen werden nach Person, Ereignis, Zeitpunkt, Ort, Ursache, Beteiligten, Quelle, Wissenstyp, Proposition und Folgen verbunden.
+
+Wenn Mara beispielsweise schwanger ist, Alrik der Vater ist, Alrik es noch nicht weiß und Mara es ihm sagen möchte, sind das nicht fünf zufällige Textschnipsel. Das System erkennt sie als zusammengehörigen Frame. AMASTERv2 beschreibt genau diese gebundenen Erinnerungsstrukturen und Pattern Completion.
+
+Recall bedeutet deshalb auch nicht, bei jedem Turn die gesamte Datenbank als „Memory-Bombe“ ins LLM zu kippen. Es werden die für diese Figur und diese Situation relevanten Erinnerungen und Zusammenhänge aktiviert.
+
+16. Eine Information wird von einer Figur nicht nur gespeichert – sie bekommt für diese Figur Bedeutung.
+
+Das ist ein zentraler Punkt des Systems.
+
+Wenn eine Figur etwas erfährt, wird nicht nur ein Satz unter „weiß X“ abgelegt. Das neue Wissen trifft auf ihren Charakterstamm, ihre vorhandenen Erinnerungen, ihre Ziele, Ängste, Geheimnisse, Beziehungen und ihren gegenwärtigen Zustand.
+
+Dadurch kann dieselbe Nachricht für verschiedene Personen eine völlig andere Bedeutung besitzen.
+
+Ein Mensch, der erfährt, dass sein Partner ihn betrogen hat, besitzt danach nicht lediglich einen neuen Datensatz. Die Information kann Vertrauen verändern, Wut auslösen, ein Ziel zerstören, ein neues Ziel erzeugen, alte Erinnerungen aktivieren oder sein Verhalten gegenüber einer bestimmten Person verändern.
+
+Genau daraus entsteht das gewünschte „Verstehen und Fühlen“: Nicht das LLM erfindet spontan Gefühle, sondern kanonisches Wissen erreicht die Figur, wird mit ihrem bestehenden Zustand verknüpft und beeinflusst anschließend Runtime, Ziele, Beziehung, Recall und damit ihre nächste Reaktion.
+
+17. Beziehungen entwickeln sich gerichtet und aus Erlebnissen.
+
+Mara → Alrik ist nicht dasselbe wie Alrik → Mara.
+
+Vertrauen, Nähe, Liebe, Angst, Feindseligkeit, Eifersucht, Loyalität oder Respekt können sich unterschiedlich entwickeln. Eine Beziehungsänderung braucht aber einen Grund – ein tatsächlich geschehenes Ereignis oder eine ausdrücklich gesetzte dauerhafte Änderung.
+
+Figuren dürfen deshalb lieben, hassen, begehren, lügen, schimpfen, manipulieren, betrügen, Fehden führen, sich versöhnen, schweigen, bereuen oder Versprechen brechen, sofern es aus der konkreten Welt, ihrem Charakter und dem Verlauf entsteht. Es gibt keine generische „vernünftige Standardperson“, die alle Figuren in dieselbe Richtung zieht.
+
+18. Vor der nächsten Antwort wird der vollständige relevante Figurenzustand zusammengesetzt.
+
+Das System lädt unter anderem Weltregeln, Szene, TurnTruth, relevante SceneFacts, Current State, persönliche Erinnerungen, WitnessKnowledge, Runtime, Körperzustand und Capability, Beziehungen, Social-Aktivierung, Ziele, God- und Regiefakten, Fate-Druck und Zeitkontext.
+
+Daraus wird ein kompakter BrainContext erzeugt.
+
+Erst jetzt kommt das LLM ins Spiel.
+
+Das LLM ist also nicht das Gehirn, das die Wahrheit erfindet. Es ist der sprachliche Interpret und Darsteller eines bereits gebundenen Zustands.
+
+19. Die Figur spricht aus sich selbst heraus.
+
+Die fertige Antwort soll aus Charakterstamm, Charakterkompass, Wissen, Erinnerung, Emotion, Beziehung, Körper, Szene, Ziel und gegenwärtiger Situation entstehen.
+
+Eine stolze Figur redet anders als eine ängstliche. Eine Person spricht mit ihrem Geliebten anders als mit ihrem Feind. Wer etwas nicht weiß, darf nicht darüber reden wie ein allwissender Erzähler. Wer belogen wurde, kann die Lüge glauben. Wer verletzt wurde, trägt die Verletzung weiter. Wer eine bestimmte Sprache, Lieblingswörter, Humor oder Umgangsform besitzt, verwendet diese auch.
+
+Dadurch werden nicht „LLM-Antworten mit Charakternamen“ erzeugt, sondern unterschiedliche virtuelle Personen.
+
+20. Nach der Antwort beginnt nicht alles wieder von vorne.
+
+Die tatsächlich gesprochene Rede und tatsächlich vollzogenen Handlungen werden committed. Zeugen erhalten das entsprechende Wissen. Erinnerungen entstehen. Runtime, Beziehungen, offene Ziele, körperliche Folgen und SceneState werden aktualisiert. Timeline und Oberfläche werden aktualisiert.
+
+Der nächste Turn liest genau diesen fortgeschriebenen Zustand.
+
+Das ist die wichtigste technische Grundbedingung des gesamten Projekts: Ein Writer ist erst dann wirklich implementiert, wenn sein Ergebnis beim nächsten zuständigen Reader ankommt.
+
+21. Eine abwesende Figur bleibt weiterhin abwesend.
+
+Wenn später eine Figur in die Szene kommt, weiß sie nicht magisch, was vorher passiert ist.
+
+Jemand kann es ihr erzählen. Sie kann einen Brief lesen. Sie kann Spuren sehen. God kann Wissen ausdrücklich setzen. Aber irgendein tatsächlicher Informationsweg muss existieren.
+
+Genau dadurch können Geheimnisse, Täuschung, Verrat, Missverständnisse und unterschiedliche Perspektiven überhaupt glaubwürdig funktionieren.
+
+22. Eine neue Session setzt die erlebte Geschichte zurück, aber nicht die Welt und die Personen.
+
+Beginnt der User eine neue Session, startet dieselbe Welt wieder mit ihrem Weltkanon und denselben Charakterstämmen.
+
+Was Mara in einer anderen Session erlebt, geliebt, gehasst, erfahren oder getan hat, gehört nicht automatisch in diese neue Session.
+
+Dadurch können alternative Verläufe derselben Welt gespielt werden, ohne dass sich ihre Erinnerungen gegenseitig vermischen.
+
+23. Dauerhafte Entwicklung geschieht nur bewusst.
+
+Wenn sich eine Figur innerhalb einer Session wirklich grundlegend entwickelt hat, kann das System nachher vorschlagen, einen Teil davon dauerhaft in den Charakterstamm zu übernehmen.
+
+Der User entscheidet aber, ob diese Veränderung tatsächlich zum neuen Ausgangscharakter gehören soll.
+
+Sessionerfahrung und Grundidentität bleiben dadurch sauber getrennt.
+
+24. Das System ist erst fertig, wenn die gesamte Kette funktioniert – nicht wenn einzelne Tests grün sind.
+
+Der User soll nicht ständig als menschliches Testwerkzeug benutzt werden, um nach jeder Reparatur herauszufinden, welcher Systemteil diesmal wieder nicht funktioniert.
+
+Vor einem eigentlichen Nutzertest muss der Code technisch nachweisen, dass die Achsen geschlossen sind:
+
+sichtbare Bedienung → korrekte IDs und Scopes → Backend → kanonischer Writer → korrekter Speicher → Wissensverteilung → Runtime/Memory/Relationship → tatsächlicher Reader → BrainContext → Figurenreaktion → Commit → Folgeturn.
+
+Genau diesen End-to-End-Maßstab fordert auch AMASTERv2. Eine isolierte Speicherung, ein vorhandener Marker oder ein einzelner überzeugender Chattext gelten ausdrücklich nicht als Systemnachweis.
+
+Das Ziel in einem Satz
+
+ChatHere soll aus einer Geschichte eine lebende virtuelle Welt machen, in der jede Figur eine eigenständige Person mit Herkunft, Persönlichkeit, begrenztem Wissen, Erinnerungen, Gefühlen, Beziehungen, Zielen und Konsequenzen ist; der User kann als Avatar in diese Welt eintreten und ihre Geschichte verändern, während Weltkanon, Regie, God und Fate jeweils klar getrennte Aufgaben besitzen und jede Handlung von Turn zu Turn kausal weiterlebt.
+
+Es ist damit weniger ein „Rollenspiel mit KI“ als eine persistente Simulations- und Erzählwelt, in der das LLM die Sprache der Figuren liefert, aber nicht ihre Vergangenheit, ihr Wissen oder die Wahrheit des Universums erfinden darf.Diese Fassung verbindet AMASTERv2 mit deinen jetzigen Präzisierungen. Besonders wichtig sind dabei drei Ergänzungen, die ich künftig als Teil deines SOLL verstehen würde: vollständig befüllte Charakterprofile mit gekennzeichneter Ableitung bei fehlenden Quelldaten; Information muss im Charakter psychologisch wirksam werden und nicht nur gespeichert sein; Fate soll bei Abweichung aktiv nach weltlogischen Wegen zum Storyziel suchen, ohne den Avatar zurückzuzwingen.
+
+Und die LLM/API-Key-Config ist keine dieser neuen Ergänzungen – sie steht bereits im verbindlichen AMASTERv2 und muss im Produkt-Frontend vorhanden und wirksam sein.
