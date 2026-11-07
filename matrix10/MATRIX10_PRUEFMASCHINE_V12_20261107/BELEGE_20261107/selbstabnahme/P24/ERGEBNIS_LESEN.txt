@@ -1,0 +1,76 @@
+MATRIX10 KETTENPRÜFER V1.2
+============================================================
+GESAMT: ROT
+Kandidat: P24_REKONSTRUIERT.zip  SHA-256 8a232c4bed8a7cdd80a19a6318d9393766a4397e1874088cb56e8919488ff8ae
+Modell: wiedergabe   Mutation: keine   Fälle: PU1_handlung_eigenes_subjekt,PU2_anrede_gegen_ui_auswahl,PU4_verneinung_mit_rede
+
+Vorbereitung soll_2_7master.txt: GRUEN
+Vorbereitung soll_MATRIX10_SPS_MASTER.md: GRUEN
+Vorbereitung soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt: GRUEN
+Vorbereitung frontend: GRUEN: frisch gebaut (node_modules aus Cache mit gleichem package-lock), Kennung MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103
+
+[GRUEN] PU1_handlung_eigenes_subjekt (Puppet (§12.2), positiv): Johann trinkt sein Bier aus.
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: Eigene Handlung der geführten Figur wird als Handlung mit ihrer ID gespeichert; alle anwesenden Wahrnehmungsfähigen werden Zeugen; die Folgezug-Figur erhält das Ereignis. 2_7master Z.65, Z.1327, Z.1329, Z.222; Kettenvertrag §1, §16.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 8a232c4bed8a7cdd…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_01 geöffnet; Spreche als: Puppet char_g7_johann; Senden: Johann trinkt sein Bier aus.; Seite neu geladen
+   04 GRUEN            Gesendete IDs, Rolle, Modus, Actor, Target, Scope: Route /api/kernel/puppet, Sitzung ses_kp_fall_01, Figur char_g7_johann, UI-Ziel None, Text gleich
+   05 GRUEN            Backendroute und erste serverseitige Bindung: HTTP 200, Spur kp_1794076783806_304214: KERNEL_BIND,OUTPUT,READER,SQLITE_COMMIT,TARGET_BIND,TURN_END,TURN_INPUT,TURN_START,UI_REQUEST,VALIDATION,WRITER, Meldung: 
+   06 GRUEN            Kanonischer Owner und Writer: Writer: 1 Haupt-Facts, Commit 37 in Spur kp_1794076783806_304214 (PASS)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 3 Facts, 3 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum
+   09 GRUEN            Erzeugte Fact-IDs und ihr Inhalt: Haupt-Facts: action/char_g7_johann/Johann trinkt sein Bier aus→None
+   10 GRUEN            Wissensverteilung und Unwissende: 3 Facts, 9 neue Zeugenwissen: Zeugen anwesend und wahrnehmend, Abwesende ['char_g7_clara', 'char_g7_robert'] ohne Wissen
+   11 GRUEN            Runtime-/Körper-/Szenenfolgen: Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 3 von 3 neuen Facts gleich; ok
+   13 GRUEN            BrainContext im Folgezug: Spur kpr_1794076783969_274868: Sprecher char_g7_mara (Mara Nowak), Sitzung gebunden, Zeugenwissen vorhanden, PROMPT nach Hauptcommit enthält ['johann trinkt sein bier aus']
+   14 GRUEN            Sichtbare Antwort und Komponentencommit: Folgezug von ['char_g7_mara']: Modellantwort und Commit in Spur kpr_1794076783969_274868
+   15 GRUEN            Zustand im Folgezug: Folgezug-Sprecher ['char_g7_mara'] anwesend und sprechfähig, Haupt-Facts erhalten
+   16 GRUEN            Reload/Neustart: nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt
+   17 GRUEN            Sichtbare UI-Rückanzeige: Verlauf nach Neuladen stimmt; Meldungen: ['Nicht alles aus deiner Eingabe wurde als Ereignis gespeichert: „Johann trinkt sein Bier aus“ – Die Wirkung der Handlung ist unklar.']
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 8a232c4bed8a7cdd… in eigenem Arbeitsordner entpackt und gebaut
+   20 GRUEN            Status mit Begründung: alle Glieder belegt
+
+[ROT] PU2_anrede_gegen_ui_auswahl (Puppet (§12.2), positiv): Gustav, setz dich.
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: Eine Anrede ist Rede der geführten Figur; der im Text Angesprochene ist Adressat, auch gegen die UI-Auswahl; die UI-Auswahl selbst wird gesendet. 2_7master Z.131 (Sprecher, Ziel), Z.1355; SPS Paket 14; Kettenvertrag §16 Glied 04.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 8a232c4bed8a7cdd…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_02 geöffnet; Spreche als: Puppet char_g7_johann; Direktes Ziel: char_g7_mara; Senden: Gustav, setz dich.; Seite neu geladen
+   04 ROT              Gesendete IDs, Rolle, Modus, Actor, Target, Scope: UI-Ziel None statt char_g7_mara
+   05 GRUEN            Backendroute und erste serverseitige Bindung: HTTP 200, Spur kp_1794076804370_157238: KERNEL_BIND,OUTPUT,READER,SPRACHE,SQLITE_COMMIT,TARGET_BIND,TURN_END,TURN_INPUT,TURN_START,UI_REQUEST,VALIDATION,WRITER, Meldung: 
+   06 GRUEN            Kanonischer Owner und Writer: Writer: 1 Haupt-Facts, Commit 37 in Spur kp_1794076804370_157238 (PASS)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 4 Facts, 3 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum
+   09 GRUEN            Erzeugte Fact-IDs und ihr Inhalt: Haupt-Facts: speech/char_g7_johann/Gustav, setz dich.→char_g7_gustav
+   10 GRUEN            Wissensverteilung und Unwissende: 4 Facts, 9 neue Zeugenwissen: Zeugen anwesend und wahrnehmend, Abwesende ['char_g7_clara', 'char_g7_robert'] ohne Wissen
+   11 GRUEN            Runtime-/Körper-/Szenenfolgen: Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 4 von 4 neuen Facts gleich; ok
+   13 GRUEN            BrainContext im Folgezug: Spur kpr_1794076804499_285705: Sprecher char_g7_gustav (Gustav Pfeiffer), Sitzung gebunden, Zeugenwissen vorhanden, PROMPT nach Hauptcommit enthält ['gustav, setz dich']
+   14 GRUEN            Sichtbare Antwort und Komponentencommit: Folgezug von ['char_g7_gustav']: Modellantwort und Commit in Spur kpr_1794076804499_285705
+   15 GRUEN            Zustand im Folgezug: Folgezug-Sprecher ['char_g7_gustav'] anwesend und sprechfähig, Haupt-Facts erhalten
+   16 GRUEN            Reload/Neustart: nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt
+   17 GRUEN            Sichtbare UI-Rückanzeige: Verlauf nach Neuladen stimmt; Meldungen: ['keine']
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 8a232c4bed8a7cdd… in eigenem Arbeitsordner entpackt und gebaut
+   20 ROT              Status mit Begründung: 04 Gesendete IDs, Rolle, Modus, Actor, Target, Scope: UI-Ziel None statt char_g7_mara
+
+[ROT] PU4_verneinung_mit_rede (Puppet (§12.2), positiv): Johann küsst Mara nicht und sagt: Hallo.
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: Eine verneinte Handlung geschieht nicht; die Rede der Figur wird gespeichert und von den Anwesenden gehört. 2_7master Z.262, Z.1079, Z.1329.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 8a232c4bed8a7cdd…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_04 geöffnet; Spreche als: Puppet char_g7_johann; Senden: Johann küsst Mara nicht und sagt: Hallo.; Seite neu geladen
+   04 GRUEN            Gesendete IDs, Rolle, Modus, Actor, Target, Scope: Route /api/kernel/puppet, Sitzung ses_kp_fall_04, Figur char_g7_johann, UI-Ziel None, Text gleich
+   05 ROT              Backendroute und erste serverseitige Bindung: HTTP 422 statt 200 | HTTP 422, Spur kp_1794076824270_444815: CONSENT_CHECK,KERNEL_BIND,SPRACHE,TARGET_BIND,TURN_START,UI_REQUEST,VALIDATION, Meldung: Puppet: Nicht alle Satzteile wurden sicher gelesen. Nichts wurde gespeichert. Ungeklärte Teile: Johann küsst Mara nicht
+   06 ROT              Kanonischer Owner und Writer: keine Haupt-Facts/-Züge geschrieben (Commits der Hauptspur 0)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 0 Facts, 1 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum
+   09 ROT              Erzeugte Fact-IDs und ihr Inhalt: fehlt: {'kind': 'speech', 'akteur': 'J', 'text': 'Hallo'} | Haupt-Facts: keine
+   10 BLOCKIERT        Wissensverteilung und Unwissende: kein Wissen entstanden - Wissenskette nicht prüfbar
+   11 GRUEN            Runtime-/Körper-/Szenenfolgen: Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 0 von 0 neuen Facts gleich; ok
+   13 ROT              BrainContext im Folgezug: kein Haupt-Ereignis (Rede/Handlung) gespeichert
+   14 ROT              Sichtbare Antwort und Komponentencommit: Oberfläche hat keinen Folgezug gespeichert (kein Commit); kein Folgezug einer Figur in SQLite; Spur des Folgezugs nicht eindeutig (0); keine fehlerfreie Modellantwort (MODEL_REPLY source=llm) in der Folgezug-Spur; kein SQLITE_COMMIT PASS in der Folgezug-Spur
+   15 ROT              Zustand im Folgezug: kein Folgezug
+   16 ROT              Reload/Neustart: nach Neustart nicht im Verlauf: 'Hallo'
+   17 ROT              Sichtbare UI-Rückanzeige: nach Neuladen nicht im Verlauf: 'Hallo'
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 8a232c4bed8a7cdd… in eigenem Arbeitsordner entpackt und gebaut
+   20 ROT              Status mit Begründung: 05 Backendroute und erste serverseitige Bindung: HTTP 422 statt 200 | HTTP 422, Spur kp_1794076824270_444815: CONSENT_CHECK,KERNEL_BIND,SPRACHE,TARGET_BIND,TURN_START,UI_REQUEST,VALIDATION, Meldung: Puppet: Nicht alle Satzteile wurden sicher gelesen. Nichts wurde gespeichert. Ungeklärte Teile: Johan

@@ -1,0 +1,39 @@
+{
+ "fall": "AV2_fremde_rede_im_avatar",
+ "schritte": [
+  "Profil gewählt, Chat ses_kp_fall_06 geöffnet",
+  "Modus-Reiter: Avatar",
+  "Spreche als: Avatar",
+  "Direktes Ziel: char_g7_mara",
+  "Senden: Gustav sagt: Ich gehe jetzt nach Hause.",
+  "Seite neu geladen"
+ ],
+ "anfragen": [
+  {
+   "pfad": "/api/kernel/prepare",
+   "sessionId": "ses_kp_fall_06",
+   "figur": "char_g7_mara",
+   "ziel": "char_g7_mara",
+   "rolle": "avatar",
+   "autoritaet": "avatar",
+   "sprichtAls": "avatar",
+   "scope": null,
+   "text": "Gustav sagt: Ich gehe jetzt nach Hause.",
+   "wiederaufnahme": false
+  }
+ ],
+ "antworten": [
+  {
+   "pfad": "/api/kernel/prepare",
+   "status": 422,
+   "code": "EINGABE_NICHT_AUSFUEHRBAR",
+   "meldung": "Eingabe: Nichts davon ist eine ausführbare Rede oder Handlung von Johann Bruckner: „Ich gehe jetzt nach Hause.“ – die Rede gehört einer anderen Figur als der geführten. Nichts wurde gespeichert. Bitte anders formulieren (Handlung in *Sternchen*, Rede als eigene Worte)."
+  }
+ ],
+ "hauptstatus": 422,
+ "meldungen": [
+  "Eingabe: Nichts davon ist eine ausführbare Rede oder Handlung von Johann Bruckner: „Ich gehe jetzt nach Hause.“ – die Rede gehört einer anderen Figur als der geführten. Nichts wurde gespeichert. Bitte anders formulieren (Handlung in *Sternchen*, Rede als eigene Worte)."
+ ],
+ "verlauf_vor_reload": "SZENE Der Schankraum ist voller nasser Mäntel und halber Sätze. Clara steht an der Theke. Mara trägt Gläser. Johann ist zurück. Gustav lächelt zu lange. Robert trinkt zu schnell. Draußen prasselt Regen auf die Bank.",
+ "verlauf_nach_reload": "SZENE Der Schankraum ist voller nasser Mäntel und halber Sätze. Clara steht an der Theke. Mara trägt Gläser. Johann ist zurück. Gustav lächelt zu lange. Robert trinkt zu schnell. Draußen prasselt Regen auf die Bank."
+}

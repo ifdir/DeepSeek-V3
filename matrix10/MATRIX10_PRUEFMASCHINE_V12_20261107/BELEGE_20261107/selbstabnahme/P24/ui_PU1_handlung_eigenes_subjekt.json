@@ -1,0 +1,110 @@
+{
+ "fall": "PU1_handlung_eigenes_subjekt",
+ "schritte": [
+  "Profil gewählt, Chat ses_kp_fall_01 geöffnet",
+  "Spreche als: Puppet char_g7_johann",
+  "Senden: Johann trinkt sein Bier aus.",
+  "Seite neu geladen"
+ ],
+ "anfragen": [
+  {
+   "pfad": "/api/kernel/puppet",
+   "sessionId": "ses_kp_fall_01",
+   "figur": "char_g7_johann",
+   "ziel": null,
+   "rolle": null,
+   "autoritaet": null,
+   "sprichtAls": null,
+   "scope": null,
+   "text": "Johann trinkt sein Bier aus.",
+   "wiederaufnahme": false
+  },
+  {
+   "pfad": "/api/kernel/autochat-gate",
+   "sessionId": "ses_kp_fall_01",
+   "figur": null,
+   "ziel": null,
+   "rolle": null,
+   "autoritaet": null,
+   "sprichtAls": null,
+   "scope": null,
+   "text": null,
+   "wiederaufnahme": false
+  },
+  {
+   "pfad": "/api/kernel/prepare",
+   "sessionId": "ses_kp_fall_01",
+   "figur": "char_g7_mara",
+   "ziel": "char_g7_johann",
+   "rolle": "teilnehmer",
+   "autoritaet": "teilnehmer",
+   "sprichtAls": "operator",
+   "scope": null,
+   "text": null,
+   "wiederaufnahme": false
+  },
+  {
+   "pfad": "/api/llm/formulate",
+   "sessionId": "ses_kp_fall_01",
+   "figur": null,
+   "ziel": null,
+   "rolle": null,
+   "autoritaet": null,
+   "sprichtAls": null,
+   "scope": "user",
+   "text": null,
+   "wiederaufnahme": false
+  },
+  {
+   "pfad": "/api/kernel/commit",
+   "sessionId": "ses_kp_fall_01",
+   "figur": "char_g7_mara",
+   "ziel": "char_g7_johann",
+   "rolle": "character",
+   "autoritaet": "character",
+   "sprichtAls": null,
+   "scope": null,
+   "text": null,
+   "wiederaufnahme": false
+  }
+ ],
+ "antworten": [
+  {
+   "pfad": "/api/kernel/puppet",
+   "status": 200,
+   "code": null,
+   "meldung": ""
+  },
+  {
+   "pfad": "/api/kernel/autochat-gate",
+   "status": 200,
+   "code": null,
+   "meldung": ""
+  },
+  {
+   "pfad": "/api/kernel/prepare",
+   "status": 200,
+   "code": null,
+   "meldung": ""
+  },
+  {
+   "pfad": "/api/llm/formulate",
+   "status": 200,
+   "code": null,
+   "meldung": ""
+  },
+  {
+   "pfad": "/api/kernel/commit",
+   "status": 200,
+   "code": null,
+   "meldung": ""
+  }
+ ],
+ "hauptstatus": 200,
+ "folgezug_commit": true,
+ "meldungen": [
+  "Nicht alles aus deiner Eingabe wurde als Ereignis gespeichert: „Johann trinkt sein Bier aus“ – Die Wirkung der Handlung ist unklar."
+ ],
+ "verlauf_vor_reload": "SZENE Der Schankraum ist voller nasser Mäntel und halber Sätze. Clara steht an der Theke. Mara trägt Gläser. Johann ist zurück. Gustav lächelt zu lange. Robert trinkt zu schnell. Draußen prasselt Regen auf die Bank. JOHANN BRUCKNER Johann trinkt sein Bier aus MARA NOWAK Ist das dein Ernst? Glaubst du wirklich, dass ich dir hier was schulde? Ich stelle das Tablett ab und kreuze die Arme vor der Brust. Synapsen: Angst 0.57·llm",
+ "verlauf_nach_reload": "SZENE Der Schankraum ist voller nasser Mäntel und halber Sätze. Clara steht an der Theke. Mara trägt Gläser. Johann ist zurück. Gustav lächelt zu lange. Robert trinkt zu schnell. Draußen prasselt Regen auf die Bank. JOHANN BRUCKNER Johann trinkt sein Bier aus MARA NOWAK Ist das dein Ernst? Glaubst du wirklich, dass ich dir hier was schulde? Ich stelle das Tablett ab und kreuze die Arme vor der Brust. Synapsen: Angst 0.57·llm"
+}

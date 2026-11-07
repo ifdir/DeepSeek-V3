@@ -1,0 +1,2 @@
+[vor Neustart] PU2_anrede_gegen_ui_auswahl: 04 ROT UI-Ziel None statt char_g7_mara; 09 ROT speech an ['char_g7_mara'] statt char_g7_gustav | Haupt-Facts: speech/char_g7_johann/Gusta
+GESAMT: ROT -> /home/claude/kp/V12/frisch/MATRIX10_PRUEFMASCHINE_V12/SELBSTABNAHME_LAUF_20261107_183415/MUTATIONEN/M2_falscher_adressat/ERGEBNIS_LESEN.txt

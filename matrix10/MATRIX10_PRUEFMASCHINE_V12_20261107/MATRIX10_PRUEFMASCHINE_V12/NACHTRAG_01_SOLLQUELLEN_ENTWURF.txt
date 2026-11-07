@@ -1,0 +1,29 @@
+NACHTRAG 01 ZUM VERBINDLICHEN REPARATUR-KETTENVERTRAG – SOLLQUELLEN
+Status: ENTWURF – gilt erst nach Bestätigung durch den Vertragseigner (Ajp)
+Stand: 7. November 2026
+
+1. Ausgangslage
+Kettenvertrag §0 nennt als Sollquellen:
+  - AMASTERv2.md(1).txt   SHA-256 fb4f2015783dafe9474ee77d26b23fafb7c2c76a1c6ba923727f3aaedba5721d
+  - Matrix10.txt          SHA-256 1465980a0675a36b3143175c216048dae04d615c9e174d5821a8a2bb94917bc8
+Beide Dateien liegen in keinem Paket seit P22 und in keinem Upload vor.
+
+2. Abweichung
+Für Prüfung und Freigabe werden stattdessen diese drei Dateien verwendet und eingefroren:
+  - 2_7master.txt                              095d455460390dfd0ae46e6938126e44a51293461d070204358d301f00609a7f
+  - MATRIX10_SPS_MASTER.md                     1f0cb05dc1d7fc9afccd0e14a9e851d9340f9bbf56fe9ee8e8f0ddc46363969d
+  - VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt  e62cf6bc606a13a72044ab135697e209f7cb0bcfbc0a2b36ff7e1f153bf290bd
+
+3. Keine Gleichsetzung
+Die drei Dateien sind KEIN inhaltsgleicher Ersatz für AMASTERv2.md(1).txt und Matrix10.txt.
+Ob sie deren Inhalt vollständig abdecken, ist nicht geprüft (UNKLAR). Taucht eine der beiden
+§0-Dateien wieder auf, wird sie gegen ihren Hash geprüft und hat Vorrang.
+
+4. Wirkung
+Ohne Bestätigung bleibt die Prüfung "03_quellenregister" der Freigabesperre BLOCKIERT.
+Mit Bestätigung wird in PRUEFREGELN_V11.json "bestaetigt_von_vertragseigner" auf true gesetzt;
+das ist eine neue, eigene Regelversion (neuer Regel-Hash im Ergebnis).
+Die Bestätigung schließt keine andere Prüfung und keine Achse.
+
+5. Bestätigung
+Bestätigt von: ____________________   Datum: __________

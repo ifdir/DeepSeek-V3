@@ -1,0 +1,330 @@
+{
+ "pruefer": "MATRIX10_KETTENPRUEFER_V12",
+ "zeit_utc": "2026-11-07T18:49:57.989150+00:00",
+ "modus": "wiedergabe",
+ "mutation": "M8_god_koerper_falsche_figur",
+ "basis": {
+  "zip": "25e137c2-MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107.zip",
+  "zip_sha": "33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1",
+  "db_sha": "e03dc44584db8b990abf62d6d1ae949e149268048b88686db2496e1361186f97",
+  "faelle_sha": "fd352b89881c44c331804960f17db255f9afdf2511a90f46da8f20f20c10c11d",
+  "pruefer_sha": "fd3583d71869c8a6dfe80ca4fb6dae53d08ca8d108f612c468fe7d9e655f62c3",
+  "auswertung_sha": "3b9c618935478cc7d4df1bb4fa0848bb5debad24dde8db7116f1f516e4c49039",
+  "original_db_unveraendert": true
+ },
+ "angefordert": [
+  "GO1_bewusstlos"
+ ],
+ "faelle": [
+  {
+   "id": "GO1_bewusstlos",
+   "achse": "God (§12.4)",
+   "art": "positiv",
+   "text": "Mara ist bewusstlos.",
+   "sessionId": "ses_kp_fall_07",
+   "modell": {
+    "anfragen": 7,
+    "treffer": 7,
+    "fehlgriffe": 0,
+    "weitergeleitet": 0,
+    "upstream_fehler": 0,
+    "fehlgriffe_vor_hauptcommit": 0
+   },
+   "glieder": [
+    {
+     "glied": 1,
+     "name": "SOLL-Vertrag und konkrete Erwartung",
+     "status": "GRUEN",
+     "beleg": "God setzt den Körperzustand; eine bewusstlose Figur spricht nicht und nimmt nichts wahr. 2_7master Z.224 (Capability), Z.1329, Z.2402."
+    },
+    {
+     "glied": 2,
+     "name": "Ausgangs-ZIP, Hash und Datenbank",
+     "status": "GRUEN",
+     "beleg": "ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)"
+    },
+    {
+     "glied": 3,
+     "name": "Reale UI-Bedienung",
+     "status": "GRUEN",
+     "beleg": "Profil gewählt, Chat ses_kp_fall_07 geöffnet; Modus-Reiter: Gott; Senden: Mara ist bewusstlos.; Seite neu geladen"
+    },
+    {
+     "glied": 4,
+     "name": "Gesendete IDs, Rolle, Modus, Actor, Target, Scope",
+     "status": "GRUEN",
+     "beleg": "Route /api/kernel/god, Sitzung ses_kp_fall_07, Figur None, UI-Ziel None, Text gleich"
+    },
+    {
+     "glied": 5,
+     "name": "Backendroute und erste serverseitige Bindung",
+     "status": "GRUEN",
+     "beleg": "HTTP 200, Spur kg_1794077419462_136214: GOD_BODY,KERNEL_BIND,KOERPER_BESTAETIGUNG,OUTPUT,READER,SCENE_TRANSITION,SQLITE_COMMIT,TURN_END,TURN_START,UI_REQUEST,VALIDATION,WRITER, Meldung: "
+    },
+    {
+     "glied": 6,
+     "name": "Kanonischer Owner und Writer",
+     "status": "GRUEN",
+     "beleg": "Writer: 2 Haupt-Facts, Commit 37 in Spur kg_1794077419462_136214 (PASS)"
+    },
+    {
+     "glied": 7,
+     "name": "Zustand vor dem Write",
+     "status": "GRUEN",
+     "beleg": "vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)"
+    },
+    {
+     "glied": 8,
+     "name": "Zustand nach dem Write",
+     "status": "GRUEN",
+     "beleg": "nachher: 4 Facts, 3 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum"
+    },
+    {
+     "glied": 9,
+     "name": "Erzeugte Fact-IDs und ihr Inhalt",
+     "status": "GRUEN",
+     "beleg": "Haupt-Facts: god/god/[body] Mara ist bewusstlos.→char_g7_mara; body_state/char_g7_gustav/Mara Nowak: Körperzustand — posture: liegend, cons→None"
+    },
+    {
+     "glied": 10,
+     "name": "Wissensverteilung und Unwissende",
+     "status": "ROT",
+     "beleg": "Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'Mara Nowak: Körperzustand — po'; char_g7_gustav bezeugt 'Man hört so einiges hier, nich', nimmt aber nicht wahr (Bewusstsein 0.2); char_g7_gustav bezeugt 'Lehnt sich leicht nach vorne, ', nimmt aber nicht wahr (Bewusstsein 0.2); M als Zeuge im Folgezug: 'Man hört so einiges hier, nicht wahr? Di'"
+    },
+    {
+     "glied": 11,
+     "name": "Runtime-/Körper-/Szenenfolgen",
+     "status": "ROT",
+     "beleg": "M.canSpeak = True statt False"
+    },
+    {
+     "glied": 12,
+     "name": "Zuständiger Reader",
+     "status": "GRUEN",
+     "beleg": "GET /api/sessions: HTTP 200, 4 von 4 neuen Facts gleich; ok"
+    },
+    {
+     "glied": 13,
+     "name": "BrainContext im Folgezug",
+     "status": "NICHT_ZUTREFFEND",
+     "beleg": "Soll offen: ob Anwesende einen von God gesetzten Körperzustand wahrnehmen, legt 2_7master nicht eindeutig fest (Z.1340-1352 'God setzt Wissen' nur für Betroffene) - nicht vom Prüfer zu entscheiden"
+    },
+    {
+     "glied": 14,
+     "name": "Sichtbare Antwort und Komponentencommit",
+     "status": "GRUEN",
+     "beleg": "Folgezug von ['char_g7_mara']: Modellantwort und Commit in Spur kpr_1794077419665_619682"
+    },
+    {
+     "glied": 15,
+     "name": "Zustand im Folgezug",
+     "status": "ROT",
+     "beleg": "M spricht im Folgezug, obwohl ausgeschlossen"
+    },
+    {
+     "glied": 16,
+     "name": "Reload/Neustart",
+     "status": "GRUEN",
+     "beleg": "nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt"
+    },
+    {
+     "glied": 17,
+     "name": "Sichtbare UI-Rückanzeige",
+     "status": "GRUEN",
+     "beleg": "Verlauf nach Neuladen stimmt; Meldungen: ['Gott: 1 tatsächlich angewendet, 0 nicht angewendet · Vollzogen: zustand Mara Nowak']"
+    },
+    {
+     "glied": 18,
+     "name": "Negative Isolation",
+     "status": "GRUEN",
+     "beleg": "andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert"
+    },
+    {
+     "glied": 19,
+     "name": "Prüfung am frisch entpackten ZIP",
+     "status": "GRUEN",
+     "beleg": "Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut"
+    },
+    {
+     "glied": 20,
+     "name": "Status mit Begründung",
+     "status": "ROT",
+     "beleg": "10 Wissensverteilung und Unwissende: Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'Mara Nowak: Körperzustand — po'; char_g7_gustav bezeugt 'Man hört so einiges hier, nich', nimmt aber nicht wahr (Bewusstsein 0.2); char_g7_gustav bezeugt 'Lehnt sich leicht nach vorne, ', nimmt aber nicht wahr (Bewusstsein 0.2); M als Zeuge im Folgezug: 'Man hört so einiges hier, nicht wahr? Di' | 11 Runtime-/Körper-/Szenenfolgen: M.canSpeak = True statt False | 15 Zustand im Folgezug: M spricht im Folgezug, obwohl ausgeschlossen"
+    }
+   ],
+   "neue_fact_ids": [
+    "fact_1a1b758e7fc_dfd7e9c30019",
+    "fact_1a1b758e7fc_27fda142001a",
+    "fact_1a1b758e95f_7c81cdd9002d",
+    "fact_1a1b758e961_cccac9f3002e"
+   ],
+   "haupt_status": 200,
+   "beleg": {
+    "neue_facts": [
+     {
+      "commit": 37,
+      "kind": "god",
+      "actor": "god",
+      "target": "char_g7_mara",
+      "text": "[body] Mara ist bewusstlos.",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_mara"
+      ],
+      "betroffen": [
+       "char_g7_mara"
+      ]
+     },
+     {
+      "commit": 37,
+      "kind": "body_state",
+      "actor": "char_g7_gustav",
+      "target": null,
+      "text": "Mara Nowak: Körperzustand — posture: liegend, consciousness: 0.2, schlaeft: False, canSpeak: False",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_mara"
+      ],
+      "betroffen": [
+       "char_g7_gustav"
+      ]
+     },
+     {
+      "commit": 43,
+      "kind": "speech",
+      "actor": "char_g7_mara",
+      "target": "user",
+      "text": "Man hört so einiges hier, nicht wahr? Die Wände haben Ohren, und ich könnte mir vorstellen, dass wir alle ein paar Gehei",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_gustav",
+       "char_g7_johann",
+       "char_g7_mara"
+      ],
+      "betroffen": [
+       "user"
+      ]
+     },
+     {
+      "commit": 43,
+      "kind": "action",
+      "actor": "char_g7_mara",
+      "target": "char_g7_johann",
+      "text": "Lehnt sich leicht nach vorne, als wolle er näher ins Gespräch kommen.",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_gustav",
+       "char_g7_johann",
+       "char_g7_mara"
+      ],
+      "betroffen": [
+       "char_g7_johann"
+      ]
+     }
+    ],
+    "neue_zuege": [
+     {
+      "commit": 37,
+      "turn": 1,
+      "rolle": "god",
+      "sprecher": "god",
+      "rede": "Mara ist bewusstlos.",
+      "handlung": ""
+     },
+     {
+      "commit": 43,
+      "turn": 2,
+      "rolle": "character",
+      "sprecher": "char_g7_mara",
+      "rede": "Man hört so einiges hier, nicht wahr? Die Wände haben Ohren, und ich könnte mir vorstellen, dass wir",
+      "handlung": "Lehnt sich leicht nach vorne, als wolle er näher ins Gespräch kommen."
+     }
+    ],
+    "neues_zeugenwissen": [
+     [
+      "char_g7_mara",
+      "fact_1a1b758e7fc_dfd7e9c30019",
+      "affected"
+     ],
+     [
+      "char_g7_gustav",
+      "fact_1a1b758e95f_7c81cdd9002d",
+      "heard"
+     ],
+     [
+      "char_g7_johann",
+      "fact_1a1b758e95f_7c81cdd9002d",
+      "heard"
+     ],
+     [
+      "char_g7_mara",
+      "fact_1a1b758e95f_7c81cdd9002d",
+      "heard"
+     ],
+     [
+      "char_g7_gustav",
+      "fact_1a1b758e961_cccac9f3002e",
+      "seen"
+     ],
+     [
+      "char_g7_johann",
+      "fact_1a1b758e961_cccac9f3002e",
+      "affected"
+     ],
+     [
+      "char_g7_mara",
+      "fact_1a1b758e961_cccac9f3002e",
+      "performed"
+     ]
+    ],
+    "anwesend_vorher": [
+     "char_g7_gustav",
+     "char_g7_johann",
+     "char_g7_mara"
+    ],
+    "anwesend_nachher": [
+     "char_g7_gustav",
+     "char_g7_johann",
+     "char_g7_mara"
+    ],
+    "ort_nachher": "schankraum",
+    "positionen_nachher": {
+     "char_g7_clara": [
+      "anderswo",
+      1,
+      true
+     ],
+     "char_g7_gustav": [
+      "Schankraum",
+      0.2,
+      false
+     ],
+     "char_g7_johann": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_mara": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_robert": [
+      "anderswo",
+      1,
+      true
+     ]
+    }
+   },
+   "status": "ROT"
+  }
+ ],
+ "vorbereitung": {
+  "soll_2_7master.txt": "GRUEN",
+  "soll_MATRIX10_SPS_MASTER.md": "GRUEN",
+  "soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt": "GRUEN",
+  "mutation": "angewendet: M8_god_koerper_falsche_figur (Die von God gesetzte Körperänderung landet bei einer anderen anwesenden Figur.)",
+  "frontend": "GRUEN: frisch gebaut (node_modules aus Cache mit gleichem package-lock), Kennung MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103"
+ },
+ "gesamt": "ROT"
+}

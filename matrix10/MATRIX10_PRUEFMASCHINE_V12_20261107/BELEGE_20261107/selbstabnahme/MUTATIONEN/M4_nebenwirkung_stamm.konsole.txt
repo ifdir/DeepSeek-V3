@@ -1,0 +1,3 @@
+[vor Neustart] PU1_handlung_eigenes_subjekt: 18 ROT characters/char_g7_johann verändert
+[vor Neustart] PU2_anrede_gegen_ui_auswahl: 04 ROT UI-Ziel None statt char_g7_mara; 18 ROT characters/char_g7_johann verändert
+GESAMT: ROT -> /home/claude/kp/V12/frisch/MATRIX10_PRUEFMASCHINE_V12/SELBSTABNAHME_LAUF_20261107_183415/MUTATIONEN/M4_nebenwirkung_stamm/ERGEBNIS_LESEN.txt

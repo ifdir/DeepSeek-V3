@@ -1,0 +1,100 @@
+[DATEN] Vorhandene Projektdatenbank bleibt erhalten: /tmp/kp_f9p5r0xi/MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107/data/matrix10.sqlite
+[START] Backend: Python -> Port 5050
+[START] Frontend: fertiger Build, nur Python -> Port 8080
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5050
+Press CTRL+C to quit
+127.0.0.1 - - [07/Nov/2026 19:43:56] "GET /api/health HTTP/1.1" 200 -
+[OK] Backend und Frontend laufen.
+[OK] Node.js/npm werden NICHT benoetigt.
+[UI] http://127.0.0.1:8080/
+[STOP] Strg+C beendet die von START.py gestarteten Prozesse.
+127.0.0.1 - - [07/Nov/2026 19:43:56] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:43:56] "POST /api/sessions HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:43:57] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:43:57] "GET /api/users HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:43:59] "GET /api/mcc HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:43:59] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:43:59] "POST /api/llm/ping HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:00] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:00] "GET /api/mcc HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:00] "GET /api/sessions/ses_kp_fall_01 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:00] "PATCH /api/users/admin HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:04] "PUT /api/sessions/ses_kp_fall_01 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:05] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:05] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:05] "POST /api/kernel/puppet HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:05] "GET /api/sessions/ses_kp_fall_01 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:05] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:05] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:05] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:05] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:05] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:05] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:05] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:29] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:29] "GET /api/mcc HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:29] "GET /api/sessions/ses_kp_fall_01 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:35] "GET /api/sessions/ses_kp_fall_01 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:35] "POST /api/sessions HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:37] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:37] "GET /api/users HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:38] "GET /api/mcc HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:38] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:38] "POST /api/llm/ping HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:39] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:39] "GET /api/mcc HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:40] "PATCH /api/users/admin HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:40] "GET /api/sessions/ses_kp_fall_02 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:43] "PUT /api/sessions/ses_kp_fall_02 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:45] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:45] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:45] "POST /api/kernel/puppet HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:45] "GET /api/sessions/ses_kp_fall_02 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:45] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:45] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:45] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:45] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:45] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:45] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:44:45] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:09] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:09] "GET /api/mcc HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:09] "GET /api/sessions/ses_kp_fall_02 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:16] "GET /api/sessions/ses_kp_fall_02 HTTP/1.1" 200 -
+[DATEN] Vorhandene Projektdatenbank bleibt erhalten: /tmp/kp_f9p5r0xi/MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107/data/matrix10.sqlite
+[START] Backend: Python -> Port 5050
+[START] Frontend: fertiger Build, nur Python -> Port 8080
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5050
+Press CTRL+C to quit
+127.0.0.1 - - [07/Nov/2026 19:45:18] "GET /api/health HTTP/1.1" 200 -
+[OK] Backend und Frontend laufen.
+[OK] Node.js/npm werden NICHT benoetigt.
+[UI] http://127.0.0.1:8080/
+[STOP] Strg+C beendet die von START.py gestarteten Prozesse.
+127.0.0.1 - - [07/Nov/2026 19:45:19] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:19] "GET /api/sessions/ses_kp_fall_01 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:20] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:20] "GET /api/users HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:21] "GET /api/mcc HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:22] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:22] "POST /api/llm/ping HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:23] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:23] "GET /api/mcc HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:23] "PATCH /api/users/admin HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:23] "GET /api/sessions/ses_kp_fall_01 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:26] "GET /api/sessions/ses_kp_fall_02 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:27] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:27] "GET /api/users HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:29] "GET /api/mcc HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:29] "POST /api/llm/ping HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:29] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:30] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:30] "GET /api/mcc HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:30] "PATCH /api/users/admin HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:45:30] "GET /api/sessions/ses_kp_fall_02 HTTP/1.1" 200 -

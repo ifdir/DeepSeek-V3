@@ -1,0 +1,33 @@
+MATRIX10 KETTENPRÜFER V1.2
+============================================================
+GESAMT: ROT
+Kandidat: 25e137c2-MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107.zip  SHA-256 33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1
+Modell: wiedergabe   Mutation: M9_regie_fail_open   Fälle: RE2_unbekannte_figur
+
+Vorbereitung soll_2_7master.txt: GRUEN
+Vorbereitung soll_MATRIX10_SPS_MASTER.md: GRUEN
+Vorbereitung soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt: GRUEN
+Vorbereitung mutation: angewendet: M9_regie_fail_open (Regie ohne gebundenen Akteur und ohne Wirkung wird nicht mehr abgelehnt (fail-open).)
+Vorbereitung frontend: GRUEN: frisch gebaut (node_modules aus Cache mit gleichem package-lock), Kennung MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103
+
+[ROT] RE2_unbekannte_figur (Regie (§12.3), negativ): Kurt Wendler betritt den Schankraum.
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: Regie erfindet keine Figur: eine unbekannte Person wird nicht angelegt, nichts wird gespeichert, die Ablehnung ist sichtbar. 2_7master Z.2549, Z.2596, Z.262.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_10 geöffnet; Modus-Reiter: Regisseur; Senden: Kurt Wendler betritt den Schankraum.; Seite neu geladen
+   04 GRUEN            Gesendete IDs, Rolle, Modus, Actor, Target, Scope: Route /api/kernel/regie, Sitzung ses_kp_fall_10, Figur None, UI-Ziel None, Text gleich
+   05 ROT              Backendroute und erste serverseitige Bindung: HTTP 200 statt 422 | HTTP 200, Spur kr_1794077464894_719860: EFFECT_PLAN,EFFECT_VERDICT,KERNEL_BIND,OUTPUT,READER,REGIE_SQLITE_RUECKLESUNG,SCENE_TRANSITION,SQLITE_COMMIT,TURN_END,TURN_REGIE,TURN_START,UI_REQUEST,VALIDATIO, Meldung: 
+   06 ROT              Kanonischer Owner und Writer: neue Facts 1, neue Züge 1, Commits der Hauptspur 1 (erwartet: keine)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 1 Facts, 2 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum
+   09 ROT              Erzeugte Fact-IDs und ihr Inhalt: Facts gespeichert, obwohl keine Wirkung erwartet: ['Kurt Wendler betritt den Schankraum.'] | Haupt-Facts: regie/regie/Kurt Wendler betritt den Schankraum.→None
+   10 ROT              Wissensverteilung und Unwissende: Zeuge char_g7_gustav ohne kanonisches Zeugenwissen zu 'Kurt Wendler betritt den Schan'; Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'Kurt Wendler betritt den Schan'; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'Kurt Wendler betritt den Schan'
+   11 GRUEN            Runtime-/Körper-/Szenenfolgen: Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 1 von 1 neuen Facts gleich; ok
+   13 NICHT_ZUTREFFEND BrainContext im Folgezug: abgelehnte Eingabe: kein Folgezug (Z.262)
+   14 NICHT_ZUTREFFEND Sichtbare Antwort und Komponentencommit: abgelehnte Eingabe: kein Folgezug (Z.262)
+   15 NICHT_ZUTREFFEND Zustand im Folgezug: abgelehnte Eingabe: kein Folgezug (Z.262)
+   16 ROT              Reload/Neustart: nach Neustart im Verlauf, obwohl nicht gespeichert: 'Kurt Wendler'
+   17 ROT              Sichtbare UI-Rückanzeige: nach Neuladen im Verlauf, obwohl nicht gespeichert: 'Kurt Wendler'
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut
+   20 ROT              Status mit Begründung: 05 Backendroute und erste serverseitige Bindung: HTTP 200 statt 422 | HTTP 200, Spur kr_1794077464894_719860: EFFECT_PLAN,EFFECT_VERDICT,KERNEL_BIND,OUTPUT,READER,REGIE_SQLITE_RUECKLESUNG,SCENE_TRANSITION,SQLITE_COMMIT,TURN_END,TURN_REGIE,TURN_START,UI_REQUEST,VALIDATIO, Meldung:  | 06 Kanonischer O

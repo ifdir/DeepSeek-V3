@@ -1,0 +1,8 @@
+Nachstellung der unabhängigen Negativprüfung am Original der Prüfmaschine V1 (ZIP d8f2c78b…), 07.11.2026
+1  kettenpruefer.fall_status([]) = GRUEN | nur Glied 1 grün = GRUEN
+2  entscheidung([PASS], {Puppet: GRUEN}) = GRUEN
+3  echter P25-Lauf ohne die roten Fälle PU2/GO1/RE1 -> Achsen {'Puppet (§12.2)': 'GRUEN', 'Avatar (§12.1)': 'GRUEN', 'God (§12.4)': 'GRUEN', 'Regie (§12.3)': 'GRUEN'}
+4  Glied 13 (V1): ['hat = [p for p in prompts if fz["prompt_enthaelt"].lower() in json.dumps(p.get("sections") or {}, ensure_ascii=False).lower()]']
+5  Mutationsregel (V1): ['erkannt = s0 != "ROT" and s1 == "ROT" and fehl == 0', 'erkannt = bool(treffer) and any(treffer)']
+6  Gate V1.1 wertet erg['gesamt'] aus: False | Rückgabecode des Kettenprüfers: False
+Ergebnis: alle 6 Befunde bestätigt.

@@ -1,0 +1,379 @@
+{
+ "schema": "1.2",
+ "eingefroren": "2026-11-07",
+ "hinweis": "Verbindlicher Fallkatalog. Jeder Fall nennt seine Erwartung für jedes Glied; NICHT_ZUTREFFEND ist nur für die unter 'nicht_zutreffend' genannten Glieder zulässig, jeweils mit Begründung. Für alle Fälle gelten zusätzlich die allgemeinen Kettenregeln des Prüfers (Anwesenheit kanonisch, Zeugen nur anwesend und wahrnehmungsfähig, Abwesende ohne Wissen, Zeugenwissen zu jedem Zeugen, Isolation).",
+ "soll_quellen": {
+  "2_7master.txt": "095d455460390dfd0ae46e6938126e44a51293461d070204358d301f00609a7f",
+  "MATRIX10_SPS_MASTER.md": "1f0cb05dc1d7fc9afccd0e14a9e851d9340f9bbf56fe9ee8e8f0ddc46363969d",
+  "VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt": "e62cf6bc606a13a72044ab135697e209f7cb0bcfbc0a2b36ff7e1f153bf290bd"
+ },
+ "welt": "world_gasthaus_7kreis",
+ "ausgangsort": "Schankraum",
+ "figuren": {
+  "J": "char_g7_johann",
+  "M": "char_g7_mara",
+  "G": "char_g7_gustav"
+ },
+ "faelle": [
+  {
+   "id": "PU1_handlung_eigenes_subjekt",
+   "nr": 1,
+   "achse": "Puppet (§12.2)",
+   "art": "positiv",
+   "modus": "puppet",
+   "figur": "J",
+   "ziel": null,
+   "anwesend": [
+    "J",
+    "M",
+    "G"
+   ],
+   "text": "Johann trinkt sein Bier aus.",
+   "soll": "Eigene Handlung der geführten Figur wird als Handlung mit ihrer ID gespeichert; alle anwesenden Wahrnehmungsfähigen werden Zeugen; die Folgezug-Figur erhält das Ereignis. 2_7master Z.65, Z.1327, Z.1329, Z.222; Kettenvertrag §1, §16.",
+   "erwartung": {
+    "haupt": 200,
+    "neu": [
+     {
+      "kind": "action",
+      "akteur": "J",
+      "text": "Bier aus"
+     }
+    ],
+    "zeugen": true,
+    "folgezug": {
+     "wissen": "erhalten"
+    },
+    "ui_enthaelt": "Bier aus"
+   },
+   "nicht_zutreffend": {}
+  },
+  {
+   "id": "PU2_anrede_gegen_ui_auswahl",
+   "nr": 2,
+   "achse": "Puppet (§12.2)",
+   "art": "positiv",
+   "modus": "puppet",
+   "figur": "J",
+   "ziel": "M",
+   "anwesend": [
+    "J",
+    "M",
+    "G"
+   ],
+   "text": "Gustav, setz dich.",
+   "soll": "Eine Anrede ist Rede der geführten Figur; der im Text Angesprochene ist Adressat, auch gegen die UI-Auswahl; die UI-Auswahl selbst wird gesendet. 2_7master Z.131 (Sprecher, Ziel), Z.1355; SPS Paket 14; Kettenvertrag §16 Glied 04.",
+   "erwartung": {
+    "haupt": 200,
+    "neu": [
+     {
+      "kind": "speech",
+      "akteur": "J",
+      "text": "Gustav, setz dich",
+      "ziel": "G"
+     }
+    ],
+    "nicht": [
+     {
+      "kind": "speech",
+      "akteur": "G",
+      "text": "setz dich"
+     }
+    ],
+    "zeugen": true,
+    "folgezug": {
+     "wissen": "erhalten"
+    },
+    "ui_enthaelt": "Gustav, setz dich"
+   },
+   "nicht_zutreffend": {}
+  },
+  {
+   "id": "PU3_fremde_rede_abgelehnt",
+   "nr": 3,
+   "achse": "Puppet (§12.2)",
+   "art": "negativ",
+   "modus": "puppet",
+   "figur": "J",
+   "ziel": null,
+   "anwesend": [
+    "J",
+    "M",
+    "G"
+   ],
+   "text": "Mara sagt: Lass mich in Ruhe!",
+   "soll": "Die geführte Figur darf keine Rede einer anderen Figur erzeugen; nichts wird gespeichert, die Ablehnung ist sichtbar. 2_7master Z.1030, Z.262 (fail-closed); Kettenvertrag §2.",
+   "erwartung": {
+    "haupt": 422,
+    "keine_wirkung": true,
+    "ui_meldung": true,
+    "ui_nicht": "Lass mich in Ruhe"
+   },
+   "nicht_zutreffend": {
+    "13": "abgelehnte Eingabe: nichts gespeichert, also kein Folgezug und kein BrainContext (Z.262)",
+    "14": "abgelehnte Eingabe: kein Folgezug (Z.262)",
+    "15": "abgelehnte Eingabe: kein Folgezug (Z.262)"
+   }
+  },
+  {
+   "id": "PU4_verneinung_mit_rede",
+   "nr": 4,
+   "achse": "Puppet (§12.2)",
+   "art": "positiv",
+   "modus": "puppet",
+   "figur": "J",
+   "ziel": null,
+   "anwesend": [
+    "J",
+    "M",
+    "G"
+   ],
+   "text": "Johann küsst Mara nicht und sagt: Hallo.",
+   "soll": "Eine verneinte Handlung geschieht nicht; die Rede der Figur wird gespeichert und von den Anwesenden gehört. 2_7master Z.262, Z.1079, Z.1329.",
+   "erwartung": {
+    "haupt": 200,
+    "neu": [
+     {
+      "kind": "speech",
+      "akteur": "J",
+      "text": "Hallo"
+     }
+    ],
+    "nicht": [
+     {
+      "kind": "action",
+      "akteur": "J",
+      "text": "küsst"
+     }
+    ],
+    "zeugen": true,
+    "folgezug": {
+     "wissen": "erhalten"
+    },
+    "ui_enthaelt": "Hallo"
+   },
+   "nicht_zutreffend": {}
+  },
+  {
+   "id": "AV1_frage_und_antwort",
+   "nr": 5,
+   "achse": "Avatar (§12.1)",
+   "art": "positiv",
+   "modus": "avatar",
+   "figur": "J",
+   "ziel": "M",
+   "avatar": "J",
+   "anwesend": [
+    "J",
+    "M",
+    "G"
+   ],
+   "text": "Mara, wie geht es dir?",
+   "soll": "Die Frage des Avatars ist seine Rede an die Angesprochene; sie antwortet und kennt die Frage. 2_7master Z.1376-1389 (§27.3), Z.131, Z.1329.",
+   "erwartung": {
+    "haupt": 200,
+    "neu": [
+     {
+      "kind": "speech",
+      "akteur": "J",
+      "text": "wie geht es dir",
+      "ziel": "M"
+     }
+    ],
+    "zeugen": true,
+    "folgezug": {
+     "antwort_von": "M",
+     "wissen": "erhalten"
+    },
+    "ui_enthaelt": "wie geht es dir"
+   },
+   "nicht_zutreffend": {}
+  },
+  {
+   "id": "AV2_fremde_rede_im_avatar",
+   "nr": 6,
+   "achse": "Avatar (§12.1)",
+   "art": "negativ",
+   "modus": "avatar",
+   "figur": "J",
+   "ziel": "M",
+   "avatar": "J",
+   "anwesend": [
+    "J",
+    "M",
+    "G"
+   ],
+   "text": "Gustav sagt: Ich gehe jetzt nach Hause.",
+   "soll": "Der Avatar erzeugt keine Rede einer anderen Figur; unklare fremde Rede wird nicht gespeichert und sichtbar abgelehnt. 2_7master Z.1380-1382 (§27.3), Z.1030, Z.262.",
+   "erwartung": {
+    "haupt": 422,
+    "keine_wirkung": true,
+    "ui_meldung": true,
+    "ui_nicht": "nach Hause"
+   },
+   "nicht_zutreffend": {
+    "13": "abgelehnte Eingabe: kein Folgezug (Z.262)",
+    "14": "abgelehnte Eingabe: kein Folgezug (Z.262)",
+    "15": "abgelehnte Eingabe: kein Folgezug (Z.262)"
+   }
+  },
+  {
+   "id": "GO1_bewusstlos",
+   "nr": 7,
+   "achse": "God (§12.4)",
+   "art": "positiv",
+   "modus": "gott",
+   "figur": null,
+   "ziel": null,
+   "anwesend": [
+    "J",
+    "M",
+    "G"
+   ],
+   "text": "Mara ist bewusstlos.",
+   "soll": "God setzt den Körperzustand; eine bewusstlose Figur spricht nicht und nimmt nichts wahr. 2_7master Z.224 (Capability), Z.1329, Z.2402.",
+   "erwartung": {
+    "haupt": 200,
+    "neu": [
+     {
+      "betrifft": "M"
+     }
+    ],
+    "laufzeit": [
+     {
+      "figur": "M",
+      "feld": "canSpeak",
+      "gleich": false
+     }
+    ],
+    "folgezug": {
+     "sprecher_nicht": [
+      "M"
+     ],
+     "zeugen_nicht": [
+      "M"
+     ]
+    },
+    "ui_enthaelt": "Mara ist bewusstlos"
+   },
+   "nicht_zutreffend": {
+    "13": "Soll offen: ob Anwesende einen von God gesetzten Körperzustand wahrnehmen, legt 2_7master nicht eindeutig fest (Z.1340-1352 'God setzt Wissen' nur für Betroffene) - nicht vom Prüfer zu entscheiden"
+   }
+  },
+  {
+   "id": "GO2_verneinter_zustand",
+   "nr": 8,
+   "achse": "God (§12.4)",
+   "art": "negativ",
+   "modus": "gott",
+   "figur": null,
+   "ziel": null,
+   "anwesend": [
+    "J",
+    "M",
+    "G"
+   ],
+   "text": "Mara ist nicht bewusstlos.",
+   "soll": "Ein verneinter Zustand ändert den Körper nicht. 2_7master Z.262 (keine Wahrheit aus Unklarem), Z.1079.",
+   "erwartung": {
+    "haupt": 200,
+    "nicht": [
+     {
+      "kind": "body_state",
+      "akteur": "M"
+     }
+    ],
+    "laufzeit": [
+     {
+      "figur": "M",
+      "feld": "canSpeak",
+      "gleich": true
+     }
+    ],
+    "keine_koerperwirkung": [
+     "M"
+    ],
+    "ui_meldung": true,
+    "schreibpflicht": false
+   },
+   "nicht_zutreffend": {
+    "13": "kein Folgezug vertraglich bestimmt: God erfindet keinen Folgeakt (2_7master §46.6)",
+    "14": "kein Folgezug vertraglich bestimmt (§46.6)",
+    "15": "kein Folgezug vertraglich bestimmt (§46.6)"
+   }
+  },
+  {
+   "id": "RE1_figur_verlaesst_raum",
+   "nr": 9,
+   "achse": "Regie (§12.3)",
+   "art": "positiv",
+   "modus": "regie",
+   "figur": null,
+   "ziel": null,
+   "anwesend": [
+    "J",
+    "M",
+    "G"
+   ],
+   "text": "Gustav steht auf und geht in die Küche.",
+   "soll": "Regie bindet Actor und exakt angeordnete Szenenwirkung (Gustav geht in die Küche); Anwesenheit ist kanonisch: Szenenort, Anwesenheitsliste und Position jeder Figur stimmen überein, die anderen bleiben, wo sie sind. 2_7master Z.2596, Z.1415, Z.1327, Z.1329, Z.2402.",
+   "erwartung": {
+    "haupt": 200,
+    "neu": [
+     {
+      "akteur": "G"
+     }
+    ],
+    "laufzeit": [
+     {
+      "figur": "G",
+      "feld": "position",
+      "gleich": "Küche"
+     },
+     {
+      "figur": "J",
+      "feld": "position",
+      "gleich": "Schankraum"
+     },
+     {
+      "figur": "M",
+      "feld": "position",
+      "gleich": "Schankraum"
+     }
+    ],
+    "folgezug": {
+     "wissen": "erhalten"
+    },
+    "ui_enthaelt": "geht in die Küche"
+   },
+   "nicht_zutreffend": {}
+  },
+  {
+   "id": "RE2_unbekannte_figur",
+   "nr": 10,
+   "achse": "Regie (§12.3)",
+   "art": "negativ",
+   "modus": "regie",
+   "figur": null,
+   "ziel": null,
+   "anwesend": [
+    "J",
+    "M",
+    "G"
+   ],
+   "text": "Kurt Wendler betritt den Schankraum.",
+   "soll": "Regie erfindet keine Figur: eine unbekannte Person wird nicht angelegt, nichts wird gespeichert, die Ablehnung ist sichtbar. 2_7master Z.2549, Z.2596, Z.262.",
+   "erwartung": {
+    "haupt": 422,
+    "keine_wirkung": true,
+    "keine_neue_figur": true,
+    "ui_meldung": true,
+    "ui_nicht": "Kurt Wendler"
+   },
+   "nicht_zutreffend": {
+    "13": "abgelehnte Eingabe: kein Folgezug (Z.262)",
+    "14": "abgelehnte Eingabe: kein Folgezug (Z.262)",
+    "15": "abgelehnte Eingabe: kein Folgezug (Z.262)"
+   }
+  }
+ ]
+}

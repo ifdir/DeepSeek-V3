@@ -1,0 +1,33 @@
+MATRIX10 KETTENPRÜFER V1.2
+============================================================
+GESAMT: ROT
+Kandidat: 25e137c2-MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107.zip  SHA-256 33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1
+Modell: wiedergabe   Mutation: M2_falscher_adressat   Fälle: PU2_anrede_gegen_ui_auswahl
+
+Vorbereitung soll_2_7master.txt: GRUEN
+Vorbereitung soll_MATRIX10_SPS_MASTER.md: GRUEN
+Vorbereitung soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt: GRUEN
+Vorbereitung mutation: angewendet: M2_falscher_adressat (Der Writer bindet die Rede an einen FALSCHEN Adressaten (eine andere anwesende Figur statt des gebundenen).)
+Vorbereitung frontend: GRUEN: frisch gebaut (node_modules aus Cache mit gleichem package-lock), Kennung MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103
+
+[ROT] PU2_anrede_gegen_ui_auswahl (Puppet (§12.2), positiv): Gustav, setz dich.
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: Eine Anrede ist Rede der geführten Figur; der im Text Angesprochene ist Adressat, auch gegen die UI-Auswahl; die UI-Auswahl selbst wird gesendet. 2_7master Z.131 (Sprecher, Ziel), Z.1355; SPS Paket 14; Kettenvertrag §16 Glied 04.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_02 geöffnet; Spreche als: Puppet char_g7_johann; Direktes Ziel: char_g7_mara; Senden: Gustav, setz dich.; Seite neu geladen
+   04 ROT              Gesendete IDs, Rolle, Modus, Actor, Target, Scope: UI-Ziel None statt char_g7_mara
+   05 GRUEN            Backendroute und erste serverseitige Bindung: HTTP 200, Spur kp_1794077000579_473441: KERNEL_BIND,OUTPUT,READER,SPRACHE,SQLITE_COMMIT,TARGET_BIND,TURN_END,TURN_INPUT,TURN_START,UI_REQUEST,VALIDATION,WRITER, Meldung: 
+   06 GRUEN            Kanonischer Owner und Writer: Writer: 1 Haupt-Facts, Commit 37 in Spur kp_1794077000579_473441 (PASS)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 3 Facts, 3 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum
+   09 ROT              Erzeugte Fact-IDs und ihr Inhalt: speech an ['char_g7_mara'] statt char_g7_gustav | Haupt-Facts: speech/char_g7_johann/Gustav, setz dich.→char_g7_mara
+   10 GRUEN            Wissensverteilung und Unwissende: 3 Facts, 9 neue Zeugenwissen: Zeugen anwesend und wahrnehmend, Abwesende ['char_g7_clara', 'char_g7_robert'] ohne Wissen
+   11 GRUEN            Runtime-/Körper-/Szenenfolgen: Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 3 von 3 neuen Facts gleich; ok
+   13 GRUEN            BrainContext im Folgezug: Spur kpr_1794077000756_692045: Sprecher char_g7_mara (Mara Nowak), Sitzung gebunden, Zeugenwissen vorhanden, PROMPT nach Hauptcommit enthält ['gustav, setz dich']
+   14 GRUEN            Sichtbare Antwort und Komponentencommit: Folgezug von ['char_g7_mara']: Modellantwort und Commit in Spur kpr_1794077000756_692045
+   15 GRUEN            Zustand im Folgezug: Folgezug-Sprecher ['char_g7_mara'] anwesend und sprechfähig, Haupt-Facts erhalten
+   16 GRUEN            Reload/Neustart: nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt
+   17 GRUEN            Sichtbare UI-Rückanzeige: Verlauf nach Neuladen stimmt; Meldungen: ['keine']
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut
+   20 ROT              Status mit Begründung: 04 Gesendete IDs, Rolle, Modus, Actor, Target, Scope: UI-Ziel None statt char_g7_mara | 09 Erzeugte Fact-IDs und ihr Inhalt: speech an ['char_g7_mara'] statt char_g7_gustav | Haupt-Facts: speech/char_g7_johann/Gustav, setz dich.→char_g7_mara

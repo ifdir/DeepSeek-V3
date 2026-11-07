@@ -1,0 +1,663 @@
+{
+ "version": "V1.2",
+ "zeit_utc": "2026-11-07T18:51:59.060754+00:00",
+ "gesamt": "GRUEN",
+ "anzahl": 109,
+ "bestanden": 109,
+ "proben": [
+  {
+   "bereich": "B",
+   "name": "P25 ist der Kandidat aus den Sollwerten (Hash)",
+   "ok": true,
+   "beleg": "33a51497ce5e84fa"
+  },
+  {
+   "bereich": "B",
+   "name": "P24 ist der Kandidat aus den Sollwerten (Hash)",
+   "ok": true,
+   "beleg": "8a232c4bed8a7cdd"
+  },
+  {
+   "bereich": "B",
+   "name": "P23 ist der Kandidat aus den Sollwerten (Hash)",
+   "ok": true,
+   "beleg": "4d7113084eb74fa5"
+  },
+  {
+   "bereich": "A",
+   "name": "Befund 1: leere Gliederliste ist nie GRÜN",
+   "ok": true,
+   "beleg": "('BLOCKIERT', ['Glieder nicht genau 1..20 je einmal (fehlt [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], doppelt [])'])"
+  },
+  {
+   "bereich": "A",
+   "name": "Befund 1: ein einziges grünes Glied ist nie GRÜN",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "20 grüne Glieder ergeben GRÜN (GRÜN erreichbar)",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "doppeltes Glied statt Glied 20 blockiert",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "NICHT_ZUTREFFEND ohne Katalogerlaubnis blockiert",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "NICHT_ZUTREFFEND mit Katalogerlaubnis zulässig",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "erlaubtes NICHT_ZUTREFFEND, aber bewertet, blockiert",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "ein rotes Glied macht den Fall ROT",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "unbekannter Gliedstatus blockiert",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "Lauf ohne Fälle ist BLOCKIERT",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "Abbruch mit grünen Teilfällen ist BLOCKIERT",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "Befund 2: eine PASS-Prüfung + eine grüne Achse ist nicht GRÜN",
+   "ok": true,
+   "beleg": "('BLOCKIERT', [\"Pflichtprüfungen fehlen: ['00_pruefmaschine_abgenommen', '00_basis_eingefroren', '01_zip', '02_soll_2_7master.txt', '02_soll_MATRIX10_SPS_MASTER.md', '02_soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt']\", 'Achsenliste weicht von den 16 Pflichtachsen ab'])"
+  },
+  {
+   "bereich": "A",
+   "name": "GRÜN erreichbar, wenn wirklich alles nachgewiesen ist",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "eine fehlende Pflichtprüfung blockiert",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "eine doppelte Pflichtprüfung blockiert",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "eine fehlende Achse blockiert",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "eine UNGEPRÜFTE Achse blockiert",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "eine ROT-Prüfung macht ROT",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "eine rote Achse macht ROT",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "eine BLOCKIERT-Prüfung macht nicht GRÜN",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "A",
+   "name": "kein Ergebnis -> Kette BLOCKIERT, keine Achse GRÜN",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "F",
+   "name": "ohne Manifest: nicht abgenommen",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "F",
+   "name": "passendes Manifest: abgenommen",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "F",
+   "name": "Fallkatalog geändert: nicht abgenommen",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "F",
+   "name": "Datei hinzugefügt: nicht abgenommen",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "F",
+   "name": "Prüfregeln entfernt: nicht abgenommen",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "F",
+   "name": "Manifest einer nicht bestandenen Selbstabnahme: nicht abgenommen",
+   "ok": true,
+   "beleg": ""
+  },
+  {
+   "bereich": "B",
+   "name": "P25: Lauf vollständig, Rückgabecode passt",
+   "ok": true,
+   "beleg": "rc 2, gesamt ROT, abbruch None"
+  },
+  {
+   "bereich": "B",
+   "name": "P25: bekannter Fehler PU2_anrede_gegen_ui_auswahl Glied 04 ROT",
+   "ok": true,
+   "beleg": "UI-Ziel None statt char_g7_mara"
+  },
+  {
+   "bereich": "B",
+   "name": "P25: bekannter Fehler GO1_bewusstlos Glied 10 ROT",
+   "ok": true,
+   "beleg": "char_g7_mara bezeugt 'Man hört so einiges hier, nich', nimmt aber nicht wahr (Bewusstsein 0.2); char_g7_mara bezeugt 'Lehnt sich leicht nach vorne, ', nimmt aber nicht wahr (Bewusstsein 0.2); M als Zeuge im Folgezug: 'Man hört so einiges hier, nicht wahr? Di'"
+  },
+  {
+   "bereich": "B",
+   "name": "P25: bekannter Fehler RE1_figur_verlaesst_raum Glied 11 ROT",
+   "ok": true,
+   "beleg": "char_g7_johann anwesend in Szene 'Küche', Position aber 'Schankraum'; char_g7_mara anwesend in Szene 'Küche', Position aber 'Schankraum'"
+  },
+  {
+   "bereich": "B",
+   "name": "P25: Vergleichsfall PU1_handlung_eigenes_subjekt GRÜN",
+   "ok": true,
+   "beleg": "[]"
+  },
+  {
+   "bereich": "B",
+   "name": "P25: Vergleichsfall PU3_fremde_rede_abgelehnt GRÜN",
+   "ok": true,
+   "beleg": "[]"
+  },
+  {
+   "bereich": "B",
+   "name": "P25: Vergleichsfall PU4_verneinung_mit_rede GRÜN",
+   "ok": true,
+   "beleg": "[]"
+  },
+  {
+   "bereich": "B",
+   "name": "P25: Vergleichsfall AV1_frage_und_antwort GRÜN",
+   "ok": true,
+   "beleg": "[]"
+  },
+  {
+   "bereich": "B",
+   "name": "P25: Vergleichsfall AV2_fremde_rede_im_avatar GRÜN",
+   "ok": true,
+   "beleg": "[]"
+  },
+  {
+   "bereich": "B",
+   "name": "P25: Vergleichsfall GO2_verneinter_zustand GRÜN",
+   "ok": true,
+   "beleg": "[]"
+  },
+  {
+   "bereich": "B",
+   "name": "P25: Vergleichsfall RE2_unbekannte_figur GRÜN",
+   "ok": true,
+   "beleg": "[]"
+  },
+  {
+   "bereich": "D",
+   "name": "echtes P25-Ergebnis wird als echt und vollständig übernommen",
+   "ok": true,
+   "beleg": "Lauf echt (ZIP-, Prüfer-, Katalog-Hash), Rückgabecode 2 = ROT, alle 10 Pflichtfälle genau einmal"
+  },
+  {
+   "bereich": "D",
+   "name": "echtes P25-Ergebnis: Puppet/God/Regie ROT, Avatar GRÜN, Rest UNGEPRÜFT",
+   "ok": true,
+   "beleg": "{'EPUB zu Welt (§7)': 'UNGEPRUEFT', 'Charakterprofil und Spawn (§8)': 'UNGEPRUEFT', 'Normale Session/Scene/Turn (§9)': 'UNGEPRUEFT', 'Wissen, Memory, psychologische Wirkung (§10)': 'UNGEPRUEFT', 'Relationship, Runtime, Koerper (§11)': 'UNGEPRUEFT', 'Avatar (§12.1)': 'GRUEN', 'Puppet (§12.2)': 'ROT', 'Regie (§12.3)': 'ROT', 'God (§12.4)': 'ROT', 'Fate (§12.5)': 'UNGEPRUEFT', 'AutoChat (§12.6)': 'UNGEPRUEFT', 'Upload Modus A (§13)': 'UNGEPRUEFT', 'Upload Modus B (§13)': 'UNGEPRUEFT', 'Provider, Modell und Konfiguration (§14)': 'UNGEPRUEFT', 'Reset, Snapshot, Backup, Review, Isolation (§15)': 'UNGEPRUEFT', 'Frontend-Backend-Bidirektionalitaet (§5)': 'UNGEPRUEFT'}"
+  },
+  {
+   "bereich": "D",
+   "name": "Befund 3: roter Fall PU2_anrede_gegen_ui_auswahl entfernt -> Achse nicht GRÜN, Fall fehlt",
+   "ok": true,
+   "beleg": "Achse Puppet (§12.2)=BLOCKIERT, 07_kette_PU2_anrede_gegen_ui_auswahl=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "Befund 3: roter Fall GO1_bewusstlos entfernt -> Achse nicht GRÜN, Fall fehlt",
+   "ok": true,
+   "beleg": "Achse God (§12.4)=BLOCKIERT, 07_kette_GO1_bewusstlos=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "Befund 3: roter Fall RE1_figur_verlaesst_raum entfernt -> Achse nicht GRÜN, Fall fehlt",
+   "ok": true,
+   "beleg": "Achse Regie (§12.3)=BLOCKIERT, 07_kette_RE1_figur_verlaesst_raum=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "Pflichtglied 13 entfernt -> Fall BLOCKIERT",
+   "ok": true,
+   "beleg": "Achse Puppet (§12.2)=ROT, 07_kette_PU1_handlung_eigenes_subjekt=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "Glied 10 durch doppeltes Glied 9 ersetzt -> BLOCKIERT",
+   "ok": true,
+   "beleg": "Achse Avatar (§12.1)=BLOCKIERT, 07_kette_AV1_frage_und_antwort=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "Glied 13 unerlaubt NICHT_ZUTREFFEND -> BLOCKIERT",
+   "ok": true,
+   "beleg": "Achse Avatar (§12.1)=BLOCKIERT, 07_kette_AV1_frage_und_antwort=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "roter Fall als GRÜN gemeldet (Glieder rot) -> nicht übernommen",
+   "ok": true,
+   "beleg": "Achse Puppet (§12.2)=BLOCKIERT, 07_kette_PU2_anrede_gegen_ui_auswahl=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "Abbruch mit Teilresultat -> Lauf BLOCKIERT",
+   "ok": true,
+   "beleg": "Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "gesamt=GRÜN bei roten Fällen, Rückgabecode 0 -> BLOCKIERT",
+   "ok": true,
+   "beleg": "Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "Rückgabecode 0 zu gesamt=ROT -> BLOCKIERT",
+   "ok": true,
+   "beleg": "Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "fremdes ZIP (Hash) -> BLOCKIERT",
+   "ok": true,
+   "beleg": "Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "falscher Katalog-Hash im Ergebnis -> BLOCKIERT",
+   "ok": true,
+   "beleg": "Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "fehlender Katalog-Hash im Ergebnis -> BLOCKIERT",
+   "ok": true,
+   "beleg": "Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "Katalog der Maschine verändert (Hash) -> BLOCKIERT",
+   "ok": true,
+   "beleg": "Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "unbekannter zusätzlicher Fall -> BLOCKIERT",
+   "ok": true,
+   "beleg": "Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "Fall unter falscher Achse gemeldet -> BLOCKIERT",
+   "ok": true,
+   "beleg": "Achse Avatar (§12.1)=BLOCKIERT, 07_kette_AV1_frage_und_antwort=BLOCKIERT"
+  },
+  {
+   "bereich": "D",
+   "name": "Wissensnachweis PU1 echt: GRÜN",
+   "ok": true,
+   "beleg": "Spur kpr_1794076474372_544863: Sprecher char_g7_mara (Mara Nowak), Sitzung gebunden, Zeugenwissen vorhanden, PROMPT nach Hauptcommit enthält ['trinkt sein bier aus']"
+  },
+  {
+   "bereich": "D",
+   "name": "Befund 4: PROMPT gehört einer anderen Figur -> ROT",
+   "ok": true,
+   "beleg": "kein PROMPT für char_g7_mara (Mara Nowak) in der Spur des Folgezugs nach dem Hauptcommit (vorhanden: ['Johann Bruckner'])"
+  },
+  {
+   "bereich": "D",
+   "name": "Befund 4: PROMPT aus anderer Spur als der Folgezug-Writer -> ROT",
+   "ok": true,
+   "beleg": "kein PROMPT für char_g7_mara (Mara Nowak) in der Spur des Folgezugs nach dem Hauptcommit (vorhanden: [])"
+  },
+  {
+   "bereich": "D",
+   "name": "Befund 4: Spur bindet eine andere Sitzung -> ROT",
+   "ok": true,
+   "beleg": "KERNEL_BIND der Spur kpr_1794076474372_544863 bindet nicht Sitzung ses_kp_fall_01 und Sprecher char_g7_mara ([('andere_sitzung', 'char_g7_mara'), ('andere_sitzung', 'char_g7_mara')])"
+  },
+  {
+   "bereich": "D",
+   "name": "Befund 4: PROMPT ohne das Ereignis -> ROT",
+   "ok": true,
+   "beleg": "PROMPT für Mara Nowak enthält 'trinkt sein Bier aus' nicht"
+  },
+  {
+   "bereich": "D",
+   "name": "Befund 4: Folgezug-Figur ohne kanonisches Zeugenwissen -> ROT",
+   "ok": true,
+   "beleg": "char_g7_mara hat kein kanonisches Zeugenwissen zu 'trinkt sein Bier aus'"
+  },
+  {
+   "bereich": "D",
+   "name": "Befund 4: Folgezug-Figur nicht Zeuge -> ROT",
+   "ok": true,
+   "beleg": "char_g7_mara ist nicht Zeuge von 'trinkt sein Bier aus'"
+  },
+  {
+   "bereich": "D",
+   "name": "Befund 4: PROMPT vor dem Hauptcommit -> ROT",
+   "ok": true,
+   "beleg": "kein PROMPT für char_g7_mara (Mara Nowak) in der Spur des Folgezugs nach dem Hauptcommit (vorhanden: ['Mara Nowak'])"
+  },
+  {
+   "bereich": "D",
+   "name": "Befund 4: kein Folgezug gespeichert -> ROT",
+   "ok": true,
+   "beleg": "kein gespeicherter Folgezug einer Figur"
+  },
+  {
+   "bereich": "B",
+   "name": "P24: Lauf vollständig, Rückgabecode passt",
+   "ok": true,
+   "beleg": "rc 2, gesamt ROT, abbruch None"
+  },
+  {
+   "bereich": "B",
+   "name": "P24: bekannter Fehler PU4_verneinung_mit_rede Glied 05 ROT",
+   "ok": true,
+   "beleg": "HTTP 422 statt 200 | HTTP 422, Spur kp_1794076824270_444815: CONSENT_CHECK,KERNEL_BIND,SPRACHE,TARGET_BIND,TURN_START,UI_REQUEST,VALIDATION, Meldung: Puppet: Nicht alle Satzteile wurden sicher gelesen. Nichts wurde gespeichert. Ungeklärte Teile: Johann küsst Mara nicht"
+  },
+  {
+   "bereich": "B",
+   "name": "P24: bekannter Fehler PU4_verneinung_mit_rede Glied 06 ROT",
+   "ok": true,
+   "beleg": "keine Haupt-Facts/-Züge geschrieben (Commits der Hauptspur 0)"
+  },
+  {
+   "bereich": "B",
+   "name": "P24: bekannter Fehler PU4_verneinung_mit_rede Glied 09 ROT",
+   "ok": true,
+   "beleg": "fehlt: {'kind': 'speech', 'akteur': 'J', 'text': 'Hallo'} | Haupt-Facts: keine"
+  },
+  {
+   "bereich": "B",
+   "name": "P24: bekannter Fehler PU2_anrede_gegen_ui_auswahl Glied 04 ROT",
+   "ok": true,
+   "beleg": "UI-Ziel None statt char_g7_mara"
+  },
+  {
+   "bereich": "B",
+   "name": "P24: Vergleichsfall PU1_handlung_eigenes_subjekt GRÜN",
+   "ok": true,
+   "beleg": "[]"
+  },
+  {
+   "bereich": "B",
+   "name": "P24: Freigabeauswertung übernimmt den Lauf und meldet nicht GRÜN",
+   "ok": true,
+   "beleg": "{'EPUB zu Welt (§7)': 'UNGEPRUEFT', 'Charakterprofil und Spawn (§8)': 'UNGEPRUEFT', 'Normale Session/Scene/Turn (§9)': 'UNGEPRUEFT', 'Wissen, Memory, psychologi"
+  },
+  {
+   "bereich": "B",
+   "name": "P23: Kandidat als ROT erkannt (bekannter Fehler)",
+   "ok": true,
+   "beleg": "rc 2, gesamt ROT, ['Frontend des Kandidaten: Frontend-Bau Exitcode 1 (node_modules aus Cache mit gleichem package-lock)']"
+  },
+  {
+   "bereich": "C",
+   "name": "M1_falsche_figuren_id ausgeführt, Lauf ohne Abbruch",
+   "ok": true,
+   "beleg": "angewendet: M1_falsche_figuren_id (Der Puppet-Writer schreibt die Eingabe einer ANDEREN anwesenden Figur zu.) | None"
+  },
+  {
+   "bereich": "C",
+   "name": "M1_falsche_figuren_id: PU1_handlung_eigenes_subjekt Glied 09 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | fehlt: {'kind': 'action', 'akteur': 'J', 'text': 'Bier aus'} | Haupt-Facts: action/char_g7_gustav/trinkt sein Bier aus→None"
+  },
+  {
+   "bereich": "C",
+   "name": "M1_falsche_figuren_id: PU2_anrede_gegen_ui_auswahl Glied 09 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | fehlt: {'kind': 'speech', 'akteur': 'J', 'text': 'Gustav, setz dich', 'ziel': 'G'}; verboten vorhanden: speech von char_g7_gustav: Gustav, setz dich. | Haupt-Fa"
+  },
+  {
+   "bereich": "C",
+   "name": "M2_falscher_adressat ausgeführt, Lauf ohne Abbruch",
+   "ok": true,
+   "beleg": "angewendet: M2_falscher_adressat (Der Writer bindet die Rede an einen FALSCHEN Adressaten (eine andere anwesende Figur statt des gebundenen).) | None"
+  },
+  {
+   "bereich": "C",
+   "name": "M2_falscher_adressat: PU2_anrede_gegen_ui_auswahl Glied 09 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | speech an ['char_g7_mara'] statt char_g7_gustav | Haupt-Facts: speech/char_g7_johann/Gustav, setz dich.→char_g7_mara"
+  },
+  {
+   "bereich": "C",
+   "name": "M3_fehlender_commit ausgeführt, Lauf ohne Abbruch",
+   "ok": true,
+   "beleg": "angewendet: M3_fehlender_commit (Die Puppet-Route meldet Erfolg, schreibt aber nichts nach SQLite.) | None"
+  },
+  {
+   "bereich": "C",
+   "name": "M3_fehlender_commit: PU1_handlung_eigenes_subjekt Glied 06 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | keine Haupt-Facts/-Züge geschrieben (Commits der Hauptspur 1)"
+  },
+  {
+   "bereich": "C",
+   "name": "M3_fehlender_commit: PU1_handlung_eigenes_subjekt Glied 09 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | fehlt: {'kind': 'action', 'akteur': 'J', 'text': 'Bier aus'} | Haupt-Facts: keine"
+  },
+  {
+   "bereich": "C",
+   "name": "M3_fehlender_commit: PU1_handlung_eigenes_subjekt Glied 13 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | kein Haupt-Ereignis (Rede/Handlung) gespeichert"
+  },
+  {
+   "bereich": "C",
+   "name": "M3_fehlender_commit: PU2_anrede_gegen_ui_auswahl Glied 06 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | keine Haupt-Facts/-Züge geschrieben (Commits der Hauptspur 1)"
+  },
+  {
+   "bereich": "C",
+   "name": "M3_fehlender_commit: PU2_anrede_gegen_ui_auswahl Glied 09 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | fehlt: {'kind': 'speech', 'akteur': 'J', 'text': 'Gustav, setz dich', 'ziel': 'G'} | Haupt-Facts: keine"
+  },
+  {
+   "bereich": "C",
+   "name": "M3_fehlender_commit: PU2_anrede_gegen_ui_auswahl Glied 13 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | kein Haupt-Ereignis (Rede/Handlung) gespeichert"
+  },
+  {
+   "bereich": "C",
+   "name": "M4_nebenwirkung_stamm ausgeführt, Lauf ohne Abbruch",
+   "ok": true,
+   "beleg": "angewendet: M4_nebenwirkung_stamm (Der Puppet-Writer verändert bei JEDEM Aufruf nebenbei den Figurenstamm (unerlaubte Nebenwirkung).) | None"
+  },
+  {
+   "bereich": "C",
+   "name": "M4_nebenwirkung_stamm: PU1_handlung_eigenes_subjekt Glied 18 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | characters/char_g7_johann verändert"
+  },
+  {
+   "bereich": "C",
+   "name": "M4_nebenwirkung_stamm: PU2_anrede_gegen_ui_auswahl Glied 18 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | characters/char_g7_johann verändert"
+  },
+  {
+   "bereich": "C",
+   "name": "M5_abwesende_als_zeugen ausgeführt, Lauf ohne Abbruch",
+   "ok": true,
+   "beleg": "angewendet: M5_abwesende_als_zeugen (Die Szenenwahrnehmung prüft Anwesenheit und Ort nicht mehr: abwesende Figuren hören und sehen mit.) | None"
+  },
+  {
+   "bereich": "C",
+   "name": "M5_abwesende_als_zeugen: PU1_handlung_eigenes_subjekt Glied 10 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | abwesende Figur char_g7_clara ist Zeuge von 'trinkt sein Bier aus'; abwesende Figur char_g7_robert ist Zeuge von 'trinkt sein Bier aus'; char_g7_clara bezeugt '"
+  },
+  {
+   "bereich": "C",
+   "name": "M5_abwesende_als_zeugen: PU2_anrede_gegen_ui_auswahl Glied 10 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | abwesende Figur char_g7_clara ist Zeuge von 'Gustav, setz dich.'; abwesende Figur char_g7_robert ist Zeuge von 'Gustav, setz dich.'; char_g7_clara bezeugt 'Gust"
+  },
+  {
+   "bereich": "C",
+   "name": "M6_kein_zeugenwissen ausgeführt, Lauf ohne Abbruch",
+   "ok": true,
+   "beleg": "angewendet: M6_kein_zeugenwissen (Der Writer legt für Zeugen kein Zeugenwissen (WitnessKnowledge) mehr an.) | None"
+  },
+  {
+   "bereich": "C",
+   "name": "M6_kein_zeugenwissen: PU1_handlung_eigenes_subjekt Glied 10 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | Zeuge char_g7_gustav ohne kanonisches Zeugenwissen zu 'trinkt sein Bier aus'; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'trinkt sein Bier aus'; Zeuge "
+  },
+  {
+   "bereich": "C",
+   "name": "M6_kein_zeugenwissen: PU1_handlung_eigenes_subjekt Glied 13 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | char_g7_mara hat kein kanonisches Zeugenwissen zu 'trinkt sein Bier aus'"
+  },
+  {
+   "bereich": "C",
+   "name": "M6_kein_zeugenwissen: PU2_anrede_gegen_ui_auswahl Glied 10 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | Zeuge char_g7_gustav ohne kanonisches Zeugenwissen zu 'Gustav, setz dich.'; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'Gustav, setz dich.'; Zeuge char"
+  },
+  {
+   "bereich": "C",
+   "name": "M6_kein_zeugenwissen: PU2_anrede_gegen_ui_auswahl Glied 13 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | char_g7_gustav hat kein kanonisches Zeugenwissen zu 'Gustav, setz dich.'"
+  },
+  {
+   "bereich": "C",
+   "name": "M7_avatar_falsches_ziel ausgeführt, Lauf ohne Abbruch",
+   "ok": true,
+   "beleg": "angewendet: M7_avatar_falsches_ziel (Die Avatar-Eingabe wird mit einem falschen Adressaten (andere anwesende Figur) gespeichert.) | None"
+  },
+  {
+   "bereich": "C",
+   "name": "M7_avatar_falsches_ziel: AV1_frage_und_antwort Glied 09 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | speech an ['char_g7_clara'] statt char_g7_mara | Haupt-Facts: speech/char_g7_johann/Mara, wie geht es dir?→char_g7_clara"
+  },
+  {
+   "bereich": "C",
+   "name": "M8_god_koerper_falsche_figur ausgeführt, Lauf ohne Abbruch",
+   "ok": true,
+   "beleg": "angewendet: M8_god_koerper_falsche_figur (Die von God gesetzte Körperänderung landet bei einer anderen anwesenden Figur.) | None"
+  },
+  {
+   "bereich": "C",
+   "name": "M8_god_koerper_falsche_figur: GO1_bewusstlos Glied 11 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | M.canSpeak = True statt False"
+  },
+  {
+   "bereich": "C",
+   "name": "M9_regie_fail_open ausgeführt, Lauf ohne Abbruch",
+   "ok": true,
+   "beleg": "angewendet: M9_regie_fail_open (Regie ohne gebundenen Akteur und ohne Wirkung wird nicht mehr abgelehnt (fail-open).) | None"
+  },
+  {
+   "bereich": "C",
+   "name": "M9_regie_fail_open: RE2_unbekannte_figur Glied 05 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | HTTP 200 statt 422 | HTTP 200, Spur kr_1794077464894_719860: EFFECT_PLAN,EFFECT_VERDICT,KERNEL_BIND,OUTPUT,READER,REGIE_SQLITE_RUECKLESUNG,SCENE_TRANSITION,SQLI"
+  },
+  {
+   "bereich": "C",
+   "name": "M9_regie_fail_open: RE2_unbekannte_figur Glied 06 unverändert GRÜN -> mutiert ROT",
+   "ok": true,
+   "beleg": "unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | neue Facts 1, neue Züge 1, Commits der Hauptspur 1 (erwartet: keine)"
+  },
+  {
+   "bereich": "E",
+   "name": "echter Abbruch (Port belegt): Kettenprüfer BLOCKIERT, Rückgabecode 3",
+   "ok": true,
+   "beleg": "rc 3, RuntimeError: BLOCKIERT: Port(s) [5050] schon belegt - fremder Server, Messung wäre wertlos"
+  },
+  {
+   "bereich": "E",
+   "name": "echter Abbruch: Freigabe nicht GRÜN, keine Achse GRÜN",
+   "ok": true,
+   "beleg": "{'EPUB zu Welt (§7)': 'UNGEPRUEFT', 'Charakterprofil und Spawn (§8)': 'UNGEPRUEFT', 'Normale Session/Scene/Turn (§9)': 'UNGEPRUEFT', 'Wissen, Memory, psychologische Wirkung (§10)': 'UNGEPRUEFT', 'Rela"
+  },
+  {
+   "bereich": "F",
+   "name": "Maschine während der Selbstabnahme unverändert",
+   "ok": true,
+   "beleg": ""
+  }
+ ]
+}

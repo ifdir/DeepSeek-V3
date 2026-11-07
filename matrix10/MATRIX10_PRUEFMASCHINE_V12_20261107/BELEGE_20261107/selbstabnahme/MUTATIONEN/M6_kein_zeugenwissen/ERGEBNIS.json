@@ -1,0 +1,548 @@
+{
+ "pruefer": "MATRIX10_KETTENPRUEFER_V12",
+ "zeit_utc": "2026-11-07T18:48:00.432168+00:00",
+ "modus": "wiedergabe",
+ "mutation": "M6_kein_zeugenwissen",
+ "basis": {
+  "zip": "25e137c2-MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107.zip",
+  "zip_sha": "33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1",
+  "db_sha": "e03dc44584db8b990abf62d6d1ae949e149268048b88686db2496e1361186f97",
+  "faelle_sha": "fd352b89881c44c331804960f17db255f9afdf2511a90f46da8f20f20c10c11d",
+  "pruefer_sha": "fd3583d71869c8a6dfe80ca4fb6dae53d08ca8d108f612c468fe7d9e655f62c3",
+  "auswertung_sha": "3b9c618935478cc7d4df1bb4fa0848bb5debad24dde8db7116f1f516e4c49039",
+  "original_db_unveraendert": true
+ },
+ "angefordert": [
+  "PU1_handlung_eigenes_subjekt",
+  "PU2_anrede_gegen_ui_auswahl"
+ ],
+ "faelle": [
+  {
+   "id": "PU1_handlung_eigenes_subjekt",
+   "achse": "Puppet (§12.2)",
+   "art": "positiv",
+   "text": "Johann trinkt sein Bier aus.",
+   "sessionId": "ses_kp_fall_01",
+   "modell": {
+    "anfragen": 6,
+    "treffer": 6,
+    "fehlgriffe": 0,
+    "weitergeleitet": 0,
+    "upstream_fehler": 0,
+    "fehlgriffe_vor_hauptcommit": 0
+   },
+   "glieder": [
+    {
+     "glied": 1,
+     "name": "SOLL-Vertrag und konkrete Erwartung",
+     "status": "GRUEN",
+     "beleg": "Eigene Handlung der geführten Figur wird als Handlung mit ihrer ID gespeichert; alle anwesenden Wahrnehmungsfähigen werden Zeugen; die Folgezug-Figur erhält das Ereignis. 2_7master Z.65, Z.1327, Z.1329, Z.222; Kettenvertrag §1, §16."
+    },
+    {
+     "glied": 2,
+     "name": "Ausgangs-ZIP, Hash und Datenbank",
+     "status": "GRUEN",
+     "beleg": "ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)"
+    },
+    {
+     "glied": 3,
+     "name": "Reale UI-Bedienung",
+     "status": "GRUEN",
+     "beleg": "Profil gewählt, Chat ses_kp_fall_01 geöffnet; Spreche als: Puppet char_g7_johann; Senden: Johann trinkt sein Bier aus.; Seite neu geladen"
+    },
+    {
+     "glied": 4,
+     "name": "Gesendete IDs, Rolle, Modus, Actor, Target, Scope",
+     "status": "GRUEN",
+     "beleg": "Route /api/kernel/puppet, Sitzung ses_kp_fall_01, Figur char_g7_johann, UI-Ziel None, Text gleich"
+    },
+    {
+     "glied": 5,
+     "name": "Backendroute und erste serverseitige Bindung",
+     "status": "GRUEN",
+     "beleg": "HTTP 200, Spur kp_1794077299783_647743: KERNEL_BIND,OUTPUT,READER,SQLITE_COMMIT,TARGET_BIND,TURN_END,TURN_INPUT,TURN_START,UI_REQUEST,VALIDATION,WRITER, Meldung: "
+    },
+    {
+     "glied": 6,
+     "name": "Kanonischer Owner und Writer",
+     "status": "GRUEN",
+     "beleg": "Writer: 1 Haupt-Facts, Commit 37 in Spur kp_1794077299783_647743 (PASS)"
+    },
+    {
+     "glied": 7,
+     "name": "Zustand vor dem Write",
+     "status": "GRUEN",
+     "beleg": "vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)"
+    },
+    {
+     "glied": 8,
+     "name": "Zustand nach dem Write",
+     "status": "GRUEN",
+     "beleg": "nachher: 4 Facts, 3 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum"
+    },
+    {
+     "glied": 9,
+     "name": "Erzeugte Fact-IDs und ihr Inhalt",
+     "status": "GRUEN",
+     "beleg": "Haupt-Facts: action/char_g7_johann/trinkt sein Bier aus→None"
+    },
+    {
+     "glied": 10,
+     "name": "Wissensverteilung und Unwissende",
+     "status": "ROT",
+     "beleg": "Zeuge char_g7_gustav ohne kanonisches Zeugenwissen zu 'trinkt sein Bier aus'; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'trinkt sein Bier aus'; Zeuge char_g7_gustav ohne kanonisches Zeugenwissen zu 'Hast du schon vor, noch mehr z'; Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'Hast du schon vor, noch mehr z'; Zeuge char_g7_gustav ohne kanonisches Zeugenwissen zu 'stellt ein Glas auf die Theke '; Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'stellt ein Glas auf die Theke '"
+    },
+    {
+     "glied": 11,
+     "name": "Runtime-/Körper-/Szenenfolgen",
+     "status": "GRUEN",
+     "beleg": "Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)"
+    },
+    {
+     "glied": 12,
+     "name": "Zuständiger Reader",
+     "status": "GRUEN",
+     "beleg": "GET /api/sessions: HTTP 200, 4 von 4 neuen Facts gleich; ok"
+    },
+    {
+     "glied": 13,
+     "name": "BrainContext im Folgezug",
+     "status": "ROT",
+     "beleg": "char_g7_mara hat kein kanonisches Zeugenwissen zu 'trinkt sein Bier aus'"
+    },
+    {
+     "glied": 14,
+     "name": "Sichtbare Antwort und Komponentencommit",
+     "status": "GRUEN",
+     "beleg": "Folgezug von ['char_g7_mara']: Modellantwort und Commit in Spur kpr_1794077299990_868109"
+    },
+    {
+     "glied": 15,
+     "name": "Zustand im Folgezug",
+     "status": "GRUEN",
+     "beleg": "Folgezug-Sprecher ['char_g7_mara'] anwesend und sprechfähig, Haupt-Facts erhalten"
+    },
+    {
+     "glied": 16,
+     "name": "Reload/Neustart",
+     "status": "GRUEN",
+     "beleg": "nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt"
+    },
+    {
+     "glied": 17,
+     "name": "Sichtbare UI-Rückanzeige",
+     "status": "GRUEN",
+     "beleg": "Verlauf nach Neuladen stimmt; Meldungen: ['Nicht alles aus deiner Eingabe wurde als Ereignis gespeichert: „trinkt sein Bier aus“ – Die Wirkung der Handlung ist unklar.']"
+    },
+    {
+     "glied": 18,
+     "name": "Negative Isolation",
+     "status": "GRUEN",
+     "beleg": "andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert"
+    },
+    {
+     "glied": 19,
+     "name": "Prüfung am frisch entpackten ZIP",
+     "status": "GRUEN",
+     "beleg": "Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut"
+    },
+    {
+     "glied": 20,
+     "name": "Status mit Begründung",
+     "status": "ROT",
+     "beleg": "10 Wissensverteilung und Unwissende: Zeuge char_g7_gustav ohne kanonisches Zeugenwissen zu 'trinkt sein Bier aus'; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'trinkt sein Bier aus'; Zeuge char_g7_gustav ohne kanonisches Zeugenwissen zu 'Hast du schon vor, noch mehr z'; Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'Hast du schon vor, noch mehr z'; Zeuge char_g7_gustav ohne kanonisches Zeugenwissen zu 'stellt ein Glas auf die Theke '; Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'stellt ein Glas auf die Theke ' | 13 BrainContext im Folgezug: char_g7_mara hat kein kanonisches Zeugenwissen zu 'trinkt sein Bier aus'"
+    }
+   ],
+   "neue_fact_ids": [
+    "fact_1a1b757147b_8f594872001c",
+    "fact_1a1b75715c0_bbb6d6d5002d",
+    "fact_1a1b75715c0_88c92360002e",
+    "fact_1a1b75715c1_6f6e26980030"
+   ],
+   "haupt_status": 200,
+   "beleg": {
+    "neue_facts": [
+     {
+      "commit": 37,
+      "kind": "action",
+      "actor": "char_g7_johann",
+      "target": null,
+      "text": "trinkt sein Bier aus",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_gustav",
+       "char_g7_johann",
+       "char_g7_mara"
+      ],
+      "betroffen": []
+     },
+     {
+      "commit": 43,
+      "kind": "speech",
+      "actor": "char_g7_mara",
+      "target": "user",
+      "text": "Hast du schon vor, noch mehr zu trinken, oder willst du etwas anderes? Ich hab Arbeit, also lass uns das hier schnell kl",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_gustav",
+       "char_g7_johann",
+       "char_g7_mara"
+      ],
+      "betroffen": [
+       "user"
+      ]
+     },
+     {
+      "commit": 43,
+      "kind": "action",
+      "actor": "char_g7_mara",
+      "target": "char_g7_johann",
+      "text": "stellt ein Glas auf die Theke und schaut Johann an",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_gustav",
+       "char_g7_johann",
+       "char_g7_mara"
+      ],
+      "betroffen": [
+       "char_g7_johann"
+      ]
+     },
+     {
+      "commit": 43,
+      "kind": "synapse",
+      "actor": "char_g7_mara",
+      "target": null,
+      "text": "Mara Nowak: Synapsen Abhaengigkeit 0.56 → Sorge",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_mara"
+      ],
+      "betroffen": [
+       "char_g7_mara"
+      ]
+     }
+    ],
+    "neue_zuege": [
+     {
+      "commit": 37,
+      "turn": 1,
+      "rolle": "character",
+      "sprecher": "char_g7_johann",
+      "rede": "",
+      "handlung": "trinkt sein Bier aus"
+     },
+     {
+      "commit": 43,
+      "turn": 2,
+      "rolle": "character",
+      "sprecher": "char_g7_mara",
+      "rede": "Hast du schon vor, noch mehr zu trinken, oder willst du etwas anderes? Ich hab Arbeit, also lass uns",
+      "handlung": "stellt ein Glas auf die Theke und schaut Johann an"
+     }
+    ],
+    "neues_zeugenwissen": [],
+    "anwesend_vorher": [
+     "char_g7_gustav",
+     "char_g7_johann",
+     "char_g7_mara"
+    ],
+    "anwesend_nachher": [
+     "char_g7_gustav",
+     "char_g7_johann",
+     "char_g7_mara"
+    ],
+    "ort_nachher": "schankraum",
+    "positionen_nachher": {
+     "char_g7_clara": [
+      "anderswo",
+      1,
+      true
+     ],
+     "char_g7_gustav": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_johann": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_mara": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_robert": [
+      "anderswo",
+      1,
+      true
+     ]
+    }
+   },
+   "status": "ROT"
+  },
+  {
+   "id": "PU2_anrede_gegen_ui_auswahl",
+   "achse": "Puppet (§12.2)",
+   "art": "positiv",
+   "text": "Gustav, setz dich.",
+   "sessionId": "ses_kp_fall_02",
+   "modell": {
+    "anfragen": 5,
+    "treffer": 5,
+    "fehlgriffe": 0,
+    "weitergeleitet": 0,
+    "upstream_fehler": 0,
+    "fehlgriffe_vor_hauptcommit": 0
+   },
+   "glieder": [
+    {
+     "glied": 1,
+     "name": "SOLL-Vertrag und konkrete Erwartung",
+     "status": "GRUEN",
+     "beleg": "Eine Anrede ist Rede der geführten Figur; der im Text Angesprochene ist Adressat, auch gegen die UI-Auswahl; die UI-Auswahl selbst wird gesendet. 2_7master Z.131 (Sprecher, Ziel), Z.1355; SPS Paket 14; Kettenvertrag §16 Glied 04."
+    },
+    {
+     "glied": 2,
+     "name": "Ausgangs-ZIP, Hash und Datenbank",
+     "status": "GRUEN",
+     "beleg": "ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)"
+    },
+    {
+     "glied": 3,
+     "name": "Reale UI-Bedienung",
+     "status": "GRUEN",
+     "beleg": "Profil gewählt, Chat ses_kp_fall_02 geöffnet; Spreche als: Puppet char_g7_johann; Direktes Ziel: char_g7_mara; Senden: Gustav, setz dich.; Seite neu geladen"
+    },
+    {
+     "glied": 4,
+     "name": "Gesendete IDs, Rolle, Modus, Actor, Target, Scope",
+     "status": "ROT",
+     "beleg": "UI-Ziel None statt char_g7_mara"
+    },
+    {
+     "glied": 5,
+     "name": "Backendroute und erste serverseitige Bindung",
+     "status": "GRUEN",
+     "beleg": "HTTP 200, Spur kp_1794077320265_267056: KERNEL_BIND,OUTPUT,READER,SPRACHE,SQLITE_COMMIT,TARGET_BIND,TURN_END,TURN_INPUT,TURN_START,UI_REQUEST,VALIDATION,WRITER, Meldung: "
+    },
+    {
+     "glied": 6,
+     "name": "Kanonischer Owner und Writer",
+     "status": "GRUEN",
+     "beleg": "Writer: 1 Haupt-Facts, Commit 37 in Spur kp_1794077320265_267056 (PASS)"
+    },
+    {
+     "glied": 7,
+     "name": "Zustand vor dem Write",
+     "status": "GRUEN",
+     "beleg": "vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)"
+    },
+    {
+     "glied": 8,
+     "name": "Zustand nach dem Write",
+     "status": "GRUEN",
+     "beleg": "nachher: 3 Facts, 3 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum"
+    },
+    {
+     "glied": 9,
+     "name": "Erzeugte Fact-IDs und ihr Inhalt",
+     "status": "GRUEN",
+     "beleg": "Haupt-Facts: speech/char_g7_johann/Gustav, setz dich.→char_g7_gustav"
+    },
+    {
+     "glied": 10,
+     "name": "Wissensverteilung und Unwissende",
+     "status": "ROT",
+     "beleg": "Zeuge char_g7_gustav ohne kanonisches Zeugenwissen zu 'Gustav, setz dich.'; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'Gustav, setz dich.'; Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'Setz dich? Das wäre mir was we'; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'Setz dich? Das wäre mir was we'; Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'lehnt sich leicht nach vorne, '; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'lehnt sich leicht nach vorne, '"
+    },
+    {
+     "glied": 11,
+     "name": "Runtime-/Körper-/Szenenfolgen",
+     "status": "GRUEN",
+     "beleg": "Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)"
+    },
+    {
+     "glied": 12,
+     "name": "Zuständiger Reader",
+     "status": "GRUEN",
+     "beleg": "GET /api/sessions: HTTP 200, 3 von 3 neuen Facts gleich; ok"
+    },
+    {
+     "glied": 13,
+     "name": "BrainContext im Folgezug",
+     "status": "ROT",
+     "beleg": "char_g7_gustav hat kein kanonisches Zeugenwissen zu 'Gustav, setz dich.'"
+    },
+    {
+     "glied": 14,
+     "name": "Sichtbare Antwort und Komponentencommit",
+     "status": "GRUEN",
+     "beleg": "Folgezug von ['char_g7_gustav']: Modellantwort und Commit in Spur kpr_1794077320347_214197"
+    },
+    {
+     "glied": 15,
+     "name": "Zustand im Folgezug",
+     "status": "GRUEN",
+     "beleg": "Folgezug-Sprecher ['char_g7_gustav'] anwesend und sprechfähig, Haupt-Facts erhalten"
+    },
+    {
+     "glied": 16,
+     "name": "Reload/Neustart",
+     "status": "GRUEN",
+     "beleg": "nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt"
+    },
+    {
+     "glied": 17,
+     "name": "Sichtbare UI-Rückanzeige",
+     "status": "GRUEN",
+     "beleg": "Verlauf nach Neuladen stimmt; Meldungen: ['keine']"
+    },
+    {
+     "glied": 18,
+     "name": "Negative Isolation",
+     "status": "GRUEN",
+     "beleg": "andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert"
+    },
+    {
+     "glied": 19,
+     "name": "Prüfung am frisch entpackten ZIP",
+     "status": "GRUEN",
+     "beleg": "Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut"
+    },
+    {
+     "glied": 20,
+     "name": "Status mit Begründung",
+     "status": "ROT",
+     "beleg": "04 Gesendete IDs, Rolle, Modus, Actor, Target, Scope: UI-Ziel None statt char_g7_mara | 10 Wissensverteilung und Unwissende: Zeuge char_g7_gustav ohne kanonisches Zeugenwissen zu 'Gustav, setz dich.'; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'Gustav, setz dich.'; Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'Setz dich? Das wäre mir was we'; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'Setz dich? Das wäre mir was we'; Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'lehnt sich leicht nach vorne, '; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'lehnt sich leicht nach vorne, ' | 13 BrainContext im Folgezug: char_g7_gustav hat kein kanonisches Zeugenwissen zu 'Gustav, setz dich.'"
+    }
+   ],
+   "neue_fact_ids": [
+    "fact_1a1b757646f_5e9efd3e004f",
+    "fact_1a1b7576542_e98e5b580064",
+    "fact_1a1b7576542_f2d8b4d00065"
+   ],
+   "haupt_status": 200,
+   "beleg": {
+    "neue_facts": [
+     {
+      "commit": 37,
+      "kind": "speech",
+      "actor": "char_g7_johann",
+      "target": "char_g7_gustav",
+      "text": "Gustav, setz dich.",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_gustav",
+       "char_g7_johann",
+       "char_g7_mara"
+      ],
+      "betroffen": [
+       "char_g7_gustav"
+      ]
+     },
+     {
+      "commit": 45,
+      "kind": "speech",
+      "actor": "char_g7_gustav",
+      "target": "char_g7_johann",
+      "text": "Setz dich? Das wäre mir was wert. Aber ich bin nicht sicher, ob ich dir das so einfach sage, Johann. Man hört so einiges",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_gustav",
+       "char_g7_johann",
+       "char_g7_mara"
+      ],
+      "betroffen": [
+       "char_g7_johann"
+      ]
+     },
+     {
+      "commit": 45,
+      "kind": "action",
+      "actor": "char_g7_gustav",
+      "target": "char_g7_johann",
+      "text": "lehnt sich leicht nach vorne, als würde er Johann näher beobachten",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_gustav",
+       "char_g7_johann",
+       "char_g7_mara"
+      ],
+      "betroffen": [
+       "char_g7_johann"
+      ]
+     }
+    ],
+    "neue_zuege": [
+     {
+      "commit": 37,
+      "turn": 1,
+      "rolle": "character",
+      "sprecher": "char_g7_johann",
+      "rede": "Gustav, setz dich.",
+      "handlung": ""
+     },
+     {
+      "commit": 45,
+      "turn": 2,
+      "rolle": "character",
+      "sprecher": "char_g7_gustav",
+      "rede": "Setz dich? Das wäre mir was wert. Aber ich bin nicht sicher, ob ich dir das so einfach sage, Johann.",
+      "handlung": "lehnt sich leicht nach vorne, als würde er Johann näher beobachten"
+     }
+    ],
+    "neues_zeugenwissen": [],
+    "anwesend_vorher": [
+     "char_g7_gustav",
+     "char_g7_johann",
+     "char_g7_mara"
+    ],
+    "anwesend_nachher": [
+     "char_g7_gustav",
+     "char_g7_johann",
+     "char_g7_mara"
+    ],
+    "ort_nachher": "schankraum",
+    "positionen_nachher": {
+     "char_g7_clara": [
+      "anderswo",
+      1,
+      true
+     ],
+     "char_g7_gustav": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_johann": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_mara": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_robert": [
+      "anderswo",
+      1,
+      true
+     ]
+    }
+   },
+   "status": "ROT"
+  }
+ ],
+ "vorbereitung": {
+  "soll_2_7master.txt": "GRUEN",
+  "soll_MATRIX10_SPS_MASTER.md": "GRUEN",
+  "soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt": "GRUEN",
+  "mutation": "angewendet: M6_kein_zeugenwissen (Der Writer legt für Zeugen kein Zeugenwissen (WitnessKnowledge) mehr an.)",
+  "frontend": "GRUEN: frisch gebaut (node_modules aus Cache mit gleichem package-lock), Kennung MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103"
+ },
+ "gesamt": "ROT"
+}

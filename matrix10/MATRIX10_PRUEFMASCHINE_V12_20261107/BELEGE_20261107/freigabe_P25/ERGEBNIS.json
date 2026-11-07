@@ -1,0 +1,329 @@
+{
+ "meta": {
+  "gate": "MATRIX10_FREIGABESPERRE_V12",
+  "gate_sha256": "ef56a724c41b45e8471e32cadc75f611e59f770679fb46b36a419cb5f0d34876",
+  "regeln_sha256": "50bac2598807374450a27f4658c2c8edd1008b016493e61ae19769c4198401db",
+  "kandidat": "25e137c2-MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107.zip",
+  "zeit_utc": "2026-11-07T18:53:49.920098+00:00",
+  "abnahme_manifest_sha256": "9e145601cf594f5876b86f9129549c8210316121dad000ce434207879699b354",
+  "kandidat_sha256": "33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1",
+  "gesamt": "ROT",
+  "gruende": [
+   "ROT: ['05_typecheck_regression', '05_typecheck_gesamt', '06_regression_neu_rot', '06_unveraendert_rot', '07_kette_PU2_anrede_gegen_ui_auswahl', '07_kette_RE1_figur_verlaesst_raum', '07_kette_GO1_bewusstlos', '08_vorbefund_R-1']"
+  ]
+ },
+ "pruefungen": [
+  {
+   "id": "00_pruefmaschine_abgenommen",
+   "status": "PASS",
+   "detail": "Abnahme V1.2, 18 Dateien unverändert",
+   "art": "nachweis"
+  },
+  {
+   "id": "00_basis_eingefroren",
+   "status": "PASS",
+   "detail": "P22-Basis unverändert (Hash)",
+   "art": "nachweis"
+  },
+  {
+   "id": "01_zip",
+   "status": "PASS",
+   "detail": "SHA-256 33a51497ce5e84fa, 273 Einträge, CRC und Pfade in Ordnung",
+   "art": "vertrag"
+  },
+  {
+   "id": "02_soll_2_7master.txt",
+   "status": "PASS",
+   "detail": "eingefroren 095d455460390dfd…",
+   "art": "vertrag"
+  },
+  {
+   "id": "02_soll_MATRIX10_SPS_MASTER.md",
+   "status": "PASS",
+   "detail": "eingefroren 1f0cb05dc1d7fc9a…",
+   "art": "vertrag"
+  },
+  {
+   "id": "02_soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt",
+   "status": "PASS",
+   "detail": "eingefroren e62cf6bc606a13a7…",
+   "art": "vertrag"
+  },
+  {
+   "id": "03_quellenregister",
+   "status": "BLOCKIERT",
+   "detail": "Kettenvertrag §0 nennt AMASTERv2.md(1).txt (fb4f2015…) und Matrix10.txt (1465980a…); beide liegen nicht vor. Verwendet werden 2_7master.txt, MATRIX10_SPS_MASTER.md und der Kettenvertrag selbst. Diese Abweichung ist KEIN gleichwertiger Ersatz und gilt erst nach Bestätigung durch den Vertragseigner (Ajp) in einem versionierten Nachtrag.",
+   "art": "nachweis"
+  },
+  {
+   "id": "04_frontend_bau",
+   "status": "PASS",
+   "detail": "gebaut, Kennung MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103",
+   "art": "vertrag"
+  },
+  {
+   "id": "05_typecheck_regression",
+   "status": "ROT",
+   "detail": "TypeScript-Fehler 606 (Basis P22 605): neu 1, behoben 0 | neu: src/routes/chat.$sessionId.tsx: error TS2352: Conversion of type '{ ok: boolean; session: Record<string, unknown>; }' to type '{ session?: (Session & { pendingInput?: PendingInputView | null | undefined; }) | undefined; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+   "art": "vertrag"
+  },
+  {
+   "id": "05_typecheck_gesamt",
+   "status": "ROT",
+   "detail": "606 TypeScript-Fehler insgesamt (Altlast zählt für die Freigabe)",
+   "art": "vertrag"
+  },
+  {
+   "id": "06_python_suite",
+   "status": "PASS",
+   "detail": "448 Tests gelaufen, Exitcode 1, keine Sammelabbrüche",
+   "art": "vertrag"
+  },
+  {
+   "id": "06_regression_neu_rot",
+   "status": "ROT",
+   "detail": "neu rot gegenüber P22: 3 – tests.test_v92_p22_component_art_and_name_gate.P22NameGate::test_puppet_route_passes_authenticated_actor_id_not_name_lookup; tests.test_v92_puppet_vertrag.PuppetRouteChain::test_denied_act_with_real_speech_stores_only_the_speech; tests.test_v92_puppet_vertrag.PuppetRouteChain::test_p10_partial_and_multiple_markers_over_the_route",
+   "art": "vertrag"
+  },
+  {
+   "id": "06_wieder_gruen",
+   "status": "PASS",
+   "detail": "wieder grün gegenüber P22: 0",
+   "art": "vertrag"
+  },
+  {
+   "id": "06_unveraendert_rot",
+   "status": "ROT",
+   "detail": "unverändert rot seit P22: 9 – tests.test_v88_build_kette.ShippedBrowserBuildContract::test_entrypoints_share_v88_and_sqlite_is_not_bundled; tests.test_v92_p13_identitaet.P13AvatarRoute::test_avatar_unknown_full_name_target_and_referents; tests.test_v92_p13_identitaet.P13PuppetRoute::test_n1_n2_live_shape_planner_maps_to_mara_nowak_server_locks; tests.test_v92_p13_identitaet.P13PuppetRoute::test_two_maras_present_reversed_order_and_absent_schmidt",
+   "art": "vertrag"
+  },
+  {
+   "id": "07_kette_AV1_frage_und_antwort",
+   "status": "PASS",
+   "detail": "alle 20 Glieder belegt",
+   "art": "nachweis"
+  },
+  {
+   "id": "07_kette_AV2_fremde_rede_im_avatar",
+   "status": "PASS",
+   "detail": "alle 20 Glieder belegt",
+   "art": "nachweis"
+  },
+  {
+   "id": "07_kette_PU1_handlung_eigenes_subjekt",
+   "status": "PASS",
+   "detail": "alle 20 Glieder belegt",
+   "art": "nachweis"
+  },
+  {
+   "id": "07_kette_PU2_anrede_gegen_ui_auswahl",
+   "status": "ROT",
+   "detail": "Glied 04: UI-Ziel None statt char_g7_mara",
+   "art": "vertrag"
+  },
+  {
+   "id": "07_kette_PU3_fremde_rede_abgelehnt",
+   "status": "PASS",
+   "detail": "alle 20 Glieder belegt",
+   "art": "nachweis"
+  },
+  {
+   "id": "07_kette_PU4_verneinung_mit_rede",
+   "status": "PASS",
+   "detail": "alle 20 Glieder belegt",
+   "art": "nachweis"
+  },
+  {
+   "id": "07_kette_RE1_figur_verlaesst_raum",
+   "status": "ROT",
+   "detail": "Glied 10: Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'Gustav steht auf und geht in d'; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu ; Glied 11: char_g7_johann anwesend in Szene 'Küche', Position aber 'Schankraum'; char_g7_mara anwesend in Szene 'Küche', Position aber 'Schankraum'",
+   "art": "vertrag"
+  },
+  {
+   "id": "07_kette_RE2_unbekannte_figur",
+   "status": "PASS",
+   "detail": "alle 20 Glieder belegt",
+   "art": "nachweis"
+  },
+  {
+   "id": "07_kette_GO1_bewusstlos",
+   "status": "ROT",
+   "detail": "Glied 10: char_g7_mara bezeugt 'Man hört so einiges hier, nich', nimmt aber nicht wahr (Bewusstsein 0.2); char_g7_mara bezeugt 'Lehnt sich leicht nach",
+   "art": "vertrag"
+  },
+  {
+   "id": "07_kette_GO2_verneinter_zustand",
+   "status": "PASS",
+   "detail": "alle 20 Glieder belegt",
+   "art": "nachweis"
+  },
+  {
+   "id": "07_kettenpruefer_lauf",
+   "status": "PASS",
+   "detail": "Lauf echt (ZIP-, Prüfer-, Katalog-Hash), Rückgabecode 2 = ROT, alle 10 Pflichtfälle genau einmal",
+   "art": "vertrag"
+  },
+  {
+   "id": "08_vorbefund_R-1",
+   "status": "ROT",
+   "detail": "offen: Regie-Ortswechsel: Szene zieht um, Zurückbleibende bleiben in der Anwesenheitsliste (Beweisfall nicht grün)",
+   "art": "vertrag"
+  },
+  {
+   "id": "08_vorbefund_G-5",
+   "status": "ROT",
+   "detail": "offen: God-Vollzug nach AMASTER offen (Umfang nicht durch GO1/GO2 abgedeckt) (Beweisfall fehlt)",
+   "art": "vertrag"
+  },
+  {
+   "id": "08_vorbefund_E-1",
+   "status": "ROT",
+   "detail": "offen: Einwilligungs-/Grenzenkette offen (Beweisfall fehlt)",
+   "art": "vertrag"
+  },
+  {
+   "id": "08_vorbefund_S-1",
+   "status": "ROT",
+   "detail": "offen: Alte Sessions ungeklärt (Beweisfall fehlt)",
+   "art": "vertrag"
+  },
+  {
+   "id": "08_vorbefund_god_extract-Wortliste",
+   "status": "ROT",
+   "detail": "offen: Vertragsprüfung der Wortliste offen (Beweisfall fehlt)",
+   "art": "vertrag"
+  },
+  {
+   "id": "08_vorbefund_D-Fehlermeldung",
+   "status": "ROT",
+   "detail": "offen: Inhalt der Fehlermeldung bei Fremdrede (Fälle prüfen nur, dass eine Meldung erscheint) (Beweisfall fehlt)",
+   "art": "vertrag"
+  },
+  {
+   "id": "08_vorbefund_8-alte-Vertragstests",
+   "status": "ROT",
+   "detail": "offen: werden über 06_unveraendert_rot gegen die P22-Basis gezählt (Beweisfall fehlt)",
+   "art": "vertrag"
+  },
+  {
+   "id": "09_achse_EPUB zu Welt (§7)",
+   "status": "UNGEPRUEFT",
+   "detail": "Pflichtfälle keine: UNGEPRUEFT",
+   "art": "nachweis"
+  },
+  {
+   "id": "09_achse_Charakterprofil und Spawn (§8)",
+   "status": "UNGEPRUEFT",
+   "detail": "Pflichtfälle keine: UNGEPRUEFT",
+   "art": "nachweis"
+  },
+  {
+   "id": "09_achse_Normale Session/Scene/Turn (§9)",
+   "status": "UNGEPRUEFT",
+   "detail": "Pflichtfälle keine: UNGEPRUEFT",
+   "art": "nachweis"
+  },
+  {
+   "id": "09_achse_Wissen, Memory, psychologische Wirkung (§10)",
+   "status": "UNGEPRUEFT",
+   "detail": "Pflichtfälle keine: UNGEPRUEFT",
+   "art": "nachweis"
+  },
+  {
+   "id": "09_achse_Relationship, Runtime, Koerper (§11)",
+   "status": "UNGEPRUEFT",
+   "detail": "Pflichtfälle keine: UNGEPRUEFT",
+   "art": "nachweis"
+  },
+  {
+   "id": "09_achse_Avatar (§12.1)",
+   "status": "PASS",
+   "detail": "Pflichtfälle ['AV1_frage_und_antwort', 'AV2_fremde_rede_im_avatar']: GRUEN",
+   "art": "nachweis"
+  },
+  {
+   "id": "09_achse_Puppet (§12.2)",
+   "status": "ROT",
+   "detail": "Pflichtfälle ['PU1_handlung_eigenes_subjekt', 'PU2_anrede_gegen_ui_auswahl', 'PU3_fremde_rede_abgelehnt', 'PU4_verneinung_mit_rede']: ROT",
+   "art": "vertrag"
+  },
+  {
+   "id": "09_achse_Regie (§12.3)",
+   "status": "ROT",
+   "detail": "Pflichtfälle ['RE1_figur_verlaesst_raum', 'RE2_unbekannte_figur']: ROT",
+   "art": "vertrag"
+  },
+  {
+   "id": "09_achse_God (§12.4)",
+   "status": "ROT",
+   "detail": "Pflichtfälle ['GO1_bewusstlos', 'GO2_verneinter_zustand']: ROT",
+   "art": "vertrag"
+  },
+  {
+   "id": "09_achse_Fate (§12.5)",
+   "status": "UNGEPRUEFT",
+   "detail": "Pflichtfälle keine: UNGEPRUEFT",
+   "art": "nachweis"
+  },
+  {
+   "id": "09_achse_AutoChat (§12.6)",
+   "status": "UNGEPRUEFT",
+   "detail": "Pflichtfälle keine: UNGEPRUEFT",
+   "art": "nachweis"
+  },
+  {
+   "id": "09_achse_Upload Modus A (§13)",
+   "status": "UNGEPRUEFT",
+   "detail": "Pflichtfälle keine: UNGEPRUEFT",
+   "art": "nachweis"
+  },
+  {
+   "id": "09_achse_Upload Modus B (§13)",
+   "status": "UNGEPRUEFT",
+   "detail": "Pflichtfälle keine: UNGEPRUEFT",
+   "art": "nachweis"
+  },
+  {
+   "id": "09_achse_Provider, Modell und Konfiguration (§14)",
+   "status": "UNGEPRUEFT",
+   "detail": "Pflichtfälle keine: UNGEPRUEFT",
+   "art": "nachweis"
+  },
+  {
+   "id": "09_achse_Reset, Snapshot, Backup, Review, Isolation (§15)",
+   "status": "UNGEPRUEFT",
+   "detail": "Pflichtfälle keine: UNGEPRUEFT",
+   "art": "nachweis"
+  },
+  {
+   "id": "09_achse_Frontend-Backend-Bidirektionalitaet (§5)",
+   "status": "UNGEPRUEFT",
+   "detail": "Pflichtfälle keine: UNGEPRUEFT",
+   "art": "nachweis"
+  },
+  {
+   "id": "10_pruefmaschine_unveraendert",
+   "status": "PASS",
+   "detail": "Maschine nach dem Lauf unverändert",
+   "art": "nachweis"
+  }
+ ],
+ "achsen": {
+  "EPUB zu Welt (§7)": "UNGEPRUEFT",
+  "Charakterprofil und Spawn (§8)": "UNGEPRUEFT",
+  "Normale Session/Scene/Turn (§9)": "UNGEPRUEFT",
+  "Wissen, Memory, psychologische Wirkung (§10)": "UNGEPRUEFT",
+  "Relationship, Runtime, Koerper (§11)": "UNGEPRUEFT",
+  "Avatar (§12.1)": "GRUEN",
+  "Puppet (§12.2)": "ROT",
+  "Regie (§12.3)": "ROT",
+  "God (§12.4)": "ROT",
+  "Fate (§12.5)": "UNGEPRUEFT",
+  "AutoChat (§12.6)": "UNGEPRUEFT",
+  "Upload Modus A (§13)": "UNGEPRUEFT",
+  "Upload Modus B (§13)": "UNGEPRUEFT",
+  "Provider, Modell und Konfiguration (§14)": "UNGEPRUEFT",
+  "Reset, Snapshot, Backup, Review, Isolation (§15)": "UNGEPRUEFT",
+  "Frontend-Backend-Bidirektionalitaet (§5)": "UNGEPRUEFT"
+ }
+}

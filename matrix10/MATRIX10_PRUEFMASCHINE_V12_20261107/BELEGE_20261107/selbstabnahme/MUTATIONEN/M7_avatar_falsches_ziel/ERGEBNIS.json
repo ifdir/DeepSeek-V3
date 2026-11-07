@@ -1,0 +1,327 @@
+{
+ "pruefer": "MATRIX10_KETTENPRUEFER_V12",
+ "zeit_utc": "2026-11-07T18:49:12.073923+00:00",
+ "modus": "wiedergabe",
+ "mutation": "M7_avatar_falsches_ziel",
+ "basis": {
+  "zip": "25e137c2-MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107.zip",
+  "zip_sha": "33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1",
+  "db_sha": "e03dc44584db8b990abf62d6d1ae949e149268048b88686db2496e1361186f97",
+  "faelle_sha": "fd352b89881c44c331804960f17db255f9afdf2511a90f46da8f20f20c10c11d",
+  "pruefer_sha": "fd3583d71869c8a6dfe80ca4fb6dae53d08ca8d108f612c468fe7d9e655f62c3",
+  "auswertung_sha": "3b9c618935478cc7d4df1bb4fa0848bb5debad24dde8db7116f1f516e4c49039",
+  "original_db_unveraendert": true
+ },
+ "angefordert": [
+  "AV1_frage_und_antwort"
+ ],
+ "faelle": [
+  {
+   "id": "AV1_frage_und_antwort",
+   "achse": "Avatar (§12.1)",
+   "art": "positiv",
+   "text": "Mara, wie geht es dir?",
+   "sessionId": "ses_kp_fall_05",
+   "modell": {
+    "anfragen": 10,
+    "treffer": 10,
+    "fehlgriffe": 0,
+    "weitergeleitet": 0,
+    "upstream_fehler": 0,
+    "fehlgriffe_vor_hauptcommit": 0
+   },
+   "glieder": [
+    {
+     "glied": 1,
+     "name": "SOLL-Vertrag und konkrete Erwartung",
+     "status": "GRUEN",
+     "beleg": "Die Frage des Avatars ist seine Rede an die Angesprochene; sie antwortet und kennt die Frage. 2_7master Z.1376-1389 (§27.3), Z.131, Z.1329."
+    },
+    {
+     "glied": 2,
+     "name": "Ausgangs-ZIP, Hash und Datenbank",
+     "status": "GRUEN",
+     "beleg": "ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)"
+    },
+    {
+     "glied": 3,
+     "name": "Reale UI-Bedienung",
+     "status": "GRUEN",
+     "beleg": "Profil gewählt, Chat ses_kp_fall_05 geöffnet; Modus-Reiter: Avatar; Spreche als: Avatar; Direktes Ziel: char_g7_mara; Senden: Mara, wie geht es dir?; Seite neu geladen"
+    },
+    {
+     "glied": 4,
+     "name": "Gesendete IDs, Rolle, Modus, Actor, Target, Scope",
+     "status": "GRUEN",
+     "beleg": "Route /api/kernel/prepare, Sitzung ses_kp_fall_05, Figur char_g7_mara, UI-Ziel char_g7_mara, Text gleich"
+    },
+    {
+     "glied": 5,
+     "name": "Backendroute und erste serverseitige Bindung",
+     "status": "GRUEN",
+     "beleg": "HTTP 200, Spur kpr_1794077373686_47745: APPRAISAL,BRAIN_CONTEXT,EFFECT_PLAN,GOAL_THEME,KERNEL_BIND,KOERPER_CHECK,MODEL_REPLY,OUTPUT,PROMPT,READER,SQLITE_COMMIT,TARGET_BIND,TURN_END,TURN_INPUT,TURN_RES, Meldung: "
+    },
+    {
+     "glied": 6,
+     "name": "Kanonischer Owner und Writer",
+     "status": "GRUEN",
+     "beleg": "Writer: 1 Haupt-Facts, Commit 34 in Spur kpr_1794077373686_47745 (INPUT_COMMITTED,PASS)"
+    },
+    {
+     "glied": 7,
+     "name": "Zustand vor dem Write",
+     "status": "GRUEN",
+     "beleg": "vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)"
+    },
+    {
+     "glied": 8,
+     "name": "Zustand nach dem Write",
+     "status": "GRUEN",
+     "beleg": "nachher: 3 Facts, 3 Züge, anwesend ['char_g7_gustav', 'char_g7_mara', 'char_g7_johann'], Ort schankraum"
+    },
+    {
+     "glied": 9,
+     "name": "Erzeugte Fact-IDs und ihr Inhalt",
+     "status": "ROT",
+     "beleg": "speech an ['char_g7_clara'] statt char_g7_mara | Haupt-Facts: speech/char_g7_johann/Mara, wie geht es dir?→char_g7_clara"
+    },
+    {
+     "glied": 10,
+     "name": "Wissensverteilung und Unwissende",
+     "status": "GRUEN",
+     "beleg": "3 Facts, 9 neue Zeugenwissen: Zeugen anwesend und wahrnehmend, Abwesende ['char_g7_clara', 'char_g7_robert'] ohne Wissen"
+    },
+    {
+     "glied": 11,
+     "name": "Runtime-/Körper-/Szenenfolgen",
+     "status": "GRUEN",
+     "beleg": "Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)"
+    },
+    {
+     "glied": 12,
+     "name": "Zuständiger Reader",
+     "status": "GRUEN",
+     "beleg": "GET /api/sessions: HTTP 200, 3 von 3 neuen Facts gleich; ok"
+    },
+    {
+     "glied": 13,
+     "name": "BrainContext im Folgezug",
+     "status": "GRUEN",
+     "beleg": "Spur kpr_1794077373686_47745: Sprecher char_g7_mara (Mara Nowak), Sitzung gebunden, Zeugenwissen vorhanden, PROMPT nach Hauptcommit enthält ['mara, wie geht es dir']"
+    },
+    {
+     "glied": 14,
+     "name": "Sichtbare Antwort und Komponentencommit",
+     "status": "GRUEN",
+     "beleg": "Folgezug von ['char_g7_mara']: Modellantwort und Commit in Spur kpr_1794077373686_47745"
+    },
+    {
+     "glied": 15,
+     "name": "Zustand im Folgezug",
+     "status": "GRUEN",
+     "beleg": "Folgezug-Sprecher ['char_g7_mara'] anwesend und sprechfähig, Haupt-Facts erhalten"
+    },
+    {
+     "glied": 16,
+     "name": "Reload/Neustart",
+     "status": "GRUEN",
+     "beleg": "nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt"
+    },
+    {
+     "glied": 17,
+     "name": "Sichtbare UI-Rückanzeige",
+     "status": "GRUEN",
+     "beleg": "Verlauf nach Neuladen stimmt; Meldungen: ['keine']"
+    },
+    {
+     "glied": 18,
+     "name": "Negative Isolation",
+     "status": "GRUEN",
+     "beleg": "andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert"
+    },
+    {
+     "glied": 19,
+     "name": "Prüfung am frisch entpackten ZIP",
+     "status": "GRUEN",
+     "beleg": "Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut"
+    },
+    {
+     "glied": 20,
+     "name": "Status mit Begründung",
+     "status": "ROT",
+     "beleg": "09 Erzeugte Fact-IDs und ihr Inhalt: speech an ['char_g7_clara'] statt char_g7_mara | Haupt-Facts: speech/char_g7_johann/Mara, wie geht es dir?→char_g7_clara"
+    }
+   ],
+   "neue_fact_ids": [
+    "fact_1a1b7583524_62484ef50019",
+    "fact_1a1b75835a7_6018bf2a0035",
+    "fact_1a1b75835a7_c25799160036"
+   ],
+   "haupt_status": 200,
+   "beleg": {
+    "neue_facts": [
+     {
+      "commit": 34,
+      "kind": "speech",
+      "actor": "char_g7_johann",
+      "target": "char_g7_clara",
+      "text": "Mara, wie geht es dir?",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_gustav",
+       "char_g7_mara",
+       "char_g7_johann"
+      ],
+      "betroffen": [
+       "char_g7_clara"
+      ]
+     },
+     {
+      "commit": 42,
+      "kind": "speech",
+      "actor": "char_g7_mara",
+      "target": "char_g7_johann",
+      "text": "Was willst du wissen, Johann? Ich hab zu tun.",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_gustav",
+       "char_g7_mara",
+       "char_g7_johann"
+      ],
+      "betroffen": [
+       "char_g7_johann"
+      ]
+     },
+     {
+      "commit": 42,
+      "kind": "action",
+      "actor": "char_g7_mara",
+      "target": "char_g7_johann",
+      "text": "schaut ihn scharf an, während sie das Tablett festhält",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_gustav",
+       "char_g7_mara",
+       "char_g7_johann"
+      ],
+      "betroffen": [
+       "char_g7_johann"
+      ]
+     }
+    ],
+    "neue_zuege": [
+     {
+      "commit": 34,
+      "turn": 1,
+      "rolle": "teilnehmer",
+      "sprecher": "char_g7_johann",
+      "rede": "Mara, wie geht es dir?",
+      "handlung": ""
+     },
+     {
+      "commit": 42,
+      "turn": 1,
+      "rolle": "character",
+      "sprecher": "char_g7_mara",
+      "rede": "Was willst du wissen, Johann? Ich hab zu tun.",
+      "handlung": "schaut ihn scharf an, während sie das Tablett festhält"
+     }
+    ],
+    "neues_zeugenwissen": [
+     [
+      "char_g7_gustav",
+      "fact_1a1b7583524_62484ef50019",
+      "heard"
+     ],
+     [
+      "char_g7_mara",
+      "fact_1a1b7583524_62484ef50019",
+      "heard"
+     ],
+     [
+      "char_g7_johann",
+      "fact_1a1b7583524_62484ef50019",
+      "heard"
+     ],
+     [
+      "char_g7_gustav",
+      "fact_1a1b75835a7_6018bf2a0035",
+      "heard"
+     ],
+     [
+      "char_g7_mara",
+      "fact_1a1b75835a7_6018bf2a0035",
+      "heard"
+     ],
+     [
+      "char_g7_johann",
+      "fact_1a1b75835a7_6018bf2a0035",
+      "heard"
+     ],
+     [
+      "char_g7_gustav",
+      "fact_1a1b75835a7_c25799160036",
+      "seen"
+     ],
+     [
+      "char_g7_mara",
+      "fact_1a1b75835a7_c25799160036",
+      "performed"
+     ],
+     [
+      "char_g7_johann",
+      "fact_1a1b75835a7_c25799160036",
+      "affected"
+     ]
+    ],
+    "anwesend_vorher": [
+     "char_g7_gustav",
+     "char_g7_johann",
+     "char_g7_mara"
+    ],
+    "anwesend_nachher": [
+     "char_g7_gustav",
+     "char_g7_mara",
+     "char_g7_johann"
+    ],
+    "ort_nachher": "schankraum",
+    "positionen_nachher": {
+     "char_g7_clara": [
+      "anderswo",
+      1,
+      true
+     ],
+     "char_g7_gustav": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_mara": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_robert": [
+      "anderswo",
+      1,
+      true
+     ],
+     "char_g7_johann": [
+      "Schankraum",
+      1,
+      true
+     ]
+    }
+   },
+   "status": "ROT"
+  }
+ ],
+ "vorbereitung": {
+  "soll_2_7master.txt": "GRUEN",
+  "soll_MATRIX10_SPS_MASTER.md": "GRUEN",
+  "soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt": "GRUEN",
+  "mutation": "angewendet: M7_avatar_falsches_ziel (Die Avatar-Eingabe wird mit einem falschen Adressaten (andere anwesende Figur) gespeichert.)",
+  "frontend": "GRUEN: frisch gebaut (node_modules aus Cache mit gleichem package-lock), Kennung MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103"
+ },
+ "gesamt": "ROT"
+}

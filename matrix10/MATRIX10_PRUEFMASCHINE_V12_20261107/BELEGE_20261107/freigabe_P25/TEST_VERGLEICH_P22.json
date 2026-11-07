@@ -1,0 +1,37 @@
+{
+ "gelaufen": 448,
+ "exitcode": 1,
+ "neu_rot": [
+  "tests.test_v92_p22_component_art_and_name_gate.P22NameGate::test_puppet_route_passes_authenticated_actor_id_not_name_lookup",
+  "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_denied_act_with_real_speech_stores_only_the_speech",
+  "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_p10_partial_and_multiple_markers_over_the_route"
+ ],
+ "wieder_gruen": [],
+ "unveraendert_rot": [
+  "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_entrypoints_share_v88_and_sqlite_is_not_bundled",
+  "tests.test_v92_p13_identitaet.P13AvatarRoute::test_avatar_unknown_full_name_target_and_referents",
+  "tests.test_v92_p13_identitaet.P13PuppetRoute::test_n1_n2_live_shape_planner_maps_to_mara_nowak_server_locks",
+  "tests.test_v92_p13_identitaet.P13PuppetRoute::test_two_maras_present_reversed_order_and_absent_schmidt",
+  "tests.test_v92_p16_identitaet.P16AvatarRoute::test_avatar_question_nothing_stored_then_answer",
+  "tests.test_v92_p16_identitaet.P16PuppetRoute::test_question_then_answer_over_http_sqlite_and_follow_up",
+  "tests.test_v92_puppet_kette.BerührungStattVerletzung::test_denied_injury_with_touch_reading_keeps_the_touch_class_with_audit",
+  "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_p12_two_figures_called_mara_target_and_body_chain",
+  "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_p8_pure_foreign_speech_stores_nothing"
+ ],
+ "alle_fehlschlaege": [
+  "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_entrypoints_share_v88_and_sqlite_is_not_bundled",
+  "tests.test_v92_p13_identitaet.P13AvatarRoute::test_avatar_unknown_full_name_target_and_referents",
+  "tests.test_v92_p13_identitaet.P13PuppetRoute::test_n1_n2_live_shape_planner_maps_to_mara_nowak_server_locks",
+  "tests.test_v92_p13_identitaet.P13PuppetRoute::test_two_maras_present_reversed_order_and_absent_schmidt",
+  "tests.test_v92_p16_identitaet.P16AvatarRoute::test_avatar_question_nothing_stored_then_answer",
+  "tests.test_v92_p16_identitaet.P16PuppetRoute::test_question_then_answer_over_http_sqlite_and_follow_up",
+  "tests.test_v92_p22_component_art_and_name_gate.P22NameGate::test_puppet_route_passes_authenticated_actor_id_not_name_lookup",
+  "tests.test_v92_puppet_kette.BerührungStattVerletzung::test_denied_injury_with_touch_reading_keeps_the_touch_class_with_audit",
+  "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_denied_act_with_real_speech_stores_only_the_speech",
+  "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_p10_partial_and_multiple_markers_over_the_route",
+  "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_p12_two_figures_called_mara_target_and_body_chain",
+  "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_p8_pure_foreign_speech_stores_nothing"
+ ],
+ "alle_fehler": [],
+ "sammelfehler": []
+}
