@@ -12,7 +12,9 @@ spec.loader.exec_module(bridge)
 
 
 def e(by='bob', kind='refusal', scope='eingeschraenkt', part='rechte Hand'):
-    return {"by":by,"kind":kind,"scope":scope,"einschraenkung":part,"einschraenkungOffen":None}
+    # Stand 05 / ABI 3: jeder kanonische Eintrag traegt die gebundenen Taten (body_contact_entries).
+    return {"by":by,"kind":kind,"scope":scope,"einschraenkung":part,"einschraenkungOffen":None,
+            "actTexts":[],"actsBound":False}
 
 class ConsentEnvelopeTests(unittest.TestCase):
     def test_preserves_canonical_indices_not_new_rows(self):
@@ -30,7 +32,8 @@ class ConsentEnvelopeTests(unittest.TestCase):
         with patch.object(bridge,'_native_request',return_value={"indices":[]} ) as call:
             self.assertEqual(bridge.reduce_restricted_refusals('bob',[original],[True]),[])
         fields=call.call_args.args[2]['entries'][0]
-        self.assertEqual(fields,{"by":"bob","kind":"refusal","scope":"","einschraenkung":"", "einschraenkungOffen":"", "active": True})
+        self.assertEqual(fields,{"by":"bob","kind":"refusal","scope":"","einschraenkung":"", "einschraenkungOffen":"", "active": True,
+                                 "actTexts":[],"actsBound":False})
         self.assertIsNone(original['scope'],"The canonical original must not be mutated")
 
     def test_11_entries_are_never_silently_truncated(self):

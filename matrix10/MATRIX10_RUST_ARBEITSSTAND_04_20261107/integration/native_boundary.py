@@ -17,7 +17,7 @@ import threading
 from pathlib import Path
 from typing import Any
 
-ABI = 2
+ABI = 3
 MAGIC = b"MXRB\x01\x00"
 MAX_BYTES = 32 * 1024 * 1024
 MAX_DEPTH = 64
@@ -246,18 +246,21 @@ def _consent_request(giver: str, entries: list[dict[str, Any]], active: list[boo
             or type(active) is not list or len(active) != len(entries)
             or any(type(flag) is not bool for flag in active)):
         raise NativeBoundaryError("Invalid consent reducer input/window mask", "NATIVE_CONTRACT_INVALID")
-    fields = ("by", "scope", "kind", "einschraenkung", "einschraenkungOffen")
+    fields = ("by", "scope", "kind", "einschraenkung", "einschraenkungOffen", "actTexts", "actsBound")
     prepared = []
     for event, flag in zip(entries, active):
         if (not isinstance(event, dict) or any(k not in event for k in fields)
                 or type(event["by"]) is not str or type(event["kind"]) is not str
                 or event["scope"] is not None and type(event["scope"]) is not str
                 or event["einschraenkung"] is not None and type(event["einschraenkung"]) is not str
-                or event["einschraenkungOffen"] is not None and type(event["einschraenkungOffen"]) is not str):
+                or event["einschraenkungOffen"] is not None and type(event["einschraenkungOffen"]) is not str
+                or type(event["actTexts"]) is not list or any(type(t) is not str for t in event["actTexts"])
+                or type(event["actsBound"]) is not bool):
             raise NativeBoundaryError("Invalid canonical consent evidence", "NATIVE_CONTRACT_INVALID")
         prepared.append({"by": event["by"], "kind": event["kind"],
                          "scope": event["scope"] or "", "einschraenkung": event["einschraenkung"] or "",
-                         "einschraenkungOffen": event["einschraenkungOffen"] or "", "active": flag})
+                         "einschraenkungOffen": event["einschraenkungOffen"] or "", "active": flag,
+                         "actTexts": list(event["actTexts"]), "actsBound": event["actsBound"]})
     return {"giver": giver, "entries": prepared}
 
 
@@ -324,8 +327,8 @@ def reduce_body_contact_standing(giver: str, entries: list[dict[str, Any]], acti
         if (old.get("scope") != "jede_beruehrung" or old.get("kind") not in {"acceptance", "refusal"}
                 or last.get("kind") not in {"acceptance", "refusal", "revoke"}
                 or last.get("scope") == "jede_beruehrung"
-                or (old.get("kind") == "refusal" and last.get("kind") == "acceptance"
-                    and last.get("scope") == "diese_tat")):
+                or (old.get("kind") == "refusal" and (last.get("kind") != "acceptance"
+                                                      or last.get("scope") == "diese_tat"))):
             raise NativeBoundaryError("Native consent ending refers to incompatible events", "NATIVE_REPLY_INVALID")
     if standing is not None and ended is not None:
         raise NativeBoundaryError("Native consent replied both standing and ended", "NATIVE_REPLY_INVALID")

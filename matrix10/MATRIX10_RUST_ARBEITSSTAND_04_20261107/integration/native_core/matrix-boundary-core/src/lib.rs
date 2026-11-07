@@ -13,7 +13,7 @@ use std::panic::{catch_unwind, AssertUnwindSafe};
 use std::slice;
 use value::{decode, encode, MAX_BYTES};
 
-pub const ABI_VERSION: u32 = 2;
+pub const ABI_VERSION: u32 = 3;
 
 #[no_mangle]
 pub extern "C" fn matrix_boundary_abi_version() -> u32 { ABI_VERSION }
@@ -64,7 +64,7 @@ pub unsafe extern "C" fn matrix_boundary_check(
 mod ffi_tests {
     use super::*;
     #[test]
-    fn abi_is_fixed() { assert_eq!(matrix_boundary_abi_version(), 2); }
+    fn abi_is_fixed() { assert_eq!(matrix_boundary_abi_version(), 3); }
     #[test]
     fn null_pointer_is_rejected() {
         let mut out=[0u8;256];

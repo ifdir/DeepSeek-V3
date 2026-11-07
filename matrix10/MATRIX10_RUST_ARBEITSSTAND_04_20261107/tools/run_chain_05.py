@@ -35,6 +35,10 @@ NATIVE_DIR = ROOT / "integration/native"
 MUTATIONS = {
     "ohne_sprecherbindung": ("e.active && e.by == giver", "e.active"),
     "ohne_gueltigkeitsfenster": ("e.active && e.by == giver", "e.by == giver"),
+    # Stand 05: Widerruf/Ablehnung einer Tat darf keine Grenze aufheben ...
+    "taetantwort_hebt_grenze_auf": ('if broad_kind == "refusal" && is_act_answer_against(&e) {', "if false {"),
+    # ... und wirkt nur fuer die Stelle, an die sie gebunden ist.
+    "taetantwort_ohne_bindung": ("!e.acts_bound || e.acts.iter()", "true || e.acts.iter()"),
 }
 
 
@@ -58,21 +62,30 @@ def main() -> int:
     result = {"stand": "05", "product_release": False, "stages": {}, "status": "ROT"}
 
     def stop(stage, reason):
+        result["stages"].setdefault(stage, {})
+        if isinstance(result["stages"][stage], list):
+            result["stages"][stage] = {"laeufe": result["stages"][stage]}
         result["stages"][stage]["reason"] = reason
         (evidence / "result.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")
         print(f"ROT in Stufe {stage}: {reason}")
         return 1
 
     # 0 -- Integritaet
-    bad = []
+    # Stand 04 ist die Basis; in Stand 05 duerfen NUR diese Dateien bewusst abweichen.
+    changed_05 = {"integration/scene_state.py", "integration/native_boundary.py",
+                  "integration/native_core/matrix-boundary-core/src/consent.rs",
+                  "integration/native_core/matrix-boundary-core/src/lib.rs",
+                  "tests/test_consent_transport_03.py"}  # nur Testdaten an ABI-3-Eintragsform
+    bad, changed = [], []
     for line in (ROOT / "SHA256SUMS.txt").read_text().splitlines():
         digest, name = line.split(None, 1)
-        p = ROOT / name.strip().lstrip("*")
+        name = name.strip().lstrip("*")
+        p = ROOT / name
         if not p.is_file() or hashlib.sha256(p.read_bytes()).hexdigest() != digest:
-            bad.append(name)
-    result["stages"]["0_integritaet"] = {"abweichend": bad}
+            (changed if name in changed_05 else bad).append(name)
+    result["stages"]["0_integritaet"] = {"unerwartet_abweichend": bad, "bewusst_geaendert_05": sorted(changed)}
     if bad:
-        return stop("0_integritaet", "SHA256SUMS weicht ab")
+        return stop("0_integritaet", "SHA256SUMS weicht ausserhalb der Stand-05-Aenderungen ab")
 
     # A -- fail-closed ohne Rust
     shutil.rmtree(NATIVE_DIR, ignore_errors=True)

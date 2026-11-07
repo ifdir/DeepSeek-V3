@@ -7,14 +7,14 @@
 //! the final surviving refusal. Only the named giver can affect consent.
 
 use crate::boundary::failure;
-use crate::restriction::same_restriction;
+use crate::restriction::{names_restriction, same_restriction};
 use crate::value::{object, text, Value};
 
 fn invalid(msg: &str) -> Value {
     failure("NATIVE_CONTRACT_INVALID", msg, 503)
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 struct Evidence<'a> {
     index: usize,
     by: &'a str,
@@ -23,6 +23,23 @@ struct Evidence<'a> {
     part: &'a str,
     unconfirmed: &'a str,
     active: bool,
+    /// Texts of the concrete acts this answer is bound to (actFactIds).
+    acts: Vec<&'a str>,
+    /// True only when the answer names acts AND every named act was found.
+    acts_bound: bool,
+}
+
+/// Stand 05 (AMASTER §34.1/§35/§36.3/§68.35, SPS V65X Z. 1414): an answer to
+/// a concrete act (scope diese_tat, refusal|revoke) is evidence only for what
+/// it is bound to and only in the cautious direction. It ends a permission
+/// whose part one of the bound acts names; an answer bound to no act ends
+/// every permission. It never lifts a refusal.
+fn act_answer_ends(e: &Evidence, part: &str) -> bool {
+    !e.acts_bound || e.acts.iter().any(|t| names_restriction(t, part, false, false))
+}
+
+fn is_act_answer_against(e: &Evidence) -> bool {
+    e.scope == "diese_tat" && ["refusal", "revoke"].contains(&e.kind) && e.unconfirmed.is_empty()
 }
 
 fn evidence<'a>(request: &'a Value) -> Result<(&'a str, Vec<Evidence<'a>>), Value> {
@@ -46,16 +63,23 @@ fn evidence<'a>(request: &'a Value) -> Result<(&'a str, Vec<Evidence<'a>>), Valu
             .ok_or_else(|| invalid("consent unconfirmed restriction must be text"))?;
         let active = entry.get("active").boolean()
             .ok_or_else(|| invalid("consent window applicability must be boolean"))?;
+        let acts_bound = entry.get("actsBound").boolean()
+            .ok_or_else(|| invalid("consent act binding flag must be boolean"))?;
+        let mut acts = Vec::new();
+        for t in entry.get("actTexts").list()
+            .ok_or_else(|| invalid("consent act texts must be an array"))? {
+            acts.push(t.text().ok_or_else(|| invalid("consent act text must be text"))?);
+        }
         if !["refusal", "acceptance", "revoke"].contains(&kind)
             || !["", "diese_tat", "eingeschraenkt", "jede_beruehrung"].contains(&scope) {
             return Err(invalid("unknown canonical consent kind/scope"));
         }
-        result.push(Evidence { index, by, kind, scope, part, unconfirmed, active });
+        result.push(Evidence { index, by, kind, scope, part, unconfirmed, active, acts, acts_bound });
     }
     Ok((giver, result))
 }
 
-fn eligible<'a>(giver: &str, e: Evidence<'a>) -> bool {
+fn eligible<'a>(giver: &str, e: &Evidence<'a>) -> bool {
     // An empty or unrelated actor never becomes the giver by default.
     e.active && e.by == giver
 }
@@ -73,7 +97,7 @@ pub fn reduce(request: &Value) -> Value {
     let (giver, entries) = match evidence(request) { Ok(v) => v, Err(v) => return v };
     let mut standing: Vec<(usize, &str)> = Vec::new();
     for e in entries {
-        if !eligible(giver, e) { continue; }
+        if !eligible(giver, &e) { continue; }
         if e.scope == "eingeschraenkt" && !e.part.is_empty() {
             match e.kind {
                 "refusal" => {
@@ -101,12 +125,14 @@ pub fn reduce_permissions(request: &Value) -> Value {
     let (giver, entries) = match evidence(request) { Ok(v) => v, Err(v) => return v };
     let mut standing: Vec<(usize, &str)> = Vec::new();
     for e in entries {
-        if !eligible(giver, e) { continue; }
+        if !eligible(giver, &e) { continue; }
         if e.scope == "eingeschraenkt" && !e.part.is_empty() {
             standing.retain(|(_, old)| !same_restriction(old, e.part));
             if e.kind == "acceptance" { standing.push((e.index, e.part)); }
         } else if e.scope == "jede_beruehrung" {
             standing.clear();
+        } else if is_act_answer_against(&e) {
+            standing.retain(|(_, part)| !act_answer_ends(&e, part));
         }
     }
     response(vec![("indices", Value::List(standing.into_iter()
@@ -122,7 +148,7 @@ pub fn reduce_standing(request: &Value) -> Value {
     let mut ended: Option<(usize, usize, &str, &str)> = None;
     let mut exceptions: Vec<(usize, &str, &str)> = Vec::new();
     for e in entries {
-        if !eligible(giver, e) { continue; }
+        if !eligible(giver, &e) { continue; }
         if e.scope == "jede_beruehrung" && ["acceptance", "refusal"].contains(&e.kind) {
             standing = Some((e.index, e.kind));
             ended = None;
@@ -144,6 +170,11 @@ pub fn reduce_standing(request: &Value) -> Value {
             continue;
         }
         if broad_kind == "refusal" && e.kind == "acceptance" && e.scope == "diese_tat" {
+            continue;
+        }
+        if broad_kind == "refusal" && is_act_answer_against(&e) {
+            // Never lifts the refusal; ends only the acceptance exceptions it is bound to.
+            exceptions.retain(|(_, kind, part)| !(*kind == "acceptance" && act_answer_ends(&e, part)));
             continue;
         }
         if (broad_kind == "acceptance" && ["refusal", "revoke"].contains(&e.kind))
@@ -168,9 +199,69 @@ pub fn reduce_standing(request: &Value) -> Value {
 mod tests {
     use super::*;
     fn e(by: &str, scope: &str, kind: &str, part: &str, open: &str, active: bool) -> Value {
+        ea(by, scope, kind, part, open, active, &[], false)
+    }
+    #[allow(clippy::too_many_arguments)]
+    fn ea(by: &str, scope: &str, kind: &str, part: &str, open: &str, active: bool, acts: &[&str], bound: bool) -> Value {
         object(vec![("by", text(by)), ("scope", text(scope)), ("kind", text(kind)),
                     ("einschraenkung", text(part)), ("einschraenkungOffen", text(open)),
-                    ("active", Value::Bool(active))])
+                    ("active", Value::Bool(active)),
+                    ("actTexts", Value::List(acts.iter().map(|t| text(*t)).collect())),
+                    ("actsBound", Value::Bool(bound))])
+    }
+    fn answer(kind: &str, acts: &[&str]) -> Value { ea("bob","diese_tat",kind,"","",true,acts,!acts.is_empty()) }
+    fn perms(rows: Vec<Value>) -> Vec<i64> {
+        let r = reduce_permissions(&query(rows));
+        r.get("indices").list().unwrap().iter().map(|v|v.integer().unwrap()).collect()
+    }
+    #[test] fn s05_revoke_bound_to_part_act_keeps_broad_refusal_and_ends_that_exception() {
+        let r = broad(vec![event("bob","jede_beruehrung","refusal",""),
+            event("bob","eingeschraenkt","acceptance","rechte Hand"),
+            event("bob","eingeschraenkt","acceptance","Schulter"),
+            answer("revoke",&["Alice nimmt deine rechte Hand"])]);
+        assert_eq!(r.get("standing").integer(), Some(0));
+        let ex: Vec<i64> = r.get("exceptions").list().unwrap().iter().map(|x|x.get("index").integer().unwrap()).collect();
+        assert_eq!(ex, vec![2]);
+    }
+    #[test] fn s05_unbound_revoke_under_refusal_ends_all_acceptance_exceptions_not_refusal() {
+        let r = broad(vec![event("bob","jede_beruehrung","refusal",""),
+            event("bob","eingeschraenkt","acceptance","rechte Hand"), answer("revoke",&[])]);
+        assert_eq!(r.get("standing").integer(), Some(0));
+        assert!(r.get("exceptions").list().unwrap().is_empty());
+        assert!(matches!(r.get("ended"), Value::Null));
+    }
+    #[test] fn s05_act_refusal_under_refusal_ends_only_bound_exception() {
+        let r = broad(vec![event("bob","jede_beruehrung","refusal",""),
+            event("bob","eingeschraenkt","acceptance","rechte Hand"),
+            answer("refusal",&["Alice küsst deine Wange"])]);
+        assert_eq!(r.get("exceptions").list().unwrap().len(), 1);
+    }
+    #[test] fn s05_broad_acceptance_still_ended_by_act_answer() {
+        let r = broad(vec![event("bob","jede_beruehrung","acceptance",""), answer("revoke",&["Alice küsst deine Wange"])]);
+        assert!(matches!(r.get("standing"), Value::Null));
+        assert_eq!(r.get("ended").list().unwrap().len(), 2);
+    }
+    #[test] fn s05_standalone_permission_ended_only_by_answer_bound_to_its_part() {
+        assert_eq!(perms(vec![event("bob","eingeschraenkt","acceptance","rechte Hand"),
+            answer("refusal",&["Alice nimmt deine rechte Hand"])]), Vec::<i64>::new());
+        assert_eq!(perms(vec![event("bob","eingeschraenkt","acceptance","rechte Hand"),
+            answer("revoke",&["Alice berührt deine Schulter"])]), vec![0]);
+        assert_eq!(perms(vec![event("bob","eingeschraenkt","acceptance","rechte Hand"),
+            answer("revoke",&[])]), Vec::<i64>::new());
+    }
+    #[test] fn s05_other_side_act_does_not_end_permission() {
+        assert_eq!(perms(vec![event("bob","eingeschraenkt","acceptance","rechte Hand"),
+            answer("revoke",&["Alice nimmt deine linke Hand"])]), vec![0]);
+    }
+    #[test] fn s05_foreign_or_expired_answer_ends_nothing() {
+        let base = || event("bob","eingeschraenkt","acceptance","rechte Hand");
+        assert_eq!(perms(vec![base(), ea("alice","diese_tat","revoke","","",true,&[],false)]), vec![0]);
+        assert_eq!(perms(vec![base(), ea("bob","diese_tat","revoke","","",false,&[],false)]), vec![0]);
+    }
+    #[test] fn s05_missing_act_fields_are_contract_errors() {
+        let row = object(vec![("by", text("bob")), ("scope", text("diese_tat")), ("kind", text("revoke")),
+            ("einschraenkung", text("")), ("einschraenkungOffen", text("")), ("active", Value::Bool(true))]);
+        assert_eq!(reduce_permissions(&query(vec![row])).get("ok").boolean(), Some(false));
     }
     fn event(by: &str, scope: &str, kind: &str, part: &str) -> Value { e(by,scope,kind,part,"",true) }
     fn query(rows: Vec<Value>) -> Value {

@@ -183,6 +183,7 @@ def body_contact_entries(session: dict, prop: dict | None) -> list[dict]:
         return []
     pid = str(prop.get("id") or "")
     out = []
+    by_id = {str(f.get("id") or ""): f for f in session.get("facts") or [] if isinstance(f, dict)}
     for i, f in enumerate(session.get("facts") or []):
         if not isinstance(f, dict) or f.get("kind") != "lifecycle" or f.get("validated") is False:
             continue
@@ -193,8 +194,13 @@ def body_contact_entries(session: dict, prop: dict | None) -> list[dict]:
             continue
         pl = f.get("payload") if isinstance(f.get("payload"), dict) else {}
         kk = pl.get("koerperkontakt") if isinstance(pl.get("koerperkontakt"), dict) else {}
+        acts = [str(x) for x in kk.get("actFactIds") or []]
+        # Stand 05 (AMASTER §34.1/§35): the persisted texts of the concrete acts this answer is bound to. Only
+        # transported; Rust decides which part an act names. Bound only if every named act exists in this session.
+        found = [by_id[a] for a in acts if a in by_id]
         out.append({"index": i, "factId": f.get("id"), "kind": kind, "turn": int(f.get("turn") or 0), "text": str(f.get("text") or ""),
-                    "by": str(f.get("actorId") or ""), "acts": [str(x) for x in kk.get("actFactIds") or []],
+                    "by": str(f.get("actorId") or ""), "acts": acts,
+                    "actTexts": [str(x.get("text") or "") for x in found], "actsBound": bool(acts) and len(found) == len(acts),
                     "scope": kk.get("scope") if kk.get("scope") in ("diese_tat", "jede_beruehrung", "eingeschraenkt") else None,
                     "einschraenkung": str(kk.get("einschraenkung") or "")[:160] if kk.get("scope") == "eingeschraenkt" else None,
                     # V65X: the words of a part an UNCONFIRMED answer named (grenze unbestaetigt, kept for visibility)

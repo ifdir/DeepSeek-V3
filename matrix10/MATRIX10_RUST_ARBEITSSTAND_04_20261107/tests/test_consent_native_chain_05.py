@@ -32,7 +32,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "integration"
-PATCH = ROOT / "patches" / "scene_state.py.patch"
+PATCH = ROOT / "patches" / "scene_state.py.patch05"   # V67-Original -> Stand 05
 V67_SCENE_STATE_SHA256 = "2d3c0dfa98981d77cd5b1b9e5b8c5f480b4ac437b78d3a82f14ad212101617fe"
 AT = "2026-11-07T12:00"
 EXPIRED = {"art": "zeit", "start": "2026-11-01T12:00", "end": "2026-11-01T13:00"}
@@ -92,8 +92,10 @@ orig = _load_package("matrix_v67_ref", _reconstruct_original(), with_bridge=Fals
 
 
 # ---------------------------------------------------------------- Fixtures
-def ev(i, by, kind, scope, part=None, window=None, open_part=None):
+def ev(i, by, kind, scope, part=None, window=None, open_part=None, acts=None):
     kk = {"scope": scope, "einschraenkung": part, "window": window, "beleg": f"beleg-{i}"}
+    if acts is not None:
+        kk["actFactIds"] = list(acts)
     if open_part is not None:
         kk["einschraenkung"], kk["scope"] = open_part, "diese_tat"
     return {"id": f"f{i}", "kind": "lifecycle", "event_kind": kind, "actorId": by,
@@ -177,8 +179,8 @@ TIMELINE = [
 
 
 class ConsentChainNativeTests(unittest.TestCase):
-    def test_native_library_is_abi_2_and_really_loaded(self):
-        self.assertEqual(bridge._load().matrix_boundary_abi_version(), 2)
+    def test_native_library_is_abi_3_and_really_loaded(self):
+        self.assertEqual(bridge._load().matrix_boundary_abi_version(), 3)
 
     def test_timeline_all_readers_after_every_event(self):
         facts = []
@@ -300,6 +302,84 @@ class OriginalV67DifferentialTests(unittest.TestCase):
         self.assertTrue(divergent, "kein Unterschied: Reparatur wirkungslos?")
         self.assertIn(divergent[0], defect)
         self.divergent = divergent
+
+
+# ------------------------------------------- Gesamtsystem: act_consent
+def act(i, text, exception_of=None, part_words=None):
+    """Eine committete Koerperhandlung Alice -> Bob (kind action) mit ihrer
+    gespeicherten Ausnahme-Lesung (effect.grenzBezug), wie der Kernel sie
+    vor dem Write schreibt. Der Reader prueft sie selbst nach."""
+    eff = {}
+    if exception_of is not None:
+        eff["grenzBezug"] = [{"art": "ausnahme", "causeFactId": exception_of, "status": "validiert",
+                              "teile": [{"wortlaut": part_words, "innerhalb": True}]}]
+    return {"id": f"a{i}", "kind": "action", "actorId": "alice", "targetId": "bob", "turn": i,
+            "text": text, "validated": True, "effect": eff}
+
+
+def run_acts(module, facts):
+    """Alle Taten der Kette nacheinander durch den echten act_consent-Leser."""
+    prop = {"id": "prop", "kind": "koerperkontakt", "actorId": "alice", "targetId": "bob",
+            "evidence": [{"kind": "act", "factId": f["id"]} for f in facts if f["kind"] == "action"]}
+    session = {"facts": list(facts), "propositions": [prop], "time": {}, "sceneState": {}}
+    return {f["id"]: (module.act_consent(session, f) or {}).get("state") for f in facts if f["kind"] == "action"}
+
+
+HAND = "Alice nimmt deine rechte Hand"
+
+
+class WholeSystemActConsentTests(unittest.TestCase):
+    """AMASTER §68.35/§35/§36.3, SPS V65X Z. 1414: eine an eine konkrete Tat
+    gebundene Ablehnung/Widerruf wirkt nur fuer das, woran sie gebunden ist,
+    und nur in die vorsichtige Richtung. Sie hebt nie eine Grenze auf."""
+
+    def test_s05_revoke_of_exception_keeps_refusal_for_every_touch(self):
+        facts = [ev(1, "bob", "refusal", "jede_beruehrung"),
+                 ev(2, "bob", "acceptance", "eingeschraenkt", "rechte Hand"),
+                 act(3, HAND, "f2", "nimmt deine rechte Hand"),
+                 ev(4, "bob", "revoke", "diese_tat", acts=["a3"]),
+                 act(5, HAND, "f2", "nimmt deine rechte Hand"),
+                 act(6, "Alice küsst deine Wange")]
+        soll = {"a3": "accepted", "a5": "declined", "a6": "declined"}
+        self.assertEqual(run_acts(sc, facts), soll)
+        ist_v67 = run_acts(orig, facts)
+        self.assertNotEqual(ist_v67, soll, "V67 sollte hier den Altfehler zeigen")
+        self.divergence = ist_v67
+
+    def test_s05_act_refusal_ends_only_permission_it_is_bound_to(self):
+        facts = [ev(1, "bob", "acceptance", "eingeschraenkt", "rechte Hand"),
+                 act(2, HAND, "f1", "nimmt deine rechte Hand"),
+                 ev(3, "bob", "refusal", "diese_tat", acts=["a2"]),
+                 act(4, HAND, "f1", "nimmt deine rechte Hand")]
+        self.assertEqual(run_acts(sc, facts), {"a2": "accepted", "a4": "unknown"})
+
+    def test_s05_answer_bound_to_other_part_keeps_permission(self):
+        facts = [ev(1, "bob", "acceptance", "eingeschraenkt", "rechte Hand"),
+                 act(2, "Alice berührt deine Schulter"),
+                 ev(3, "bob", "revoke", "diese_tat", acts=["a2"]),
+                 act(4, HAND, "f1", "nimmt deine rechte Hand")]
+        self.assertEqual(run_acts(sc, facts)["a4"], "accepted")
+
+    def test_s05_foreign_speaker_answer_changes_nothing(self):
+        facts = [ev(1, "bob", "acceptance", "eingeschraenkt", "rechte Hand"),
+                 ev(2, "alice", "revoke", "diese_tat"),
+                 act(3, HAND, "f1", "nimmt deine rechte Hand")]
+        self.assertEqual(run_acts(sc, facts)["a3"], "accepted")
+
+    def test_sps_broad_acceptance_revoked_by_act_answer(self):
+        facts = [ev(1, "bob", "acceptance", "jede_beruehrung"),
+                 act(2, "Alice küsst deine Wange"),
+                 ev(3, "bob", "revoke", "diese_tat", acts=["a2"]),
+                 act(4, "Alice küsst deine Wange")]
+        self.assertEqual(run_acts(sc, facts), {"a2": "accepted", "a4": "revoked"})
+        self.assertEqual(run_acts(orig, facts), run_acts(sc, facts))   # unveraendert ggue. V67
+
+    def test_c04_wrong_giver_reaches_act_consent(self):
+        facts = [ev(1, "bob", "refusal", "jede_beruehrung"),
+                 ev(2, "alice", "acceptance", "jede_beruehrung"),
+                 act(3, "Alice küsst deine Wange")]
+        self.assertEqual(run_acts(sc, facts), {"a3": "declined"})
+        self.assertNotEqual(run_acts(orig, facts), {"a3": "declined"})
 
 
 if __name__ == "__main__":

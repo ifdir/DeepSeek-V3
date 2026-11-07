@@ -8,7 +8,9 @@
 - Paket 04: SHA-256 `04b870cb…ca66b`, ZIP-Integrität PASS, alle Einträge aus `SHA256SUMS.txt` stimmen.
 - `BAUBERICHT_04.md`, `README.md`, `RUST_MIGRATION_STATUS.json`, Paketprüfung 04.
 - Code: `integration/scene_state.py` (Reader), `integration/native_boundary.py` (FFI), `src/consent.rs`.
-- AMASTER §34 bis §37 vollständig gelesen (Zeilen 1270–1480 im eingepackten AMASTER).
+- **AMASTER vollständig gelesen (§1–§70)**, Auswertung als Gesamtsystem (siehe „AMASTER-Entscheidung“).
+- SPS: V65X (Z. 1390–1425), V60.5 (Z. 4149), V62.1 (Z. 4014), V65S-Tabelle (Z. 2229), Bedienperson (Z. 967).
+- Leserkette: `act_consent` (Konsument aller drei Reader für eine konkrete Tat), `body_contact_state`.
 - `integration/repos.py`: `append_session_fact` → `_check_fact_boundary` → `_native_boundary` (Kontextaufbau).
 
 ## FEHLT
@@ -23,12 +25,12 @@
 
 | Stufe | Inhalt | Ergebnis |
 | --- | --- | --- |
-| 0 | SHA256SUMS Stand 04 | 0 Abweichungen |
+| 0 | SHA256SUMS Stand 04; nur die 5 bewusst geänderten Dateien dürfen abweichen | 0 unerwartete Abweichungen |
 | A | ohne Rust: fail-closed (Transport 02, Consent-Transport 03) | 13/13 + 8/8 |
-| B | `cargo test --offline --locked` | **78/78 real ausgeführt** |
-| C | `cargo build --release --offline --locked` | PASS, `.so` SHA-256 `0bd03507…bb94`, reproduzierbar |
-| D | mit Rust: Consent-Transport 03 + **Gesamtkette 05** | 8 (1 Skip by design) + 10/10 |
-| E | Mutationsprobe: Sprecherbindung bzw. Gültigkeitsfenster in Rust entfernt | beide **erkannt** (Kette rot) |
+| B | `cargo test --offline --locked` | **86/86 real ausgeführt** (78 aus 04 + 8 neu) |
+| C | `cargo build --release --offline --locked` | PASS, ABI 3, `.so` SHA-256 `146db175…d6f7` |
+| D | mit Rust: Consent-Transport 03 + **Gesamtkette 05** | 8 (1 Skip by design) + **18/18** |
+| E | Gegenprobe: 4 Regeln in Rust einzeln entfernt (Sprecher, Fenster, Tat-Antwort hebt Grenze auf, Tat-Bindung) | alle 4 **erkannt** (Kette rot) |
 | F | Schreibgrenze Lifecycle, echte `.so` (`tools/probe_writer_semantics_05.py`) | Kontrollen korrekt, **3 Defekte belegt (ROT)** |
 
 Status des Gesamtlaufs: `TEILGRUEN_CONSENT_READER_KETTE__WRITER_ROT`.
@@ -40,7 +42,9 @@ Status des Gesamtlaufs: `TEILGRUEN_CONSENT_READER_KETTE__WRITER_ROT`.
    - **Differenzlauf gegen Original-V67:** Der Original-Reader wird aus `patches/scene_state.py.patch` rückwärts rekonstruiert. Sein SHA-256 `2d3c0dfa…17fe` muss dem V67-Wert entsprechen. Ergebnis: alle 4 C04-Fälle im Kandidaten SOLL und im Original rot. Die erste Abweichung in der Zeitleiste stammt von einem Ereignis der Defektklasse (fremder Sprecher oder abgelaufenes Fenster).
    - `matrix_api.ids` ist ein Stub, der **bei jedem Aufruf fehlschlägt**. Er beweist, dass die Reader keine IDs erzeugen. Er ist keine Nachbildung der V67-Datei.
 
-Keine Änderung an Rust- oder Python-Produktcode. Neu sind nur ein Test, ein Werkzeug, Evidenz und dieser Bericht.
+   - **Gesamtsystem über `act_consent`** (6 Tests): Kette Ereignis → drei Reader → Rust → `act_consent` → Zustand einer *konkreten* neuen Berührung, jeweils gegen V67.
+
+Geänderter Produktcode in 05: nur `consent.rs`, `lib.rs` (ABI 3), `native_boundary.py`, `scene_state.py` (`body_contact_entries`). Diff zum V67-Original: `patches/scene_state.py.patch05`.
 
 ## Schreibgrenze: belegter Defekt (Stufe F)
 
@@ -77,15 +81,40 @@ Eine Sperre ohne diesen Beleg kann gültige Writes in die Quarantäne schicken.
 
 route-safe für diesen Plan: **UNKLAR** bis `kernel.py` gelesen ist.
 
-## UNKLAR (nicht entschieden, kein Patch)
+## AMASTER-Entscheidung: Antworten auf eine konkrete Tat (Patch in 05)
 
-AMASTER §36.4 sagt nur: *„Bruch, Widerruf und Widerspruch erzeugen neue Evidenz. Sie löschen das frühere Commitment nicht aus der Geschichte.“* Die beiden folgenden Punkte entscheidet es **nicht**. Ein Patch muss sich daher auf SPS/Kettenvertrag oder eine Vorgabe des Users stützen:
+**Gesamtsystem-Befund (Altfehler V67, in 04 nach Rust übernommen).** Er ist nur im Zusammenspiel sichtbar: Standing-Reader + Erlaubnis-Reader + `act_consent`.
 
-- **Breite Zustimmung → Einzelerlaubnis → Widerruf (`revoke`, Scope `diese_tat`):** `body_contact_standing` meldet `revoked`. `restricted_permissions_standing` behält die Einzelerlaubnis aber bei, weil nur ein `jede_beruehrung`- oder ein gleichstelliger `eingeschraenkt`-Eintrag sie beendet. Ob ein Widerruf der breiten Zustimmung eine *vorher eigenständig* gegebene Einzelerlaubnis mit beendet, ist nicht belegt. Dasselbe gilt für eine Einzelerlaubnis, auf die ein Widerruf ohne Stelle oder eine Ablehnung einer Tat folgt: Die Erlaubnis bleibt stehen, im Kandidaten wie im Original. Zwei SPS-Stellen ziehen in verschiedene Richtungen:
-  - V65X Z. 1414: „Widerruf ohne Stelle beendet *eine* Erlaubnis (vorsichtige Richtung)“;
-  - V65X: „Eine Antwort mit Stelle beantwortet nur Taten, die diese Stelle nennen“, und §34.3 (2_7master): „nur für das, was sie sagt“.
-  Eine saubere Lösung hinge von der beantworteten Tat ab (`acts`/`actFactIds`). Diese wird heute **nicht** an Rust übergeben. Das ist eine Entscheidung für den User, kein Patch.
-- ~~Ob ein `revoke` ohne Stelle eine *breite* Zustimmung beenden darf.~~ **Geklärt durch SPS V65X Z. 1414:** „ein Widerruf ohne Stelle beendet eine Erlaubnis weiterhin (vorsichtige Richtung)“. Kandidat = Original = SOLL. Jetzt Test `test_sps_v65x_revoke_without_part_ends_broad_permission`.
+| Kette | V67 / Stand 04 | SOLL |
+| --- | --- | --- |
+| Bob lehnt jede Berührung ab → erlaubt rechte Hand → Hand-Tat a3 → Bob widerruft, gebunden an a3 → neue Hand-Tat a5 → Kuss a6 | a3 accepted, **a5 accepted, a6 unknown** | a3 accepted, **a5 declined, a6 declined** |
+
+Ursache: In `reduce_standing` beendete *jeder* Widerruf (auch „diese Tat“) die Ablehnung jeder Berührung. Danach war `body_contact_standing` leer, und `act_consent` fiel auf den Erlaubnis-Zweig zurück. Die Einzelerlaubnis blieb stehen. Bobs Widerruf hat also *mehr* Berührung erlaubt.
+
+**Regel, abgeleitet aus dem AMASTER als Ganzes:**
+- §68.35/§34.1: Ein kanonisch gebundener Current State wird ohne neue gültige Evidenz nicht zurückgestuft.
+- §35/§36.3: Current State kommt aus der neuesten *gültigen* Evidenz derselben Proposition. Eine Zustimmung gilt nur, wenn sie gebunden ist und keine spätere Evidenz die Sache geschlossen hat.
+- §34.1: Jede Komponente hat ihre eigene Bindung.
+- §36.4: Widerruf ist neue Evidenz.
+- SPS V65X Z. 1414: „eine Erlaubnis für eine einzelne Tat hebt die Grenze nicht auf. Eine Ablehnung einer Tat oder ein Widerruf ohne Stelle beendet eine Erlaubnis weiterhin (vorsichtige Richtung).“
+
+Daraus folgt für eine Ablehnung oder einen Widerruf mit Scope `diese_tat`:
+1. Sie ist nur Evidenz für die Taten, an die sie gebunden ist (`actFactIds`), und wirkt nur in die vorsichtige Richtung.
+2. Unter **breiter Zustimmung**: Sie beendet die Zustimmung (SPS). Unverändert.
+3. Unter **breiter Ablehnung**: Sie hebt die Ablehnung **nie** auf. Sie beendet die Ausnahme-Erlaubnisse, deren Stelle eine gebundene Tat nennt.
+4. **Eigenständige Einzelerlaubnis**: Sie endet, wenn eine gebundene Tat ihre Stelle nennt. Eine Tat an einer anderen Stelle (Schulter, linke Hand) beendet sie nicht.
+5. Antwort ohne gebundene Tat, oder eine gebundene Tat existiert nicht: vorsichtig, alle Erlaubnisse/Ausnahmen enden.
+6. Fremder, leerer oder abgelaufener Sprecher: keine Wirkung (wie 04).
+
+Damit ist auch der frühere UNKLAR-Punkt (Einzelerlaubnis nach Widerruf ohne Stelle) entschieden, ohne Vorgabe von außen. Die beiden SPS-Sätze widersprechen sich nicht. Bindung entscheidet, und Unbindbares wirkt vorsichtig.
+
+**Umsetzung (route-safe: JA).** Kein neuer Store, keine Route, kein zweiter Owner, keine Python-Entscheidung:
+- `scene_state.body_contact_entries` liefert zusätzlich `actTexts` (die gespeicherten Texte der gebundenen Taten aus denselben Session-Fakten) und `actsBound`. Diese Werte werden nur transportiert.
+- Rust `consent.rs` entscheidet mit dem vorhandenen `restriction::names_restriction`, ob eine Tat eine Stelle nennt. Ändert sich die Eintragsform, ist das ein Vertragsbruch → **ABI 2 → 3** (Python und Rust gleichzeitig).
+- Python prüft die Rückgabe strenger: Eine beendete Ablehnung darf nur durch eine breite Zustimmung beendet sein.
+- No-Touch eingehalten: `restriction.rs`, Writer-Operationen, `act_consent`-Logik, Fakten (append-only), Routen.
+
+**Risiko:** Die Regel braucht korrekt gebundene `actFactIds`. Diese kommen vom Lifecycle-Writer, und den deckt Stufe F nicht ab (siehe Schreibgrenze). Ein falsch gebundener Widerruf kann eine Erlaubnis beenden, aber nie eine Grenze aufheben. Der Fehler geht also nur in die vorsichtige Richtung.
 
 ## Weiter offen (aus 04, unverändert)
 
@@ -97,5 +126,5 @@ AMASTER §36.4 sagt nur: *„Bruch, Widerruf und Widerspruch erzeugen neue Evide
 ## Reproduktion
 
 ```sh
-python3 -B tools/run_chain_05.py      # Exit 0 = alle Stufen A–E grün
+python3 -B tools/run_chain_05.py      # Exit 0 = Stufen 0, A–F gelaufen; Status nennt Writer-ROT
 ```

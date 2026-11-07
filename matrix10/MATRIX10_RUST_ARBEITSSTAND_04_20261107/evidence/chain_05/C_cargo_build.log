@@ -33,4 +33,4 @@ warning: field `0` is never read
    = note: `SessionId` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
 
 warning: `matrix-boundary-core` (lib) generated 3 warnings
-    Finished `release` profile [optimized] target(s) in 0.00s
+    Finished `release` profile [optimized] target(s) in 0.01s
