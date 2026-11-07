@@ -8,7 +8,8 @@
 - Paket 04: SHA-256 `04b870cb…ca66b`, ZIP-Integrität PASS, alle Einträge aus `SHA256SUMS.txt` stimmen.
 - `BAUBERICHT_04.md`, `README.md`, `RUST_MIGRATION_STATUS.json`, Paketprüfung 04.
 - Code: `integration/scene_state.py` (Reader), `integration/native_boundary.py` (FFI), `src/consent.rs`.
-- AMASTER §36.4 (Bruch/Widerruf) nur punktuell per Suche, **nicht vollständig gelesen**.
+- AMASTER §34 bis §37 vollständig gelesen (Zeilen 1270–1480 im eingepackten AMASTER).
+- `integration/repos.py`: `append_session_fact` → `_check_fact_boundary` → `_native_boundary` (Kontextaufbau).
 
 ## FEHLT
 
@@ -28,6 +29,9 @@
 | C | `cargo build --release --offline --locked` | PASS, `.so` SHA-256 `0bd03507…bb94`, reproduzierbar |
 | D | mit Rust: Consent-Transport 03 + **Gesamtkette 05** | 8 (1 Skip by design) + 10/10 |
 | E | Mutationsprobe: Sprecherbindung bzw. Gültigkeitsfenster in Rust entfernt | beide **erkannt** (Kette rot) |
+| F | Schreibgrenze Lifecycle, echte `.so` (`tools/probe_writer_semantics_05.py`) | Kontrollen korrekt, **3 Defekte belegt (ROT)** |
+
+Status des Gesamtlaufs: `TEILGRUEN_CONSENT_READER_KETTE__WRITER_ROT`.
 
 3. **Gesamtkette 05** (`tests/test_consent_native_chain_05.py`) prüft ohne Mock:
    - **Zeitleiste mit 15 Ereignissen.** Nach **jedem** Ereignis werden **alle drei Reader gemeinsam** abgefragt (`body_contact_standing`, `restricted_permissions_standing`, `restricted_refusals_standing`). Die Ereignisse enthalten fremde und leere Sprecher, abgelaufene und gültige Zeitfenster, andere Stimme („meine rechte Hand“), Widerruf und mehr als 6 Ereignisse.
@@ -38,15 +42,50 @@
 
 Keine Änderung an Rust- oder Python-Produktcode. Neu sind nur ein Test, ein Werkzeug, Evidenz und dieser Bericht.
 
+## Schreibgrenze: belegter Defekt (Stufe F)
+
+Codepfad (IST): `append_session_fact` → `_check_fact_boundary` → `_native_boundary("fact")` → Rust `boundary::fact`.
+Der Kontext enthält nur cast, operators und Quell-IDs. Proposition, berechtigter Empfänger und TurnTruth-Sprecher fehlen.
+Der Rust-Code sagt das selbst: *„structural validation, NOT semantic effect authorization“*.
+
+| Fall | AMASTER | SOLL | IST |
+| --- | --- | --- | --- |
+| W1 Alice stimmt im Namen von Bob zu | §36.3 Sprecher/Empfänger | abweisen | **angenommen** |
+| W2 Actor ≠ Sprecher der Quell-TurnTruth | §34.1 Actor aus TurnTruth | abweisen | **angenommen** |
+| W3 Lifecycle ohne `propositionId` | §36.2/§35 dieselbe Proposition | abweisen | **angenommen** |
+| U1 Ablehnung ohne `responds_to_fact_id` | §36.2 vs. §34.1 „gesetzte Grenze“ | UNKLAR | angenommen |
+| K1 gültige Ablehnung von Bob | Kontrolle | annehmen | angenommen |
+| K2 fremde Quell-TurnTruth | Kontrolle | abweisen | abgewiesen |
+
+Folge: Falsch zugeschriebene Einträge landen dauerhaft (append-only) im Bestand. Der Reader aus Stand 04/05 filtert sie beim Lesen heraus. Andere Leser dieser Fakten (Memory, Beziehung, Folgeturn) sind dadurch **nicht** geschützt. Geprüft: UNKLAR, Code fehlt.
+
+**Kein Patch in 05. Grund:** Die Lifecycle-Einträge schreibt `kernel.apply_proposition` (V67-`kernel.py`), und diese Datei fehlt. Ohne sie ist nicht belegt,
+- welche `event_kind` mit welchem `actorId` legitim geschrieben werden (z. B. `request` vom Fragenden, `fulfilled`),
+- ob die Bedienperson (`_OPERATOR_IDS`) als Avatar im Namen des Givers antwortet.
+
+Eine Sperre ohne diesen Beleg kann gültige Writes in die Quarantäne schicken.
+
+**Minimaler Patchplan (erst mit V67):**
+1. `repos._native_boundary`: Nur für `operation == "fact"` und `kind == "lifecycle"` kommen zwei Felder in den Kontext: die gespeicherte Proposition (`actorId`, `targetId`) und der Sprecher der Quell-TurnTruth (über das vorhandene `_turn_truth_row`). Kein neuer Store, keine neue Route.
+2. Rust `boundary::fact`: Für `refusal`/`acceptance`/`revoke` (Mapping wie `_KK_KIND`) gilt actor == Proposition.targetId == TurnTruth-Sprecher. Außerdem ist `propositionId` Pflicht und muss existieren. Die Fehlercodes sind neu, der Status 422.
+3. ABI 2 → 3 (Request-Form ändert sich). Python und Rust gleichzeitig umstellen.
+4. Abnahme im selben Gesamtlauf: W1–W3 werden abgewiesen, K1/K2 bleiben gleich, C04 und Zeitleiste bleiben grün, und die V67-Writer schreiben über SQLite weiter alle gültigen Fakten (Gegenprobe mit realen V67-Writes).
+
+**No-Touch:** Reader-Logik aus 04/05, `restriction.rs`, andere Writer-Operationen (`truth`, `god`, `relation`, `witness`, `ids`), vorhandene Fakten (kein Umschreiben historischer Zeilen), GodCommandParser, SocialMatrix, Routen.
+
+route-safe für diesen Plan: **UNKLAR** bis `kernel.py` gelesen ist.
+
 ## UNKLAR (nicht entschieden, kein Patch)
 
-- **Breite Zustimmung → Einzelerlaubnis → Widerruf (`revoke`, Scope `diese_tat`):** `body_contact_standing` meldet `revoked`. `restricted_permissions_standing` behält die Einzelerlaubnis aber bei, weil nur ein `jede_beruehrung`- oder ein gleichstelliger `eingeschraenkt`-Eintrag sie beendet. Ob ein Widerruf der breiten Zustimmung eine *vorher eigenständig* gegebene Einzelerlaubnis mit beendet, ist aus dem gelesenen AMASTER-Material nicht belegt. Für einen Patch muss §36.4 vollständig ausgelegt werden.
+AMASTER §36.4 sagt nur: *„Bruch, Widerruf und Widerspruch erzeugen neue Evidenz. Sie löschen das frühere Commitment nicht aus der Geschichte.“* Die beiden folgenden Punkte entscheidet es **nicht**. Ein Patch muss sich daher auf SPS/Kettenvertrag oder eine Vorgabe des Users stützen:
+
+- **Breite Zustimmung → Einzelerlaubnis → Widerruf (`revoke`, Scope `diese_tat`):** `body_contact_standing` meldet `revoked`. `restricted_permissions_standing` behält die Einzelerlaubnis aber bei, weil nur ein `jede_beruehrung`- oder ein gleichstelliger `eingeschraenkt`-Eintrag sie beendet. Ob ein Widerruf der breiten Zustimmung eine *vorher eigenständig* gegebene Einzelerlaubnis mit beendet, ist nicht belegt.
 - Ob ein `revoke` mit Scope `diese_tat` überhaupt eine *breite* Zustimmung beenden darf (V67-Verhalten, im Kandidaten übernommen).
 
 ## Weiter offen (aus 04, unverändert)
 
 1. Native Writer-, SQLite-, Neustart- und Folgeturn-Kette mit echtem V67 (benötigt V67-ZIP). C04 und B01–B04 dort grün nachweisen.
-2. Semantische Schreibgrenze (Handlungsbindung, Körperstelle, Giver, Umfang, Zeit/Szene) beim **Writer**. Heute wird nur beim Lesen gefiltert. Falsch zugeschriebene Lifecycle-Einträge werden noch gespeichert.
+2. Schreibgrenze für Lifecycle-Einträge: Defekt jetzt belegt (Stufe F), Patchplan siehe oben. Benötigt V67-`kernel.py`.
 3. Übrige Kernel-, Memory-, Erfahrungs-, Welt- und BrainContext-Kette nach AMASTER/SPS.
 4. HTTP/Frontend über sichtbare Bedienung, V12-Abnahme. Erst danach Livetest.
 

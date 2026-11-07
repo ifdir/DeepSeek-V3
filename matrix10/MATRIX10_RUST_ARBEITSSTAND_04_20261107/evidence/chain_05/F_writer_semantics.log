@@ -1,0 +1,75 @@
+{
+  "stand": "05",
+  "rust_executed": true,
+  "sqlite": false,
+  "product_release": false,
+  "cases": [
+    {
+      "case": "W1_FREMDER_GIVER_ZUSTIMMUNG",
+      "amaster": "§36.3 Sprecher/Empfaenger",
+      "soll": "REJECT",
+      "ist": "ACCEPT",
+      "code": "OK",
+      "soll_erfuellt": false,
+      "hinweis_turn_speaker": "alice",
+      "hinweis_proposition_target": "bob"
+    },
+    {
+      "case": "W2_ACTOR_NICHT_TURNTRUTH_SPRECHER",
+      "amaster": "§34.1 Actor aus TurnTruth",
+      "soll": "REJECT",
+      "ist": "ACCEPT",
+      "code": "OK",
+      "soll_erfuellt": false,
+      "hinweis_turn_speaker": "bob",
+      "hinweis_proposition_target": "bob"
+    },
+    {
+      "case": "W3_OHNE_PROPOSITION",
+      "amaster": "§36.2 dieselbe Proposition",
+      "soll": "REJECT",
+      "ist": "ACCEPT",
+      "code": "OK",
+      "soll_erfuellt": false,
+      "hinweis_turn_speaker": "bob",
+      "hinweis_proposition_target": "bob"
+    },
+    {
+      "case": "U1_OHNE_REQUEST_BEZUG",
+      "amaster": "§36.2 vs §34.1 Grenze",
+      "soll": "UNKLAR",
+      "ist": "ACCEPT",
+      "code": "OK",
+      "soll_erfuellt": null,
+      "hinweis_turn_speaker": "bob",
+      "hinweis_proposition_target": "bob"
+    },
+    {
+      "case": "K1_GUELTIGE_ABLEHNUNG",
+      "amaster": "Kontrolle",
+      "soll": "ACCEPT",
+      "ist": "ACCEPT",
+      "code": "OK",
+      "soll_erfuellt": true,
+      "hinweis_turn_speaker": "bob",
+      "hinweis_proposition_target": "bob"
+    },
+    {
+      "case": "K2_FREMDE_QUELLE",
+      "amaster": "Kontrolle strukturell",
+      "soll": "REJECT",
+      "ist": "REJECT",
+      "code": "FACT_SOURCE_INVALID",
+      "soll_erfuellt": true,
+      "hinweis_turn_speaker": null,
+      "hinweis_proposition_target": "bob"
+    }
+  ],
+  "writer_semantic_defects": [
+    "W1_FREMDER_GIVER_ZUSTIMMUNG",
+    "W2_ACTOR_NICHT_TURNTRUTH_SPRECHER",
+    "W3_OHNE_PROPOSITION"
+  ],
+  "controls_ok": true,
+  "befund": "Native fact-Pruefung ist rein strukturell; Giver/Proposition/Request/TurnTruth-Sprecher werden beim Schreiben NICHT geprueft."
+}

@@ -55,9 +55,18 @@
         "chain_exit": 1,
         "erkannt": true
       }
+    },
+    "F_schreibgrenze_lifecycle": {
+      "exit": 0,
+      "controls_ok": true,
+      "offene_defekte": [
+        "W1_FREMDER_GIVER_ZUSTIMMUNG",
+        "W2_ACTOR_NICHT_TURNTRUTH_SPRECHER",
+        "W3_OHNE_PROPOSITION"
+      ]
     }
   },
-  "status": "TEILGRUEN_CONSENT_READER_KETTE",
+  "status": "TEILGRUEN_CONSENT_READER_KETTE__WRITER_ROT",
   "nicht_pruefbar": [
     "V67-Writer",
     "SQLite Commit/Close/Reopen",

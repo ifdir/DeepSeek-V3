@@ -11,6 +11,8 @@ Reihenfolge (jede Stufe muss gruen sein, sonst Abbruch, Exit != 0):
      Differenz gegen rekonstruiertes Original-V67).
   E. Mutationsprobe: Sprecher- und Fensterpruefung in Rust einzeln entfernt,
      neu gebaut; Gesamtkette MUSS rot werden.
+  F. Schreibgrenze Lifecycle (echte .so): Kontrollen muessen stimmen; die
+     belegten Defekte W1-W3 werden als OFFEN gemeldet, nicht als Gruen.
 
 Nicht enthalten (NICHT_PRUEFBAR ohne V67-ZIP): Writer, SQLite, Neustart,
 Folgeturn, HTTP, Frontend, Isolation. Kein Produkt-Release.
@@ -136,7 +138,17 @@ def main() -> int:
     if not all(k["erkannt"] for k in killed.values()):
         return stop("E_mutationsprobe", "Mutation nicht erkannt: Gesamttest zu schwach")
 
-    result["status"] = "TEILGRUEN_CONSENT_READER_KETTE"
+    # F -- Schreibgrenze (Befund, kein Gruen)
+    code, out = sh([sys.executable, "-B", str(ROOT / "tools/probe_writer_semantics_05.py")])
+    (evidence / "F_writer_semantics.log").write_text(out)
+    probe = json.loads((evidence / "writer_semantics_05.json").read_text())
+    result["stages"]["F_schreibgrenze_lifecycle"] = {"exit": code, "controls_ok": probe["controls_ok"],
+                                                    "offene_defekte": probe["writer_semantic_defects"]}
+    if code or not probe["controls_ok"]:
+        return stop("F_schreibgrenze_lifecycle", "Kontrollfaelle der Schreibgrenze rot")
+
+    result["status"] = ("TEILGRUEN_CONSENT_READER_KETTE__WRITER_ROT" if probe["writer_semantic_defects"]
+                        else "TEILGRUEN_CONSENT_READER_KETTE")
     result["nicht_pruefbar"] = ["V67-Writer", "SQLite Commit/Close/Reopen", "Folgeturn", "HTTP",
                                 "Frontend", "User-/Session-Isolation", "AMASTER-Gesamtabnahme V12"]
     result["fehlt"] = "MATRIX10_V67_ABHAENGIGKEIT_20261031.zip (SHA-256 5158df26...efed)"
