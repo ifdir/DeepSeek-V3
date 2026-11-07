@@ -13,7 +13,7 @@ test_scope_query_does_not_fallback_without_rust (test_transport_02.TransportTest
 test_trailing_unknown_and_duplicate (test_transport_02.TransportTests.test_trailing_unknown_and_duplicate) ... ok
 
 ----------------------------------------------------------------------
-Ran 13 tests in 0.013s
+Ran 13 tests in 0.016s
 
 OK
 

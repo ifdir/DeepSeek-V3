@@ -40,7 +40,7 @@
       {
         "pattern": "test_consent_native_chain_05.py",
         "exit": 0,
-        "ran": 10,
+        "ran": 12,
         "skipped": 0
       }
     ],

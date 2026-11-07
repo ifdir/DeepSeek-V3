@@ -229,6 +229,21 @@ class ConsentChainNativeTests(unittest.TestCase):
         self.assertEqual(snap["perms"], ["linke Hand"])
         assert_cross_invariants(self, snap, facts)
 
+    def test_sps_v65x_revoke_without_part_ends_broad_permission(self):
+        """SPS V65X Z. 1414: "ein Widerruf ohne Stelle beendet eine Erlaubnis
+        weiterhin (vorsichtige Richtung, Z. 1974)"."""
+        facts = [ev(1, "bob", "acceptance", "jede_beruehrung"), ev(2, "bob", "revoke", "diese_tat")]
+        snap = snapshot(sc, facts)
+        self.assertEqual((snap["state"], snap["cause"]), ("revoked", "f2"))
+        self.assertEqual(snapshot(orig, facts), snap)   # unveraendertes V67-Verhalten
+
+    def test_sps_v65x_revoke_of_same_part_ends_only_that_part(self):
+        """SPS V65X E01: "Widerruf nur der einen Stelle"."""
+        facts = [ev(1, "bob", "acceptance", "eingeschraenkt", "rechte Hand"),
+                 ev(2, "bob", "acceptance", "eingeschraenkt", "Schulter"),
+                 ev(3, "bob", "revoke", "eingeschraenkt", "meine rechte Hand")]
+        self.assertEqual(snapshot(sc, facts)["perms"], ["Schulter"])
+
     def test_compound_word_is_not_same_part(self):
         facts = [ev(1, "bob", "refusal", "eingeschraenkt", "Hand"),
                  ev(2, "bob", "acceptance", "eingeschraenkt", "Handtasche")]
