@@ -1,0 +1,71 @@
+{
+  "stand": "05",
+  "product_release": false,
+  "stages": {
+    "0_integritaet": {
+      "abweichend": []
+    },
+    "A_fail_closed_ohne_rust": [
+      {
+        "pattern": "test_transport_02.py",
+        "exit": 0,
+        "ran": 13,
+        "skipped": 0
+      },
+      {
+        "pattern": "test_consent_transport_03.py",
+        "exit": 0,
+        "ran": 8,
+        "skipped": 0
+      }
+    ],
+    "B_cargo_test": {
+      "rustc": "rustc 1.97.0 (2d8144b78 2026-07-07)",
+      "exit": 0,
+      "passed": 78,
+      "failed": 0
+    },
+    "C_cargo_build": {
+      "exit": 0,
+      "warnings": 4,
+      "library_sha256": "0bd0350700d79042e7ff39ba0a6c7da337d585f7dc1d53721ee9fb93f34ebb94"
+    },
+    "D_native_gesamtkette": [
+      {
+        "pattern": "test_consent_transport_03.py",
+        "exit": 0,
+        "ran": 8,
+        "skipped": 1
+      },
+      {
+        "pattern": "test_consent_native_chain_05.py",
+        "exit": 0,
+        "ran": 10,
+        "skipped": 0
+      }
+    ],
+    "E_mutationsprobe": {
+      "ohne_sprecherbindung": {
+        "build_exit": 0,
+        "chain_exit": 1,
+        "erkannt": true
+      },
+      "ohne_gueltigkeitsfenster": {
+        "build_exit": 0,
+        "chain_exit": 1,
+        "erkannt": true
+      }
+    }
+  },
+  "status": "TEILGRUEN_CONSENT_READER_KETTE",
+  "nicht_pruefbar": [
+    "V67-Writer",
+    "SQLite Commit/Close/Reopen",
+    "Folgeturn",
+    "HTTP",
+    "Frontend",
+    "User-/Session-Isolation",
+    "AMASTER-Gesamtabnahme V12"
+  ],
+  "fehlt": "MATRIX10_V67_ABHAENGIGKEIT_20261031.zip (SHA-256 5158df26...efed)"
+}
