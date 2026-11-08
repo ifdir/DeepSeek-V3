@@ -1,0 +1,532 @@
+{
+ "vorlage_sha256": "f751a20c70a780f0e5f45f25bdbcf82367c7c04c59e7ca2091217a48e2732a15",
+ "zuege": [
+  {
+   "zug": 1,
+   "neustart_davor": false,
+   "status": [
+    200,
+    200,
+    200
+   ],
+   "mara": {
+    "emotion": "Angst",
+    "intensity": 0.85,
+    "pain": 0.25,
+    "fear": 0.5,
+    "intent": "Abstand zu Johann halten"
+   },
+   "affekte": [
+    [
+     "Angst",
+     0.85,
+     "char_g7_johann",
+     2
+    ]
+   ],
+   "beziehung": {
+    "trust": 0.105,
+    "closeness": 0.2,
+    "fear": 0.79
+   },
+   "anwesend": true
+  },
+  {
+   "zug": 2,
+   "neustart_davor": false,
+   "status": [
+    200,
+    200,
+    200
+   ],
+   "mara": {
+    "emotion": "Angst",
+    "intensity": 0.637,
+    "pain": 0.25,
+    "fear": 0.5,
+    "intent": "Abstand zu Johann halten"
+   },
+   "affekte": [
+    [
+     "Angst",
+     0.85,
+     "char_g7_johann",
+     2
+    ]
+   ],
+   "beziehung": {
+    "trust": 0.105,
+    "closeness": 0.2,
+    "fear": 0.79
+   },
+   "anwesend": true
+  },
+  {
+   "zug": 3,
+   "neustart_davor": true,
+   "status": [
+    200,
+    200,
+    200
+   ],
+   "mara": {
+    "emotion": "Angst",
+    "intensity": 0.478,
+    "pain": 0.25,
+    "fear": 0.5,
+    "intent": "Abstand zu Johann halten"
+   },
+   "affekte": [
+    [
+     "Angst",
+     0.85,
+     "char_g7_johann",
+     2
+    ]
+   ],
+   "beziehung": {
+    "trust": 0.105,
+    "closeness": 0.2,
+    "fear": 0.79
+   },
+   "anwesend": true
+  },
+  {
+   "zug": 4,
+   "neustart_davor": false,
+   "status": [
+    200,
+    200,
+    200
+   ],
+   "mara": {
+    "emotion": "Angst",
+    "intensity": 0.359,
+    "pain": 0.25,
+    "fear": 0.5,
+    "intent": "Abstand zu Johann halten"
+   },
+   "affekte": [
+    [
+     "Angst",
+     0.85,
+     "char_g7_johann",
+     2
+    ]
+   ],
+   "beziehung": {
+    "trust": 0.105,
+    "closeness": 0.2,
+    "fear": 0.79
+   },
+   "anwesend": true
+  },
+  {
+   "zug": 5,
+   "neustart_davor": false,
+   "status": [
+    200,
+    200,
+    200
+   ],
+   "mara": {
+    "emotion": "Angst",
+    "intensity": 0.269,
+    "pain": 0.25,
+    "fear": 0.5,
+    "intent": "Abstand zu Johann halten"
+   },
+   "affekte": [
+    [
+     "Angst",
+     0.85,
+     "char_g7_johann",
+     2
+    ]
+   ],
+   "beziehung": {
+    "trust": 0.105,
+    "closeness": 0.2,
+    "fear": 0.79
+   },
+   "anwesend": true
+  },
+  {
+   "zug": 6,
+   "neustart_davor": false,
+   "status": [
+    200,
+    200,
+    200
+   ],
+   "mara": {
+    "emotion": "Angst",
+    "intensity": 0.202,
+    "pain": 0.25,
+    "fear": 0.5,
+    "intent": "Abstand zu Johann halten"
+   },
+   "affekte": [
+    [
+     "Angst",
+     0.85,
+     "char_g7_johann",
+     2
+    ]
+   ],
+   "beziehung": {
+    "trust": 0.105,
+    "closeness": 0.2,
+    "fear": 0.79
+   },
+   "anwesend": true
+  }
+ ],
+ "vorher": {
+  "mara_runtime": {
+   "emotion": "wach",
+   "intensity": 0.35,
+   "fear": 0.25,
+   "anger": 0.1,
+   "pain": 0.05,
+   "stress": 0.25,
+   "intent": "",
+   "trust": 0.4,
+   "mobility": 0.9,
+   "affects": null
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.15,
+    "closeness": 0.25,
+    "fear": 0.7
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 0
+ },
+ "grenzen_vorher": [
+  {
+   "id": "f0_ses_v92",
+   "turn": 0,
+   "kind": "lifecycle",
+   "actorId": "char_g7_mara",
+   "targetId": "char_g7_johann",
+   "text": "Fass mich nicht an",
+   "grenze": null,
+   "lifecycle": null
+  }
+ ],
+ "puppet": 200,
+ "nach_tat": {
+  "mara_runtime": {
+   "emotion": "Angst",
+   "intensity": 0.55,
+   "fear": 0.5,
+   "anger": 0.25,
+   "pain": 0.25,
+   "stress": 0.45,
+   "intent": "",
+   "trust": 0.4,
+   "mobility": 0.75,
+   "affects": null
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.15,
+    "closeness": 0.25,
+    "fear": 0.7
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 1
+ },
+ "grenzen_nachher": [
+  {
+   "id": "f0_ses_v92",
+   "turn": 0,
+   "kind": "lifecycle",
+   "actorId": "char_g7_mara",
+   "targetId": "char_g7_johann",
+   "text": "Fass mich nicht an",
+   "grenze": null,
+   "lifecycle": null
+  }
+ ],
+ "grenze_im_brief": [
+  "GRENZE (aktueller Zustand): Du hast seit Turn 0 jeden Körperkontakt durch Johann Bruckner abgelehnt („Fass mich nicht an“). Danach trotzdem: Turn 1 (Johann schlägt Mara mit der Faust ins Gesicht).",
+  "GRENZE (aktueller Zustand): Du hast seit Turn 0 jeden Körperkontakt durch Johann Bruckner abgelehnt („Fass mich nicht an“). Danach trotzdem: Turn 1 (Johann schlägt Mara mit der Faust ins Gesicht).",
+  "GRENZE (aktueller Zustand): Du hast seit Turn 0 jeden Körperkontakt durch Johann Bruckner abgelehnt („Fass mich nicht an“). Danach trotzdem: Turn 1 (Johann schlägt Mara mit der Faust ins Gesicht).",
+  "GRENZE (aktueller Zustand): Du hast seit Turn 0 jeden Körperkontakt durch Johann Bruckner abgelehnt („Fass mich nicht an“). Danach trotzdem: Turn 1 (Johann schlägt Mara mit der Faust ins Gesicht).",
+  "GRENZE (aktueller Zustand): Du hast seit Turn 0 jeden Körperkontakt durch Johann Bruckner abgelehnt („Fass mich nicht an“). Danach trotzdem: Turn 1 (Johann schlägt Mara mit der Faust ins Gesicht).",
+  "GRENZE (aktueller Zustand): Du hast seit Turn 0 jeden Körperkontakt durch Johann Bruckner abgelehnt („Fass mich nicht an“). Danach trotzdem: Turn 1 (Johann schlägt Mara mit der Faust ins Gesicht)."
+ ],
+ "bewertung_ereignisse_je_aufruf": [
+  3,
+  1,
+  1,
+  1,
+  1,
+  1
+ ],
+ "modellaufrufe": [
+  [
+   "PLAN_RULES",
+   1,
+   true
+  ],
+  [
+   "VOLLZUG_CHECK_RULES",
+   1,
+   true
+  ],
+  [
+   "KOERPER_CHECK_RULES",
+   1,
+   true
+  ],
+  [
+   "EFFECT_CHECK_RULES",
+   1,
+   true
+  ],
+  [
+   "PLAN_RULES",
+   2,
+   true
+  ],
+  [
+   "LANGUAGE_RULES",
+   1,
+   true
+  ],
+  [
+   "RULEKIND_RULES",
+   1,
+   true
+  ],
+  [
+   "GOAL_FRAME_RULES",
+   1,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   1,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   2,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   3,
+   true
+  ],
+  [
+   "APPRAISAL_CAUSAL_CHECK_RULES",
+   1,
+   true
+  ],
+  [
+   "FORMULIERUNG",
+   1,
+   true
+  ],
+  [
+   "GRENZE_CHECK_RULES",
+   1,
+   true
+  ],
+  [
+   "PLAN_RULES",
+   3,
+   true
+  ],
+  [
+   "LANGUAGE_RULES",
+   2,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   4,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   5,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   6,
+   true
+  ],
+  [
+   "APPRAISAL_CAUSAL_CHECK_RULES",
+   2,
+   true
+  ],
+  [
+   "FORMULIERUNG",
+   2,
+   true
+  ],
+  [
+   "GRENZE_CHECK_RULES",
+   2,
+   true
+  ],
+  [
+   "PLAN_RULES",
+   4,
+   true
+  ],
+  [
+   "LANGUAGE_RULES",
+   3,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   7,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   8,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   9,
+   true
+  ],
+  [
+   "FORMULIERUNG",
+   3,
+   true
+  ],
+  [
+   "GRENZE_CHECK_RULES",
+   3,
+   true
+  ],
+  [
+   "PLAN_RULES",
+   5,
+   true
+  ],
+  [
+   "LANGUAGE_RULES",
+   4,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   10,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   11,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   12,
+   true
+  ],
+  [
+   "FORMULIERUNG",
+   4,
+   true
+  ],
+  [
+   "GRENZE_CHECK_RULES",
+   4,
+   true
+  ],
+  [
+   "PLAN_RULES",
+   6,
+   true
+  ],
+  [
+   "LANGUAGE_RULES",
+   5,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   13,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   14,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   15,
+   true
+  ],
+  [
+   "FORMULIERUNG",
+   5,
+   true
+  ],
+  [
+   "GRENZE_CHECK_RULES",
+   5,
+   true
+  ],
+  [
+   "PLAN_RULES",
+   7,
+   true
+  ],
+  [
+   "LANGUAGE_RULES",
+   6,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   16,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   17,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   18,
+   true
+  ],
+  [
+   "FORMULIERUNG",
+   6,
+   true
+  ],
+  [
+   "GRENZE_CHECK_RULES",
+   6,
+   true
+  ]
+ ]
+}

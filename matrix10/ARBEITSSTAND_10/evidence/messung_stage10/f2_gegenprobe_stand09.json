@@ -1,0 +1,630 @@
+{
+ "vorlage_sha256": "f751a20c70a780f0e5f45f25bdbcf82367c7c04c59e7ca2091217a48e2732a15",
+ "puppet": 200,
+ "nach_tat": {
+  "turnIndex": 1,
+  "mara": {
+   "position": "Schankraum",
+   "intent": "",
+   "emotion": "Angst",
+   "heldBy": null,
+   "holding": null
+  },
+  "raum": null,
+  "figurenakte": []
+ },
+ "gate0_nach_tat": {
+  "status": 200,
+  "stop": false,
+  "reason": null,
+  "speakerId": "char_g7_mara",
+  "kandidaten": [
+   {
+    "id": "char_g7_mara",
+    "score": 9.992,
+    "gruende": [
+     "angesprochen",
+     "Druck 0.50 (Angst)",
+     "betrifft sie (5 Treffer)",
+     "Synapse Gewalt",
+     "Beziehung zu char_g7_ 0.70",
+     "nächster Beat erwartet",
+     "Agenda-Druck",
+     "lange still",
+     "vom letzten Ereignis betroffen",
+     "hat eigenes Ziel/Wunsch"
+    ]
+   },
+   {
+    "id": "char_g7_gustav",
+    "score": 4.0,
+    "gruende": [
+     "betrifft sie (5 Treffer)",
+     "Synapse Gewalt",
+     "lange still",
+     "hat eigenes Ziel/Wunsch"
+    ]
+   },
+   {
+    "id": "char_g7_johann",
+    "score": -0.046,
+    "gruende": [
+     "angesprochen",
+     "betrifft sie (5 Treffer)",
+     "Synapse Gewalt",
+     "hat gerade gesprochen — Gesprächswechsel",
+     "hat eigenes Ziel/Wunsch"
+    ]
+   }
+  ]
+ },
+ "reaktion_mara": {
+  "angefragt": "char_g7_mara",
+  "gebunden": "char_g7_mara",
+  "prepare": [
+   200,
+   null,
+   null
+  ],
+  "formulate": [
+   200,
+   null,
+   "Lass mich, Johann.",
+   "Mara tritt hinter die Theke zurück."
+  ],
+  "commit": [
+   200,
+   null,
+   null
+  ]
+ },
+ "nach_reaktion": {
+  "turnIndex": 2,
+  "mara": {
+   "position": "Schankraum",
+   "intent": "Abstand zu Johann halten",
+   "emotion": "Angst",
+   "heldBy": null,
+   "holding": null
+  },
+  "raum": null,
+  "figurenakte": [
+   [
+    2,
+    "speech",
+    "char_g7_mara",
+    "char_g7_johann",
+    "Lass mich, Johann.",
+    null
+   ],
+   [
+    2,
+    "action",
+    "char_g7_mara",
+    "char_g7_johann",
+    "Mara tritt hinter die Theke zurück.",
+    {
+     "art": "entfernung",
+     "ziel": "Johann Bruckner",
+     "pruefung": {
+      "bestaetigt": true,
+      "beleg": "tritt hinter die Theke zurück",
+      "zeit": "jetzt",
+      "ziel": "Johann Bruckner"
+     }
+    }
+   ]
+  ]
+ },
+ "gate1": {
+  "status": 200,
+  "stop": false,
+  "reason": null,
+  "speakerId": "char_g7_johann",
+  "kandidaten": [
+   {
+    "id": "char_g7_johann",
+    "score": 7.95,
+    "gruende": [
+     "angesprochen",
+     "betrifft sie (8 Treffer)",
+     "Beziehung zu char_g7_ 0.55",
+     "nächster Beat erwartet",
+     "Agenda-Druck",
+     "vom letzten Ereignis betroffen",
+     "Fate nennt sie",
+     "hat eigenes Ziel/Wunsch"
+    ]
+   },
+   {
+    "id": "char_g7_gustav",
+    "score": 3.5,
+    "gruende": [
+     "betrifft sie (8 Treffer)",
+     "lange still",
+     "hat eigenes Ziel/Wunsch"
+    ]
+   },
+   {
+    "id": "char_g7_mara",
+    "score": 1.74,
+    "gruende": [
+     "angesprochen",
+     "Druck 0.50 (Angst)",
+     "betrifft sie (8 Treffer)",
+     "sprach zweimal in Folge",
+     "hat gerade gesprochen — Gesprächswechsel",
+     "Fate nennt sie",
+     "hat eigenes Ziel/Wunsch"
+    ]
+   }
+  ]
+ },
+ "gegenprobe_fremder_sprecher": {
+  "angefragt": "char_g7_gustav",
+  "gebunden": "char_g7_gustav",
+  "prepare": [
+   200,
+   null,
+   null
+  ],
+  "formulate": [
+   200,
+   null,
+   "Ich hab nichts gesehen.",
+   null
+  ],
+  "commit": [
+   200,
+   null,
+   null
+  ]
+ },
+ "nach_gegenprobe": {
+  "turnIndex": 3,
+  "mara": {
+   "position": "Schankraum",
+   "intent": "Abstand zu Johann halten",
+   "emotion": "Angst",
+   "heldBy": null,
+   "holding": null
+  },
+  "raum": null,
+  "figurenakte": [
+   [
+    2,
+    "speech",
+    "char_g7_mara",
+    "char_g7_johann",
+    "Lass mich, Johann.",
+    null
+   ],
+   [
+    2,
+    "action",
+    "char_g7_mara",
+    "char_g7_johann",
+    "Mara tritt hinter die Theke zurück.",
+    {
+     "art": "entfernung",
+     "ziel": "Johann Bruckner",
+     "pruefung": {
+      "bestaetigt": true,
+      "beleg": "tritt hinter die Theke zurück",
+      "zeit": "jetzt",
+      "ziel": "Johann Bruckner"
+     }
+    }
+   ],
+   [
+    3,
+    "speech",
+    "char_g7_gustav",
+    "char_g7_mara",
+    "Ich hab nichts gesehen.",
+    null
+   ]
+  ]
+ },
+ "autochat1": {
+  "angefragt": "char_g7_johann",
+  "gebunden": "char_g7_johann",
+  "prepare": [
+   200,
+   null,
+   null
+  ],
+  "formulate": [
+   200,
+   null,
+   "Stell dich nicht so an, Mara.",
+   null
+  ],
+  "commit": [
+   200,
+   null,
+   null
+  ]
+ },
+ "nach_autochat1": {
+  "turnIndex": 4,
+  "mara": {
+   "position": "Schankraum",
+   "intent": "Abstand zu Johann halten",
+   "emotion": "Angst",
+   "heldBy": null,
+   "holding": null
+  },
+  "raum": null,
+  "figurenakte": [
+   [
+    2,
+    "speech",
+    "char_g7_mara",
+    "char_g7_johann",
+    "Lass mich, Johann.",
+    null
+   ],
+   [
+    2,
+    "action",
+    "char_g7_mara",
+    "char_g7_johann",
+    "Mara tritt hinter die Theke zurück.",
+    {
+     "art": "entfernung",
+     "ziel": "Johann Bruckner",
+     "pruefung": {
+      "bestaetigt": true,
+      "beleg": "tritt hinter die Theke zurück",
+      "zeit": "jetzt",
+      "ziel": "Johann Bruckner"
+     }
+    }
+   ],
+   [
+    3,
+    "speech",
+    "char_g7_gustav",
+    "char_g7_mara",
+    "Ich hab nichts gesehen.",
+    null
+   ],
+   [
+    4,
+    "speech",
+    "char_g7_johann",
+    "char_g7_mara",
+    "Stell dich nicht so an, Mara.",
+    null
+   ]
+  ]
+ },
+ "nach_neustart": {
+  "turnIndex": 4,
+  "mara": {
+   "position": "Schankraum",
+   "intent": "Abstand zu Johann halten",
+   "emotion": "Angst",
+   "heldBy": null,
+   "holding": null
+  },
+  "raum": null,
+  "figurenakte": [
+   [
+    2,
+    "speech",
+    "char_g7_mara",
+    "char_g7_johann",
+    "Lass mich, Johann.",
+    null
+   ],
+   [
+    2,
+    "action",
+    "char_g7_mara",
+    "char_g7_johann",
+    "Mara tritt hinter die Theke zurück.",
+    {
+     "art": "entfernung",
+     "ziel": "Johann Bruckner",
+     "pruefung": {
+      "bestaetigt": true,
+      "beleg": "tritt hinter die Theke zurück",
+      "zeit": "jetzt",
+      "ziel": "Johann Bruckner"
+     }
+    }
+   ],
+   [
+    3,
+    "speech",
+    "char_g7_gustav",
+    "char_g7_mara",
+    "Ich hab nichts gesehen.",
+    null
+   ],
+   [
+    4,
+    "speech",
+    "char_g7_johann",
+    "char_g7_mara",
+    "Stell dich nicht so an, Mara.",
+    null
+   ]
+  ]
+ },
+ "gate2": {
+  "status": 200,
+  "stop": false,
+  "reason": null,
+  "speakerId": "char_g7_mara",
+  "kandidaten": [
+   {
+    "id": "char_g7_mara",
+    "score": 9.381,
+    "gruende": [
+     "angesprochen",
+     "Druck 0.50 (Angst)",
+     "betrifft sie (4 Treffer)",
+     "Beziehung zu char_g7_ 0.79",
+     "nächster Beat erwartet",
+     "Agenda-Druck",
+     "Fate nennt sie",
+     "hat eigenes Ziel/Wunsch"
+    ]
+   },
+   {
+    "id": "char_g7_gustav",
+    "score": 2.4,
+    "gruende": [
+     "betrifft sie (4 Treffer)",
+     "hat eigenes Ziel/Wunsch"
+    ]
+   },
+   {
+    "id": "char_g7_johann",
+    "score": -2.6,
+    "gruende": [
+     "betrifft sie (4 Treffer)",
+     "hat gerade gesprochen — Gesprächswechsel",
+     "Fate nennt sie",
+     "hat eigenes Ziel/Wunsch"
+    ]
+   }
+  ]
+ },
+ "modellaufrufe": [
+  [
+   "PLAN_RULES",
+   1,
+   true
+  ],
+  [
+   "VOLLZUG_CHECK_RULES",
+   1,
+   true
+  ],
+  [
+   "KOERPER_CHECK_RULES",
+   1,
+   true
+  ],
+  [
+   "EFFECT_CHECK_RULES",
+   1,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   1,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   2,
+   true
+  ],
+  [
+   "APPRAISAL_CAUSAL_CHECK_RULES",
+   1,
+   true
+  ],
+  [
+   "FORMULIERUNG",
+   1,
+   true
+  ],
+  [
+   "MOVE_ATTEMPT_RULES",
+   1,
+   true
+  ],
+  [
+   "KOERPER_CHECK_RULES",
+   2,
+   true
+  ],
+  [
+   "GRENZE_CHECK_RULES",
+   1,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   3,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   4,
+   true
+  ],
+  [
+   "FORMULIERUNG",
+   2,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   5,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   6,
+   true
+  ],
+  [
+   "APPRAISAL_CAUSAL_CHECK_RULES",
+   2,
+   true
+  ],
+  [
+   "FORMULIERUNG",
+   3,
+   true
+  ]
+ ],
+ "kriterien": {
+  "F2_1_server_waehlt_nach_der_tat_die_betroffene_aus_ihrem_zustand": true,
+  "F2_2_reaktion_der_betroffenen_committet": true,
+  "F2_3_absicht_wirkt_auf_handlung_entfernung_validiert": true,
+  "F2_4_fremder_sprecher_im_folgezug_abgewiesen_409": false,
+  "F2_5_abweisung_speichert_nichts": false,
+  "F2_6_gate_sprecher_spricht_im_folgezug": true,
+  "F2_7_neustart_zustand_unveraendert_gate_entscheidet_weiter": true
+ },
+ "gesamt": "F2 VERLETZT",
+ "gate_log": [
+  {
+   "ts": "2026-11-08T14:22:39.331020+00:00",
+   "stage": "AUTOCHAT_GATE",
+   "trace_id": "gate",
+   "turn_id": "gate",
+   "session_id": "ses_v92",
+   "turn": 1,
+   "remaining": 1,
+   "stop": false,
+   "reason": null,
+   "speaker": "Mara Nowak",
+   "candidates": [
+    {
+     "name": "Mara Nowak",
+     "score": 9.992,
+     "reasons": [
+      "angesprochen",
+      "Druck 0.50 (Angst)",
+      "betrifft sie (5 Treffer)",
+      "Synapse Gewalt"
+     ]
+    },
+    {
+     "name": "Gustav Pfeiffer",
+     "score": 4.0,
+     "reasons": [
+      "betrifft sie (5 Treffer)",
+      "Synapse Gewalt",
+      "lange still",
+      "hat eigenes Ziel/Wunsch"
+     ]
+    },
+    {
+     "name": "Johann Bruckner",
+     "score": -0.046,
+     "reasons": [
+      "angesprochen",
+      "betrifft sie (5 Treffer)",
+      "Synapse Gewalt",
+      "hat gerade gesprochen — Gesprächswechsel"
+     ]
+    }
+   ]
+  },
+  {
+   "ts": "2026-11-08T14:22:39.456289+00:00",
+   "stage": "AUTOCHAT_GATE",
+   "trace_id": "gate",
+   "turn_id": "gate",
+   "session_id": "ses_v92",
+   "turn": 2,
+   "remaining": 3,
+   "stop": false,
+   "reason": null,
+   "speaker": "Johann Bruckner",
+   "candidates": [
+    {
+     "name": "Johann Bruckner",
+     "score": 7.95,
+     "reasons": [
+      "angesprochen",
+      "betrifft sie (8 Treffer)",
+      "Beziehung zu char_g7_ 0.55",
+      "nächster Beat erwartet"
+     ]
+    },
+    {
+     "name": "Gustav Pfeiffer",
+     "score": 3.5,
+     "reasons": [
+      "betrifft sie (8 Treffer)",
+      "lange still",
+      "hat eigenes Ziel/Wunsch"
+     ]
+    },
+    {
+     "name": "Mara Nowak",
+     "score": 1.74,
+     "reasons": [
+      "angesprochen",
+      "Druck 0.50 (Angst)",
+      "betrifft sie (8 Treffer)",
+      "sprach zweimal in Folge"
+     ]
+    }
+   ]
+  },
+  {
+   "ts": "2026-11-08T14:22:41.741028+00:00",
+   "stage": "AUTOCHAT_GATE",
+   "trace_id": "gate",
+   "turn_id": "gate",
+   "session_id": "ses_v92",
+   "turn": 4,
+   "remaining": 2,
+   "stop": false,
+   "reason": null,
+   "speaker": "Mara Nowak",
+   "candidates": [
+    {
+     "name": "Mara Nowak",
+     "score": 9.381,
+     "reasons": [
+      "angesprochen",
+      "Druck 0.50 (Angst)",
+      "betrifft sie (4 Treffer)",
+      "Beziehung zu char_g7_ 0.79"
+     ]
+    },
+    {
+     "name": "Gustav Pfeiffer",
+     "score": 2.4,
+     "reasons": [
+      "betrifft sie (4 Treffer)",
+      "hat eigenes Ziel/Wunsch"
+     ]
+    },
+    {
+     "name": "Johann Bruckner",
+     "score": -2.6,
+     "reasons": [
+      "betrifft sie (4 Treffer)",
+      "hat gerade gesprochen — Gesprächswechsel",
+      "Fate nennt sie",
+      "hat eigenes Ziel/Wunsch"
+     ]
+    }
+   ]
+  }
+ ]
+}
