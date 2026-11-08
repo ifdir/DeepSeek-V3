@@ -114,17 +114,29 @@
     {
       "status": 200,
       "method": "POST",
-      "url": "/api/kernel/commit",
-      "code": null
-    },
-    {
-      "status": 200,
-      "method": "POST",
       "url": "/api/logs",
       "code": null
     },
     {
       "status": 200,
+      "method": "POST",
+      "url": "/api/logs/live",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/kernel/commit",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "/api/sessions/ses_v92",
+      "code": null
+    },
+    {
+      "status": 200,
       "method": "GET",
       "url": "/api/sessions/ses_v92",
       "code": null
@@ -132,13 +144,7 @@
     {
       "status": 200,
       "method": "POST",
-      "url": "/api/logs/live",
-      "code": null
-    },
-    {
-      "status": 200,
-      "method": "GET",
-      "url": "/api/sessions/ses_v92",
+      "url": "/api/ids/allocate",
       "code": null
     },
     {
@@ -163,12 +169,6 @@
       "status": 200,
       "method": "POST",
       "url": "/api/logs/live",
-      "code": null
-    },
-    {
-      "status": 200,
-      "method": "POST",
-      "url": "/api/ids/allocate",
       "code": null
     },
     {

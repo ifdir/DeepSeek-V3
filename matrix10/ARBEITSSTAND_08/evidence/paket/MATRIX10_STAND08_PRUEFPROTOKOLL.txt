@@ -1,10 +1,11 @@
 MATRIX10 Stand 08 - Pruefprotokoll des frisch entpackten Produktpakets
 Paket: MATRIX10_STAND08_PRODUKT_linux-x86_64_6713376.zip
 SHA-256: 50155ec2abdb88bc9fc367b010f81d469a0d931799bfad1e63871b9f265c903c
-Commit (Quellstand des Pakets): 671337640fc1f0bfb4505b2f72398cb3d69d6f29
+Quellstand (Commit) des Pakets: 671337640fc1f0bfb4505b2f72398cb3d69d6f29
+Abnahmeverzeichnis (neu, leer, ausserhalb des Scratchpads): /tmp/matrix10_abnahme_stand08_20261108_131837
 Plattform: Linux x86_64 - nur hier gebaut und getestet (Python 3.13, Chromium). Windows/Android: NICHT getestet.
 
-PAKETPRUEFUNG: BESTANDEN  (11/11 Kriterien)
+PAKETPRUEFUNG: BESTANDEN  (14/14 Kriterien)
   PASS  1a_zip_crc_ok
   PASS  1b_zip_sha256
   PASS  1c_alle_reparaturebenen_06_07_08_im_paket
@@ -16,11 +17,18 @@ PAKETPRUEFUNG: BESTANDEN  (11/11 Kriterien)
   PASS  6_p25_suite_keine_verschlechterung_ausser_k01_dokumentiert
   PASS  7a_live_k01_sec_14_kriterien
   PASS  7b_live_k02_10_kriterien
+  PASS  8_abi3_vertrag_und_abi2_gegenprobe
+  PASS  9a_laufendes_produkt_nutzt_paket_rust_bibliothek
+  PASS  9b_ohne_bibliothek_fail_closed_503_keine_ersatzlogik
 
-P25-Testsuite: unveraendertes P25 {'failure': 24, 'error': 1, 'pass': 422}  ->  Paket {'failure': 13, 'pass': 435}
+Rust im laufenden Produkt (START.py aus dem entpackten Paket):
+  mit Bibliothek: GET /api/mcc 200, geladen: ['/tmp/matrix10_abnahme_stand08_20261108_131837/entpackt/MATRIX10_STAND08_PRODUKT_linux-x86_64_6713376/matrix_api/native/libmatrix_boundary_core.so']
+  ohne Bibliothek: GET /api/mcc 503 NATIVE_BOUNDARY_UNAVAILABLE (fail-closed, keine Python-Ersatzlogik)
+Erststart ohne Datenbank: [{'welten': 1, 'figuren': 5}]
+P25-Testsuite: unveraendertes P25 {'error': 1, 'pass': 422, 'failure': 24}  ->  Paket {'pass': 435, 'failure': 13}
   rot geworden (dokumentierte K-01-Vertragsabweichung): ['tests.test_v92_p18_koerper.P18AvatarAndFigure::test_avatar_position_and_figure_reply_with_forged_and_real_readings']
   gruen geworden (gebautes Frontend wird ausgeliefert): 14 Tests
-K-01/K-02/SEC-Tests: ['33 passed in 6.89s']
+K-01/K-02/SEC-Tests: ['33 passed in 6.22s']
 
 VERTRAGSSTATUS GESAMT: ROT - keine Produktfreigabe
   GRUEN            C04_fremder_giver_und_abgelaufene_fenster

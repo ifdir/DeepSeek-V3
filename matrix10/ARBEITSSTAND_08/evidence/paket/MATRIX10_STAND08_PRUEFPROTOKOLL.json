@@ -12,24 +12,34 @@
     "5_einwilligungskette_10_von_10": true,
     "6_p25_suite_keine_verschlechterung_ausser_k01_dokumentiert": true,
     "7a_live_k01_sec_14_kriterien": true,
-    "7b_live_k02_10_kriterien": true
+    "7b_live_k02_10_kriterien": true,
+    "8_abi3_vertrag_und_abi2_gegenprobe": true,
+    "9a_laufendes_produkt_nutzt_paket_rust_bibliothek": true,
+    "9b_ohne_bibliothek_fail_closed_503_keine_ersatzlogik": true
   },
+  "abnahmeverzeichnis": "/tmp/matrix10_abnahme_stand08_20261108_131837",
   "zip_sha256": "50155ec2abdb88bc9fc367b010f81d469a0d931799bfad1e63871b9f265c903c",
   "commit": "671337640fc1f0bfb4505b2f72398cb3d69d6f29",
   "geprueft_dateien_aus_ebenen": 17,
   "hash_abweichungen": [],
+  "erststart_versuche": [
+    {
+      "welten": 1,
+      "figuren": 5
+    }
+  ],
   "k_tests": [
-    "33 passed in 6.89s"
+    "33 passed in 6.22s"
   ],
   "p25_suite": {
     "p25": {
-      "failure": 24,
       "error": 1,
-      "pass": 422
+      "pass": 422,
+      "failure": 24
     },
     "paket": {
-      "failure": 13,
-      "pass": 435
+      "pass": 435,
+      "failure": 13
     }
   },
   "p25_suite_abweichungen": [
@@ -96,6 +106,20 @@
     "A2_gegangener_gustav_hoert_antwort_nicht": true,
     "A3_anwesende_mara_hoert_antwort": true,
     "I1_fremde_session_unveraendert": true
+  },
+  "rust_im_laufenden_produkt": {
+    "mit_bibliothek": {
+      "status": 200,
+      "code": null,
+      "geladene_bibliothek": [
+        "/tmp/matrix10_abnahme_stand08_20261108_131837/entpackt/MATRIX10_STAND08_PRODUKT_linux-x86_64_6713376/matrix_api/native/libmatrix_boundary_core.so"
+      ]
+    },
+    "ohne_bibliothek": {
+      "status": 503,
+      "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+      "geladene_bibliothek": []
+    }
   },
   "paketpruefung": "BESTANDEN",
   "vertragsstatus_gesamt": "ROT (bekannte offene Vertragsfehler; K-01/K-02 TEILGESCHLOSSEN; Modell BLOCKIERT)",
