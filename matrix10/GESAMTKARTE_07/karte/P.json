@@ -1,0 +1,2562 @@
+[
+ {
+  "id": "P-01",
+  "funktion": "Upload-Datensatz und Uploadtypen",
+  "amaster": "§29 (Z.1060-1098)",
+  "soll": "Uploads (Text, PDF, Bilder, PPTX, JSON, Audio/Transkript u.a.) besitzen stabile ID, Typ, User, Bezug, Modus, Ziel, Quelle, Verarbeitungs-/Extraktions-/Fehler-/Commitstatus, Vorschau und Ableitungen; sie praegen nicht blind alle aktiven Figuren (Z.1062-1096).",
+  "kettenvertrag": "§13, §5",
+  "sps_loesung": "V67 Z.1156-1157 (Uploadreset/Loeschen unter dependency_guard); V65Z Audit6 Abschnitt D I22/I23 Z.1698-1699 (TEIL)",
+  "owner": "Python repos.create_upload (repos.py:4923) / pipeline.ingest_upload (pipeline.py:314)",
+  "owner_soll_nach_architektur": "Upload-Owner in SQLite (uploads), Ableitungen ueber Welt-/Stamm-/Memory-Writer (AMASTER §6, KV §4)",
+  "kette": {
+   "eingang": "upload.tsx:266-273 Dateiwahl / upload.tsx:283-296 Text; Extraktion clientseitig epub.ts extractTextFromFile + ocr.ts:210 textFromUpload",
+   "verarbeitung": "store.ts:1266-1274 addUpload -> POST /api/uploads app.py:1047 -> repos.py:4923-4948 (validate_upload_meta nur Name/Mime/Textlaenge)",
+   "speicherung": "Tabelle uploads, _insert_new repos.py:4947 (json mit mode,targetKind,targetId,worldId,sessionId,status)",
+   "wiederlesen": "GET /api/mcc repos.py:1460 _owned('uploads') -> store.ts:342; GET /api/uploads(/id) ohne Frontendaufrufer",
+   "entscheidung": "pipeline.py:314-584 ingest_upload liest mode/targetKind/sessionId",
+   "folgewirkung": "siehe P-03..P-08",
+   "frontend": "upload.tsx:451-506 Panel 'Bestand' zeigt name, mode, status, targetKind/targetId, error, Textauszug"
+  },
+  "ui_bedienung": "Upload-Center (/upload), Chat-Upload-Dialog chat:1899-1957",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Audio/Transkript als Uploadtyp fehlt: upload_security.py:8 ALLOWED_EXT ohne Audioendungen; epub.ts (extractTextFromFile) lehnt sonstige Typen ab",
+   "Text wird stillschweigend gekuerzt: upload.tsx:125 (40000 Zeichen), upload.tsx:152 (Dokument 20000), chat:1088 (20000) - keine sichtbare Meldung (KV §7 Nr.9 sinngemaess)",
+   "Fehlerstatus: Ingest mit Parsefehler antwortet HTTP 200 ok:false (pipeline.py:345-367; ausgefuehrt: ingest_empty 200/false/parse_empty); store.ts:1302-1326 setzt danach lokal committed:true/status 'committed'",
+   "Szenenbezug: Zielart 'Scene' speichert nur Session-ID (upload.tsx:197, repos.py:4939-4946)",
+   "Vorschau nur fuer die ersten 3 nicht committeten Uploads, nur Textauszug (upload.tsx:377-382)"
+  ],
+  "abhaengig_von": [
+   "Memory-Writer",
+   "WitnessKnowledge-Writer",
+   "Review/Welt-/Stamm-Writer"
+  ],
+  "auswirkung_bestehender_fehler": "Falsche committed-Anzeige verdeckt gescheiterte Wissensverteilung (P-07) und offene Reviews (P-06).",
+  "belege": [
+   "repos.py:4923-4948 create_upload – Validierung + Insert (codefluss)",
+   "pipeline.py:345-367 – Parsefehler -> ok:false ohne HTTP-Fehler (codefluss)",
+   "probe1 ingest_empty -> [200,false,'parse_empty'] (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))",
+   "store.ts:1300-1326 commitUpload apply setzt committed:true unabhaengig von raw.ok (codefluss)"
+  ]
+ },
+ {
+  "id": "P-02",
+  "funktion": "Mode A Welt-Praegung (Analyse -> Review -> patch_world)",
+  "amaster": "§30 (Z.1100-1143)",
+  "soll": "Mode A praegt nur einen ausdruecklich gewaehlten Zielbereich dauerhaft, nach klarem Ziel, Scope, Quelle, Vorschau, Review und bewusstem Commit (Z.1102, Z.1133-1143).",
+  "kettenvertrag": "§13 Mode A",
+  "sps_loesung": "V65Z Audit6 I22 Z.1698 und I71 Z.1747 (TEIL: Review-Reject/Accept an realem Writer)",
+  "owner": "Python pipeline.ingest_upload (pipeline.py:314) + repos.resolve_review (repos.py:5267) + repos._settle_upload_after_review (repos.py:5451)",
+  "owner_soll_nach_architektur": "Welt-Owner patch_world nach Review (AMASTER §6, KV §4 'Welt')",
+  "kette": {
+   "eingang": "upload.tsx:206-214 'A · Praegung', Zielart 'Welt' upload.tsx:220-245, Datei/Text, 'Commit' upload.tsx:478-487",
+   "verarbeitung": "POST /api/uploads/<id>/ingest app.py:1061 -> pipeline.py:331-336 analyze_text + enrich_analysis -> Reviews pipeline.py:393-470 (_maybe_rev) -> set_upload_status review_open pipeline.py:556-569",
+   "speicherung": "reviews (create_review repos.py:5200), nach 'Annehmen' patch_world repos.py:5419-5433, uploads.status committed repos.py:5480-5486",
+   "wiederlesen": "GET /api/mcc -> worlds; Weltseite liest Store",
+   "entscheidung": "Weltfelder (rules, startScenes, long ...) gehen in worldFrame kernel.py:14526-14537 und Prompt llm_contract.py:2021-2031",
+   "folgewirkung": "Folgeturn BrainContext worldFrame (codefluss); E2E nicht ausgefuehrt",
+   "frontend": "Review-Seite review.tsx:55-69 'Annehmen' mit editierbarem Wert; Upload-Center upload.tsx:385-394 nur kind·status + 'Annehmen'"
+  },
+  "ui_bedienung": "Upload-Center Mode A + Commit; Review-Seite Annehmen",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Review 'long' erhaelt als neuen Wert die Kurzbeschreibung: pipeline.py:403-405 (field 'long', newValue world_block['short']); Annehmen ersetzt die Weltbeschreibung durch einen Satz (ausgefuehrt: probe2 Review long='Im Hafen herrscht die Gilde der Schmuggler', world_changed_fields enthaelt 'long')",
+   "Upload-Center zeigt beim Review weder Feld noch alten/neuen Wert, nur 'kind · status' + 'Annehmen' (upload.tsx:385-394) – Commit ohne Vorschau",
+   "store.ts:1321-1325 setzt nach Ingest auch fuer Mode A lokal committed:true/status 'committed', obwohl Server review_open liefert (ausgefuehrt: ingest_a1 status review_open, committed false)",
+   "POST /api/uploads/<id>/commit (repos.py:4969-4983) setzt committed ohne Review; Route ohne Frontendaufrufer, aber offen (ausgefuehrt: commit_route_a0 -> 200 'committed')",
+   "Keine Auswahl der Analysebereiche (AMASTER §57); Felder werden fest aus pipeline.py:427-446 gezogen"
+  ],
+  "abhaengig_von": [
+   "Welt-Owner patch_world",
+   "Analyse analyze.py",
+   "BrainContext worldFrame"
+  ],
+  "auswirkung_bestehender_fehler": "Verlust der Weltbeschreibung wirkt auf jeden Folgeturn (worldFrame.long) und Fate/Spawn.",
+  "belege": [
+   "pipeline.py:393-410 – Review field long = short (codefluss)",
+   "probe2 reviews/resolve/world_changed_fields (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))",
+   "repos.py:5451-5486 _settle_upload_after_review (codefluss)",
+   "upload.tsx:385-394 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-03",
+  "funktion": "Mode A Charakterstamm-Praegung",
+  "amaster": "§30 (Z.1104-1131)",
+  "soll": "Mode A kann Biografie, Trauma, Vorlieben, Koerpermerkmale, Beziehungen usw. eines ausdruecklich gewaehlten Charakterstamms nach Review setzen (Z.1104-1131).",
+  "kettenvertrag": "§13 Mode A, §8",
+  "sps_loesung": "V65Z Audit6 I71 Z.1747 (TEIL)",
+  "owner": "Python pipeline.ingest_upload (pipeline.py:466-530) + repos.resolve_review stamm-Zweig (repos.py:5393-5418)",
+  "owner_soll_nach_architektur": "Charakterstamm-Owner patch_character nach Review",
+  "kette": {
+   "eingang": "upload.tsx Zielart 'Charakterstamm' + Ziel; Chat-Upload-Dialog Mode A (chat:1080-1093, Ziel implizit = Chat-Zielfigur oder 'Spreche als')",
+   "verarbeitung": "pipeline.py:466-530: nur wenn ein Analysekandidat namensgleich oder id-gleich ist, Reviews fuer name/role/biography/origin/personality/goals/fears/knowledge/coreFacts",
+   "speicherung": "reviews -> patch_character (repos.py resolve_review stamm-Zweig)",
+   "wiederlesen": "GET /api/mcc characters (canonical_stem repos.py:1427)",
+   "entscheidung": "Profil im Prompt llm_contract.py:1804ff (Tabus etc.)",
+   "folgewirkung": "UNKLAR – nicht ausgefuehrt",
+   "frontend": "Review-Seite review.tsx; Charakterseite zeigt Felder"
+  },
+  "ui_bedienung": "Upload-Center, Chat-Upload, Review",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Ohne namensgleichen Analysekandidaten entsteht kein Review (pipeline.py:474-484) – Upload wird 'analyzed' ohne sichtbare Begruendung; Felder wie Trauma, Vorlieben, Koerpermerkmale, Beziehungen werden nicht vorgeschlagen (nur pipeline.py:485-491, 511)",
+   "Chat-Upload Mode A: Ziel wird implizit aus Chat-Zielfigur/Spreche-als gezogen (chat:1084-1093), der Dialog zeigt das Ziel nicht an (chat:1902-1956) – AMASTER §57 'sichtbare Ziel- und Moduswahl'",
+   "Gleiche UI-Defekte wie P-02 (Review ohne Wertanzeige upload.tsx:385-394, lokale committed-Anzeige store.ts:1321-1325)"
+  ],
+  "abhaengig_von": [
+   "Charakterstamm-Owner",
+   "P-02 Reviewweg"
+  ],
+  "auswirkung_bestehender_fehler": "Stammpraegung per Chat kann die falsche Figur treffen, wenn das Chatziel nicht bewusst gewaehlt war.",
+  "belege": [
+   "pipeline.py:466-530 (codefluss)",
+   "chat.$sessionId.tsx:1074-1121 onUploadFile (codefluss)"
+  ]
+ },
+ {
+  "id": "P-04",
+  "funktion": "Mode A ohne Ziel praegt nichts",
+  "amaster": "§30 (Z.1143)",
+  "soll": "Mode A ohne Ziel darf nichts dauerhaft praegen (Z.1143).",
+  "kettenvertrag": "§13 'Mode A ohne Ziel schreibt nichts dauerhaft'",
+  "sps_loesung": "V65Z Audit6 I22 Z.1698 (TEIL)",
+  "owner": "Python pipeline.ingest_upload (pipeline.py:322-323); Frontend upload.tsx:97-104, store.ts:1292-1295",
+  "owner_soll_nach_architektur": "Server-Validierung im Upload-Owner",
+  "kette": {
+   "eingang": "upload.tsx:97-104 Sperre ohne Ziel",
+   "verarbeitung": "pipeline.py:322-323 MODE_A_NO_TARGET; pipeline.py:381-386 MODE_A_SCOPE fuer session/scene",
+   "speicherung": "keine",
+   "wiederlesen": "-",
+   "entscheidung": "-",
+   "folgewirkung": "-",
+   "frontend": "Fehlermeldung upload.tsx:297"
+  },
+  "ui_bedienung": "Upload-Center Fehlermeldung",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Umgehung moeglich: POST /api/uploads/<id>/commit setzt committed:true auch fuer Mode A ohne Ziel (ausgefuehrt: commit_route_a0 200 'committed'); kein Zielowner wird geschrieben, aber Status luegt"
+  ],
+  "abhaengig_von": [],
+  "auswirkung_bestehender_fehler": "Falscher Commitstatus kann Reset (repos.py:3480-3489 keptModeA) und Anzeige taeuschen.",
+  "belege": [
+   "probe1 ingest_a0 -> [400,'MODE_A_NO_TARGET'] (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))",
+   "probe1 commit_route_a0 -> [200,'committed'] (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))"
+  ]
+ },
+ {
+  "id": "P-05",
+  "funktion": "Mode A Review und bewusster Commit (Fehlerpfad)",
+  "amaster": "§30 (Z.1133-1141), §65 (Z.2320-2324)",
+  "soll": "Commit erst nach Review; Fehler duerfen nicht verschluckt werden, UI-Erfolg nur bei echtem Erfolg.",
+  "kettenvertrag": "§13, §15 Review",
+  "sps_loesung": "V65Z Audit6 I71 Z.1747",
+  "owner": "Python repos.resolve_review (repos.py:5267-5448)",
+  "owner_soll_nach_architektur": "Review-Owner + Zielowner, fail-closed",
+  "kette": {
+   "eingang": "review.tsx:57-69 'Annehmen'/'Nur Session'",
+   "verarbeitung": "store.ts:1369-1388 resolveReview -> POST /api/reviews/<id>/resolve app.py:1155",
+   "speicherung": "reviews.status; bei Schreibfehler status 'pending'+commitError repos.py:5436-5440",
+   "wiederlesen": "fetchOwnerPartial store.ts:1380",
+   "entscheidung": "_settle_upload_after_review repos.py:5451",
+   "folgewirkung": "-",
+   "frontend": "Reviewliste nach Reload"
+  },
+  "ui_bedienung": "Review-Seite",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "OWNER_WRITE_FAILED wird als HTTP 200 mit ok:false geliefert (repos.py:5440, app.py:207); writeOrRevert (store.ts:401-419) erkennt das nicht -> keine Fehlermeldung (ausgefuehrt: resolve_fail [200,false,'OWNER_WRITE_FAILED'])"
+  ],
+  "abhaengig_von": [
+   "P-02",
+   "P-03"
+  ],
+  "auswirkung_bestehender_fehler": "Nutzer glaubt an eine Praegung, die nicht geschrieben wurde.",
+  "belege": [
+   "probe2 resolve_fail (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))",
+   "store.ts:401-419 writeOrRevert prueft nur Exception (codefluss)"
+  ]
+ },
+ {
+  "id": "P-06",
+  "funktion": "Mode B Wissensverteilung an Berechtigte",
+  "amaster": "§31 (Z.1145-1166), §29 Z.1098",
+  "soll": "Mode B macht Inhalt zu Wissen/Referenz fuer Betrachter/Hoerer/Leser, ausdruecklich oder durch Szene gebunden; nicht blind an alle (Z.1098, Z.1149-1156).",
+  "kettenvertrag": "§13 Mode B",
+  "sps_loesung": "V68 Z.719/732 (Zeuge nennt keinen Quellturn, Quelle = Upload-Fact); V65Z I23 Z.1699 TEIL, I72 Z.1748 OFFEN",
+  "owner": "Python pipeline._apply_mode_b_session_knowledge (pipeline.py:128-311)",
+  "owner_soll_nach_architektur": "SceneFact-Writer + WitnessKnowledge-Writer + Memory-Writer (KV §4)",
+  "kette": {
+   "eingang": "upload.tsx 'B · Beobachtung' + Session/Scene/Charakter+Session (upload.tsx:215-258); Chat-Upload Mode B chat:1094-1096",
+   "verarbeitung": "pipeline.py:151-153 Zeugen = alle Hoerer (Text) bzw. Seher (Bild) der Szene via kernel._scene_perception; Bewusstsein pipeline.py:153",
+   "speicherung": "scene_facts append_session_fact pipeline.py:167-186; witness_knowledge upsert pipeline.py:226; memories create_session_memory pipeline.py:248-263; Runtime/Goal/Relation apply_knowledge_effect pipeline.py:285-309",
+   "wiederlesen": "get_session -> memories/witnessKnowledge; BrainContext ctx.memories kernel.py:14052-14066",
+   "entscheidung": "Recall-Auswahl kernel.py:14104-14218 (max 8)",
+   "folgewirkung": "Folgeturn liest Memory (codefluss, nicht ausgefuehrt)",
+   "frontend": "Upload-Bestand error-Feld 'n Anwesende wissen davon' store.ts:1323; Gedaechtnisseite WitnessKnowledge memory.tsx:331-371"
+  },
+  "ui_bedienung": "Upload-Center, Chat-Upload",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Ausdruecklich gewaehlte Zielfigur wird ignoriert: pipeline.py:151-153 nimmt alle Hoerer; ausgefuehrt: Ziel Mara -> witnessIds [johann, mara], Memory fuer beide (probe1 ingest_b1/mems)",
+   "Ein 'Hinweis' ersetzt den Inhalt: pipeline.py:155 note = upload.note or upload.text; ausgefuehrt: Memory 'Upload brief.txt: bitte lesen' statt Briefinhalt (probe2 b2_mem_texts)",
+   "Zugriffsart fuer Text ist 'heard' (pipeline.py:187), Memory-Art 'gelesen' (pipeline.py:247) – Lesen eines Dokuments wird allen Hoerern zugeschrieben",
+   "Memory truthStatus 'canon' fuer Dokumentinhalt (pipeline.py:260) – UNKLAR, ob als objektive Wahrheit gelesen (KV §13 letzter Satz)"
+  ],
+  "abhaengig_von": [
+   "Perception/_scene_perception (Bereich Szene)",
+   "Memory-Recall/BrainContext",
+   "WitnessKnowledge-Writer"
+  ],
+  "auswirkung_bestehender_fehler": "Unberechtigte Figuren erhalten Wissen (Isolation/Wissensweg verletzt); Inhalt fehlt im Gedaechtnis der Berechtigten.",
+  "belege": [
+   "pipeline.py:128-311 (codefluss)",
+   "probe1 ingest_b1, wk, mems (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))",
+   "probe2 b2_mem_texts, b2_fact (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))"
+  ]
+ },
+ {
+  "id": "P-07",
+  "funktion": "Mode B ohne Stamm-/Welt-/Identitaetspraegung",
+  "amaster": "§31 (Z.1158-1164)",
+  "soll": "Mode B ist Wissen/Wahrnehmung/Referenz, keine Stammpraegung; ein Krimi macht niemanden kriminell (Z.1158-1162).",
+  "kettenvertrag": "§13 Mode B 'keine Stamm-, Biografie-, Persoenlichkeits- oder Weltpraegung'",
+  "sps_loesung": "V65Z I72 Z.1748 OFFEN",
+  "owner": "Python pipeline.ingest_upload (Reviews nur bei mode=='A', pipeline.py:393,473,536)",
+  "owner_soll_nach_architektur": "kein Stamm-/Weltwriter",
+  "kette": {
+   "eingang": "wie P-06",
+   "verarbeitung": "Mode B ruft enrich_analysis ohne Netz (pipeline.py:338); keine _maybe_rev-Aufrufe",
+   "speicherung": "nur Session-Fact/Witness/Memory/Runtime",
+   "wiederlesen": "-",
+   "entscheidung": "apply_knowledge_effect (kernel) schreibt Runtime/Goal/Relation der Session",
+   "folgewirkung": "psychologische Wirkung nur Session (codefluss)",
+   "frontend": "Hinweis upload.tsx:383"
+  },
+  "ui_bedienung": "Upload-Center",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Kein Negativtest gegen Stammwriter vorhanden (SPS I72 offen); hier nur codefluss + probe ohne Weltaenderung fuer Mode B nicht separat gemessen"
+  ],
+  "abhaengig_von": [
+   "apply_knowledge_effect (Bereich Wissen/Memory)"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "pipeline.py:336-339, 393, 466, 531 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-08",
+  "funktion": "Chat-Upload standardmaessig sessionbezogen",
+  "amaster": "§31 (Z.1166)",
+  "soll": "Im Chat bleibt ein Upload standardmaessig sessionbezogen, solange der Nutzer nicht bewusst Welt-/Stamm-/Charakterpraegung waehlt (Z.1166).",
+  "kettenvertrag": "§13",
+  "sps_loesung": "keine gefunden",
+  "owner": "Frontend chat.$sessionId.tsx:1074-1121 onUploadFile",
+  "owner_soll_nach_architektur": "Upload-Owner mit sichtbarem Modus",
+  "kette": {
+   "eingang": "chat:1625-1627 Button 'Upload' (nur bei 'Steuerung einblenden'), Dialog chat:1899-1957, Default uploadMode 'B' chat:190",
+   "verarbeitung": "targetKind session, sessionId s.id chat:1094-1097",
+   "speicherung": "wie P-01/P-06",
+   "wiederlesen": "wie P-06",
+   "entscheidung": "-",
+   "folgewirkung": "session.focus.uploadId chat:1114 -> TurnTruth upload_ref kernel.py:1153 (nur durchgereicht)",
+   "frontend": "Dialog zeigt 'Gewaehlt: B'"
+  },
+  "ui_bedienung": "Chat-Upload-Dialog",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Upload-Button nur sichtbar nach 'Steuerung einblenden' (chat:1622-1640)",
+   "Mode A im Chat ohne sichtbare Zielanzeige (chat:1084-1093)",
+   "upload_ref in TurnTruth wird nirgends gelesen (grep upload_ref: kernel.py:933,971,1153,12634)"
+  ],
+  "abhaengig_von": [
+   "P-06",
+   "TurnTruth"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "chat.$sessionId.tsx:1074-1121, 1899-1957 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-09",
+  "funktion": "Dokument-/Knowledge-Base-Schicht (Felder)",
+  "amaster": "§32 (Z.1168-1197)",
+  "soll": "Dokumente strukturiert mit Dateiname, Upload-/Dokumentgruppe, Nummer, Titel, OCR/Volltext, Keywords, Seiten, Folien, Bildvorschau, Quellpfad, Zielbezug, Modus, Welt/Charakter/Session/Szene, Status, Quelle, Vertrauensgrad (Z.1172-1194).",
+  "kettenvertrag": "§13, §5",
+  "sps_loesung": "keine gefunden (kein SPS-Eintrag zu document_index)",
+  "owner": "Python repos.create_document (repos.py:5009-5036), patch_document (5058-5087), rebuild_document_index (5108-5117)",
+  "owner_soll_nach_architektur": "Dokumentenschicht (Index ist abgeleitet, kein zweiter Owner)",
+  "kette": {
+   "eingang": "upload.tsx:145-161 persistVersionedDocument nach Upload; welt.$worldId.tsx:254 Teil-Dokumente",
+   "verarbeitung": "repos.py:5017-5034 articleNo-Regex, documentGroup, uploadGroup, keywords, pages (Split auf \\f oder 'Seite N'), slides []",
+   "speicherung": "documents + document_index",
+   "wiederlesen": "GET /api/documents upload.tsx:80; /api/document-index memory.tsx:88",
+   "entscheidung": "Suche P-10",
+   "folgewirkung": "kein Kernel-/BrainContext-Leser fuer documents (grep 'FROM documents' in kernel.py: keiner)",
+   "frontend": "upload.tsx:397-450 Knowledge Base mit ocrStatus, schema, rev, id, articleNo, documentGroup"
+  },
+  "ui_bedienung": "Upload-Center Knowledge Base",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Folien gehen verloren: extractPptx verbindet alle Folien (epub.ts:576-586), create_document setzt slides [] (repos.py:5034)",
+   "Keine Bildvorschau, kein Vertrauensgrad, kein worldId/sessionId im Upload-Dokument (upload.tsx:147-161 sendet nur targetKind/targetId)",
+   "documents ohne Sicherheitspruefung (ausgefuehrt: POST /api/documents name 'a.exe', title '../x' -> 200)",
+   "Kein Reader im Turn: Dokumentwissen erreicht Figuren nur ueber Mode-B-Memory (P-06)"
+  ],
+  "abhaengig_von": [
+   "P-01",
+   "P-06"
+  ],
+  "auswirkung_bestehender_fehler": "Strukturierte Suche nach Folie/Seite (P-10) unmoeglich.",
+  "belege": [
+   "repos.py:5009-5036 (codefluss)",
+   "epub.ts:568-587 (codefluss)",
+   "probe1 sec_doc_exe 200 (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))"
+  ]
+ },
+ {
+  "id": "P-10",
+  "funktion": "Strukturierte Suche zuerst (Nummer/Titel/OCR/Keywords/Gruppen/Seiten)",
+  "amaster": "§32 (Z.1196-1214)",
+  "soll": "Bei strukturierten Fragen zuerst Artikelnummer, Titel, OCR, Keywords, Dokumentgruppe, Uploadgruppe, Datei- und Seitenmetadaten, erst danach Semantik/LLM (Z.1198-1214).",
+  "kettenvertrag": "§5",
+  "sps_loesung": "keine gefunden",
+  "owner": "Python vector.vector_search (vector.py:41-135)",
+  "owner_soll_nach_architektur": "Dokumentenschicht-Reader",
+  "kette": {
+   "eingang": "upload.tsx:299-312 Feld + 'Suchen'",
+   "verarbeitung": "vector.py:90-106 articleNo(100), title-exact(90), title(70), keyword(60); dann TF-IDF vector.py:110-135",
+   "speicherung": "-",
+   "wiederlesen": "documents ueber document_index (vector.py:61)",
+   "entscheidung": "-",
+   "folgewirkung": "keine (nur Anzeige)",
+   "frontend": "upload.tsx:314 Trefferzeile 'kind:id(match)' ohne Seite/Titel"
+  },
+  "ui_bedienung": "Upload-Center 'Suchen'",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Dokumentgruppe/Uploadgruppe/Seiten nicht durchsucht: Index-Payload ohne documentGroup/pages (repos.py:5090-5105); ausgefuehrt: q 'Werkzeug' (documentGroup) -> 0 Treffer, document-index/search -> 0",
+   "Treffer ohne Seite/Folie, nur 'kind:id' (upload.tsx:305-307)"
+  ],
+  "abhaengig_von": [
+   "P-09"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "probe1 search_art: document_d1 match articleNo score 100 (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))",
+   "probe1 search_group [], docindex_group 0 (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))"
+  ]
+ },
+ {
+  "id": "P-11",
+  "funktion": "OCR- und Textextraktion",
+  "amaster": "§32 (Z.1170, 1181), §57 (Z.2079)",
+  "soll": "OCR-/Textextraktion startbar, OCR-Inhalt und Extraktions-/Fehlerstatus sichtbar; leerer Parse ist kein Erfolg.",
+  "kettenvertrag": "§13 'Extraktion mit Fehlerstatus'",
+  "sps_loesung": "V65Y Z.2087 (Server-OCR-Stub entfernt, OCR im Browser)",
+  "owner": "Frontend ocr.ts:210 textFromUpload (tesseract.js), epub.ts extract*",
+  "owner_soll_nach_architektur": "Extraktion nichtkanonisch, Status im Upload-Owner",
+  "kette": {
+   "eingang": "upload.tsx:170-181 onFile",
+   "verarbeitung": "ocr.ts:215-219 Text vorhanden -> source, sonst Bild-OCR; PDF ohne Text: kein OCR im Upload-Center",
+   "speicherung": "uploads.status ready/ocr_empty; documents.ocrStatus",
+   "wiederlesen": "Bestand/Knowledge Base",
+   "entscheidung": "store.ts:1288-1291 Commit gesperrt bei ocr_empty/error",
+   "folgewirkung": "-",
+   "frontend": "upload.tsx:176-180 Fehlermeldung 'OCR leer'"
+  },
+  "ui_bedienung": "Upload-Center (automatisch beim Dateiwahl, kein eigener 'OCR starten'-Knopf)",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Gescannte PDFs werden im Upload-Center nicht OCR-gelesen: ocrSelectedScanParts nur in welt.$worldId.tsx:236 und welt.index.tsx:165",
+   "Kein separates Bedienelement 'OCR/Extraktion starten' (AMASTER §57 Z.2079)"
+  ],
+  "abhaengig_von": [],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "ocr.ts:210-220 (codefluss)",
+   "upload.tsx:170-181 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-12",
+  "funktion": "Semantische Suche (Varianten, Schreibfehler, Aktivierung)",
+  "amaster": "§33 (Z.1216-1231)",
+  "soll": "Semantik dient dem Finden: aehnliche Begriffe, Formulierungen, OCR-Varianten, Schreibfehler, Bedeutungsnaehe, assoziative Aktivierung, Pattern Completion (Z.1218-1231).",
+  "kettenvertrag": "-",
+  "sps_loesung": "keine gefunden",
+  "owner": "Python vector.vector_search (TF-IDF exakt), amaster_ext.recall_patterns (Token-Overlap, amaster_ext.py:130-174)",
+  "owner_soll_nach_architektur": "Suchindex (abgeleitet)",
+  "kette": {
+   "eingang": "memory.tsx:225-234 'Vektor'; memory.tsx:198-206 'Recall'",
+   "verarbeitung": "vector.py:10 TOKEN nur Buchstaben >=3, exakte Tokengleichheit; recall nur Memory-Tabelle",
+   "speicherung": "-",
+   "wiederlesen": "worlds, characters, memories, uploads, document_index, reviews, graph_edges (vector.py:56-64)",
+   "entscheidung": "keine – vector_search wird von keinem Kernel-/BrainContext-Pfad aufgerufen (grep)",
+   "folgewirkung": "keine",
+   "frontend": "memory.tsx Trefferliste"
+  },
+  "ui_bedienung": "Gedaechtnisseite",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Keine Schreibfehler-/Variantentoleranz: ausgefuehrt q 'Hamer' findet Dokument mit 'Hammer' nicht (probe1 search_typo [])",
+   "vector_search liest memories aller Sessions des Users (vector.py:32) – Treffer ausserhalb der gewaehlten Session in der Gedaechtnisseite",
+   "Kein Einsatz fuer assoziative Aktivierung im Turn (kein Aufrufer in kernel.py)"
+  ],
+  "abhaengig_von": [
+   "Recall (Bereich Memory/Konjunktiv)"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "vector.py:10-135 (codefluss)",
+   "probe1 search_typo (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))"
+  ]
+ },
+ {
+  "id": "P-13",
+  "funktion": "Wissensgraph",
+  "amaster": "§33 (Z.1233-1243)",
+  "soll": "Der Graph bindet Entitaeten, Orte, Figuren, Beziehungen, Ereignisse, Timeline, Propositionen, Goals, Quellen (Z.1233-1243).",
+  "kettenvertrag": "§11",
+  "sps_loesung": "keine gefunden",
+  "owner": "Python amaster_ext.create_graph_edge (amaster_ext.py:84-113), list_graph_edges (116-127)",
+  "owner_soll_nach_architektur": "abgeleiteter Graph ueber kanonische Owner (keine zweite Wahrheit)",
+  "kette": {
+   "eingang": "social.tsx:99-117 'Graph speichern'",
+   "verarbeitung": "store.ts:1174-1192 addRelation: PUT relations + POST graph",
+   "speicherung": "graph_edges (amaster_ext.py:108-111)",
+   "wiederlesen": "social.tsx:31, vector.py:36",
+   "entscheidung": "keine (kein Kernelleser)",
+   "folgewirkung": "keine",
+   "frontend": "social.tsx:135-145 'Graph-Kanten (SQLite)'"
+  },
+  "ui_bedienung": "Beziehungsseite",
+  "statischer_befund": "FEHLT_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Nur manuell angelegte Figur-Figur-Kanten; keine Orte/Ereignisse/Timeline/Propositionen/Goals/Quellen als Knoten",
+   "graph_edges ohne Leser in Kernel/BrainContext (grep: amaster_ext.py:116, vector.py:36, system_loop)"
+  ],
+  "abhaengig_von": [
+   "RelationshipState",
+   "SceneFact",
+   "Proposition/Goal"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "amaster_ext.py:84-127 (codefluss)",
+   "store.ts:1174-1192 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-14",
+  "funktion": "Semantik/Graph ersetzen keine IDs, Quellen, Commit, Current State",
+  "amaster": "§33 (Z.1245-1253)",
+  "soll": "Semantik und Graph ersetzen nicht stabile IDs, exakte Nummernsuche, Quellenbindung, Uploadmodus, WitnessKnowledge, Commit oder Current State (Z.1245-1253).",
+  "kettenvertrag": "§4",
+  "sps_loesung": "V65Z I89 Z.1765 (Semantikdienst nichtkanonisch, TEIL)",
+  "owner": "Python vector.py (inventsTruth False in repos.py:5097, amaster_ext.py:156)",
+  "owner_soll_nach_architektur": "Suchindex nur Leser",
+  "kette": {
+   "eingang": "Suche",
+   "verarbeitung": "strukturiert vor TF-IDF (vector.py:107-134)",
+   "speicherung": "keine Schreibwege aus Suche",
+   "wiederlesen": "-",
+   "entscheidung": "keine",
+   "folgewirkung": "keine",
+   "frontend": "Suchtreffer mit IDs"
+  },
+  "ui_bedienung": "Upload-/Gedaechtnisseite",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [],
+  "abhaengig_von": [],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "vector.py:107-109 strukturiert zuerst (codefluss)",
+   "probe1 search_art articleNo vor tfidf (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))"
+  ]
+ },
+ {
+  "id": "P-15",
+  "funktion": "15 Oberflaechenbereiche und Bedienbarkeit jeder Backendfunktion",
+  "amaster": "§54 (Z.2003-2027)",
+  "soll": "15 zentrale Seiten; jede Backendfunktion mit Produktwirkung ist ueber eine Oberflaeche bedienbar, sichtbar oder pruefbar (Z.2027).",
+  "kettenvertrag": "§5",
+  "sps_loesung": "G12 V68 Z.846 TEILGRUEN, V65Z Z.1789 TEIL; Routenkarte offen V71 Z.12, V69 Z.566",
+  "owner": "Frontend src/lib/matrix/nav.ts (NAV, NAV_MORE), src/components/shell.tsx",
+  "owner_soll_nach_architektur": "Frontend als Teil der Architektur",
+  "kette": {
+   "eingang": "shell.tsx:100-140 Navigation",
+   "verarbeitung": "-",
+   "speicherung": "-",
+   "wiederlesen": "-",
+   "entscheidung": "-",
+   "folgewirkung": "-",
+   "frontend": "Seiten vorhanden: / (1), /user (2), /welt (3), /charakter (4), /chat Index (5), /chat/$id (6), /upload (7), /memory (8), /social (9), /timeline (10), /fate (11), /config (12), /review (13), /admin + /diagnose + /labor (14), /logs (15)"
+  },
+  "ui_bedienung": "Hauptnavigation + Menue 'Mehr'",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "28 Routen ohne Frontendaufruf oder ohne sichtbare Kontrolle (P-MATRIX routen_ohne_frontendaufruf_oder_kontrolle), darunter produktwirksam: POST /api/uploads/<id>/commit, PATCH goals, PATCH reviews, DELETE snapshots, Preferences-CRUD",
+   "Gedaechtnis, Beziehungen, Timeline, Fate, Review, Logs, User nur im aufklappbaren 'Mehr'-Menue (nav.ts:11-22, shell.tsx:118-140)",
+   "Zweite Bedienoberflaeche matrix_speicher_v91.html ausserhalb src (START.py:252-256)"
+  ],
+  "abhaengig_von": [
+   "alle Bereiche"
+  ],
+  "auswirkung_bestehender_fehler": "Nicht bedienbare Writer bleiben ROT (KV §1).",
+  "belege": [
+   "nav.ts:1-22 (codefluss)",
+   "P-MATRIX (codefluss)"
+  ]
+ },
+ {
+  "id": "P-16",
+  "funktion": "Startseite und Hauptmenue",
+  "amaster": "§55 (Z.2029-2044)",
+  "soll": "Startseite zeigt Build, DB, Server-/Providerstatus, User, letzte Welt/Session, direkte Zugaenge; Start ohne Pfadeingabe (Z.2031-2044).",
+  "kettenvertrag": "§5",
+  "sps_loesung": "V59C Z.5318 (Startseite zeigt Backend-Build)",
+  "owner": "Frontend src/routes/index.tsx",
+  "owner_soll_nach_architektur": "Health-/Provider-Reader",
+  "kette": {
+   "eingang": "index.tsx:28-36 apiHealth + apiPingProvider(live:false)",
+   "verarbeitung": "app.py:530-582 health; app.py:2384 ping",
+   "speicherung": "-",
+   "wiederlesen": "users.lastWorldId/lastSessionId aus /api/mcc",
+   "entscheidung": "-",
+   "folgewirkung": "'Gespraech beginnen' ensureLiveSession store.ts:965-1011",
+   "frontend": "index.tsx:69-111"
+  },
+  "ui_bedienung": "Startseite",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "'Gespraech beginnen' legt ohne Rueckfrage einen Gast-User und eine Session 'Gespraech' in der Gasthaus-/ersten Welt an (store.ts:976-1007)",
+   "Providerstatus nur User-Scope (app.py:525 get_config user)"
+  ],
+  "abhaengig_von": [
+   "P-20"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "index.tsx:12-115 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-17",
+  "funktion": "Chatoberflaeche (Status, Rollen, Ziel, AutoChat, Stopp)",
+  "amaster": "§56 (Z.2046-2071)",
+  "soll": "Chat zeigt Welt, Session, Szene, Anwesende, Avatar, Rolle, Ziel, AutoChat-/Fate-Status, Verlauf, Uploadbezug, Eingabe, Mikrofon, Senden, Stoppen; Rollen/Avatar/Ziel/God/Regie/AutoChat sichtbar bedienbar; IDs/Modi werden ausdruecklich gesendet (Z.2048-2071).",
+  "kettenvertrag": "§5, §12",
+  "sps_loesung": "V25.1-Kommentar chat:197; G12 V68 Z.846",
+  "owner": "Frontend chat.$sessionId.tsx + kernel-bridge.ts",
+  "owner_soll_nach_architektur": "Kernel (TurnTruth serverseitig)",
+  "kette": {
+   "eingang": "chat:1595-1640 Eingabe/Senden/Aufnahme; Steuerpanel chat:1153 'Steuerung einblenden'",
+   "verarbeitung": "kernel-bridge.ts:130-213 sendet session/truth (authorityForUiRole, inputActorForSession)",
+   "speicherung": "Kernel (andere Bereiche)",
+   "wiederlesen": "apiGetSession chat:164",
+   "entscheidung": "Kernel",
+   "folgewirkung": "-",
+   "frontend": "Kopf chat:1140-1155 Welt/Ort/Anwesende-Chips; Status-Chips chat:1340-1343"
+  },
+  "ui_bedienung": "Chatseite",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "'Stoppen', 'Upload', 'STT-Modus' nur sichtbar, wenn 'Steuerung einblenden' aktiv (chat:1622-1640) – AMASTER §56 verlangt Stoppen als Mindestanzeige, §61 keine versteckten Menues",
+   "Uploadbezug (session.focus.uploadId) wird gesetzt (chat:1114), aber nicht angezeigt (UNKLAR, keine Anzeige gefunden)"
+  ],
+  "abhaengig_von": [
+   "TurnTruth",
+   "Kernel-Routen (andere Bereiche)"
+  ],
+  "auswirkung_bestehender_fehler": "Laufender AutoChat ist bei eingeklappter Steuerung nicht stoppbar.",
+  "belege": [
+   "chat.$sessionId.tsx:1595-1640 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-18",
+  "funktion": "Upload-Center (Bedienumfang)",
+  "amaster": "§57 (Z.2073-2094)",
+  "soll": "Dateien, Vorschau, Typerkennung, OCR starten, Ziel/Session/Szene, Mode A/B, Dokumentgruppe, Analysebereiche, Status, Fehler, Review, Commit, Wiederfinden, gezieltes Loeschen; keine Praegung ohne sichtbare Ziel- und Moduswahl (Z.2075-2094).",
+  "kettenvertrag": "§13, §5",
+  "sps_loesung": "V67 Z.1266 (Upload-Loeschen sichtbar abgelehnt)",
+  "owner": "Frontend src/routes/upload.tsx",
+  "owner_soll_nach_architektur": "Upload-Owner + Review-Owner",
+  "kette": {
+   "eingang": "upload.tsx:204-371",
+   "verarbeitung": "store.ts:1266-1350",
+   "speicherung": "uploads/documents/reviews",
+   "wiederlesen": "/api/mcc, /api/documents",
+   "entscheidung": "pipeline.ingest_upload",
+   "folgewirkung": "P-02..P-06",
+   "frontend": "Panels Preview/Review/Commit, Knowledge Base, Bestand"
+  },
+  "ui_bedienung": "/upload",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Analysebereiche waehlen fehlt",
+   "Review ohne Feld/Wert (upload.tsx:385-394)",
+   "Commit-Erfolgsanzeige bei ok:false (store.ts:1302-1326)",
+   "Dokumentgruppe nur am Dokument, nicht am Upload; ohne Suchwirkung",
+   "Dokument-Loeschen ohne Fehlerbehandlung/Rueckfrage (upload.tsx:424-433)",
+   "Typerkennung nicht angezeigt (nur mime im Datensatz)"
+  ],
+  "abhaengig_von": [
+   "P-01..P-11"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "upload.tsx:200-508 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-19",
+  "funktion": "Gedaechtnis- und Wissensseite",
+  "amaster": "§58 (Z.2096-2122)",
+  "soll": "Figurenbezogen Erlebnisse, Rede, Gesehenes, Gehoertes, spaeter Erfahrenes, Dokumentwissen, Unsicherheit, Quellen, Zeit, Facts, Propositionen, Beziehungen, Wissenswege; Trennung Stamm/Session/Welt/Cache/Index/Review (Z.2098-2122).",
+  "kettenvertrag": "§10, §5",
+  "sps_loesung": "keine gefunden",
+  "owner": "Frontend src/routes/memory.tsx",
+  "owner_soll_nach_architektur": "Memory-, Stamm-, Welt-Owner (Leser), Index/Cache abgeleitet",
+  "kette": {
+   "eingang": "memory.tsx:257 Schichtwahl, memory.tsx:280-316 'Speichern'",
+   "verarbeitung": "Schicht Stamm -> patchCharacter knowledge (memory.tsx:288-293); Welt -> patchWorld secrets (memory.tsx:295-298); Session -> addMemory (memory.tsx:302-311)",
+   "speicherung": "characters/worlds/memories",
+   "wiederlesen": "Store aus /api/mcc; Cache /recall; Index /document-index; Review /reviews",
+   "entscheidung": "-",
+   "folgewirkung": "Memory -> BrainContext (Bereich Memory)",
+   "frontend": "memory.tsx:149-180 Schichtzeilen; WitnessKnowledge memory.tsx:331-371; Zaehler memory.tsx:374-393"
+  },
+  "ui_bedienung": "/memory (nur ueber 'Mehr')",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Schicht 'Weltwissen' schreibt in world.secrets (memory.tsx:295-297) und liest secrets/history/knowledgeLimits (memory.tsx:163-171), nicht world.worldKnowledge (Feld existiert, pipeline.py:431)",
+   "Quellen, Zeit, zugehoerige Facts und Unsicherheit nur als Gesamtzaehler, nicht je Erinnerung (memory.tsx:374-381)",
+   "Manuelles Sessionmemory 'truthStatus canon' ohne SceneFact-Quelle (memory.tsx:302-311) – UNKLAR, ob AMASTER das zulaesst (Bereich Memory)"
+  ],
+  "abhaengig_von": [
+   "Memory-Writer",
+   "Welt-Owner"
+  ],
+  "auswirkung_bestehender_fehler": "Als 'Weltwissen' eingegebene Inhalte werden zu Geheimnissen.",
+  "belege": [
+   "memory.tsx:149-316 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-20",
+  "funktion": "Beziehungs- und Socialseite",
+  "amaster": "§59 (Z.2124-2138)",
+  "soll": "Trennt Stamm-Ausgangsbeziehung, gerichtete Sessionbeziehung, abgeleitete Socialwerte, historische Aenderungen, Quellenereignisse; Aenderung zeigt die Ebene; kein alter Socialwert neben anderem Runtime-Pfad (Z.2126-2138).",
+  "kettenvertrag": "§11, §5",
+  "sps_loesung": "V65Y N02 Z.2081 (put_session_relation Herkunftspruefung); G15 V65Z Z.1792 TEIL; V71 Z.10 (seq/commit-Override ueber put_session_relation, ROT)",
+  "owner": "Frontend social.tsx + store.addRelation (store.ts:1174-1192)",
+  "owner_soll_nach_architektur": "RelationshipState-Owner (gerichtet, ereignisbegruendet); Social/Synapsen abgeleitet",
+  "kette": {
+   "eingang": "social.tsx:76-119 von/zu/Art + 'Graph speichern'",
+   "verarbeitung": "PUT /api/sessions/<id>/relations + POST graph",
+   "speicherung": "relationships + graph_edges",
+   "wiederlesen": "session.relations aus /api/mcc; /graph",
+   "entscheidung": "BrainContext relations_here kernel.py:14144-14161",
+   "folgewirkung": "Figurenreaktion (Bereich Relationship)",
+   "frontend": "social.tsx:121-185"
+  },
+  "ui_bedienung": "/social (nur ueber 'Mehr')",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "'Graph speichern' ueberschreibt eine bestehende Sessionbeziehung mit festen Werten (social.tsx:103-112, store.ts:1178-1180 merge)",
+   "'Abgeleitete Social-Werte' werden im Frontend berechnet (social.tsx:167-168), nicht aus dem Backend-Social/Synapsen-Owner",
+   "Historische Veraenderungen fehlen; 'Aenderungshistorie' zeigt nur graph_edges (social.tsx:173-184)",
+   "Keine Bearbeitung von Werten/Stammbeziehung; Ebene der Aenderung nicht waehlbar"
+  ],
+  "abhaengig_von": [
+   "RelationshipState (Bereich Relationship)",
+   "Social/Synapsen"
+  ],
+  "auswirkung_bestehender_fehler": "Manuelle Kante kann gewachsene Sessionbeziehung zuruecksetzen; wirkt im Folgeturn.",
+  "belege": [
+   "social.tsx:1-190 (codefluss)",
+   "store.ts:1174-1192 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-21",
+  "funktion": "Konfiguration: Provider, API-Key, Modell, Parameter",
+  "amaster": "§60 (Z.2140-2174)",
+  "soll": "Provider, Key, Modell, Antwortlaenge, Temperatur u.a. gescopt speichern, nach Reload sichtbar und vom Backend tatsaechlich genutzt; Key nie im Klartext in Berichten/Logs (Z.2142-2174).",
+  "kettenvertrag": "§14",
+  "sps_loesung": "V69 Z.499/510 (Key aus ausgelieferter DB entfernt); V70 Z.345/455; K12 Z.6182 (Verbindungspruefung)",
+  "owner": "Python repos.put_config/get_config (repos.py:5853-5926), llm_contract._cfg/_api_key (llm_contract.py:2445-2480)",
+  "owner_soll_nach_architektur": "Config-Owner in SQLite mit Scope",
+  "kette": {
+   "eingang": "config.tsx:251-301 Provider/Key/Modell/Temperature/MaxTokens; 'Schluessel speichern' config.tsx:281",
+   "verarbeitung": "store.ts:1501-1531 setConfig -> PUT /api/config; config.tsx:73 saveKey",
+   "speicherung": "config (scope, scope_id) repos.py:5885-5894",
+   "wiederlesen": "GET /api/config -> _public_config (maskiert) app.py:1299-1306; /api/mcc config UNMASKIERT repos.py:1444-1466",
+   "entscheidung": "formulate_from_config llm_contract.py:2848-2868 (Request-Werte vor cfg)",
+   "folgewirkung": "Providerweg (Live-Aufruf nicht ausgefuehrt, siehe P-33)",
+   "frontend": "config.tsx:245-250 Status, Maske, Quelle"
+  },
+  "ui_bedienung": "/config",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "API-Key im Klartext in GET /api/mcc (repos.py:1444-1466 -> app.py:688-690); ausgefuehrt: mcc_config_apiKey und blob.config.apiKey = gespeicherter Key",
+   "chat:429 nimmt user.providerConfig.model (user.tsx:166) vor dem gescopten config.model – zweite Modellquelle",
+   "Debug, Kontext-Turns, Erzaehler: gespeichert, ohne Backendleser (P-MATRIX felder_ohne_backendwirkung)",
+   "refreshKeyStatus verschluckt Fehler (config.tsx:49-51)"
+  ],
+  "abhaengig_von": [
+   "P-22"
+  ],
+  "auswirkung_bestehender_fehler": "Key-Leak ueber jede Seite (Hydratisierung) – betrifft Sicherheit P-30.",
+  "belege": [
+   "probe1 mcc_config_apiKey 'sk-GEHEIM-1234567890' (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))",
+   "probe1 get_config_has_plain false (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))"
+  ]
+ },
+ {
+  "id": "P-22",
+  "funktion": "Konfigurations-Scopes (global/user/welt/charakter/session/runtime)",
+  "amaster": "§60 (Z.2160-2170)",
+  "soll": "Jede Einstellung hat einen klaren Scope; gespeicherter Wert wird vom Backend tatsaechlich verwendet (Z.2160-2172).",
+  "kettenvertrag": "§14",
+  "sps_loesung": "keine gefunden",
+  "owner": "Python repos._config_scope_id (repos.py:5929-5967), llm_contract._cfg (2445-2452)",
+  "owner_soll_nach_architektur": "Config-Owner mit nachvollziehbarer Aufloesung",
+  "kette": {
+   "eingang": "config.tsx:140-223 Scope + Ziel + 'Scope laden'",
+   "verarbeitung": "_cfg liest genau den im Request genannten Scope",
+   "speicherung": "config(scope,scope_id)",
+   "wiederlesen": "apiGetConfig(scope)",
+   "entscheidung": "_api_key llm_contract.py:2471-2477 nur aus diesem Scope oder ENV",
+   "folgewirkung": "chat:432 sendet config.scope an formulate",
+   "frontend": "scopeMsg config.tsx:216"
+  },
+  "ui_bedienung": "/config Scope",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Keine Scope-Vererbung: Key im User-Scope, Scope 'session' geladen -> keyPresent false, Provider 'synapse' (ausgefuehrt probe2 ping_session_scope); Chat faellt still auf Synapse",
+   "global nur fuer admin schreibbar (repos.py:5930-5933), im UI ohne Hinweis waehlbar",
+   "Kernel-/AutoChat-Parameter (autoChatTurns, delayMs, fateDefault) werden nur als Startwerte neuer Sessions clientseitig uebernommen (store.ts:882-892), Backend liest sie nicht aus config"
+  ],
+  "abhaengig_von": [],
+  "auswirkung_bestehender_fehler": "Figuren sprechen nach Scope-Wechsel ohne LLM, obwohl ein Key gespeichert ist.",
+  "belege": [
+   "probe2 session_scope_keyPresent false, ping_session_scope provider synapse (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))"
+  ]
+ },
+ {
+  "id": "P-23",
+  "funktion": "Accessibility",
+  "amaster": "§61 (Z.2176-2197)",
+  "soll": "Grosse Schrift, hoher Kontrast, grosse Schaltflaechen, Textbeschriftung, einfache Struktur, Fokus/Tastatur, Screenreader-Labels, klare Meldungen, keine Pfadeingabe, Fortschritt, keine versteckten Mini-Menues fuer zentrale Funktionen (Z.2180-2197).",
+  "kettenvertrag": "§5",
+  "sps_loesung": "G30 V65Z Z.1807 OFFEN (keine Browser-/Screenreader-Pruefung)",
+  "owner": "Frontend shell.tsx, ui-Komponenten; user.largeType/highContrast",
+  "owner_soll_nach_architektur": "Frontend",
+  "kette": {
+   "eingang": "config.tsx:325-326 'Grosse Schrift'/'Kontrast'; user.tsx",
+   "verarbeitung": "PATCH /api/users",
+   "speicherung": "users.json",
+   "wiederlesen": "/api/mcc",
+   "entscheidung": "shell.tsx:77 Klassen large-type/hi-c",
+   "folgewirkung": "-",
+   "frontend": "Skip-Link shell.tsx:84-86; min-h-11 Buttons; aria-labels chat:1600,1618"
+  },
+  "ui_bedienung": "/config, /user",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Zentrale Seiten im aufklappbaren 'Mehr'-Menue (shell.tsx:118-140)",
+   "Chat-Steuerung (Stoppen, Upload, Rollen) hinter 'Steuerung einblenden' (chat:1153, 1622-1640)",
+   "Mehrere Fehler werden still verschluckt (config.tsx:49-51; index.tsx:35 .catch(()=>setProvider(null)))",
+   "Keine Screenreader-/Tastaturabnahme (SPS G30 offen) – nicht ausgefuehrt"
+  ],
+  "abhaengig_von": [],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "shell.tsx:76-140 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-24",
+  "funktion": "STT und TTS",
+  "amaster": "§62 (Z.2199-2217)",
+  "soll": "Zwei sichtbare STT-Modi (Diktat/Auto-Senden), abbrechbar, keine versteckte Auto-Sendung, STT pausiert waehrend TTS, keine Selbstaufnahme/Endlosschleife, Antworttext nicht ins Eingabefeld (Z.2201-2217).",
+  "kettenvertrag": "§5",
+  "sps_loesung": "keine gefunden",
+  "owner": "Frontend chat.$sessionId.tsx mic() 1039-1072, speakNow 1016-1031; Backend-Stubs app.py:2281-2297",
+  "owner_soll_nach_architektur": "Geraetefunktion; user.sttMode/tts im User-Owner",
+  "kette": {
+   "eingang": "chat:1612-1621 Aufnahme (Label zeigt Modus); STT-Modus chat:1627; Config 'Vorlesen' config.tsx:324",
+   "verarbeitung": "Browser SpeechRecognition; autosend -> send(t) chat:1060-1063; Diktat haengt an Eingabe an",
+   "speicherung": "users.sttMode, users.tts",
+   "wiederlesen": "/api/mcc",
+   "entscheidung": "mic() prueft speechSynthesis.speaking chat:1040-1043; speakNow stoppt Aufnahme chat:1017-1024",
+   "folgewirkung": "-",
+   "frontend": "aria-pressed/Label chat:1617-1620"
+  },
+  "ui_bedienung": "Chat, Config",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "/api/speech/stt und /api/speech/tts sind local-stub ohne Wirkung (ausgefuehrt: transcript '', spoken false) – Aufrufe ohne Backendwirkung",
+   "STT-Modus-Umschalter im Chat nur bei eingeblendeter Steuerung (chat:1622-1630)",
+   "Browserlauf nicht ausgefuehrt (Selbstaufnahme/Endlosschleife ungeprueft)"
+  ],
+  "abhaengig_von": [],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "chat.$sessionId.tsx:1016-1072 (codefluss)",
+   "probe1 stt/tts (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))"
+  ]
+ },
+ {
+  "id": "P-25",
+  "funktion": "Persistenz: SQLite als Master, Datenrollen getrennt",
+  "amaster": "§63 (Z.2219-2274)",
+  "soll": "SQLite ist lokaler persistenter Master; Stamm/Session/Runtime/Evidenz/Cache/Index/Upload/Anzeige/Legacy/Testdaten getrennt; JSON keine heimliche zweite Wahrheit (Z.2221-2274).",
+  "kettenvertrag": "§4, §15",
+  "sps_loesung": "V70 Z.55-57 (Wirksamkeitsgrenze, altbestand); V66 Z.1601 G26",
+  "owner": "Frontend store.ts flaskMccStorage (store.ts:290-312); Python repos/db",
+  "owner_soll_nach_architektur": "SQLite-Owner",
+  "kette": {
+   "eingang": "jede Store-Aktion",
+   "verarbeitung": "writeOrRevert store.ts:401-419 (Server zuerst)",
+   "speicherung": "SQLite",
+   "wiederlesen": "getItem -> fetchOwnerPartial store.ts:296-349",
+   "entscheidung": "merge store.ts:1750-1786 (nur Server-Zustand, apiKey '' )",
+   "folgewirkung": "-",
+   "frontend": "alle Seiten"
+  },
+  "ui_bedienung": "-",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Diagnose 'Systemschleife' schreibt Testwelt/-figuren/-session (ses_sys, ch_sys, av_sys, Termin, Kante, Memory) in die Produkt-DB des aktiven Users (diagnose.tsx:93-105 -> app.py:2214-2219 -> system_loop.py:61-140) – Testdaten nicht getrennt",
+   "Automatischer Legacy-Import localStorage -> /api/import/mcc ohne Bedienung (store.ts:240-262)",
+   "Actor in localStorage/sessionStorage (api.ts:29-78) – Bedienzuordnung, keine Produktwahrheit (zulaessig)"
+  ],
+  "abhaengig_von": [],
+  "auswirkung_bestehender_fehler": "Testsession erscheint in Session-Listen, Suche, Export.",
+  "belege": [
+   "store.ts:290-312 setItem NO-OP (codefluss)",
+   "system_loop.py:61-140 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-26",
+  "funktion": "Session-Snapshot und Wiederherstellung",
+  "amaster": "§64 (Z.2276-2293)",
+  "soll": "Snapshot enthaelt die fuer den Fortgang benoetigten gebundenen Zustaende; Wiederherstellung ueberschreibt keine andere Session/fremde Userdaten (Z.2289-2293).",
+  "kettenvertrag": "§15",
+  "sps_loesung": "G29 V68 Z.851 TEILGRUEN (Restore atomar); V67 Z.1270; V66 Z.1603",
+  "owner": "Python repos._server_snapshot (repos.py:5537-5557), restore_snapshot (repos.py:5633ff)",
+  "owner_soll_nach_architektur": "Server-Snapshot-Owner",
+  "kette": {
+   "eingang": "chat:1848 'Snapshot'; chat.index.tsx:143; Restore chat:1860, chat.index.tsx:196",
+   "verarbeitung": "_capture_session_for_snapshot + Hash-Stempel 'erfasst' (repos.py:5546-5554); Restore prueft Stempel, Hash, Session, Owner, Welt (repos.py:5644-5672)",
+   "speicherung": "snapshots; Restore schreibt Envelope + Kinder unter dependency_guard",
+   "wiederlesen": "store.ts:1425 restoreSnapshot -> Session aus Antwort",
+   "entscheidung": "Folgeturn liest wiederhergestellte Session (nicht ausgefuehrt)",
+   "folgewirkung": "-",
+   "frontend": "Versionsvergleich chat:1874-1880 (Turn-/Memory-Differenz)"
+  },
+  "ui_bedienung": "Chat, Chat-Index",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Restore im Chat-Index ohne Rueckfrage (chat.index.tsx:196) im Unterschied zu chat:1860 (confirmReset)",
+   "Snapshot loeschen ohne Bedienung (P-MATRIX)"
+  ],
+  "abhaengig_von": [
+   "SceneState",
+   "Runtime",
+   "Memory",
+   "WitnessKnowledge"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "repos.py:5520-5672 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-27",
+  "funktion": "Backup, Export, Import (Welt, Charakter, Session, Upload/Dokument)",
+  "amaster": "§64 (Z.2278-2287)",
+  "soll": "Weltbackup, Charakterexport, Sessionexport, Upload-/Dokumentexport, Wiederherstellung, Versionsvergleich, kontrollierter Import (Z.2280-2287).",
+  "kettenvertrag": "§15",
+  "sps_loesung": "V65Z laut Kommentar store.ts:1118-1121 (SPS-Audit V65Y A08: Session-Import in einer Transaktion); V66 E03 Import-Autoritaet",
+  "owner": "Python repos.backup_world/restore_world_backup (2419-2500), backup_character (2501-2560); Frontend downloadJson",
+  "owner_soll_nach_architektur": "Server-Export-/Import-Owner",
+  "kette": {
+   "eingang": "welt.$worldId.tsx:600-617 Export/Sicherung; charakter.$charId.tsx:210-216; chat.index.tsx:157-167 Export, 230-253 Import; upload.tsx:443-449 Dokumentexport",
+   "verarbeitung": "Session-/Dokumentexport aus Client-Store/Liste (chat.index.tsx:161-164, upload.tsx:446); Session-Import POST /api/sessions import:true (store.ts:1109-1158)",
+   "speicherung": "snapshots (Backups), sessions (Import)",
+   "wiederlesen": "apiGetSession nach Import store.ts:1149",
+   "entscheidung": "-",
+   "folgewirkung": "-",
+   "frontend": "Meldungen setBackupMsg / importErr"
+  },
+  "ui_bedienung": "Welt-, Charakter-, Chat-Index-, Upload-Seite",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Kein Upload-Export (nur Dokumentliste upload.tsx:446)",
+   "Session-Export aus dem Client-Store statt aus einem Server-Exportleser (chat.index.tsx:161-164) – Vollstaendigkeit (WitnessKnowledge, Kinder) nicht garantiert (UNKLAR)",
+   "Kein Charakter-Import (nur Export charakter.$charId.tsx:210)",
+   "Welt-Restore ohne Store-Neuladen; Erfolg ohne Rueckleser (welt.$worldId.tsx:708-710)"
+  ],
+  "abhaengig_von": [
+   "P-26"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "chat.index.tsx:157-167 (codefluss)",
+   "store.ts:1109-1158 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-28",
+  "funktion": "Diagnose, Logs, Nachvollziehbarkeit",
+  "amaster": "§65 (Z.2295-2324)",
+  "soll": "Diagnose zeigt Build, DB, User, Welt, Session, Turn, Rolle, Sprecher, Ziel, Anwesenheit, Providerweg, Writer, Fact-IDs, Propositionen, Lifecycle, Memory-/Runtimewirkung, Antwort, Fehler; Fehler nicht verschlucken; Erfolgsmeldung nur bei echtem Erfolg (Z.2297-2324).",
+  "kettenvertrag": "§5, §16",
+  "sps_loesung": "V65I (Client-Build-Header api.ts:92-94); V70 Z.56 (Diagnose 'Nicht wirksam')",
+  "owner": "Frontend diagnose.tsx, logs.tsx, admin.tsx; Python live_log.py",
+  "owner_soll_nach_architektur": "Diagnose-Leser (keine Wahrheit)",
+  "kette": {
+   "eingang": "diagnose.tsx:278-286 Buttons",
+   "verarbeitung": "runLoop diagnose.tsx:107-158",
+   "speicherung": "logs (append-only), live log",
+   "wiederlesen": "GET /api/logs, /api/live-log",
+   "entscheidung": "-",
+   "folgewirkung": "-",
+   "frontend": "chainLive-Zeile diagnose.tsx:124-150"
+  },
+  "ui_bedienung": "/diagnose, /logs, /admin",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Diagnose liest sessions[0], nicht die aktive Session (diagnose.tsx:121)",
+   "Sprecher, Ziel, Anwesenheit, Providerweg, Writer, Fact-IDs je Turn nicht in der Diagnosezeile (diagnose.tsx:124-150) – nur im Live-Log",
+   "Erfolg trotz Fehler: Upload-Ingest ok:false (P-01), Review OWNER_WRITE_FAILED (P-05)",
+   "Fehler beim Log-Schreiben verschluckt (store.ts:1495-1499 skipLog)"
+  ],
+  "abhaengig_von": [
+   "Live-Log",
+   "Kernel-Trace"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "diagnose.tsx:107-158 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-29",
+  "funktion": "Inhalts- und Genresteuerung",
+  "amaster": "§66 (Z.2326-2341)",
+  "soll": "Genre, Ton, Inhaltsgrenzen ausdruecklich ueber Welt-/User-/Sessionkonfiguration; keine versteckten Filter; Steuerung sichtbar, gescopet, gespeichert (Z.2328-2341).",
+  "kettenvertrag": "§5, §14",
+  "sps_loesung": "V60B Z.5248 (worldFrame Genre/Ton im Prompt)",
+  "owner": "Python kernel world_frame (kernel.py:14525-14537) + llm_contract Prompt (llm_contract.py:2021-2031); genre_policy.py (nur Anzeige)",
+  "owner_soll_nach_architektur": "Welt-/User-/Session-Config",
+  "kette": {
+   "eingang": "welt.$worldId.tsx:728-745 Felder Genre, Ton",
+   "verarbeitung": "patchWorld",
+   "speicherung": "worlds.genre/tone",
+   "wiederlesen": "BrainContext worldFrame kernel.py:14530-14537",
+   "entscheidung": "Prompt 'WELT (Rahmen fuer Genre, Ton und Inhalt)' llm_contract.py:2028",
+   "folgewirkung": "Formulierung (nicht ausgefuehrt)",
+   "frontend": "Weltseite"
+  },
+  "ui_bedienung": "Weltseite",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Keine Inhaltsgrenzen-Steuerung im User-/Session-Scope; kein Feld 'Inhaltsgrenzen' (grep ohne Treffer)",
+   "genre_policy.py:6-18 (Register/Gewalt) wird angezeigt (welt.$worldId.tsx:85-100) aber von keinem Turn gelesen – Anzeige suggeriert Steuerung",
+   "Kein versteckter Inhaltsfilter gefunden (grep llm_contract/kernel) – Befund nur statisch"
+  ],
+  "abhaengig_von": [
+   "BrainContext",
+   "Prompt (Bereich LLM)"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "kernel.py:14525-14537, llm_contract.py:2021-2031 (codefluss)",
+   "genre_policy.py:1-18 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-30",
+  "funktion": "Sicherheit (Uploadpfade, Typen, Groessen, Archive, Keys, Fremddaten)",
+  "amaster": "§67 (Z.2343-2362)",
+  "soll": "Schutz von Uploadpfaden, Typen, Groessen, Archivextraktion, Pfadmanipulation, Ausfuehrung, fremden Userdaten, API-Keys, Backups, Exporten; verstaendlich konfigurierbar oder dokumentiert (Z.2345-2362).",
+  "kettenvertrag": "§14, §5",
+  "sps_loesung": "V65Z A07 (START.py Pfad-Traversal, Kommentar START.py:282-285); V69 Z.499-510 (Key)",
+  "owner": "Python upload_security.validate_upload_meta (upload_security.py:31-44); Frontend epub.ts Limits; repos Owner-Checks",
+  "owner_soll_nach_architektur": "technische Schutzschicht ohne Inhaltswirkung",
+  "kette": {
+   "eingang": "Upload-Center",
+   "verarbeitung": "Client: epub.ts:16-21 Limits, 310-311 Groesse, 572-574/594-598 Archivpfade; Server: nur Name/Mime/Textlaenge repos.py:4927-4933",
+   "speicherung": "-",
+   "wiederlesen": "-",
+   "entscheidung": "Owner-Checks _owned_get (ausgefuehrt: fremder User 403)",
+   "folgewirkung": "-",
+   "frontend": "upload.tsx:265 Typliste"
+  },
+  "ui_bedienung": "keine Konfiguration; Hinweistext upload.tsx:265,275",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "API-Key im Klartext ueber GET /api/mcc (ausgefuehrt, siehe P-21)",
+   "POST /api/documents ohne Typ-/Pfadpruefung (ausgefuehrt: 200)",
+   "looks_like_zip_bomb (upload_security.py:47) nie aufgerufen; Archivlimits nur clientseitig und abweichend (Client MAX_ZIP_ENTRIES 800 epub.ts:17 vs. Server 200 upload_security.py:20)",
+   "Serverseitige Groessenpruefung misst nur extrahierten Text (repos.py:4930)"
+  ],
+  "abhaengig_von": [
+   "P-21"
+  ],
+  "auswirkung_bestehender_fehler": "Key-Leak in Browser-Netzwerkantwort jeder Seite.",
+  "belege": [
+   "probe1 sec_path 400, sec_exe 400, sec_doc_exe 200, foreign_get_upload 403, foreign_get_doc 403, foreign_search [] (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))"
+  ]
+ },
+ {
+  "id": "P-31",
+  "funktion": "Resetarten (Chat, Runtime, Memory, Uploadkontext, Session, User, Hard)",
+  "amaster": "§54 Z.2025 (Admin/Reset); KV §15",
+  "soll": "Jede Resetart sichtbares Ziel, atomarer Server-Owner, Vorabanzeige des Betroffenen, Ergebnis rueckgelesen; Avatar bleibt; Fremde unveraendert (KV §15).",
+  "kettenvertrag": "§15",
+  "sps_loesung": "V67 Z.1161 (confirmReset vor jeder destruktiven Aktion), V67 Z.1156 (Uploadkontext), G12 V68 Z.846",
+  "owner": "Python repos.reset_session_* (z.B. reset_session_uploads repos.py:3429-3506), app.py:944-988, /api/kernel/reset app.py:4227",
+  "owner_soll_nach_architektur": "atomarer Server-Owner je Resetart",
+  "kette": {
+   "eingang": "chat.index.tsx:128-140; labor.tsx:323-434",
+   "verarbeitung": "confirmReset confirm-reset.ts:6-20 -> store.ts:1540-1735",
+   "speicherung": "SQLite in _run_write (BEGIN IMMEDIATE app.py:187)",
+   "wiederlesen": "Antwort-Session hydrateSession (z.B. store.ts:1636-1641)",
+   "entscheidung": "-",
+   "folgewirkung": "Folgeturn (nicht ausgefuehrt)",
+   "frontend": "Reset-Status chat.index.tsx:174-187"
+  },
+  "ui_bedienung": "Chat-Index, Labor",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Vorabanzeige ist ein fester Text (confirm-reset.ts:6-15), keine konkreten betroffenen Zeilen/Zahlen",
+   "Zwei parallele Reset-Wege fuer Chat/Runtime/Memory/Uploads (sessions/*/reset-* und /api/kernel/reset kind=...) – Gleichheit nicht geprueft",
+   "Speicherseite matrix_speicher_v91.html loescht ausserhalb src"
+  ],
+  "abhaengig_von": [
+   "Session-/Memory-/Runtime-Owner"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "confirm-reset.ts:1-36 (codefluss)",
+   "repos.py:3429-3506 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-32",
+  "funktion": "Sessionerfahrung -> Stamm nur nach Review",
+  "amaster": "§64/§58 (Reviewvorschlaege), KV §15 letzter Absatz",
+  "soll": "Sessionerfahrung geht nur nach sichtbarem Review und bewusster Freigabe in Stamm oder Weltkanon ueber (KV §15).",
+  "kettenvertrag": "§15",
+  "sps_loesung": "V65Z I71 Z.1747",
+  "owner": "Python repos.resolve_review; Frontend review.tsx",
+  "owner_soll_nach_architektur": "Review-Owner -> Stamm-/Welt-Owner",
+  "kette": {
+   "eingang": "review.tsx:55-69 'Annehmen'/'Nur Session'; charakter.$charId.tsx:167 addReview",
+   "verarbeitung": "resolve_review repos.py:5267",
+   "speicherung": "characters/worlds via patch_*",
+   "wiederlesen": "fetchOwnerPartial store.ts:1380",
+   "entscheidung": "-",
+   "folgewirkung": "-",
+   "frontend": "Review-Seite"
+  },
+  "ui_bedienung": "/review (nur ueber 'Mehr')",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Direkte Stammschreibung ohne Review ueber Gedaechtnisseite Schicht 'Stamm' (memory.tsx:288-293 patchCharacter knowledge) – bewusst, aber ohne Reviewschritt",
+   "Fehlerpfad siehe P-05"
+  ],
+  "abhaengig_von": [
+   "P-05"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "repos.py:5267-5448 (codefluss)"
+  ]
+ },
+ {
+  "id": "P-33",
+  "funktion": "Providerkette bis realer Aufruf",
+  "amaster": "§60 (Z.2172); Matrix10 Nr.1",
+  "soll": "Gewaehlter Provider/Modell/Parameter werden beim realen Aufruf benutzt; sichtbarer Status und verstaendlicher Fehler (KV §14).",
+  "kettenvertrag": "§14",
+  "sps_loesung": "K12 Z.6182",
+  "owner": "Python llm_contract.formulate_from_config (2844-2870), _routing, ping_provider",
+  "owner_soll_nach_architektur": "Provider-Adapter",
+  "kette": {
+   "eingang": "config.tsx:304-313 'Provider live pruefen'",
+   "verarbeitung": "_routing(data,cfg,model)",
+   "speicherung": "-",
+   "wiederlesen": "cfg",
+   "entscheidung": "Request-Werte (temperature/maxTokens/model) vor cfg llm_contract.py:2848-2860",
+   "folgewirkung": "-",
+   "frontend": "pingMsg config.tsx:315"
+  },
+  "ui_bedienung": "/config",
+  "statischer_befund": "UNKLAR",
+  "status": "BLOCKIERT",
+  "defekte": [
+   "Live-Aufruf an Modellprovider im Auftrag verboten (BRIEF Regeln) – realer Modell-/Parameterweg nicht messbar"
+  ],
+  "abhaengig_von": [
+   "P-21",
+   "P-22"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "probe2 ping_user_scope provider openai/model gpt-x/keySource config (nur live:false) (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))"
+  ]
+ },
+ {
+  "id": "P-34",
+  "funktion": "Frontend-Backend-Vollstaendigkeit (Kettenvertrag §5)",
+  "amaster": "§54 Z.2027",
+  "soll": "Fuer jede produktwirksame Route/Writer/Config/Feld: Seite, Kontrolle, IDs/Scope, Request, Backendpfad, Owner, Reload, Reader dokumentiert; nicht zugeordnete sind ROT.",
+  "kettenvertrag": "§5",
+  "sps_loesung": "'Routenkarte' offen (V71 Z.12, V69 Z.138/566)",
+  "owner": "keiner (Matrix: siehe P-MATRIX)",
+  "owner_soll_nach_architektur": "Gesamtpruefung",
+  "kette": {
+   "eingang": "siehe P-MATRIX",
+   "verarbeitung": "-",
+   "speicherung": "-",
+   "wiederlesen": "-",
+   "entscheidung": "-",
+   "folgewirkung": "-",
+   "frontend": "-"
+  },
+  "ui_bedienung": "-",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Zaehlung P-MATRIX: {\"DIAGNOSE_PROBE\": 2, \"FRONTEND_OHNE_BACKENDWIRKUNG\": 2, \"FRONTEND_VORHANDEN\": 90, \"NUR_AUSSERHALB_SRC\": 3, \"OHNE_FRONTENDAUFRUF\": 18, \"OHNE_SICHTBARE_KONTROLLE\": 7, \"TECHNISCH_INTERN\": 2}",
+   "14 Frontendfelder ohne oder mit falscher Backendwirkung (P-MATRIX frontendfelder_ohne_backendwirkung)"
+  ],
+  "abhaengig_von": [
+   "alle"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "P-MATRIX (codefluss)"
+  ]
+ },
+ {
+  "id": "P-MATRIX",
+  "funktion": "Frontend-Backend-Matrix (Kettenvertrag §5)",
+  "quelle": "ROOT/matrix_api/app.py (124 Decorator-Routen, 123 Funktionen), ROOT/src/lib/matrix/api.ts, store.ts, kernel-bridge.ts, source-docs.ts, id-owner.ts, ROOT/src/routes/*.tsx",
+  "belegart": "codefluss (grep + Lesen); einzelne Wirkungen 'ausgefuehrt' mit Flask-Testclient auf Temp-SQLite (Kopie, Synapse-Provider, kein Netz)",
+  "zaehlung": {
+   "DIAGNOSE_PROBE": 2,
+   "FRONTEND_OHNE_BACKENDWIRKUNG": 2,
+   "FRONTEND_VORHANDEN": 90,
+   "NUR_AUSSERHALB_SRC": 3,
+   "OHNE_FRONTENDAUFRUF": 18,
+   "OHNE_SICHTBARE_KONTROLLE": 7,
+   "TECHNISCH_INTERN": 2
+  },
+  "routen": [
+   {
+    "methode": "GET",
+    "route": "/api/health",
+    "backend": "matrix_api/app.py:530",
+    "api_ts": "src/lib/matrix/api.ts:146 apiHealth",
+    "aufruf": "src/routes/index.tsx:30; src/routes/diagnose.tsx:110; src/routes/labor.tsx:60; src/components/shell.tsx:17 (fetch direkt)",
+    "sichtbare_kontrolle": "Startseite Panel 'Systemstatus' (automatisch beim Laden, index.tsx:69-78); Diagnose Button 'Health pruefen' diagnose.tsx:278",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/live-log",
+    "backend": "matrix_api/app.py:585",
+    "api_ts": "src/lib/matrix/api.ts:500 apiLiveLog",
+    "aufruf": "src/routes/logs.tsx:25; src/routes/admin.tsx:30; src/routes/diagnose.tsx:115",
+    "sichtbare_kontrolle": "Logs Button 'neu laden' logs.tsx:50; Admin admin.tsx:76; Diagnose 'Health pruefen'",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "PUT",
+    "route": "/api/mcc",
+    "backend": "matrix_api/app.py:592",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": "Route antwortet immer 409 SNAPSHOT_OWNER_FORBIDDEN (ausgefuehrt: 409) - bewusst gesperrt, keine Produktwirkung"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/import/mcc",
+    "backend": "matrix_api/app.py:608",
+    "api_ts": "src/lib/matrix/api.ts:180 apiImportMcc",
+    "aufruf": "src/lib/matrix/store.ts:251 importMccOnce (aus flaskMccStorage.getItem src/lib/matrix/store.ts:296)",
+    "sichtbare_kontrolle": "keine sichtbare Kontrolle - automatischer Legacy-localStorage-Import beim Hydratisieren",
+    "zuordnung": "OHNE_SICHTBARE_KONTROLLE",
+    "anmerkung": "produktwirksamer Import ohne Bedienung/Vorschau (KV §15 kontrollierter Import)"
+   },
+   {
+    "methode": "GET",
+    "route": "/api/mcc",
+    "backend": "matrix_api/app.py:668",
+    "api_ts": "src/lib/matrix/api.ts:167 apiGetMcc",
+    "aufruf": "src/lib/matrix/store.ts:331 fetchOwnerPartial; src/lib/matrix/store.ts:460 persistWrite-Fehlerpfad; src/routes/chat.$sessionId.tsx:875; src/routes/chat.index.tsx:51",
+    "sichtbare_kontrolle": "automatisch (Hydratisierung jeder Seite)",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "liefert config.apiKey im Klartext (ausgefuehrt, repos.py:1444-1466, app.py:688-690)"
+   },
+   {
+    "methode": "GET",
+    "route": "/api/sessions/<session_id>",
+    "backend": "matrix_api/app.py:692",
+    "api_ts": "src/lib/matrix/api.ts:519 apiGetSession",
+    "aufruf": "src/lib/matrix/store.ts:940/1099/1149; src/lib/matrix/kernel-bridge.ts:109; src/routes/chat.$sessionId.tsx:164",
+    "sichtbare_kontrolle": "Chatseite automatisch; Rueckleser nach Session anlegen/Import/Duplizieren; Gedaechtnis 'Witness vom Reader laden' memory.tsx:355",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/ids/allocate",
+    "backend": "matrix_api/app.py:717",
+    "api_ts": "src/lib/matrix/api.ts:138 apiAllocateIds",
+    "aufruf": "src/lib/matrix/id-owner.ts:62 (vor jedem Owner-Write)",
+    "sichtbare_kontrolle": "keine (technisch, implizit)",
+    "zuordnung": "TECHNISCH_INTERN",
+    "anmerkung": "keine Produktwahrheit; ID-Vergabe"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/users",
+    "backend": "matrix_api/app.py:724",
+    "api_ts": "src/lib/matrix/api.ts:202 apiCreateUser",
+    "aufruf": "src/lib/matrix/store.ts:628 upsertUser",
+    "sichtbare_kontrolle": "User-Seite Anlegen user.tsx:73; Labor 'Erstellen' labor.tsx:219; Start 'Gespraech beginnen' (Gast) index.tsx:83",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "PATCH",
+    "route": "/api/users/<user_id>",
+    "backend": "matrix_api/app.py:735",
+    "api_ts": "src/lib/matrix/api.ts:225 apiPatchUser",
+    "aufruf": "src/lib/matrix/store.ts:628/660/943/1049",
+    "sichtbare_kontrolle": "User-Felder user.tsx:99-111,189; Config 'Anzeigename/Vorlesen/Grosse Schrift/Kontrast' config.tsx:322-330; Chat 'STT-Modus' chat:1627",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "DELETE",
+    "route": "/api/users/<user_id>",
+    "backend": "matrix_api/app.py:742",
+    "api_ts": "src/lib/matrix/api.ts:230 apiDeleteUser",
+    "aufruf": "src/lib/matrix/store.ts:679 deleteUser",
+    "sichtbare_kontrolle": "User 'Loeschen' user.tsx:60; Labor labor.tsx:255",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/users",
+    "backend": "matrix_api/app.py:749",
+    "api_ts": "src/lib/matrix/api.ts:211 apiListUserDirectory",
+    "aufruf": "src/lib/matrix/store.ts:352 fetchOwnerPartial ohne Actor; matrix_speicher_v91.html (ROOT, ausserhalb src, via START.py:255 /__matrix_speicher, Link shell.tsx:117):105",
+    "sichtbare_kontrolle": "automatisch (Profilwahl ohne Actor)",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/users/<user_id>",
+    "backend": "matrix_api/app.py:758",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": "User kommt ueber /api/mcc"
+   },
+   {
+    "methode": "DELETE",
+    "route": "/api/users/<user_id>/logs",
+    "backend": "matrix_api/app.py:765",
+    "api_ts": "src/lib/matrix/api.ts:503 apiDeleteUserLogs (in src nie aufgerufen; src/lib/matrix/store.ts:26 nur Import)",
+    "aufruf": "matrix_speicher_v91.html (ROOT, ausserhalb src, via START.py:255 /__matrix_speicher, Link shell.tsx:117):98",
+    "sichtbare_kontrolle": "Speicherseite Button 'Alle eigenen Diagnose-Logs loeschen' (matrix_speicher_v91.html:44)",
+    "zuordnung": "NUR_AUSSERHALB_SRC",
+    "anmerkung": ""
+   },
+   {
+    "methode": "DELETE",
+    "route": "/api/users/<user_id>/logs/orphan-sessions",
+    "backend": "matrix_api/app.py:772",
+    "api_ts": "keine",
+    "aufruf": "matrix_speicher_v91.html (ROOT, ausserhalb src, via START.py:255 /__matrix_speicher, Link shell.tsx:117):89",
+    "sichtbare_kontrolle": "Speicherseite 'Altlasten entfernen' (matrix_speicher_v91.html:42)",
+    "zuordnung": "NUR_AUSSERHALB_SRC",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/users/<user_id>/hard-reset",
+    "backend": "matrix_api/app.py:779",
+    "api_ts": "src/lib/matrix/api.ts:506 apiHardResetUser",
+    "aufruf": "src/lib/matrix/store.ts:1692 hardResetRuntime",
+    "sichtbare_kontrolle": "Labor 'USER HARD RESET (dieser User)' src/routes/labor.tsx:383-394",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/users/<user_id>/reset-sessions",
+    "backend": "matrix_api/app.py:786",
+    "api_ts": "src/lib/matrix/api.ts:512 apiResetUserSessions",
+    "aufruf": "src/lib/matrix/store.ts:1665 resetUserSessions",
+    "sichtbare_kontrolle": "Labor 'User zuruecksetzen (alle Sessions + Uploads)' src/routes/labor.tsx:373-382",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/worlds",
+    "backend": "matrix_api/app.py:794",
+    "api_ts": "src/lib/matrix/api.ts:248 apiCreateWorld",
+    "aufruf": "src/lib/matrix/store.ts:701 upsertWorld",
+    "sichtbare_kontrolle": "Welten anlegen/analysieren welt.index.tsx:64/297; Weltseite speichern welt.$worldId.tsx:295",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/world-packs/import",
+    "backend": "matrix_api/app.py:801",
+    "api_ts": "src/lib/matrix/api.ts:234 apiImportWorldPack",
+    "aufruf": "src/lib/matrix/store.ts:818 importPack",
+    "sichtbare_kontrolle": "Welten-Import welt.index.tsx:356",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "PATCH",
+    "route": "/api/worlds/<world_id>",
+    "backend": "matrix_api/app.py:808",
+    "api_ts": "src/lib/matrix/api.ts:251 apiPatchWorld",
+    "aufruf": "src/lib/matrix/store.ts:700/731 patchWorld",
+    "sichtbare_kontrolle": "Weltseite Felder welt.$worldId.tsx:123ff (z.B. Genre :728, Ton :743); Gedaechtnis 'Speichern' Schicht Welt memory.tsx:295",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "memory.tsx:295-297 schreibt 'Weltwissen' in world.secrets"
+   },
+   {
+    "methode": "DELETE",
+    "route": "/api/worlds/<world_id>",
+    "backend": "matrix_api/app.py:815",
+    "api_ts": "src/lib/matrix/api.ts:254 apiDeleteWorld",
+    "aufruf": "src/lib/matrix/store.ts:738 deleteWorld",
+    "sichtbare_kontrolle": "Welt loeschen welt.index.tsx:446; welt.$worldId.tsx:626",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/worlds",
+    "backend": "matrix_api/app.py:822",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": "Welten kommen ueber /api/mcc"
+   },
+   {
+    "methode": "GET",
+    "route": "/api/worlds/<world_id>",
+    "backend": "matrix_api/app.py:829",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": "Weltseite liest Store (aus /api/mcc), kein Einzel-Reload"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/worlds/<world_id>/backup",
+    "backend": "matrix_api/app.py:836",
+    "api_ts": "src/lib/matrix/api.ts:257 apiBackupWorld",
+    "aufruf": "src/routes/welt.$worldId.tsx:610",
+    "sichtbare_kontrolle": "Weltseite Button 'Sicherung' welt.$worldId.tsx:607-617",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/worlds/<world_id>/backup",
+    "backend": "matrix_api/app.py:843",
+    "api_ts": "src/lib/matrix/api.ts:263 apiListWorldBackups",
+    "aufruf": "src/routes/welt.$worldId.tsx:58/613",
+    "sichtbare_kontrolle": "Weltseite Backup-Liste (automatisch)",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/worlds/<world_id>/restore-backup",
+    "backend": "matrix_api/app.py:850",
+    "api_ts": "src/lib/matrix/api.ts:268 apiRestoreWorldBackup",
+    "aufruf": "src/routes/welt.$worldId.tsx:708",
+    "sichtbare_kontrolle": "Weltseite Backup 'Wiederherstellen' welt.$worldId.tsx:706-711",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "Erfolgsmeldung ohne Store-Reload (welt.$worldId.tsx:709)"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/characters",
+    "backend": "matrix_api/app.py:858",
+    "api_ts": "src/lib/matrix/api.ts:275 apiCreateCharacter",
+    "aufruf": "src/lib/matrix/store.ts:711/782/924",
+    "sichtbare_kontrolle": "Figur anlegen user.tsx:217; Chat Avatar anlegen chat:1808; Welt Spawn welt.$worldId.tsx",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "PATCH",
+    "route": "/api/characters/<char_id>",
+    "backend": "matrix_api/app.py:865",
+    "api_ts": "src/lib/matrix/api.ts:278 apiPatchCharacter",
+    "aufruf": "src/lib/matrix/store.ts:710/757/773/925",
+    "sichtbare_kontrolle": "Charakterseite Felder charakter.$charId.tsx:90; 'Gelerntes entfernen' :628; Gedaechtnis Schicht Stamm memory.tsx:290",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "DELETE",
+    "route": "/api/characters/<char_id>",
+    "backend": "matrix_api/app.py:872",
+    "api_ts": "src/lib/matrix/api.ts:281 apiDeleteCharacter",
+    "aufruf": "src/lib/matrix/store.ts:798 deleteCharacter",
+    "sichtbare_kontrolle": "charakter.$charId.tsx:235; charakter.index.tsx:60",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/characters/<char_id>/backup",
+    "backend": "matrix_api/app.py:879",
+    "api_ts": "src/lib/matrix/api.ts:292 apiBackupCharacter",
+    "aufruf": "src/routes/charakter.$charId.tsx:216",
+    "sichtbare_kontrolle": "Charakterseite Sicherung",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/characters/<char_id>/backup",
+    "backend": "matrix_api/app.py:886",
+    "api_ts": "src/lib/matrix/api.ts:298 apiListCharacterBackups",
+    "aufruf": "src/routes/charakter.$charId.tsx:47/219",
+    "sichtbare_kontrolle": "automatisch",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/characters/<char_id>/restore-backup",
+    "backend": "matrix_api/app.py:893",
+    "api_ts": "src/lib/matrix/api.ts:303 apiRestoreCharacterBackup",
+    "aufruf": "src/routes/charakter.$charId.tsx:270",
+    "sichtbare_kontrolle": "Charakterseite Backup 'Wiederherstellen'",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/characters",
+    "backend": "matrix_api/app.py:900",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": "via /api/mcc"
+   },
+   {
+    "methode": "GET",
+    "route": "/api/characters/<char_id>",
+    "backend": "matrix_api/app.py:907",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": "via /api/mcc"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/sessions",
+    "backend": "matrix_api/app.py:915",
+    "api_ts": "src/lib/matrix/api.ts:310 apiCreateSession",
+    "aufruf": "src/lib/matrix/store.ts:926 startSession; src/lib/matrix/store.ts:1097 duplicateSession; src/lib/matrix/store.ts:1139/1146 importSession",
+    "sichtbare_kontrolle": "Chat-Index Session starten chat.index.tsx:314; Weltseite welt.$worldId.tsx:590; 'Duplizieren' chat.index.tsx:150; Import chat.index.tsx:243; Start index.tsx:83",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "PUT",
+    "route": "/api/sessions/<session_id>",
+    "backend": "matrix_api/app.py:922",
+    "api_ts": "src/lib/matrix/api.ts:313 apiPutSession",
+    "aufruf": "src/lib/matrix/store.ts:1022 saveSession",
+    "sichtbare_kontrolle": "Chat: Spreche-als chat:281, Rolle chat:296, Pipeline-Schalter Fate/Meta/Erzaehler chat:1259-1261, AutoChat chat:1716, Upload-Fokus chat:1114",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "pipeline.narrator ohne Backendleser (siehe felder_ohne_backendwirkung)"
+   },
+   {
+    "methode": "PATCH",
+    "route": "/api/sessions/<session_id>",
+    "backend": "matrix_api/app.py:929",
+    "api_ts": "src/lib/matrix/api.ts:316 apiPatchSession",
+    "aufruf": "src/lib/matrix/store.ts:1056 renameSession; src/lib/matrix/store.ts:1073 setSessionWorld",
+    "sichtbare_kontrolle": "Chat-Index Umbenennen chat.index.tsx:209 (setSessionWorld ohne Kontrolle)",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "DELETE",
+    "route": "/api/sessions/<session_id>",
+    "backend": "matrix_api/app.py:936",
+    "api_ts": "src/lib/matrix/api.ts:319 apiDeleteSession",
+    "aufruf": "src/lib/matrix/store.ts:1038 deleteSession; matrix_speicher_v91.html (ROOT, ausserhalb src, via START.py:255 /__matrix_speicher, Link shell.tsx:117):78",
+    "sichtbare_kontrolle": "chat.index.tsx:169 'Loeschen'; labor.tsx:281; Speicherseite",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/sessions/<session_id>/reset-chat",
+    "backend": "matrix_api/app.py:944",
+    "api_ts": "src/lib/matrix/api.ts:322 apiResetSessionChat",
+    "aufruf": "src/lib/matrix/store.ts:1569 resetSessionChat",
+    "sichtbare_kontrolle": "chat.index.tsx:128; labor.tsx:323-332 'Nur Chat'",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/sessions/<session_id>/reset-memory",
+    "backend": "matrix_api/app.py:951",
+    "api_ts": "src/lib/matrix/api.ts:328 apiResetSessionMemory",
+    "aufruf": "src/lib/matrix/store.ts:1603",
+    "sichtbare_kontrolle": "chat.index.tsx:134; labor.tsx:343-352 'Nur Memory'",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/sessions/<session_id>/reset-full",
+    "backend": "matrix_api/app.py:958",
+    "api_ts": "src/lib/matrix/api.ts:334 apiResetSessionFull",
+    "aufruf": "src/lib/matrix/store.ts:1548; matrix_speicher_v91.html (ROOT, ausserhalb src, via START.py:255 /__matrix_speicher, Link shell.tsx:117):82",
+    "sichtbare_kontrolle": "chat.index.tsx:140; labor.tsx:363-372 'Session vollstaendig'",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/sessions/<session_id>/reset-uploads",
+    "backend": "matrix_api/app.py:969",
+    "api_ts": "src/lib/matrix/api.ts:340 apiResetSessionUploads",
+    "aufruf": "src/lib/matrix/store.ts:1624",
+    "sichtbare_kontrolle": "chat.index.tsx:137; labor.tsx:353-362 'Nur Uploadkontext'",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/sessions/<session_id>/memories",
+    "backend": "matrix_api/app.py:989",
+    "api_ts": "src/lib/matrix/api.ts:359 apiPostMemory",
+    "aufruf": "src/lib/matrix/store.ts:1204 addMemory",
+    "sichtbare_kontrolle": "Gedaechtnis 'Speichern' (Schicht Session) memory.tsx:302",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "PUT",
+    "route": "/api/sessions/<session_id>/relations",
+    "backend": "matrix_api/app.py:996",
+    "api_ts": "src/lib/matrix/api.ts:365 apiPutRelation",
+    "aufruf": "src/lib/matrix/store.ts:1170 patchRelation (ohne Kontrolle); src/lib/matrix/store.ts:1188 addRelation",
+    "sichtbare_kontrolle": "Beziehungen 'Graph speichern' social.tsx:99-117",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "schreibt feste Werte trust 0.7/0.4, closeness 0.3 ... (social.tsx:106-109)"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/sessions/<session_id>/propositions",
+    "backend": "matrix_api/app.py:1004",
+    "api_ts": "src/lib/matrix/api.ts:371 apiPostProposition",
+    "aufruf": "src/lib/matrix/store.ts:1247 addProposition",
+    "sichtbare_kontrolle": "Timeline timeline.tsx:219",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "PATCH",
+    "route": "/api/sessions/<session_id>/propositions/<prop_id>",
+    "backend": "matrix_api/app.py:1011",
+    "api_ts": "src/lib/matrix/api.ts:377 apiPatchProposition",
+    "aufruf": "src/lib/matrix/store.ts:1261",
+    "sichtbare_kontrolle": "Timeline accepted/declined/revoked/contradicted timeline.tsx:252-261",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/sessions/<session_id>/goals",
+    "backend": "matrix_api/app.py:1018",
+    "api_ts": "src/lib/matrix/api.ts:383 apiPostGoal",
+    "aufruf": "src/lib/matrix/store.ts:1219 addGoal",
+    "sichtbare_kontrolle": "Timeline timeline.tsx:233",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "PATCH",
+    "route": "/api/sessions/<session_id>/goals/<goal_id>",
+    "backend": "matrix_api/app.py:1025",
+    "api_ts": "src/lib/matrix/api.ts:389 apiPatchGoal",
+    "aufruf": "src/lib/matrix/store.ts:1230 patchGoal",
+    "sichtbare_kontrolle": "keine (patchGoal in src/routes nirgends verwendet)",
+    "zuordnung": "OHNE_SICHTBARE_KONTROLLE",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/sessions",
+    "backend": "matrix_api/app.py:1032",
+    "api_ts": "keine",
+    "aufruf": "matrix_speicher_v91.html (ROOT, ausserhalb src, via START.py:255 /__matrix_speicher, Link shell.tsx:117):58",
+    "sichtbare_kontrolle": "nur Speicherseite 'Meine Sessions anzeigen'",
+    "zuordnung": "NUR_AUSSERHALB_SRC",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/sessions/<session_id>/evidence",
+    "backend": "matrix_api/app.py:1039",
+    "api_ts": "src/lib/matrix/api.ts:347 apiListSessionEvidence",
+    "aufruf": "src/routes/timeline.tsx:48",
+    "sichtbare_kontrolle": "Timeline Session-Auswahl (automatisch)",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/uploads",
+    "backend": "matrix_api/app.py:1047",
+    "api_ts": "src/lib/matrix/api.ts:396 apiCreateUpload",
+    "aufruf": "src/lib/matrix/store.ts:1271 addUpload",
+    "sichtbare_kontrolle": "Upload-Center Dateiwahl upload.tsx:266-273 / 'Text als Upload speichern' upload.tsx:283-296; Chat-Upload-Dialog chat:1904-1938; welt.index.tsx (addUpload)",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "PATCH",
+    "route": "/api/uploads/<upload_id>",
+    "backend": "matrix_api/app.py:1054",
+    "api_ts": "src/lib/matrix/api.ts:399 apiPatchUpload",
+    "aufruf": "src/lib/matrix/store.ts:1280 patchUpload",
+    "sichtbare_kontrolle": "Upload-Bestand 'Hinweis aendern (PATCH)' upload.tsx:466-475",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "Hinweis ersetzt im Mode-B-Ingest den Inhalt (pipeline.py:155)"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/uploads/<upload_id>/ingest",
+    "backend": "matrix_api/app.py:1061",
+    "api_ts": "src/lib/matrix/api.ts:405 apiIngestUpload",
+    "aufruf": "src/lib/matrix/store.ts:1304 commitUpload",
+    "sichtbare_kontrolle": "Upload-Bestand 'Commit' upload.tsx:478-487 / 'Wissen nachziehen' upload.tsx:489-497; Chat-Upload chat:1109",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "200 mit ok:false bei Parsefehler wird im Store als committed angezeigt (ausgefuehrt; store.ts:1302-1326)"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/uploads/<upload_id>/commit",
+    "backend": "matrix_api/app.py:1068",
+    "api_ts": "src/lib/matrix/api.ts:402 apiCommitUpload (nie aufgerufen; src/lib/matrix/store.ts:4 nur Import)",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": "produktwirksam und gefaehrlich: setzt committed=true ohne Review (repos.py:4969-4983, ausgefuehrt fuer Mode-A-Upload: 200 committed)"
+   },
+   {
+    "methode": "DELETE",
+    "route": "/api/uploads/<upload_id>",
+    "backend": "matrix_api/app.py:1075",
+    "api_ts": "src/lib/matrix/api.ts:408 apiDeleteUpload",
+    "aufruf": "src/lib/matrix/store.ts:1347 deleteUpload",
+    "sichtbare_kontrolle": "Upload-Bestand 'Loeschen' upload.tsx:499",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/uploads",
+    "backend": "matrix_api/app.py:1082",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine (Bestand aus /api/mcc)",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/uploads/<upload_id>",
+    "backend": "matrix_api/app.py:1089",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": "kein Einzel-Rueckleser nach Commit"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/documents",
+    "backend": "matrix_api/app.py:1096",
+    "api_ts": "src/lib/matrix/api.ts:682 apiCreateDocument",
+    "aufruf": "src/lib/matrix/source-docs.ts:47 (persistVersionedDocument)",
+    "sichtbare_kontrolle": "Upload-Center nach Upload upload.tsx:147; Welt-Teile welt.$worldId.tsx:254; welt.index.tsx:303/331",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "keine Upload-Sicherheitspruefung (ausgefuehrt: name a.exe -> 200)"
+   },
+   {
+    "methode": "GET",
+    "route": "/api/documents",
+    "backend": "matrix_api/app.py:1103",
+    "api_ts": "src/lib/matrix/api.ts:685 apiListDocuments",
+    "aufruf": "src/routes/upload.tsx:80",
+    "sichtbare_kontrolle": "Upload-Center Knowledge Base 'Reader neu laden' upload.tsx:440",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/documents/<doc_id>",
+    "backend": "matrix_api/app.py:1110",
+    "api_ts": "src/lib/matrix/api.ts:697 apiGetDocument",
+    "aufruf": "src/lib/matrix/source-docs.ts:35/136",
+    "sichtbare_kontrolle": "implizit (Versionierung, Welt-Export welt.$worldId.tsx:601)",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "DELETE",
+    "route": "/api/documents/<doc_id>",
+    "backend": "matrix_api/app.py:1117",
+    "api_ts": "src/lib/matrix/api.ts:700 apiDeleteDocument",
+    "aufruf": "src/routes/upload.tsx:428",
+    "sichtbare_kontrolle": "Knowledge Base 'Loeschen' upload.tsx:424-433",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "Fehler nicht abgefangen (await ohne try, upload.tsx:427-430)"
+   },
+   {
+    "methode": "PATCH",
+    "route": "/api/documents/<doc_id>",
+    "backend": "matrix_api/app.py:1124",
+    "api_ts": "src/lib/matrix/api.ts:703 apiPatchDocument",
+    "aufruf": "src/routes/upload.tsx:418; source-docs.ts:56",
+    "sichtbare_kontrolle": "Knowledge Base Feld 'Gruppe' (onBlur) upload.tsx:411-421",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "documentGroup wird von keiner Suche gelesen (ausgefuehrt)"
+   },
+   {
+    "methode": "GET",
+    "route": "/api/document-index",
+    "backend": "matrix_api/app.py:1131",
+    "api_ts": "src/lib/matrix/api.ts:688 apiListDocumentIndex",
+    "aufruf": "src/routes/memory.tsx:88",
+    "sichtbare_kontrolle": "Gedaechtnis Schicht 'Index' memory.tsx:257",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/document-index/search",
+    "backend": "matrix_api/app.py:1138",
+    "api_ts": "src/lib/matrix/api.ts:691 apiSearchDocumentIndex",
+    "aufruf": "src/routes/memory.tsx:87/212",
+    "sichtbare_kontrolle": "Gedaechtnis Button 'Suche' memory.tsx:211-220 und Schicht 'Index'",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/reviews",
+    "backend": "matrix_api/app.py:1148",
+    "api_ts": "src/lib/matrix/api.ts:412 apiCreateReview",
+    "aufruf": "src/lib/matrix/store.ts:1357 addReview",
+    "sichtbare_kontrolle": "charakter.$charId.tsx:167; welt.$worldId.tsx:305/320",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/reviews/<review_id>/resolve",
+    "backend": "matrix_api/app.py:1155",
+    "api_ts": "src/lib/matrix/api.ts:415 apiResolveReview",
+    "aufruf": "src/lib/matrix/store.ts:1377 resolveReview",
+    "sichtbare_kontrolle": "Review 'Annehmen'/'Nur Session' review.tsx:57-69; Upload-Center 'Annehmen' upload.tsx:389",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "OWNER_WRITE_FAILED kommt als HTTP 200 ok:false (ausgefuehrt) -> writeOrRevert meldet keinen Fehler"
+   },
+   {
+    "methode": "PATCH",
+    "route": "/api/reviews/<review_id>",
+    "backend": "matrix_api/app.py:1162",
+    "api_ts": "src/lib/matrix/api.ts:421 apiPatchReview",
+    "aufruf": "src/lib/matrix/store.ts:1365 patchReview",
+    "sichtbare_kontrolle": "keine (patchReview in src/routes nirgends verwendet; Bearbeitung laeuft ueber resolve newValue review.tsx:62)",
+    "zuordnung": "OHNE_SICHTBARE_KONTROLLE",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/reviews",
+    "backend": "matrix_api/app.py:1169",
+    "api_ts": "src/lib/matrix/api.ts:753 apiListReviews",
+    "aufruf": "src/routes/memory.tsx:121",
+    "sichtbare_kontrolle": "Gedaechtnis Schicht 'Review'",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/reviews/<review_id>",
+    "backend": "matrix_api/app.py:1176",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/snapshots",
+    "backend": "matrix_api/app.py:1184",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": "Duplikat von POST /api/sessions/<id>/snapshots (repos.py create_snapshot)"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/snapshots/<snap_id>/restore",
+    "backend": "matrix_api/app.py:1191",
+    "api_ts": "src/lib/matrix/api.ts:435 apiRestoreSnapshot",
+    "aufruf": "src/lib/matrix/store.ts:1425 restoreSnapshot",
+    "sichtbare_kontrolle": "Chat 'Restore' chat:1860; Chat-Index chat.index.tsx:196",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "chat.index.tsx:196 ohne confirmReset (chat:1860 mit)"
+   },
+   {
+    "methode": "DELETE",
+    "route": "/api/snapshots/<snap_id>",
+    "backend": "matrix_api/app.py:1198",
+    "api_ts": "src/lib/matrix/api.ts:438 apiDeleteSnapshot",
+    "aufruf": "src/lib/matrix/store.ts:1437 deleteSnapshot",
+    "sichtbare_kontrolle": "keine (deleteSnapshot in src/routes nirgends verwendet)",
+    "zuordnung": "OHNE_SICHTBARE_KONTROLLE",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/snapshots",
+    "backend": "matrix_api/app.py:1205",
+    "api_ts": "src/lib/matrix/api.ts:426 apiListSnapshots",
+    "aufruf": "src/routes/diagnose.tsx:177",
+    "sichtbare_kontrolle": "Diagnose 'Log PUT/DELETE pruefen' diagnose.tsx:284",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/snapshots/<snap_id>",
+    "backend": "matrix_api/app.py:1212",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/triggers",
+    "backend": "matrix_api/app.py:1220",
+    "api_ts": "src/lib/matrix/api.ts:442 apiCreateTrigger",
+    "aufruf": "src/lib/matrix/store.ts:1447 addTrigger",
+    "sichtbare_kontrolle": "Trigger anlegen triggers.tsx:57-77",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "Leser: app.py:1808-1812 (kernel.match_triggers_as_cues, nicht-kanonische Cues)"
+   },
+   {
+    "methode": "PATCH",
+    "route": "/api/triggers/<trigger_id>",
+    "backend": "matrix_api/app.py:1227",
+    "api_ts": "src/lib/matrix/api.ts:445 apiPatchTrigger",
+    "aufruf": "src/lib/matrix/store.ts:1455",
+    "sichtbare_kontrolle": "Trigger-Schalter triggers.tsx:84",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "DELETE",
+    "route": "/api/triggers/<trigger_id>",
+    "backend": "matrix_api/app.py:1234",
+    "api_ts": "src/lib/matrix/api.ts:448 apiDeleteTrigger",
+    "aufruf": "src/lib/matrix/store.ts:1462",
+    "sichtbare_kontrolle": "Trigger 'Loeschen' triggers.tsx:88",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/triggers",
+    "backend": "matrix_api/app.py:1241",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": "via /api/mcc"
+   },
+   {
+    "methode": "GET",
+    "route": "/api/triggers/<trigger_id>",
+    "backend": "matrix_api/app.py:1248",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/preferences",
+    "backend": "matrix_api/app.py:1256",
+    "api_ts": "src/lib/matrix/api.ts:452 apiCreatePreference",
+    "aufruf": "src/lib/matrix/store.ts:1472 addPreference",
+    "sichtbare_kontrolle": "keine (addPreference in src/routes nirgends verwendet)",
+    "zuordnung": "OHNE_SICHTBARE_KONTROLLE",
+    "anmerkung": "kein Backendleser in kernel.py/llm_contract.py gefunden (grep 'preferences')"
+   },
+   {
+    "methode": "PATCH",
+    "route": "/api/preferences/<pref_id>",
+    "backend": "matrix_api/app.py:1263",
+    "api_ts": "src/lib/matrix/api.ts:455 apiPatchPreference",
+    "aufruf": "src/lib/matrix/store.ts:1480",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_SICHTBARE_KONTROLLE",
+    "anmerkung": ""
+   },
+   {
+    "methode": "DELETE",
+    "route": "/api/preferences/<pref_id>",
+    "backend": "matrix_api/app.py:1270",
+    "api_ts": "src/lib/matrix/api.ts:458 apiDeletePreference",
+    "aufruf": "src/lib/matrix/store.ts:1487",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_SICHTBARE_KONTROLLE",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/preferences",
+    "backend": "matrix_api/app.py:1277",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/preferences/<pref_id>",
+    "backend": "matrix_api/app.py:1284",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": ""
+   },
+   {
+    "methode": "PUT",
+    "route": "/api/config",
+    "backend": "matrix_api/app.py:1292",
+    "api_ts": "src/lib/matrix/api.ts:462 apiPutConfig",
+    "aufruf": "src/lib/matrix/store.ts:662 patchUser(providerConfig); src/lib/matrix/store.ts:1513 setConfig; src/routes/config.tsx:73/101",
+    "sichtbare_kontrolle": "Config: 'Schluessel speichern' config.tsx:281, 'Schluessel entfernen' :284, alle Schalter/Felder :226-301 (setConfig)",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "debug/contextTurns/narratorDefault ohne Backendleser"
+   },
+   {
+    "methode": "GET",
+    "route": "/api/config",
+    "backend": "matrix_api/app.py:1299",
+    "api_ts": "src/lib/matrix/api.ts:465 apiGetConfig",
+    "aufruf": "src/routes/config.tsx:42/196",
+    "sichtbare_kontrolle": "Config 'Scope laden' config.tsx:183-223; automatisch refreshKeyStatus",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/logs",
+    "backend": "matrix_api/app.py:1309",
+    "api_ts": "src/lib/matrix/api.ts:471 apiPostLog",
+    "aufruf": "src/lib/matrix/store.ts:388 persistFailed; src/lib/matrix/store.ts:1497 log",
+    "sichtbare_kontrolle": "automatisch (jede UI-Logzeile)",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "Fehler beim Log-Write verschluckt (skipLog, store.ts:1495-1499)"
+   },
+   {
+    "methode": "GET",
+    "route": "/api/logs",
+    "backend": "matrix_api/app.py:1316",
+    "api_ts": "src/lib/matrix/api.ts:497 apiListLogs",
+    "aufruf": "src/routes/logs.tsx:25; admin.tsx:30; diagnose.tsx:163",
+    "sichtbare_kontrolle": "Logs/Admin 'neu laden'; Diagnose-Probe",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/logs/live",
+    "backend": "matrix_api/app.py:1323",
+    "api_ts": "src/lib/matrix/api.ts:494 apiPostLiveLog",
+    "aufruf": "src/lib/matrix/kernel-bridge.ts:58 liveTrace",
+    "sichtbare_kontrolle": "automatisch bei jedem Kernelaufruf",
+    "zuordnung": "TECHNISCH_INTERN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/logs/<log_id>",
+    "backend": "matrix_api/app.py:1339",
+    "api_ts": "src/lib/matrix/api.ts:474 apiGetLog",
+    "aufruf": "src/routes/logs.tsx:69; diagnose.tsx:168",
+    "sichtbare_kontrolle": "Logs Detail-Button logs.tsx:65-72",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "PUT",
+    "route": "/api/logs/<log_id>",
+    "backend": "matrix_api/app.py:1346",
+    "api_ts": "src/lib/matrix/api.ts:477 apiProbeLogPut",
+    "aufruf": "src/routes/diagnose.tsx:171",
+    "sichtbare_kontrolle": "Diagnose 'Log PUT/DELETE pruefen' (Negativprobe, erwartet Ablehnung)",
+    "zuordnung": "DIAGNOSE_PROBE",
+    "anmerkung": ""
+   },
+   {
+    "methode": "DELETE",
+    "route": "/api/logs/<log_id>",
+    "backend": "matrix_api/app.py:1353",
+    "api_ts": "src/lib/matrix/api.ts:486 apiProbeLogDelete",
+    "aufruf": "src/routes/diagnose.tsx:172",
+    "sichtbare_kontrolle": "Diagnose 'Log PUT/DELETE pruefen'",
+    "zuordnung": "DIAGNOSE_PROBE",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/sessions/<session_id>/snapshots",
+    "backend": "matrix_api/app.py:1360",
+    "api_ts": "src/lib/matrix/api.ts:429 apiCreateSessionSnapshot",
+    "aufruf": "src/lib/matrix/store.ts:1399 addSnapshot",
+    "sichtbare_kontrolle": "Chat 'Snapshot' chat:1848; Chat-Index 'Snapshot' chat.index.tsx:143",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/sessions/<session_id>/appointments",
+    "backend": "matrix_api/app.py:1369",
+    "api_ts": "src/lib/matrix/api.ts:725 apiCreateAppointment",
+    "aufruf": "src/routes/timeline.tsx:187",
+    "sichtbare_kontrolle": "Timeline 'Termin speichern' timeline.tsx:184-194",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/sessions/<session_id>/appointments",
+    "backend": "matrix_api/app.py:1379",
+    "api_ts": "src/lib/matrix/api.ts:670 apiListAppointments",
+    "aufruf": "src/routes/social.tsx:31; timeline.tsx:188",
+    "sichtbare_kontrolle": "Social automatisch; Timeline nach Termin speichern",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/sessions/<session_id>/graph",
+    "backend": "matrix_api/app.py:1386",
+    "api_ts": "src/lib/matrix/api.ts:731 apiCreateGraph",
+    "aufruf": "src/lib/matrix/store.ts:1189 addRelation",
+    "sichtbare_kontrolle": "Beziehungen 'Graph speichern' social.tsx:99-117",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "graph_edges hat keinen Kernel-/BrainContext-Leser (grep: nur amaster_ext.py:116, vector.py:36)"
+   },
+   {
+    "methode": "GET",
+    "route": "/api/sessions/<session_id>/graph",
+    "backend": "matrix_api/app.py:1396",
+    "api_ts": "src/lib/matrix/api.ts:673 apiListGraph",
+    "aufruf": "src/routes/social.tsx:31",
+    "sichtbare_kontrolle": "Beziehungen automatisch",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/sessions/<session_id>/recall",
+    "backend": "matrix_api/app.py:1403",
+    "api_ts": "src/lib/matrix/api.ts:664 apiRecall",
+    "aufruf": "src/routes/memory.tsx:65/200",
+    "sichtbare_kontrolle": "Gedaechtnis Button 'Recall' memory.tsx:198-206 und Schicht 'Cache' memory.tsx:61-79",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/kernel/prepare",
+    "backend": "matrix_api/app.py:1563",
+    "api_ts": "src/lib/matrix/api.ts:537 apiKernelPrepare",
+    "aufruf": "src/lib/matrix/kernel-bridge.ts:190 kernelPrepare <- src/routes/chat.$sessionId.tsx:390/823/899",
+    "sichtbare_kontrolle": "Chat 'Senden' chat:1610-1612 / Enter chat:1602-1607; AutoChat chat:1716",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/kernel/commit",
+    "backend": "matrix_api/app.py:1884",
+    "api_ts": "src/lib/matrix/api.ts:530 apiKernelCommit",
+    "aufruf": "src/lib/matrix/kernel-bridge.ts:253 kernelCommitFigure <- src/routes/chat.$sessionId.tsx:475/835/911; src/routes/chat.$sessionId.tsx:606 fetch direkt (closePending)",
+    "sichtbare_kontrolle": "Chat 'Senden'; 'Eingabe ohne Antwort abschliessen' chat:1694",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/amaster/system-loop",
+    "backend": "matrix_api/app.py:2214",
+    "api_ts": "src/lib/matrix/api.ts:661 apiSystemLoop",
+    "aufruf": "src/routes/diagnose.tsx:96",
+    "sichtbare_kontrolle": "Diagnose 'Systemschleife' diagnose.tsx:281",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "schreibt Testwelt/-figur/-session (ses_sys, ch_sys, av_sys) in die Produkt-DB des Actors (system_loop.py:61-117)"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/analyze",
+    "backend": "matrix_api/app.py:2221",
+    "api_ts": "src/lib/matrix/api.ts:619 apiAnalyzeLocal",
+    "aufruf": "upload.tsx:351; welt.$worldId.tsx:143/213/246/274; welt.index.tsx:78",
+    "sichtbare_kontrolle": "Upload-Center 'Quelle analysieren' upload.tsx:334-369; Weltseite Analyse",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/genre/policy",
+    "backend": "matrix_api/app.py:2245",
+    "api_ts": "src/lib/matrix/api.ts:658 apiGenrePolicy",
+    "aufruf": "src/routes/welt.$worldId.tsx:85/733",
+    "sichtbare_kontrolle": "Weltseite Feld 'Genre' (onBlur) welt.$worldId.tsx:728-739",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "reine Anzeige einer statischen Tabelle (genre_policy.py:6-18); kein Turn-Leser"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/vector/search",
+    "backend": "matrix_api/app.py:2255",
+    "api_ts": "src/lib/matrix/api.ts:652 apiVectorSearch",
+    "aufruf": "src/routes/memory.tsx:226",
+    "sichtbare_kontrolle": "Gedaechtnis Button 'Vektor' memory.tsx:225-234",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/search",
+    "backend": "matrix_api/app.py:2268",
+    "api_ts": "src/lib/matrix/api.ts:649 apiSearchLocal",
+    "aufruf": "src/routes/upload.tsx:304",
+    "sichtbare_kontrolle": "Upload-Center 'Suchen' upload.tsx:300-312",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/speech/stt",
+    "backend": "matrix_api/app.py:2281",
+    "api_ts": "src/lib/matrix/api.ts:676 apiSpeechStt",
+    "aufruf": "src/routes/chat.$sessionId.tsx:1057 mic()",
+    "sichtbare_kontrolle": "Chat 'Aufnahme · Diktat/Auto-Senden' chat:1612-1621",
+    "zuordnung": "FRONTEND_OHNE_BACKENDWIRKUNG",
+    "anmerkung": "Route ist local-stub, transcript leer (ausgefuehrt); STT laeuft im Browser"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/speech/tts",
+    "backend": "matrix_api/app.py:2290",
+    "api_ts": "src/lib/matrix/api.ts:679 apiSpeechTts",
+    "aufruf": "src/routes/chat.$sessionId.tsx:1026 speakNow",
+    "sichtbare_kontrolle": "automatisch wenn user.tts (Config 'Vorlesen (Geraet)' config.tsx:324)",
+    "zuordnung": "FRONTEND_OHNE_BACKENDWIRKUNG",
+    "anmerkung": "local-stub spoken:false (ausgefuehrt); TTS im Browser chat:1978"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/llm/formulate",
+    "backend": "matrix_api/app.py:2299",
+    "api_ts": "src/lib/matrix/api.ts:706 apiFormulate",
+    "aufruf": "src/routes/chat.$sessionId.tsx:443 runFigure",
+    "sichtbare_kontrolle": "Chat 'Senden'",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": "Modell aus user.providerConfig.model vor config.model (chat:429)"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/llm/world",
+    "backend": "matrix_api/app.py:2344",
+    "api_ts": "src/lib/matrix/api.ts:738 apiGenerateWorld",
+    "aufruf": "welt.$worldId.tsx:130; welt.index.tsx:190",
+    "sichtbare_kontrolle": "Welt erzeugen",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/llm/characters",
+    "backend": "matrix_api/app.py:2352",
+    "api_ts": "src/lib/matrix/api.ts:741 apiGenerateCharacters",
+    "aufruf": "welt.$worldId.tsx:358",
+    "sichtbare_kontrolle": "Figuren erzeugen",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/llm/profile",
+    "backend": "matrix_api/app.py:2360",
+    "api_ts": "src/lib/matrix/api.ts:744 apiSuggestProfile",
+    "aufruf": "charakter.$charId.tsx:131",
+    "sichtbare_kontrolle": "Profil vorschlagen",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/llm/complete-profiles",
+    "backend": "matrix_api/app.py:2368",
+    "api_ts": "src/lib/matrix/api.ts:631 apiCompleteProfiles",
+    "aufruf": "welt.$worldId.tsx:164/481; welt.index.tsx:104/215",
+    "sichtbare_kontrolle": "Profile vervollstaendigen (Welt)",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/llm/compass",
+    "backend": "matrix_api/app.py:2376",
+    "api_ts": "src/lib/matrix/api.ts:747 apiDeriveCompass",
+    "aufruf": "charakter.$charId.tsx:110",
+    "sichtbare_kontrolle": "Kompass ableiten",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/llm/ping",
+    "backend": "matrix_api/app.py:2384",
+    "api_ts": "src/lib/matrix/api.ts:750 apiPingProvider",
+    "aufruf": "config.tsx:113; index.tsx:33",
+    "sichtbare_kontrolle": "Config 'Provider live pruefen'/'Verbindung pruefen' config.tsx:304-313; Startseite automatisch",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/llm/ping",
+    "backend": "matrix_api/app.py:2385",
+    "api_ts": "keine",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": "zweiter Decorator derselben Funktion"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/kernel/god",
+    "backend": "matrix_api/app.py:2393",
+    "api_ts": "src/lib/matrix/api.ts:555 apiKernelGod",
+    "aufruf": "src/lib/matrix/kernel-bridge.ts:290 kernelGod <- src/routes/chat.$sessionId.tsx:633 send()",
+    "sichtbare_kontrolle": "Chat Rolle God + 'Senden'",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/kernel/regie",
+    "backend": "matrix_api/app.py:2567",
+    "api_ts": "src/lib/matrix/api.ts:561 apiKernelRegie",
+    "aufruf": "src/lib/matrix/kernel-bridge.ts:339 <- src/routes/chat.$sessionId.tsx:674",
+    "sichtbare_kontrolle": "Chat Rolle Regie + 'Senden'",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/kernel/puppet",
+    "backend": "matrix_api/app.py:2930",
+    "api_ts": "src/lib/matrix/api.ts:567 apiKernelPuppet",
+    "aufruf": "src/lib/matrix/kernel-bridge.ts:374 <- src/routes/chat.$sessionId.tsx:754",
+    "sichtbare_kontrolle": "Chat Rolle Puppet + 'Senden'",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/kernel/move",
+    "backend": "matrix_api/app.py:4020",
+    "api_ts": "src/lib/matrix/api.ts:573 apiKernelMove",
+    "aufruf": "src/lib/matrix/kernel-bridge.ts:431 <- src/routes/chat.$sessionId.tsx:1484",
+    "sichtbare_kontrolle": "Chat Ortsliste (Ortswechsel-Button) chat:1478-1490",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/kernel/presence",
+    "backend": "matrix_api/app.py:4052",
+    "api_ts": "src/lib/matrix/api.ts:579 apiKernelPresence",
+    "aufruf": "src/lib/matrix/kernel-bridge.ts:454 <- src/routes/chat.$sessionId.tsx:330/865",
+    "sichtbare_kontrolle": "Chat Anwesenheitsliste Figur-Button chat:1395-1400",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/kernel/perception",
+    "backend": "matrix_api/app.py:4081",
+    "api_ts": "src/lib/matrix/api.ts:612 apiKernelPerception",
+    "aufruf": "src/lib/matrix/kernel-bridge.ts:523 <- src/routes/chat.$sessionId.tsx:300",
+    "sichtbare_kontrolle": "Chat 'Hoeren/Sehen' Panel chat:1411ff",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/kernel/fate",
+    "backend": "matrix_api/app.py:4122",
+    "api_ts": "src/lib/matrix/api.ts:585 apiKernelFate",
+    "aufruf": "src/lib/matrix/kernel-bridge.ts:482 <- src/routes/chat.$sessionId.tsx:313; src/routes/fate.tsx:49",
+    "sichtbare_kontrolle": "Chat Schalter 'Fate' chat:1259; Fate-Seite Schalter fate.tsx:46-49",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "POST",
+    "route": "/api/kernel/autochat-gate",
+    "backend": "matrix_api/app.py:4171",
+    "api_ts": "src/lib/matrix/api.ts:591 apiKernelAutochatGate",
+    "aufruf": "src/lib/matrix/kernel-bridge.ts:500 <- src/routes/chat.$sessionId.tsx:799/986",
+    "sichtbare_kontrolle": "Chat Schalter 'AutoChat' chat:1708-1716",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   },
+   {
+    "methode": "GET",
+    "route": "/api/compass/triggers",
+    "backend": "matrix_api/app.py:4216",
+    "api_ts": "keine in api.ts; src/lib/matrix/compass.ts:42-47 syncCompassTriggersFromBackend (nie aufgerufen)",
+    "aufruf": "keine",
+    "sichtbare_kontrolle": "keine",
+    "zuordnung": "OHNE_FRONTENDAUFRUF",
+    "anmerkung": "Frontend-Kompass faellt auf FALLBACK_TRIGGERS (compass.ts:38) zurueck"
+   },
+   {
+    "methode": "POST",
+    "route": "/api/kernel/reset",
+    "backend": "matrix_api/app.py:4227",
+    "api_ts": "src/lib/matrix/api.ts:606 apiKernelReset",
+    "aufruf": "src/lib/matrix/store.ts:1586 resetSessionRuntime; src/lib/matrix/store.ts:1714 kernelReset; src/lib/matrix/kernel-bridge.ts:543",
+    "sichtbare_kontrolle": "chat.index.tsx:131 'Runtime'; labor.tsx:395-434 'Kernel-Reset Chat/Runtime/Memory/Uploads'",
+    "zuordnung": "FRONTEND_VORHANDEN",
+    "anmerkung": ""
+   }
+  ],
+  "routen_ohne_frontendaufruf_oder_kontrolle": [
+   "PUT /api/mcc",
+   "POST /api/import/mcc",
+   "GET /api/users/<user_id>",
+   "DELETE /api/users/<user_id>/logs",
+   "DELETE /api/users/<user_id>/logs/orphan-sessions",
+   "GET /api/worlds",
+   "GET /api/worlds/<world_id>",
+   "GET /api/characters",
+   "GET /api/characters/<char_id>",
+   "PATCH /api/sessions/<session_id>/goals/<goal_id>",
+   "GET /api/sessions",
+   "POST /api/uploads/<upload_id>/commit",
+   "GET /api/uploads",
+   "GET /api/uploads/<upload_id>",
+   "PATCH /api/reviews/<review_id>",
+   "GET /api/reviews/<review_id>",
+   "POST /api/snapshots",
+   "DELETE /api/snapshots/<snap_id>",
+   "GET /api/snapshots/<snap_id>",
+   "GET /api/triggers",
+   "GET /api/triggers/<trigger_id>",
+   "POST /api/preferences",
+   "PATCH /api/preferences/<pref_id>",
+   "DELETE /api/preferences/<pref_id>",
+   "GET /api/preferences",
+   "GET /api/preferences/<pref_id>",
+   "GET /api/llm/ping",
+   "GET /api/compass/triggers"
+  ],
+  "frontendfelder_ohne_backendwirkung": [
+   {
+    "feld": "Config 'Debug' (config.tsx:228)",
+    "wirkung": "PUT /api/config speichert debug (store.ts:1519); kein Leser in matrix_api (grep 'debug' nur Speicherung)",
+    "befund": "FRONTENDFELD_OHNE_BACKENDWIRKUNG"
+   },
+   {
+    "feld": "Config 'Kontext-Turns (Dialog im Spiegel)' (config.tsx:235)",
+    "wirkung": "geht in session.autoChat.contextTurns (store.ts:891); Server-BrainContext-Dialog kernel.py:14166 (_dialogue_visible_to) liest es nicht; nur Client-spiegel.ts:97 (nur diagnose.tsx:12 importiert)",
+    "befund": "FRONTENDFELD_OHNE_BACKENDWIRKUNG"
+   },
+   {
+    "feld": "Config 'Erzaehler an' (config.tsx:227) / Chat 'Erzaehler' (chat:1261)",
+    "wirkung": "session.pipeline.narrator; kein Backendleser (grep pipeline narrator: nur session-engine.ts:702 Client)",
+    "befund": "FRONTENDFELD_OHNE_BACKENDWIRKUNG"
+   },
+   {
+    "feld": "Config 'AutoChat Pause ms' (config.tsx:233)",
+    "wirkung": "nur Client-Timer queueAuto (chat:967); Backend liest delayMs nicht",
+    "befund": "CLIENTSEITIG_WIRKSAM (keine Backendwirkung noetig, aber Scope-Wert nur Startwert neuer Sessions store.ts:890)"
+   },
+   {
+    "feld": "Config Scope 'world/character/session/runtime' + 'Scope laden' (config.tsx:140-223)",
+    "wirkung": "Leser _cfg (llm_contract.py:2445) liest nur den im Request genannten Scope, keine Vererbung; Key im User-Scope ist im Session-Scope nicht vorhanden -> Provider synapse (ausgefuehrt)",
+    "befund": "FRONTENDFELD_MIT_FALSCHER_BACKENDWIRKUNG"
+   },
+   {
+    "feld": "User-Seite Modell/Endpoint (user.tsx:166-175, providerConfig)",
+    "wirkung": "zweite Modellquelle; chat:429 bevorzugt user.providerConfig.model vor gescoptem config.model",
+    "befund": "DOPPELTER_OWNER"
+   },
+   {
+    "feld": "Upload-Center 'Dokumentgruppe' (upload.tsx:260) und Knowledge-Base 'Gruppe' (upload.tsx:411)",
+    "wirkung": "gespeichert in documents.documentGroup; weder /api/search (vector.py:90-103) noch document-index (repos.py:5090-5105) lesen es (ausgefuehrt: Suche 'Werkzeug' 0 Treffer)",
+    "befund": "FRONTENDFELD_OHNE_BACKENDWIRKUNG"
+   },
+   {
+    "feld": "Upload 'Hinweis / Bezug' (upload.tsx:259) und 'Hinweis aendern (PATCH)' (upload.tsx:466)",
+    "wirkung": "ersetzt im Mode-B-Ingest den Upload-Inhalt in Fact- und Memory-Text (pipeline.py:155; ausgefuehrt: Memory 'Upload brief.txt: bitte lesen')",
+    "befund": "FRONTENDFELD_MIT_FALSCHER_BACKENDWIRKUNG"
+   },
+   {
+    "feld": "Upload Mode B Zielart 'Charakterstamm' + Ziel (upload.tsx:235-258)",
+    "wirkung": "Ziel wird im Ingest ignoriert; Verteilung an alle Hoerer der Szene (pipeline.py:151-153; ausgefuehrt)",
+    "befund": "FRONTENDFELD_OHNE_BACKENDWIRKUNG"
+   },
+   {
+    "feld": "Upload Zielart 'Scene' (upload.tsx:232)",
+    "wirkung": "targetId ist Session-ID; keine Szenen-ID gespeichert (upload.tsx:197, repos.py:4939-4946)",
+    "befund": "FRONTENDFELD_OHNE_EIGENE_BACKENDWIRKUNG"
+   },
+   {
+    "feld": "Weltseite Genre-Policy-Anzeige 'Register/Gewalt' (welt.$worldId.tsx:85-100,733-739)",
+    "wirkung": "statische Tabelle genre_policy.py:6-18, kein Turn-/Prompt-Leser; suggeriert Steuerung ohne Wirkung",
+    "befund": "ANZEIGE_OHNE_BACKENDWIRKUNG"
+   },
+   {
+    "feld": "Chat 'STT-Modus'/Aufnahme -> /api/speech/stt; Vorlesen -> /api/speech/tts",
+    "wirkung": "Backend-Routen sind local-stub (app.py:2281-2297, ausgefuehrt)",
+    "befund": "AUFRUF_OHNE_BACKENDWIRKUNG (Geraetefunktion wirkt clientseitig)"
+   },
+   {
+    "feld": "Beziehungen 'Abgeleitete Social-Werte' (social.tsx:163-171)",
+    "wirkung": "im Frontend berechnete Formel Bond/Risiko, nicht der Backend-Social/Synapsen-Owner",
+    "befund": "ANZEIGE_OHNE_BACKENDOWNER"
+   },
+   {
+    "feld": "Beziehungen 'Graph speichern' Art-Auswahl (social.tsx:94-112)",
+    "wirkung": "schreibt feste Zahlen in RelationshipState (PUT relations) und graph_edges; graph_edges ohne Kernel-Leser",
+    "befund": "FRONTENDFELD_MIT_FALSCHER_BACKENDWIRKUNG"
+   }
+  ],
+  "aufrufer_ausserhalb_src": [
+   {
+    "datei": "matrix_speicher_v91.html",
+    "aufrufe": [
+     "GET /api/users (:105)",
+     "GET /api/sessions (:58)",
+     "DELETE /api/sessions/<id> (:78)",
+     "POST /api/sessions/<id>/reset-full (:82)",
+     "DELETE /api/users/<id>/logs/orphan-sessions (:89)",
+     "DELETE /api/users/<id>/logs (:98)"
+    ],
+    "hinweis": "zweite Bedienoberflaeche ausserhalb src, von START.py:252-256 ausgeliefert; im Flask-Testclient nicht vorhanden"
+   }
+  ],
+  "status": "ROT",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "hinweis": "amaster_route_catalog.py (FLASK_ROUTES) ist ein Katalog, kein Nachweis einer Bedienung (KV §2)"
+ }
+]

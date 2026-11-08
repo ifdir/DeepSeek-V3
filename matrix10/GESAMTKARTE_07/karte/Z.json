@@ -1,0 +1,888 @@
+[
+{
+ "id": "Z-01",
+ "funktion": "SceneFact-Bindung und Commit (Pflichtfelder, append-only)",
+ "amaster": "§34 (Z. 1255-1288), §68 Nr. 8 (Z. 2375)",
+ "soll": "Jedes Ereignis ist maschinenlesbare Evidenz mit ID, User/Welt/Session/Szene, Quellturn, Authority, Actor/Target/Betroffene/Zeugen, Payload, Duplicate-Key, Proposition/Goal, Antwortbezug, Relationen (Z. 1261-1286); Bestand append-only, für Reader erreichbar (Z. 1288).",
+ "kettenvertrag": "§1 (Writer->SQLite->Reader), §4 SceneFact/Commit",
+ "sps_loesung": "V65Y/V65Z Write-Boundary (_check_fact_boundary, fact_provenance A01), V70 Audit10 Event-Position; SPS Z. 3356 (save_session §63/§68 Nr. 24)",
+ "owner": "Python kernel.make_fact + repos.append_session_fact (via save_session/_sync_session_children_scoped)",
+ "owner_soll_nach_architektur": "Kernel-Commitpfad, SceneFact-Writer (KV §4)",
+ "kette": {
+  "eingang": "/api/kernel/prepare (app.py:1563) und /api/kernel/commit (app.py:1884); Session wird serverseitig aus SQLite geladen (_kernel_stored_session, app.py:1918)",
+  "verarbeitung": "kernel.commit_turn (kernel.py:8074) erzeugt Facts mit make_fact; Witness/Memory danach (kernel.py:8941)",
+  "speicherung": "scene_facts via repos.append_session_fact (repos.py:4316) -> _append_immutable_child (repos.py:3555), aufgerufen aus _sync_session_children_scoped (repos.py:6242-6247)",
+  "wiederlesen": "repos.hydrate_session_from_sql (repos.py:1314) / get_session (repos.py:1380); kernel.recall (kernel.py:13224-13229)",
+  "entscheidung": "reduce_current_state/reduce_goal_state lesen Lifecycle-Facts (kernel.py:1809, 1864); rank_speakers liest Sprecherfolge aus Facts (kernel.py:11628-11633); autchat_should_stop liest letzten Fact (kernel.py:14883-14889)",
+  "folgewirkung": "Folgeturn-BrainContext (bind_formulation_spiegel kernel.py:14025-14051)",
+  "frontend": "timeline.tsx (apiListSessionEvidence, api.ts:347) zeigt Evidenz; chat.$sessionId.tsx Verlauf"
+ },
+ "ui_bedienung": "Chat-Eingabe; Timeline/Evidenzansicht (nur lesend)",
+ "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": [
+  "app.py:1987 result = body.get('result'): Rede, Handlung und proposals der Figur kommen als Client-Body in /api/kernel/commit; es gibt keine serverseitige Bindung (Hash/Signatur) an die vom Server erzeugte Formulierung (kein Treffer für resultHash/formulationId in app.py). LLM-/Clientausgabe wird so zu Fact-Inhalt (KV §4 'LLM-Ausgaben als unvalidierter kanonischer Zustand').",
+  "UNKLAR: kernel.py:11898-11902 (_bind_lifecycle_evidence) stempelt propositionId/goalId nachträglich auf einen vorhandenen Fact; ist dieser Fact bereits in SQLite, führt der abweichende Payload in _append_immutable_child (repos.py:3575-3584) zu warnings und save_session wirft 409 SESSION_CHILD_ID_CONFLICT (repos.py:6425-6434). Ob der positionsbasierte Fallback (ohne fact_id) einen gespeicherten Fact trifft, nicht ausgeführt."
+ ],
+ "abhaengig_von": ["TurnTruth", "SceneState", "LLM-Formulierung (Client-Bridge kernel-bridge.ts:253)"],
+ "auswirkung_bestehender_fehler": "Client-Result speist Memory 'gesagt/getan', Witness, Synapse-Runtime (Z-24) und Claims; ein manipuliertes Result erzeugt kanonische Folgen in allen Z-Ketten.",
+ "belege": [
+  "app.py:1918 – Session aus SQLite statt Client-Blob (codefluss)",
+  "app.py:1987 – result aus Request-Body (codefluss)",
+  "repos.py:3566-3585 – Immutable-Child: gleicher Inhalt idempotent, abweichend 'kept'+Warnung (codefluss)",
+  "repos.py:6425-6434 – Warnung -> WriterError 409 (codefluss)",
+  "probe_z.py: zwei Turns prepare+commit, scene_facts=4 in SQLite (ausgeführt)"
+ ]
+},
+{
+ "id": "Z-02",
+ "funktion": "Zusammengesetzte Outputs: Komponententrennung, je Komponente Validierung/Fact",
+ "amaster": "§34.1 (Z. 1290-1333)",
+ "soll": "Rede, Handlung, Ablehnung, Grenze eines Outputs werden vor dem Commit getrennt, je eigene Validierung, Effect-Authorization und eigener Fact mit gleicher source_turn_id; nicht validierte Komponente ohne Welt-/Beziehungs-/Lernwirkung (Z. 1301-1331).",
+ "kettenvertrag": "§9/§10 (Komponentenvalidierung und Commit)",
+ "sps_loesung": "V65J.1 bind_input_components (SPS Z. 4006); V65P.C1 (SPS Z. 3745); V59C Komponenten-Target",
+ "owner": "Python kernel.commit_turn (Eingangs- und Antwortkomponenten), kernel.validate_component (kernel.py:1491)",
+ "owner_soll_nach_architektur": "Kernel-Commitpfad (Server validiert, LLM schlägt vor, Z. 1319)",
+ "kette": {
+  "eingang": "Eingabetext (prepare) bzw. result.speech/result.action (commit, app.py:1987)",
+  "verarbeitung": "Eingangskomponenten kernel.py:8243-8455; Antwortkomponenten kernel.py:8503-8545; validate_component kernel.py:1491-1500 (capability_blocks_action)",
+  "speicherung": "je Komponente eigener scene_facts-Eintrag (append_session_fact repos.py:4316)",
+  "wiederlesen": "bind_formulation_spiegel _in_facts nach sourceTurnId+validiert (kernel.py:14075-14078)",
+  "entscheidung": "Memory-Writer unterscheidet getan/versucht nach _scene.validiert (kernel.py:8910-8918); Witness 'performed'/'attempted' (kernel.py:2211-2212)",
+  "folgewirkung": "Folgeturn-Stimulus aus validierten Komponenten (kernel.py:14091-14096)",
+  "frontend": "chat.$sessionId.tsx Turn-Anzeige; Ablehnung 422 'Nichts wurde gespeichert' (app.py _reject_unexecutable_input, app.py:2123)"
+ },
+ "ui_bedienung": "Chat-Eingabe mit *Handlung*-Markierung",
+ "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": [
+  "Antwortkomponenten der Figur stammen aus dem Client-Result (app.py:1987), siehe Z-01.",
+  "Komponentenlesung ohne Provider nur lokal (SPS V65J: ungemarkter Text = Rede); Mehrkomponentenausgaben ohne Modell nicht E2E geprüft."
+ ],
+ "abhaengig_von": ["TurnTruth", "Eingangsplaner (llm_contract)", "Capability Z-26"],
+ "auswirkung_bestehender_fehler": "Falsch getrennte Komponente erzeugt falsche Memory-Art (getan statt versucht) und falsche Witness-Zugriffe.",
+ "belege": [
+  "kernel.py:1491-1500 validate_component – capability_blocks_action (codefluss)",
+  "kernel.py:8910-8918 – getan vs. versucht, truthStatus attempted (codefluss)"
+ ]
+},
+{
+ "id": "Z-03",
+ "funktion": "Proposition-Lifecycle und Current-State-Reduktion",
+ "amaster": "§35 (Z. 1337-1386), §68 Nr. 9",
+ "soll": "Dieselbe Angelegenheit über Ereignisse; historische Evidenz append-only, Current State aus neuester gültiger Evidenz reduziert; Reader lesen Current State, nicht historisches 'open' (Z. 1368-1386).",
+ "kettenvertrag": "§4 Proposition/Goal/Lifecycle; verboten 'historische Evidenz als Ersatz für reduzierten Current State'",
+ "sps_loesung": "V69/V70 lifecycle_events + lifecycle_order_conflicts (SPS Z. 358, 425, 501-502, 642)",
+ "owner": "Python kernel.apply_proposition (kernel.py:11985) + kernel._bind_lifecycle_evidence (kernel.py:11866); Reducer kernel.reduce_current_state (kernel.py:1857)",
+ "owner_soll_nach_architektur": "Proposition/Goal/Lifecycle-Owner (KV §4)",
+ "kette": {
+  "eingang": "validierter Plan (event_kind refusal/acceptance/revoke/fulfill/request) aus commit_turn (kernel.py:9147, 12562)",
+  "verarbeitung": "apply_proposition setzt open_prop['status'] (kernel.py:12158-12181) UND schreibt Lifecycle-Fact (kernel.py:12182 -> 11914-11935)",
+  "speicherung": "propositions (patch_session_proposition repos.py:4665 / create repos.py:4629) + scene_facts kind=lifecycle",
+  "wiederlesen": "reduce_current_state (kernel.py:1864-1899); aber _open_request (kernel.py:7342) und recall open_texts (kernel.py:13231-13235) lesen das gespeicherte p['status']",
+  "entscheidung": "_open_request entscheidet Antwortbindung (kernel.py:7358); autchat_should_stop 'await_user'/'hard_conflict' über p['status']=='open' (kernel.py:14895-14903)",
+  "folgewirkung": "BrainContext currentState (kernel.py:14787) und Spiegel OFFENE ANGELEGENHEITEN",
+  "frontend": "timeline.tsx / chat.$sessionId.tsx Angelegenheiten; store.ts apiPatchProposition (api.ts:377)"
+ },
+ "ui_bedienung": "Anzeige offener/geschlossener Angelegenheiten; manuelles Patchen über store",
+ "statischer_befund": "LÜCKE_IM_CODE",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": [
+  "kernel.py:7342 und kernel.py:13234 sowie 14895: Entscheidungsleser verwenden den gespeicherten Status statt reduce_current_state; der Zustand 'unklar' (kernel.py:1892-1895) erreicht diese Leser nicht.",
+  "Zweifacher Current-State: gespeicherter p['status'] (kernel.py:12159-12181) und Reduktion aus Lifecycle-Facts – synchron nur, solange jeder Schreibweg beide setzt (manuelles PATCH repos.py:4665 setzt nur den Status)."
+ ],
+ "abhaengig_von": ["Z-01 SceneFact", "Eingangsplaner", "Z-04 Frames"],
+ "auswirkung_bestehender_fehler": "Refusal/Acceptance-Bindung (Z-07..Z-09), Recall-Priorisierung (Z-19) und AutoChat-Stopp lesen einen ggf. veralteten Status.",
+ "belege": [
+  "kernel.py:1857-1914 reduce_current_state (codefluss)",
+  "kernel.py:7336-7346 _open_request liest p.get('status') (codefluss)",
+  "probe_z.py: lokal ohne Provider keine Proposition erzeugt (propositions=0) (ausgeführt)"
+ ]
+},
+{
+ "id": "Z-04",
+ "funktion": "Frames (conjunctive.apply_plan) als zweiter Lifecycle-Owner",
+ "amaster": "§35 (Z. 1368-1386), §40 (Z. 1537), §68 Nr. 24 (Z. 2391)",
+ "soll": "Eine Angelegenheit hat einen Current State aus kanonischer Evidenz; kein Parallelstore neben den zuständigen kanonischen Schichten (Z. 2391).",
+ "kettenvertrag": "§4 (kein Parallelstore, JSON-Cache als heimlicher Master verboten)",
+ "sps_loesung": "V62.11/V62.12 (SPS Z. 5145-5146), SPS Z. 5064 ('Frames (conjunctive.apply_plan) getrennt')",
+ "owner": "Python conjunctive.apply_plan (conjunctive.py:639)",
+ "owner_soll_nach_architektur": "Proposition/Goal/Lifecycle-Owner; Frames höchstens abgeleitete Sicht",
+ "kette": {
+  "eingang": "Plan der Eingabe/Antwort (kernel.py:8697, 9001, 12543)",
+  "verarbeitung": "Status-Mutation proposed/requested/accepted/refused/revoked/fulfilled/superseded direkt am Frame (conjunctive.py:752-795); Bindung über _find_frame mit Stichwort-Score (conjunctive.py:543-562)",
+  "speicherung": "sessions.json Feld 'frames' (CANONICAL_ENVELOPE_FIELDS repos.py:206), via save_session UPDATE sessions (repos.py:6421-6424)",
+  "wiederlesen": "frames_for (conjunctive.py:799) -> Spiegel framesText (kernel.py:14491, 14688-14698); truth.local_contradictions (truth.py:110-117)",
+  "entscheidung": "truth.local_contradictions -> apply_contradictions schreibt Runtime/Relationship (truth.py:164-226)",
+  "folgewirkung": "Brief 'Vereinbarungen' im Folgeturn",
+  "frontend": "chat.$sessionId.tsx:1283-1284 Frames-Liste"
+ },
+ "ui_bedienung": "Frames-Panel im Chat (lesend)",
+ "statischer_befund": "LÜCKE_IM_CODE",
+ "status": "ROT",
+ "defekte": [
+  "conjunctive.py:752-769: Acceptance/Refusal setzt Frame-Status mit schwächeren Prüfungen (nur Adressat, conjunctive.py:756) als apply_proposition (Stimulusbindung kernel.py:12090-12092, Empfängerprüfung 12144); dieselbe Antwort kann Frame 'accepted' und Proposition 'open' ergeben – zwei Current-State-Wahrheiten.",
+  "Abweichendes Statusvokabular: Frame 'refused' (conjunctive.py:759) vs. Proposition 'declined' (kernel.py:12159).",
+  "Frames liegen als mutables JSON im Session-Envelope, nicht als append-only Evidenz; historische Statuswerte nur in frame.history."
+ ],
+ "abhaengig_von": ["Z-03", "Eingangsplaner"],
+ "auswirkung_bestehender_fehler": "Spiegel zeigt 'vereinbart', während Current State offen ist; Widerspruchserkennung (Z-10) und Doppelbuchung (Z-13) arbeiten auf Frames.",
+ "belege": [
+  "conjunctive.py:639-796 apply_plan (codefluss)",
+  "repos.py:186-210 CANONICAL_ENVELOPE_FIELDS enthält 'frames' (codefluss)"
+ ]
+},
+{
+ "id": "Z-05",
+ "funktion": "Goal: Owner, Typen, Lifecycle, Goal-Erleben",
+ "amaster": "§35 (Z. 1347-1366)",
+ "soll": "Goal bindet Owner, Ziel, Empfänger, Proposition, Priorität, zeitlichen Scope, Lifecycle; Stamm-/Welt-/Session-/Szenenziel, Absicht, Commitment, erfüllt/aufgegeben unterscheidbar.",
+ "kettenvertrag": "§10 'zulässige Goal-Folge', §4",
+ "sps_loesung": "V62/V63 reduce_goal_state, apply_goal_experience, apply_owner_goal_decision (SPS Z. 5064, 5168)",
+ "owner": "Python kernel.reduce_goal_state (kernel.py:1795), kernel.apply_goal_experience (kernel.py:2344), kernel.apply_owner_goal_decision (kernel.py:7694), apply_goal_frames/apply_goal_theme (kernel.py:7817, 7871)",
+ "owner_soll_nach_architektur": "Proposition/Goal/Lifecycle-Owner",
+ "kette": {
+  "eingang": "wahrgenommene Eingabe-Facts (kernel.py:8944-8950); Goal-Theme-Lesung (app.py:3760-3790)",
+  "verarbeitung": "apply_goal_experience; Lifecycle-Facts kind lifecycle/goal_state_changed",
+  "speicherung": "goals-Tabelle (create/patch_session_goal repos.py:4696/4753) + scene_facts",
+  "wiederlesen": "reduce_goal_state (kernel.py:1809-1854) in recall (kernel.py:13259-13263)",
+  "entscheidung": "Spiegel-Goals nur eigene, offene (kernel.py:14233-14244); rank_speakers Ziele/Absicht (kernel.py:11694)",
+  "folgewirkung": "Charakter-Vordergrund im Folgeturn",
+  "frontend": "store.ts addGoal -> apiPostGoal (api.ts:383); Charakter-/Chatanzeige"
+ },
+ "ui_bedienung": "Ziel anlegen/patchen (store.ts), Anzeige",
+ "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": [
+  "Priorität und Goal-Typ (Stamm/Welt/Session/Szene) nicht als durchgängig gelesene Felder nachgewiesen (UNKLAR).",
+  "Goal-Lesungen (Theme/Antwortbezug) benötigen Provider (app.py:3760-3790); ohne Key nicht E2E prüfbar."
+ ],
+ "abhaengig_von": ["Z-03", "LLM-Provider", "Z-17 WitnessKnowledge"],
+ "auswirkung_bestehender_fehler": "Fehlende Goal-Folge nimmt KV §10 die Goal-Wirkung neuen Wissens.",
+ "belege": ["kernel.py:1795-1854 reduce_goal_state (codefluss)", "probe_z.py: goals-Zeilen aus Stamm vorhanden (12), kein Erlebniswrite lokal (ausgeführt)"]
+},
+{
+ "id": "Z-06",
+ "funktion": "Request (Steller, Empfänger, Leistung, Proposition, Zeit)",
+ "amaster": "§36.1 (Z. 1392-1401)",
+ "soll": "Request bindet Steller, Empfänger, angefragte Handlung, Proposition, Zeit, Lifecycle.",
+ "kettenvertrag": "§4",
+ "sps_loesung": "V62.1 Puppet-Bitte (SPS Z. 5135), V60 _bind_response_to_request",
+ "owner": "Python kernel._add_request_proposition (kernel.py:7980) via apply_proposition (kernel.py:12026)",
+ "owner_soll_nach_architektur": "Proposition-Owner",
+ "kette": {
+  "eingang": "Plan event_kind request",
+  "verarbeitung": "_add_request_proposition; time_window aus extract_time_window (kernel.py:1029)",
+  "speicherung": "propositions + Goal des Stellers",
+  "wiederlesen": "_open_request (kernel.py:7336); accepted_requests_for (kernel.py:7378)",
+  "entscheidung": "Bindung der Empfängerhandlung (_bind_response_to_request kernel.py:7349-7363)",
+  "folgewirkung": "offene Angelegenheit im Spiegel",
+  "frontend": "Anzeige offener Angelegenheiten"
+ },
+ "ui_bedienung": "Chat (implizit), Anzeige",
+ "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": ["Request ohne Provider-Plan lokal nicht erzeugt (probe: propositions=0 bei Aufforderung im Text) – E2E nur mit Modell; siehe SPS Z. 5203 'Bitten ohne Empfänger aus V61 bleiben offen'."],
+ "abhaengig_von": ["Eingangsplaner", "Z-03"],
+ "auswirkung_bestehender_fehler": "Ohne Request keine Refusal/Acceptance-Kette.",
+ "belege": ["kernel.py:7980 _add_request_proposition (codefluss)"]
+},
+{
+ "id": "Z-07",
+ "funktion": "Refusal-Validierung",
+ "amaster": "§36.2 (Z. 1403-1415)",
+ "soll": "Refusal gilt nur vom berechtigten Empfänger, für existierenden Request, dieselbe Proposition, passende Session und Zeit, offene Angelegenheit; danach declined, Request-Evidenz bleibt.",
+ "kettenvertrag": "§4",
+ "sps_loesung": "SPS Z. 3350 (§36.2 apply_proposition), V63.3b (SPS Z. 5047)",
+ "owner": "Python kernel.apply_proposition (kernel.py:12144, 12158-12159)",
+ "owner_soll_nach_architektur": "Proposition-Owner",
+ "kette": {
+  "eingang": "Antwortplan refusal",
+  "verarbeitung": "Kandidat nur stimulusgebunden (kernel.py:12090-12092); Empfängerprüfung (kernel.py:12144)",
+  "speicherung": "propositions.status=declined + Lifecycle-Fact (kernel.py:12182)",
+  "wiederlesen": "reduce_current_state; _select_conjunctive_facts Tier 'refusal' (kernel.py:13115)",
+  "entscheidung": "geschlossene Angelegenheit nicht mehr bindbar (_open_request)",
+  "folgewirkung": "alte Ablehnung im Recall priorisiert (§41 Z. 1598)",
+  "frontend": "Anzeige Status"
+ },
+ "ui_bedienung": "keine eigene",
+ "statischer_befund": "LÜCKE_IM_CODE",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": ["Zeitbezug-Prüfung der Refusal fehlt im Codefluss kernel.py:12139-12159 (nur Empfänger/offen); Zeitfenster wird nur bei fulfill geprüft (kernel.py:12173-12180)."],
+ "abhaengig_von": ["Z-03", "Z-06"],
+ "auswirkung_bestehender_fehler": "Ablehnung eines anderen Termins derselben Angelegenheit kann den falschen Zeitbezug schließen.",
+ "belege": ["kernel.py:12139-12159 (codefluss)"]
+},
+{
+ "id": "Z-08",
+ "funktion": "Acceptance-Validierung und Self-Claim",
+ "amaster": "§36.3 (Z. 1417-1429)",
+ "soll": "Acceptance nur gebunden an konkrete offene Frage/Angebot, Sprecher/Empfänger, Proposition und Zeitfenster stimmen, semantisch den Inhalt annehmend; 'wir hatten das vereinbart' ohne gültige Acceptance ist Self-Claim/Irrtum/Lüge.",
+ "kettenvertrag": "§4",
+ "sps_loesung": "V60 §36.3 (kernel.py:12129-12138), V65R register_denial (SPS Z. 3509)",
+ "owner": "Python kernel.apply_proposition; truth.register_claim (truth.py:37)",
+ "owner_soll_nach_architektur": "Proposition-Owner",
+ "kette": {
+  "eingang": "Antwortplan acceptance",
+  "verarbeitung": "Requester-Acceptance nur mit gebundener Empfängerantwort -> fulfill (kernel.py:12132-12138); Empfänger-Acceptance -> accepted (12161)",
+  "speicherung": "propositions + Lifecycle-Fact; Behauptung als Claim im Envelope 'claims' (truth.py:47-67)",
+  "wiederlesen": "reduce_current_state; truth.claims_for (kernel.py:14675)",
+  "entscheidung": "accepted_requests_for (kernel.py:7378) für Bindung eigener Handlungen",
+  "folgewirkung": "conflictedClaims im Brief",
+  "frontend": "Anzeige"
+ },
+ "ui_bedienung": "keine eigene",
+ "statischer_befund": "LÜCKE_IM_CODE",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": [
+  "Zeitfenster-Abgleich bei Acceptance fehlt (kernel.py:12160-12161); conjunctive.apply_plan übernimmt sogar das Zeitfenster der Annahme, wenn der Frame keines hat (conjunctive.py:767-768).",
+  "Parallel-Status im Frame (Z-04)."
+ ],
+ "abhaengig_von": ["Z-03", "Z-04"],
+ "auswirkung_bestehender_fehler": "Annahme mit anderem Termin wird als gültiger Deal reduziert.",
+ "belege": ["kernel.py:12129-12161 (codefluss)", "truth.py:37-67 register_claim (codefluss)"]
+},
+{
+ "id": "Z-09",
+ "funktion": "Bruch, Widerruf, Widerspruch als neue Evidenz",
+ "amaster": "§36.4 (Z. 1431-1435)",
+ "soll": "Bruch/Widerruf/Widerspruch erzeugen neue Evidenz und löschen das frühere Commitment nicht.",
+ "kettenvertrag": "§10 'Redeereignis, geglaubter Inhalt, Zweifel und Weltwahrheit bleiben getrennt'",
+ "sps_loesung": "V42 Widerspruch (truth.apply_contradictions), SPS Z. 6719/6738 (08D)",
+ "owner": "Python kernel.apply_proposition (revoke kernel.py:12164-12168); truth.local_contradictions/apply_contradictions (truth.py:90, 164); truth.register_denial (truth.py:241)",
+ "owner_soll_nach_architektur": "Proposition-Owner + SceneFact-Writer",
+ "kette": {
+  "eingang": "Plan revocation; Behauptung mit gleichem Subjekt/Prädikat",
+  "verarbeitung": "local_contradictions nur gegen bezeugte Claims/Frames (truth.py:98-117); apply_contradictions: Claim-Status, Runtime-Emotion Skepsis, trust -0.1, Relationship trust -0.1 (truth.py:171-205)",
+  "speicherung": "scene_facts kind=contradiction (truth.py:206-225), relationships, sessions.json runtimes/claims",
+  "wiederlesen": "claims_for im Brief (kernel.py:14675); Relationship/Runtime in recall",
+  "entscheidung": "Relationship-trust beeinflusst rank_speakers nur über closeness/hostility/fear (kernel.py:11676-11680) – trust nicht",
+  "folgewirkung": "Skepsis im Folgeturn-Spiegel",
+  "frontend": "keine eigene Anzeige der Claims"
+ },
+ "ui_bedienung": "keine",
+ "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": [
+  "Widerspruchserkennung nur für event_kind in CLAIM_KINDS mit subject/predicate (truth.py:93, 70-76) – praktisch nur mit Modellplan; lokal nicht ausgelöst (probe: keine contradiction-Facts).",
+  "Claims-Register ist auf 200 Einträge gekappt und löscht ältere (truth.py:65-66) – Evidenzverlust entgegen 'löschen nicht'."
+ ],
+ "abhaengig_von": ["Eingangsplaner", "Z-04 Frames"],
+ "auswirkung_bestehender_fehler": "Ohne Plan keine Misstrauensfolge (KV §10 psychologische Wirkung).",
+ "belege": ["truth.py:164-226 (codefluss)", "truth.py:65-66 Kappung (codefluss)"]
+},
+{
+ "id": "Z-10",
+ "funktion": "Einwilligungskette Körperkontakt (Rust-Reducer) – nur Einordnung",
+ "amaster": "§36 (Z. 1390-1435) i. V. m. §36.5 (laut Code-Kommentaren)",
+ "soll": "Zustimmung/Ablehnung/Grenze des Berührten als Lifecycle-Evidenz an die Handlung gebunden; nur der Geber entscheidet.",
+ "kettenvertrag": "§11 (Effect-Authorization), §4",
+ "sps_loesung": "SPS Z. 2872 (validate_grenze -> _resolve_grenze -> body_contact_standing), Arbeitsstand 06 (Rust ABI 3)",
+ "owner": "Rust matrix-boundary-core consent.rs/restriction.rs über matrix_api/native_boundary.py:274-304, aufgerufen aus scene_state.py:465, 557, 647, 875; Python kernel.apply_proposition (kernel.py:12121-12157)",
+ "owner_soll_nach_architektur": "Proposition-Owner (Container koerperkontakt) mit Rust-Reducer",
+ "kette": {
+  "eingang": "Grenze/Antwort der berührten Figur",
+  "verarbeitung": "Rust-Reducer reduce_body_contact_standing / reduce_restricted_refusals",
+  "speicherung": "propositions (kind koerperkontakt) + Lifecycle-Facts",
+  "wiederlesen": "reduce_current_state Sonderfall (kernel.py:1878-1882)",
+  "entscheidung": "act_consent / Effect-Check vor Körperwirkung (app.py:2051-2068)",
+  "folgewirkung": "UNGEPRÜFT",
+  "frontend": "UNGEPRÜFT"
+ },
+ "ui_bedienung": "UNGEPRÜFT",
+ "statischer_befund": "UNKLAR",
+ "status": "UNGEPRÜFT",
+ "defekte": ["Laut Brief offen: E-1 Einwilligung (P25 ROT); hier nicht neu geprüft."],
+ "abhaengig_von": ["Bereich Einwilligung/Rust", "Z-03"],
+ "auswirkung_bestehender_fehler": "Körperwirkung -> Memory 'betroffen/erlebt' und Appraisal-Ursachen; Fehler dort verfälscht Z-13/Z-22.",
+ "belege": ["native_boundary.py:274-304 (codefluss)", "kernel.py:1874-1882 (codefluss)"]
+},
+{
+ "id": "Z-11",
+ "funktion": "Zeitebenen und relative Zeitangaben",
+ "amaster": "§37 (Z. 1439-1465)",
+ "soll": "Welt-/Session-/Szenen-/Turn-/Realzeit, relative Begriffe nur bei ausreichendem Kontext ins Zeitfenster; Vergangenheit nicht als Zukunftszusage; mehrdeutige Angaben bleiben ungeklärt.",
+ "kettenvertrag": "§9 (Zeitwahrheit serverseitig, KV §4 Z. 186-188)",
+ "sps_loesung": "V62 Zeit-Kette (SPS Z. 5157); Wortlisten-Leser bind_time-Zeitform (SPS Z. 5197-5198)",
+ "owner": "Python kernel.session_clock (kernel.py:1565), kernel.bind_time (kernel.py:1595), kernel.extract_time_window (kernel.py:1029), conjunctive.parse_temporal/temporal_from_fields (conjunctive.py:55, 173)",
+ "owner_soll_nach_architektur": "Kernel-Zeitbindung (SceneState/Session)",
+ "kette": {
+  "eingang": "Eingabetext / Plan.temporal",
+  "verarbeitung": "parse_temporal, _ground_time_fields (conjunctive.py:135); _pre_past/_pre_tense steuern Commitments (kernel.py:8910, 8998)",
+  "speicherung": "sessions.json 'time' (CANONICAL_ENVELOPE_FIELDS repos.py:204), propositions.time_window/time_resolved_date, frames.when",
+  "wiederlesen": "recall time (kernel.py:13292); Spiegel-Zeitbezug (kernel.py:14443-14451)",
+  "entscheidung": "fulfill-Sperre für Zukunft (kernel.py:12173-12180); keine Commitments aus Vergangenheitsform (kernel.py:8998)",
+  "folgewirkung": "Zeit im Brief",
+  "frontend": "Frames-Anzeige liest when.label (SPS Z. 5157)"
+ },
+ "ui_bedienung": "keine eigene Zeitkontrolle in diesem Bereich gefunden",
+ "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": ["Zeitform (Vergangenheit/Zukunft) per Wortliste bind_time (SPS Z. 5197-5198 selbst als offen markiert); God-Zeitsprung ändert nur Label (SPS Z. 5207)."],
+ "abhaengig_von": ["SceneState", "God (Zeitsprung)"],
+ "auswirkung_bestehender_fehler": "Falsche Zeitform erzeugt/verhindert Commitments (Z-06..Z-08).",
+ "belege": ["kernel.py:1595 bind_time (codefluss)", "conjunctive.py:55-247 (codefluss)"]
+},
+{
+ "id": "Z-12",
+ "funktion": "Termine und Doppelbuchung (appointments-Tabelle vs. Frame-Konflikte)",
+ "amaster": "§37 (Z. 1463-1467)",
+ "soll": "Doppelbuchungen werden nicht durch Vergessen gelöst, sondern erzeugen Konflikt/Widerruf/Bruch/Neuentscheidung.",
+ "kettenvertrag": "§1 ('gespeicherter Wert ohne realen Folgereader ist ROT'), §5",
+ "sps_loesung": "V62.11 mark_time_conflicts (SPS Z. 5145); appointments: keine SPS-Lösung gefunden",
+ "owner": "Python conjunctive.mark_time_conflicts (conjunctive.py:585); amaster_ext.create_appointment (amaster_ext.py:59)",
+ "owner_soll_nach_architektur": "Proposition/Goal-Zeitfenster (ein Owner)",
+ "kette": {
+  "eingang": "Timeline-Formular (timeline.tsx:187 apiCreateAppointment) bzw. datierter Plan",
+  "verarbeitung": "mark_time_conflicts nur auf Frames; appointments ohne Kernel-Verarbeitung",
+  "speicherung": "appointments-Tabelle (amaster_ext.py:59) bzw. frames.timeConflicts",
+  "wiederlesen": "appointments nur list_appointments (amaster_ext.py:70-81) für UI (timeline.tsx:188, social.tsx:31); kein Kernel-/Recall-Reader (kein Treffer 'appointments' in kernel.py)",
+  "entscheidung": "FEHLT für appointments; Frame-Konflikt nur Brief/Spiegel (kernel.py:14491); autchat 'hard_conflict' per Wortsuche 'samstag'/'sonntag' (kernel.py:14901-14903)",
+  "folgewirkung": "Termine aus der UI erreichen keine Figur",
+  "frontend": "timeline.tsx:187-188"
+ },
+ "ui_bedienung": "Termin anlegen (Timeline)",
+ "statischer_befund": "LÜCKE_IM_CODE",
+ "status": "ROT",
+ "defekte": [
+  "appointments: Writer + UI-Reader, aber kein Systemreader (kernel.py ohne Zugriff) – gespeicherter Wert ohne Folgereader (KV §1), zugleich Parallelstore zu Proposition/Frame-Zeitfenstern (§68 Nr. 24).",
+  "kernel.py:14901-14903: Konflikterkennung im AutoChat per Wortliste Samstag/Sonntag statt Zeitfenster."
+ ],
+ "abhaengig_von": ["Z-04", "Z-11"],
+ "auswirkung_bestehender_fehler": "Nutzer legt Termin an, Figuren wissen nichts davon; keine Konfliktfolge.",
+ "belege": ["amaster_ext.py:44-81 (codefluss)", "grep 'appointments' kernel.py: 0 Treffer (codefluss)"]
+},
+{
+ "id": "Z-13",
+ "funktion": "Memory-Writer nach Ereignis (gesagt/gehört/getan/betroffen/gesehen/erlebt/versucht/erfahren/gelesen)",
+ "amaster": "§38 (Z. 1471-1510)",
+ "soll": "Figurenbezogenes Erleben mit Identität, Figuren-, Welt-, Sessionbezug, Quelle, Zeit, Beteiligten, Wissensart, Fact-ID; eigene Rede erinnerbar auch wenn Inhalt unbestätigt (Z. 1510).",
+ "kettenvertrag": "§10 (figurenbezogenes Memory mit Quelle, Zeit und Vertrauensgrad)",
+ "sps_loesung": "V60 (eine Erinnerung je eigener Rede, kernel.py:8759-8783), V57 Eingangs-Memories, V65U Regie-Vollzug 'erfahren'; SPS Z. 5738 (FB08L.5 save_session -> neue Verbindung -> Recall)",
+ "owner": "Python kernel.make_memory (kernel.py:1366) in commit_turn (kernel.py:8765-8940), commit_puppet (12482-12521), Regie-Vollzug (9745-9754), God (10538, 10616, 10693); pipeline.py:244 (Upload B 'gelesen')",
+ "owner_soll_nach_architektur": "Memory-Owner (KV §4)",
+ "kette": {
+  "eingang": "validierte Facts des Turns (new_facts)",
+  "verarbeitung": "gesagt für Sprecher, gehoert für _effective_hears∩present (kernel.py:8784-8804), getan/betroffen/gesehen (8805-8867), Eingangs-Memories nach witness_access (8905-8940)",
+  "speicherung": "memories via repos.create_session_memory (repos.py:4553) aus _sync_session_children_scoped (repos.py:6248-6253); Grenze _check_memory_boundary (repos.py:3963-3970)",
+  "wiederlesen": "hydrate_session_from_sql -> kernel.recall (kernel.py:13230) -> bind_formulation_spiegel (kernel.py:14052-14218)",
+  "entscheidung": "rank_speakers 'Kontextbedeutung' Wortüberlappung mit eigenen Memories (kernel.py:11664-11669); event_labels E1.. für Zitierprüfung (llm_contract.py:2211-2218); sonst Prompttext",
+  "folgewirkung": "Folgeturn-BrainContext enthält Memories (ausgeführt)",
+  "frontend": "memory.tsx Liste/Filter; manuelles Anlegen memory.tsx:285-315 -> store.addMemory (store.ts:1194) -> apiPostMemory (api.ts:359) -> app.py:989"
+ },
+ "ui_bedienung": "Gedächtnisseite: Liste, Filter, 'Speichern' einer Session-Erinnerung",
+ "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": [
+  "Vertrauensgrad fehlt als Feld (make_memory kernel.py:1366-1375: salience, truthStatus, kein confidence); Beziehungen zwischen Memories fehlen (kein Feld).",
+  "Manueller Memory-Write (memory.tsx:301-310) setzt truthStatus 'canon' ohne Fact/Quelle; _check_memory_boundary verlangt Quelle nicht (required=False, repos.py:3970).",
+  "kernel.py:8891-8900 memoryNote-Memory ohne factId/sessionId/sourceTurnId (nur hinter accept_llm_state, das app.py:2111 auf False setzt – toter Pfad).",
+  "Memories sind nach dem Schreiben faktisch unveränderlich: PATCH-Route entfernt (app.py:982-985), save_session mit abweichendem Payload -> 409 (repos.py:3607-3616, 6425-6434)."
+ ],
+ "abhaengig_von": ["Z-01", "Z-16 WitnessKnowledge", "Hören/Sehen (SceneState)"],
+ "auswirkung_bestehender_fehler": "Ohne Vertrauensgrad/epistemischen Status keine Trennung geglaubt/bezweifelt (Z-14, Z-17).",
+ "belege": [
+  "kernel.py:8765-8940 (codefluss)",
+  "probe_z.py T1: memories Mara gehoert+gesagt, Johann gehoert in SQLite (ausgeführt)",
+  "probe_z.py T2 nach neuer App-Instanz: brainContext.memories enthält T1-Erinnerungen (ausgeführt)"
+ ]
+},
+{
+ "id": "Z-14",
+ "funktion": "Epistemische Memory-Zustände (geglaubt, vermutet, behauptet, bestritten, unsicher, erschlossen, vergessen/verdrängt)",
+ "amaster": "§38 (Z. 1475-1492, 1508)",
+ "soll": "Diese Wissensarten sind zu unterscheiden; Vergessen/Verdrängen ist neuer epistemischer Zustand oder geringere Relevanz, kein Löschen.",
+ "kettenvertrag": "§10 ('Redeereignis, geglaubter Inhalt, Zweifel und Weltwahrheit bleiben getrennt'), §1 ('Reader ohne kanonischen Writer ist ROT')",
+ "sps_loesung": "keine gefunden (SPS V62 Z. 5161: Gedächtnis 'OFFEN siehe Grenzen')",
+ "owner": "keiner",
+ "owner_soll_nach_architektur": "Memory-Owner",
+ "kette": {
+  "eingang": "FEHLT",
+  "verarbeitung": "FEHLT",
+  "speicherung": "FEHLT (kein make_memory mit kind geglaubt/vermutet/unsicher/vergessen/verdraengt/bestritten/erschlossen)",
+  "wiederlesen": "kernel._derive_fate (kernel.py:10883-10886) liest genau diese Arten",
+  "entscheidung": "Fate-Beat-Bausteine (kernel.py:10884-10886) – ohne Writer wirkungslos",
+  "folgewirkung": "FEHLT",
+  "frontend": "memory.tsx MemoryKind-Auswahl (memory.tsx:53, 270) erlaubt manuelle Art"
+ },
+ "ui_bedienung": "nur manuelle Art-Auswahl beim Anlegen",
+ "statischer_befund": "FEHLT_IM_CODE",
+ "status": "ROT",
+ "defekte": [
+  "kernel.py:10883-10886 Reader ohne kanonischen Writer.",
+  "Kein Schreibweg für Vergessen/Relevanzsenkung (Memory nach Commit unveränderlich, Z-13)."
+ ],
+ "abhaengig_von": ["Z-13", "Z-17"],
+ "auswirkung_bestehender_fehler": "Belogene Figur kann Lüge nicht 'glauben' oder 'bezweifeln' als Zustand führen; Matrix10 Nr. 11/19 nicht abbildbar.",
+ "belege": ["grep kind=\"(gelesen|erfahren|...)\" in kernel/repos/app/pipeline: keine Writer für diese Arten (codefluss)"]
+},
+{
+ "id": "Z-15",
+ "funktion": "WitnessKnowledge: Zugriff nach Anwesenheit/Hören/Sehen/Betroffenheit",
+ "amaster": "§39 (Z. 1514-1531), §68 Nr. 6/7",
+ "soll": "Epistemische Zugriffsschicht ohne zweiten Fact-Store; beantwortet anwesend/sah/hörte/betroffen/später informiert/weiß nicht; Abwesende erhalten nichts.",
+ "kettenvertrag": "§10 (WitnessKnowledge als Zugriff, nicht als zweiter Fact-Store; abwesende bleiben unwissend)",
+ "sps_loesung": "V65E.5 witness_access God (SPS Z. 4480), V65S SQL-Owner (repos.py:201-202 Kommentar), SPS Z. 5162",
+ "owner": "Python kernel.witness_access (kernel.py:2178), kernel._record_fact_witnesses (kernel.py:2271), kernel.record_witness (kernel.py:2232)",
+ "owner_soll_nach_architektur": "WitnessKnowledge-Owner (KV §4)",
+ "kette": {
+  "eingang": "Hörer/Seher serverseitig aus SQL-Szene (_bind_scene_perception app.py:1500-1518; Client-informed/affected entfernt app.py:1513-1514)",
+  "verarbeitung": "witness_access: speech->heard nur hears∩present (kernel.py:2200-2205), action->performed/affected/seen (2206-2217)",
+  "speicherung": "witness_knowledge-Tabelle append-only, idempotent (repos.py:6301-6319, append_witness_knowledge repos.py:4469)",
+  "wiederlesen": "kernel.recall erlaubt Fact-Inhalt nur bei heard/seen/affected/informed (kernel.py:13209-13229)",
+  "entscheidung": "pending_appraisals nur Wahrgenommenes (kernel.py:3806, APPRAISAL_PERCEPTION kernel.py:3328); _answered_line_facts (kernel.py:11950-11952); _knows_fact (kernel.py:9351)",
+  "folgewirkung": "nur Zeugen erhalten Fact-Inhalt im Folgeturn",
+  "frontend": "memory.tsx:336-379 WitnessKnowledge-Liste nach apiGetSession"
+ },
+ "ui_bedienung": "Gedächtnisseite: WitnessKnowledge neu laden/anzeigen",
+ "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": [
+  "'Später informiert' (informed) entsteht nur im Regie-Vollzug (kernel.py:9744); normales Erzählen einer Figur erzeugt nur 'heard' auf den Redefact, keine Verbindung zum erzählten Ursprungsfact (Hörensagen ohne Bezug).",
+  "Kein Negativ-Nachweis (abwesende Figur bleibt unwissend) ausgeführt – nur Codefluss."
+ ],
+ "abhaengig_von": ["SceneState Hören/Sehen", "TurnTruth"],
+ "auswirkung_bestehender_fehler": "Fehlende informed-Bindung lässt Z-17 (Hörensagen) und Pattern Completion (Z-18) ohne Quelle.",
+ "belege": ["kernel.py:2178-2284 (codefluss)", "probe_z.py: witness_knowledge 8 Zeilen, nur heard für anwesende Hörer (ausgeführt)"]
+},
+{
+ "id": "Z-16",
+ "funktion": "Abwesende Figur bleibt unwissend (Negativgrenze)",
+ "amaster": "§39 (Z. 1529), §68 Nr. 7; Matrix10 Nr. 21",
+ "soll": "Abwesende Figuren erhalten kein automatisches Wissen; Namensnennung reicht nicht.",
+ "kettenvertrag": "§10 letzte Zeile, §4 'Namensnennung als Ersatz für Anwesenheit verboten'",
+ "sps_loesung": "V60 witness_access (Ziel ohne Anwesenheit kein Wissen, kernel.py:2181-2185)",
+ "owner": "Python kernel.witness_access + Memory-Writer (present_hear-Filter kernel.py:8784-8787, 8912, 8933)",
+ "owner_soll_nach_architektur": "WitnessKnowledge-Owner",
+ "kette": {
+  "eingang": "Szene presentIds/hearsIds aus SQL",
+  "verarbeitung": "nicht anwesend -> None (kernel.py:2205, 2209-2210)",
+  "speicherung": "kein Witness/Memory-Eintrag",
+  "wiederlesen": "recall filtert auf eigene Witness-Zeilen (kernel.py:13209)",
+  "entscheidung": "pick_speaker nur presentIds (kernel.py:11521)",
+  "folgewirkung": "Spätankommende Figur sieht nichts (Dialog _dialogue_visible_to kernel.py:13604)",
+  "frontend": "Anwesenheit im Chat (chat.$sessionId.tsx:1311, 1421-1429)"
+ },
+ "ui_bedienung": "Anwesenheit/Hört/Sieht im Chat",
+ "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": ["Nicht ausgeführt; rank_speakers (kernel.py:11666) mischt Stamm-'knowledge' in Wortüberlappung – keine Wissensquelle, aber Aktivierung."],
+ "abhaengig_von": ["SceneState", "Z-15"],
+ "auswirkung_bestehender_fehler": "Leck würde Geheimnisse/Täuschung (Matrix10 Nr. 21) brechen.",
+ "belege": ["kernel.py:2200-2217 (codefluss)"]
+},
+{
+ "id": "Z-17",
+ "funktion": "Hörensagen: 'Clara sagte, Mara habe X getan' getrennt von Weltwahrheit, Glaube/Zweifel",
+ "amaster": "§38 (Z. 1483, 1487-1490), §39 (Z. 1531); Matrix10 Nr. 11",
+ "soll": "Ein Bericht ist Redeereignis; der geglaubte Inhalt, Zweifel und objektive Weltwahrheit bleiben getrennt.",
+ "kettenvertrag": "§10 (Z. 461-463)",
+ "sps_loesung": "V42 Claims-Register (truth.register_claim); V65R register_denial",
+ "owner": "Python truth.register_claim (truth.py:37) + Memory 'gehoert'",
+ "owner_soll_nach_architektur": "Memory + WitnessKnowledge",
+ "kette": {
+  "eingang": "Redefact mit Plan claim/disclosure",
+  "verarbeitung": "register_claim truthStatus 'claimed' (truth.py:47-62); Hörer-Memory 'gehoert' mit Wortlaut (kernel.py:8788-8804, 8935-8940)",
+  "speicherung": "sessions.json 'claims' (repos.py:207), memories",
+  "wiederlesen": "claims_for (kernel.py:14675), recall memories",
+  "entscheidung": "local_contradictions (truth.py:90) nur bei identischem Subjekt+Prädikat",
+  "folgewirkung": "Brief zeigt Rede, nicht Weltwahrheit",
+  "frontend": "keine Anzeige der Claims"
+ },
+ "ui_bedienung": "keine",
+ "statischer_befund": "LÜCKE_IM_CODE",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": [
+  "Kein Zustand 'glaubt'/'bezweifelt' pro Hörer (Z-14); Claim hat nur Gesamtstatus claimed/conflicted, nicht je Figur.",
+  "Claims leben im Envelope-JSON und sind auf 200 gekappt (truth.py:65-66)."
+ ],
+ "abhaengig_von": ["Z-14", "Z-15", "Eingangsplaner"],
+ "auswirkung_bestehender_fehler": "Täuschung/Missverständnis nicht als Figurenzustand prüfbar.",
+ "belege": ["truth.py:37-67 (codefluss)"]
+},
+{
+ "id": "Z-18",
+ "funktion": "Konjunktives Gedächtnis / Pattern Completion",
+ "amaster": "§40 (Z. 1535-1571)",
+ "soll": "Zusammengehörige Fakten als Frames (Wer/Was/Wem/Wann/Wo/Warum/Zustand/Folge/Quelle/Wissende/Proposition/Goal); Pattern Completion führt kanonische Relationen zusammen, gleiche Proposition/Beteiligte, Current State, erfindet nichts; Wortpools ohne Wahrheitshoheit.",
+ "kettenvertrag": "§10 'Verbindung zu Proposition, Beteiligten und bestehenden Erinnerungen'",
+ "sps_loesung": "V39 Konjunktives Gedächtnis (kernel.py:8968), V65S/V65T _select_conjunctive_facts (kernel.py:13053-13071), SPS Z. 3352 (§40/§41.3)",
+ "owner": "Python conjunctive.apply_plan/frames_for (conjunctive.py:639, 799); kernel._select_conjunctive_facts (kernel.py:13042); kernel.stimulus_bound_props/_bound_chain_fact_ids/_referent_fact_ids (kernel.py:14117-14132)",
+ "owner_soll_nach_architektur": "abgeleitete Lesesicht über Memory/SceneFact/Proposition",
+ "kette": {
+  "eingang": "Plan je Rede (kernel.py:8970-9001)",
+  "verarbeitung": "Frames mit who/whom/what/when/witnesses/sourceFactIds (conjunctive.py:652-670); Selektion: gebundene Proposition zuerst, dann Kette, Welt, Lifecycle, Rest (kernel.py:13153-13158)",
+  "speicherung": "frames im Envelope (Z-04); keine eigene Memory-Relation",
+  "wiederlesen": "frames_for (zeugengebunden, conjunctive.py:802); recall.frames aus Propositions (kernel.py:13273-13282)",
+  "entscheidung": "Faktauswahl für den Brief (kernel.py:14134-14143) – Promptwirkung; local_contradictions (truth.py:110-117) – Codewirkung",
+  "folgewirkung": "Brief-Vordergrund",
+  "frontend": "chat.$sessionId.tsx:1283 Frames"
+ },
+ "ui_bedienung": "Frames-Anzeige",
+ "statischer_befund": "LÜCKE_IM_CODE",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": [
+  "Kein Frame-Feld 'Warum/Folge/Wo'; Memories tragen keine Relationen zueinander – Matrix10 Nr. 15 (Mara schwanger -> Alrik Vater -> weiß nicht) nicht als gebundener Memory-Frame abbildbar.",
+  "Lexikalische Rangfolge in chain_priority ('lehne','bitte','verlass','kündig' im Text, kernel.py:13115-13122) und _CUE_STOP/_MATTER_HINT (kernel.py:13076-13084) – Wortpool steuert Auswahl (ohne Wahrheitshoheit, aber Aktivierungswirkung)."
+ ],
+ "abhaengig_von": ["Z-03", "Z-04", "Z-13"],
+ "auswirkung_bestehender_fehler": "Pattern Completion bleibt auf Propositionen/Facts begrenzt; Memory-Frames fehlen.",
+ "belege": ["kernel.py:13042-13159 (codefluss)", "conjunctive.py:799-804 (codefluss)"]
+},
+{
+ "id": "Z-19",
+ "funktion": "Recall und BrainContext-Aufbau vor der Figurenantwort",
+ "amaster": "§41 (Z. 1575-1598)",
+ "soll": "Vor jeder Antwort relevant geladen: Szene, TurnTruth, SceneFacts, Current State, eigene Memories, WitnessKnowledge, Runtime, Körper/Capability, Relationship, Social, Absichten, God/Regie, Fate, Zeit; begrenzt, ohne lifecycle-relevante Evidenz zu verlieren.",
+ "kettenvertrag": "§1 (Reader und Recall -> BrainContext als reiner Spiegel), §10 'Recall für genau diese Figur'",
+ "sps_loesung": "V60/V65S/V65T Spiegel (SPS Z. 3352), SPS Z. 5738 (FB08L.5 Recall nach neuer Verbindung)",
+ "owner": "Python kernel.recall (kernel.py:13201), kernel.brain_context (kernel.py:14781), kernel.bind_formulation_spiegel (kernel.py:13945), kernel.prepare_turn (kernel.py:14793); Nebenleser amaster_ext.recall_patterns (amaster_ext.py:130)",
+ "owner_soll_nach_architektur": "BrainContext als Lesespiegel (KV §4)",
+ "kette": {
+  "eingang": "/api/kernel/prepare (app.py:1563) -> Appraisal (app.py:1791) -> prepare_turn (app.py:1799)",
+  "verarbeitung": "recall: Witness-gefilterte Facts, eigene Memories, Propositions, eigene Relations, reduce_goal_state, Runtime, godFacts, currentState (kernel.py:13209-13297); Spiegel: Dedup gegen sichtbaren Dialog, max. 8 Memories (kernel.py:14171-14218)",
+  "speicherung": "keine (writable False, kernel.py:14824)",
+  "wiederlesen": "llm_contract liest spiegel.memories/runtime/relationsHere (llm_contract.py:111-123, 1868, 1977)",
+  "entscheidung": "überwiegend Prompttext; Codewirkung: event_labels-Zitierprüfung (llm_contract.py:2211-2218); Sprecherwahl separat (Z-20)",
+  "folgewirkung": "LLM-Formulierung des Folgeturns",
+  "frontend": "memory.tsx:195-205 'Recall' -> apiRecall (api.ts:664) -> app.py:1403 recall_patterns (Wortüberlappung, nicht kernel.recall)"
+ },
+ "ui_bedienung": "Gedächtnisseite Recall-Suche (zeigt den Nebenleser, nicht den BrainContext)",
+ "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": [
+  "UI-Recall (app.py:1403-1411 -> amaster_ext.py:130-170) ist ein zweiter Recall-Leser mit Token-Überlappung über alle Figuren-Memories; er zeigt nicht, was kernel.recall/Spiegel der Figur tatsächlich liefert (KV §5 sichtbare Prüfbarkeit).",
+  "recall open_texts und props-Status aus gespeichertem Status statt Reduktion (kernel.py:13231-13235), siehe Z-03.",
+  "Bei Turns im sichtbaren Dialogfenster werden gesagt/gehoert-Memories aus dem Spiegel entfernt (kernel.py:14179-14180) – probe: spiegel.memories leer, Inhalt nur über Dialog."
+ ],
+ "abhaengig_von": ["Z-13", "Z-15", "Z-21", "Z-25", "Z-26", "LLM-Grenze (anderer Bereich)"],
+ "auswirkung_bestehender_fehler": "Fehler hier entkoppeln jedes gespeicherte Wissen von der Antwort.",
+ "belege": [
+  "probe_z.py T2 (neue create_app-Instanz, gleiche SQLite): brainContext.memories = 3 Einträge aus T1/T2 (ausgeführt)",
+  "kernel.py:13201-13297 (codefluss)"
+ ]
+},
+{
+ "id": "Z-20",
+ "funktion": "Codeentscheidung aus Memory/Runtime/Relationship: Sprecherwahl",
+ "amaster": "§41 (Z. 1577-1594) i. V. m. §28 (Sprecherwahl), §43 (Z. 1661)",
+ "soll": "Gelesener Zustand beeinflusst Verhalten, nicht nur Prompttext; Capability wirkt bei Sprecherplanung.",
+ "kettenvertrag": "§10 'nächste Reaktion zeigt diese Bedeutung', §11 'veränderte Reaktion im Folgeturn'",
+ "sps_loesung": "SPS Z. 5163-5164 (rank_speakers liest Beziehung/Runtime), SPS Z. 4914",
+ "owner": "Python kernel.rank_speakers (kernel.py:11618), kernel.pick_speaker (kernel.py:11498); Aufruf app.py:1640",
+ "owner_soll_nach_architektur": "Orchestrierung (§28)",
+ "kette": {
+  "eingang": "Session aus SQLite",
+  "verarbeitung": "Ausschluss bewusstlos/stumm/geknebelt (kernel.py:11523-11529); Dringlichkeit aus fear/anger/stress/pain >=0.5 (kernel.py:11658-11661); Beziehung closeness/hostility/fear zum letzten Sprecher (kernel.py:11676-11680); Memory-Wortüberlappung (kernel.py:11664-11669); intent im Stimulus (kernel.py:11694)",
+  "speicherung": "keine",
+  "wiederlesen": "-",
+  "entscheidung": "wer antwortet (app.py:1640), AutoChat-Sprecher (kernel.py:11845, 14929), Stopp bei Bewusstlosigkeit (kernel.py:14860-14873)",
+  "folgewirkung": "Anderer Sprecher im Folgeturn",
+  "frontend": "Sprecheranzeige im Chat"
+ },
+ "ui_bedienung": "indirekt (Sprecherwahl)",
+ "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": [
+  "Memory wirkt in Code nur lexikalisch (Wortüberlappung, kernel.py:11666-11669) – keine Bedeutungsentscheidung; SPS Z. 5201 führt dies selbst als offene Wortliste.",
+  "Relationship-trust geht nicht in rank_speakers ein (nur closeness/hostility/fear, kernel.py:11678)."
+ ],
+ "abhaengig_von": ["Z-21", "Z-25", "Z-26"],
+ "auswirkung_bestehender_fehler": "Erfahrungswirkung auf Verhalten beschränkt sich außerhalb des Prompts auf Sprecherwahl und Capability.",
+ "belege": ["kernel.py:11618-11700 (codefluss)", "probe_z2.py: rank_speakers nach Restart liest Runtime (ausgeführt, Gewichtung nicht ausgewertet)"]
+},
+{
+ "id": "Z-21",
+ "funktion": "RuntimeState/Emotion-Writer aus wahrgenommenem Ereignis (Appraisal)",
+ "amaster": "§42 (Z. 1602-1630)",
+ "soll": "RuntimeState je Session aus Ereignissen und deren wirksamen Folgen fortgeschrieben (Z. 1628); nicht der Stamm.",
+ "kettenvertrag": "§10 (Bedeutung relativ zu Persönlichkeit -> Runtime-Folge -> Recall -> Reaktion), §11",
+ "sps_loesung": "V62 Wirkungskette Ereignis -> Erleben -> Zustand (SPS Z. 5128-5170), V84/V91 Kausalprüfung (SPS Z. 3618)",
+ "owner": "Python kernel.apply_appraisals (kernel.py:4138) über app._appraise_perceived (app.py:3795) mit llm_contract.appraise_events (llm_contract.py:1512)",
+ "owner_soll_nach_architektur": "RuntimeState-Owner (KV §4), LLM nur Vorschlag",
+ "kette": {
+  "eingang": "pending_appraisals: wahrgenommene Facts heard/seen/affected (kernel.py:3806)",
+  "verarbeitung": "Modellvorschlag + unabhängige Kausalprüfung (llm_contract.py:1540-1560); Kernel prüft Kompass-Schwelle, Beteiligte, Belege, Idempotenz (kernel.py:4173-4313); schreibt affects, fear/anger/shame/stress/lust (4352-4376), intent (4426-4431), Relationship (4432-4474), appraisal-Fact (4477-4501)",
+  "speicherung": "sessions.json 'runtimes' (repos.py:192) via kernel_session_response->save_session (app.py:3836, repos.py:6421-6424); scene_facts kind=appraisal; relationships",
+  "wiederlesen": "recall runtime (kernel.py:13264) -> Spiegel rt (kernel.py:13961-13993)",
+  "entscheidung": "rank_speakers Dringlichkeit (kernel.py:11658-11661); Intent-Auflösung (kernel.py:4379-4425)",
+  "folgewirkung": "Spiegel ZUSTAND, Affekte mit Ursache im Folgeturn",
+  "frontend": "chat.$sessionId.tsx:1346-1356 zeigt nur emotion/pain/mobility/canSpeak"
+ },
+ "ui_bedienung": "Zustandspanel im Chat (Ausschnitt)",
+ "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+ "status": "BLOCKIERT",
+ "defekte": [
+  "BLOCKER: appraise_events gibt ohne erlaubtes Routing None zurück (llm_contract.py:1522-1525; _routing allowed nur mit API-Key und nicht 'synapse', llm_contract.py:2600) – dann nur Decay (app.py:3820-3826). Lokal (ausgeführt) blieb Mara nach 'Kasse geplündert und dich belogen' bei emotion 'wach', trust 0.4, Beziehung unverändert.",
+  "UI zeigt affects/intent/fear/activeCause nicht (chat.$sessionId.tsx:1346-1356) – Wirkung nicht sichtbar prüfbar (KV §5)."
+ ],
+ "abhaengig_von": ["LLM-Provider-Konfiguration (anderer Bereich)", "Z-15", "Kompass (Charakterbereich)"],
+ "auswirkung_bestehender_fehler": "Ohne Provider kein erfahrungsbasierter Zustand -> Z-20, Z-26 (Relationship) und KV §10 bleiben ohne psychologische Wirkung; der Fallback Z-22 übernimmt dann.",
+ "belege": [
+  "llm_contract.py:1512-1525 (codefluss)",
+  "probe_z.py AFTER T1 runtimes unverändert (ausgeführt, ohne Provider)"
+ ]
+},
+{
+ "id": "Z-22",
+ "funktion": "Runtime-Fallback 'Synapsen' aus der Antwort (Client-Result)",
+ "amaster": "§42 (Z. 1628), §45 (Z. 1724-1726), §50 (laut SPS Z. 5206)",
+ "soll": "Runtime nur aus Ereignissen und wirksamen Folgen; LLM schlägt vor, Server validiert; Synapsen sind abgeleitet und keine zweite Wahrheit.",
+ "kettenvertrag": "§4 (Client darf keine kanonischen runtimes überschreiben; LLM-Ausgabe kein unvalidierter Zustand; kein Keyword-Automat)",
+ "sps_loesung": "V60/V62 fire_from_proposals + apply_synapses (SPS Z. 5228, 5271); SPS Z. 5206 nennt den Rückfall selbst als offen",
+ "owner": "Python kernel.fire_from_proposals (kernel.py:3178) + kernel.apply_synapses (kernel.py:3251), aufgerufen in commit_turn (kernel.py:8528, 8730-8739)",
+ "owner_soll_nach_architektur": "RuntimeState-Owner nach serverseitig geprüfter Ursache (Appraisal)",
+ "kette": {
+  "eingang": "body.result.proposals.synapsen im POST /api/kernel/commit (app.py:1987, 2112)",
+  "verarbeitung": "nur Raum + Schwelle des Kompasses geprüft (kernel.py:3197-3221); feste Tabelle _KNOWLEDGE_EFFECT addiert fear/stress etc. (kernel.py:3274-3278), intent = Kompass-drive (3279-3281)",
+  "speicherung": "sessions.json runtimes + scene_facts kind=synapse validated=True (kernel.py:3289-3307)",
+  "wiederlesen": "recall runtime -> Spiegel; rank_speakers",
+  "entscheidung": "Dringlichkeit in rank_speakers (kernel.py:11658-11661)",
+  "folgewirkung": "Angst/Absicht der Figur im Folgeturn",
+  "frontend": "kernel-bridge.ts:253 sendet result"
+ },
+ "ui_bedienung": "keine (automatisch)",
+ "statischer_befund": "LÜCKE_IM_CODE",
+ "status": "ROT",
+ "defekte": [
+  "Ausgeführt: commit mit result.proposals.synapsen=[{raum:'Angst',aktivierung:1.0}] setzte Mara emotion 'Angst', fear 0.25->0.46, stress 0.39, intent 'überleben', persistent nach neuer Verbindung – ohne serverseitige Formulierungs- oder Kausalprüfung (Client-Wert wird mit source 'llm' und validated=True gebucht, kernel.py:3216, 3305).",
+  "Dieser Pfad ist gerade dann der Writer, wenn kein Provider/Appraisal lief (kernel.py:8724-8732) – lokal also die einzige Runtime-Lernquelle.",
+  "Feste Wirkungstabelle _KNOWLEDGE_EFFECT (kernel.py:2296-2312) statt figurenspezifischer Bedeutung (SPS Z. 5206)."
+ ],
+ "abhaengig_von": ["Z-01 (Client-Result)", "Kompass"],
+ "auswirkung_bestehender_fehler": "Erfahrungszustand ist durch den Client setzbar; Z-20 und Folgeturn-Reaktion lesen ihn als kanonisch.",
+ "belege": [
+  "probe_z2.py AFTER T2 mara runtime {'emotion':'Angst','fear':0.46,'stress':0.39,'intent':'überleben'} + synapse-Fact; RESTART fear 0.46 (ausgeführt)",
+  "kernel.py:3251-3307 (codefluss)"
+ ]
+},
+{
+ "id": "Z-23",
+ "funktion": "Decay und Nachwirkung (aktive Ursache bleibt)",
+ "amaster": "§42 (Z. 1630)",
+ "soll": "Decay nur nach fachlicher Regel; aktive Ursache verschwindet nicht allein durch Zeitablauf.",
+ "kettenvertrag": "§11",
+ "sps_loesung": "V62 Abklingen (SPS Z. 5164), V85/V91 offene Kausalursache (tests/audit_v85_offene_kausalursache.py, test_v91_adverse_cause_writer.py)",
+ "owner": "Python kernel.refresh_affects (kernel.py:4055), kernel._appraisal_cause_has_unresolved_adverse_effect (kernel.py:3452)",
+ "owner_soll_nach_architektur": "RuntimeState-Owner",
+ "kette": {
+  "eingang": "jede Appraisal-Runde / prepare (app.py:3820-3823)",
+  "verarbeitung": "Affekt x0.75 je Turn ohne Verstärkung, unter 0.15 resolvedBy decay (kernel.py:3323-3324, 4088-4096); Fremdwriter-Spiegel wird nicht abgeklungen (kernel.py:4057-4059)",
+  "speicherung": "sessions.json runtimes.affects/resolvedAffects",
+  "wiederlesen": "Spiegel affects (kernel.py:13981-13983)",
+  "entscheidung": "dominanter Affekt -> emotion",
+  "folgewirkung": "Abklingende Emotion im Folgeturn",
+  "frontend": "nicht sichtbar"
+ },
+ "ui_bedienung": "keine",
+ "statischer_befund": "UNKLAR",
+ "status": "UNGEPRÜFT",
+ "defekte": ["Ob eine fortbestehende Ursache (z. B. weiterhin gefesselt) den Affekt-Decay stoppt, ist aus refresh_affects (kernel.py:4055-4100) nicht ersichtlich; nur die Neu-Bewertung offener Ursachen (kernel.py:3452) – nicht ausgeführt."],
+ "abhaengig_von": ["Z-21", "Z-24"],
+ "auswirkung_bestehender_fehler": "Figur 'vergisst' Angst trotz andauernder Bedrohung.",
+ "belege": ["kernel.py:4055-4100 (codefluss)"]
+},
+{
+ "id": "Z-24",
+ "funktion": "PhysicalState/Capability begrenzt Handlung",
+ "amaster": "§43 (Z. 1634-1672), §68 Nr. 13",
+ "soll": "Capability wirkt bei Sprecherplanung, Handlungsauswahl, LLM-Kontext, Renderer, Finalizer, Commit, AutoChat, Regie/God; bewegungsunfähige Figur handelt nicht ohne neue kausale Änderung.",
+ "kettenvertrag": "§11 (Z. 485-488)",
+ "sps_loesung": "V92 Paket 18/19 Körper (SPS Z. 7259), V65I Effect-Check",
+ "owner": "Python kernel.capability_blocks_action (kernel.py:1378), kernel.act_capability (kernel.py:2878), kernel.can_speak_now (kernel.py:2834), kernel.write_body_change (kernel.py:3041), kernel._apply_physical (kernel.py:6562)",
+ "owner_soll_nach_architektur": "PhysicalState/Capability-Owner (unter RuntimeState zulässig, Z. 1672)",
+ "kette": {
+  "eingang": "Körperwirkung validierter Handlung / Regie / God; Körperlesung app.py:2047",
+  "verarbeitung": "act_capability je Komponente (kernel.py:8257, 8390, 8503, 10103, 10317, 12330); capability_blocks_action (1493, 10107, 10321, 12351)",
+  "speicherung": "sessions.json runtimes (mobility, consciousness, restrained, gagged, heldBy, canSpeak)",
+  "wiederlesen": "Spiegel can/cannot (kernel.py:13994-14024); pick_speaker (kernel.py:11526-11529); autchat_should_stop (14860-14873)",
+  "entscheidung": "Komponente abgelehnt/attempted; Sprecher ausgeschlossen; AutoChat-Stopp",
+  "folgewirkung": "Figur bleibt gefesselt/schlafend im Folgeturn",
+  "frontend": "chat.$sessionId.tsx:1346-1356 (Schmerz, Mobilität, Sprechen, gefesselt)"
+ },
+ "ui_bedienung": "Zustandspanel Chat",
+ "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": [
+  "capability_blocks_action entscheidet physisch/nicht-physisch per Regex (_MOVE_RE, _CAPABILITY_RE, _STRIKE_RE, kernel.py:1386-1392; gagged per 'spricht|redet|schreit|ruft' 1399) – Wortliste als Gate (SPS Z. 5203 classify_physical_effect offen).",
+  "Renderer/Finalizer-Wirkung nicht geprüft (anderer Bereich) – UNGEPRÜFT."
+ ],
+ "abhaengig_von": ["Regie/God-Vollzug", "Renderer/Finalizer", "Z-21"],
+ "auswirkung_bestehender_fehler": "Fehlklassifikation lässt unmögliche Handlung durch oder sperrt mögliche; wirkt auf Memory getan/versucht.",
+ "belege": ["kernel.py:1378-1400 (codefluss)", "kernel.py:13994-14024 (codefluss)"]
+},
+{
+ "id": "Z-25",
+ "funktion": "RelationshipState gerichtet, sessiongebunden, ereignisverursacht",
+ "amaster": "§44 (Z. 1676-1708), §68 Nr. 12",
+ "soll": "A->B getrennt von B->A; Änderung nur durch kanonisches Ereignis oder bewusste Stammänderung; kein automatisches Zurückschreiben in den Stamm.",
+ "kettenvertrag": "§11 (Ereignis -> Betroffene -> Effect-Authorization -> gerichteter Writer -> SQLite -> Beziehungsseite -> Recall -> Folgeturn -> Stamm unverändert)",
+ "sps_loesung": "V60/V61 _apply_relation_target (SPS Z. 5163, 5271), V65Y Relation-Boundary",
+ "owner": "Python kernel._apply_relation_target (kernel.py:3140) via apply_appraisals (kernel.py:4470); truth.apply_contradictions (truth.py:195-205); kernel.apply_knowledge_effect (kernel.py:2432/2505, God/Upload); repos.put_session_relation (repos.py:4811)",
+ "owner_soll_nach_architektur": "RelationshipState-Owner (KV §4)",
+ "kette": {
+  "eingang": "Appraisal-Vorschlag mit Kausalbeleg; Widerspruch; God-/Upload-Wissen",
+  "verarbeitung": "±0.15 je Ursache, idempotent je cause_fact_id, nie Avatar (kernel.py:3149-3171)",
+  "speicherung": "relationships (put_session_relation, Paar-Identität session+from+to, Update repos.py:4859-4867)",
+  "wiederlesen": "recall relations fromId==Figur (kernel.py:13258) -> relationsHere (kernel.py:14144-14162); _derive_fate (kernel.py:10876); sync_runtime_trust (kernel.py:12903)",
+  "entscheidung": "rank_speakers (kernel.py:11676-11680); Fate-Bausteine (kernel.py:10876)",
+  "folgewirkung": "Brief BEZIEHUNGEN im Folgeturn",
+  "frontend": "social.tsx:122-130 gerichtete Liste (Trust/Nähe/Angst)"
+ },
+ "ui_bedienung": "Beziehungs-/Socialseite",
+ "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+ "status": "BLOCKIERT",
+ "defekte": [
+  "BLOCKER wie Z-21: Hauptwriter nur über Appraisal mit Provider; lokal ausgeführt keine Beziehungsänderung nach Täuschungsgeständnis (Mara->Johann trust 0.15 unverändert).",
+  "apply_knowledge_effect (kernel.py:2432-2520) schreibt Beziehungen aus fester Tabelle per lexikalischer Linse (SPS Z. 5206).",
+  "relationsHere zeigt nur Beziehungen zu Anwesenden (kernel.py:14150-14151) – Beziehung zu Abwesenden (Matrix10 Nr. 17) nicht im Brief."
+ ],
+ "abhaengig_von": ["LLM-Provider", "Z-21", "God/Upload-Bereich"],
+ "auswirkung_bestehender_fehler": "Ohne Beziehungswirkung bleibt 'Beziehungen entwickeln sich aus Erlebnissen' (Matrix10 Nr. 17) lokal unerfüllt.",
+ "belege": ["kernel.py:3140-3175 (codefluss)", "probe_z.py AFTER T1 relations unverändert (ausgeführt)"]
+},
+{
+ "id": "Z-26",
+ "funktion": "Manuelle Session-Beziehung über die Socialseite",
+ "amaster": "§44 (Z. 1706)",
+ "soll": "Beziehungsänderungen benötigen ein kanonisches Ereignis oder eine bewusste Stammänderung.",
+ "kettenvertrag": "§11, §5",
+ "sps_loesung": "V65Y N02 manuelle Provenienz (repos.py:4822-4829)",
+ "owner": "Python repos.put_session_relation(manual=True) (repos.py:4811, app.py:996-1002)",
+ "owner_soll_nach_architektur": "RelationshipState-Owner über Ereignis oder Stamm-Review",
+ "kette": {
+  "eingang": "social.tsx:99-115 'Graph speichern' -> store.addRelation (store.ts:1174) -> apiPutRelation + apiCreateGraph",
+  "verarbeitung": "Client-Provenienz verworfen, provenienz 'manuell' gestempelt (repos.py:4827-4829); Presets trust 0.7/fear 0.6/hostility 0.6 aus UI (social.tsx:106-109)",
+  "speicherung": "relationships (Update erlaubt, repos.py:4848-4867) + graph_edges",
+  "wiederlesen": "wie Z-25 (recall, rank_speakers)",
+  "entscheidung": "wie Z-25",
+  "folgewirkung": "veränderter Brief im Folgeturn ohne Ereignis",
+  "frontend": "social.tsx:99-130"
+ },
+ "ui_bedienung": "Socialseite 'Graph speichern'",
+ "statischer_befund": "LÜCKE_IM_CODE",
+ "status": "ROT",
+ "defekte": ["Beziehungswert der Session wird ohne Ereignis und ohne Stammänderung überschrieben (repos.py:4848-4867); weder SceneFact noch Witness – Figur 'weiß' nicht, warum sich ihre Beziehung änderte. Ob dies als Regie-/Operatorrecht gelten soll, legt AMASTER §44 nicht fest (Z. 1706 verlangt Ereignis oder Stamm)."],
+ "abhaengig_von": ["Z-25", "Regie/God-Bereich (Scope-Frage)"],
+ "auswirkung_bestehender_fehler": "Ursachenlose Beziehungswerte verfälschen Z-20 und Fate.",
+ "belege": ["repos.py:4811-4884 (codefluss)", "social.tsx:99-115 (codefluss)"]
+},
+{
+ "id": "Z-27",
+ "funktion": "Stammisolation und learning.py (Session-Lernen -> Stamm nur bewusst)",
+ "amaster": "§44 (Z. 1708), §42 (Z. 1626); Matrix10 Nr. 22/23",
+ "soll": "Sessionzustand schreibt nicht automatisch in den Stamm; dauerhafte Entwicklung nur bewusst über Review.",
+ "kettenvertrag": "§11 'Stamm und andere Sessions unverändert', §4 (Vermischung Stamm/Session verboten)",
+ "sps_loesung": "V56 canonical_stem/Ledger (SPS Z. 6129, 6236)",
+ "owner": "Python learning.canonical_stem (learning.py:195), learning.approve_learned (learning.py:232) via repos.patch_character (repos.py:2600-2645)",
+ "owner_soll_nach_architektur": "Charakterstamm-Owner über Review (§52, anderer Bereich)",
+ "kette": {
+  "eingang": "Charakter-Editor 'approveLearned'/'removeLearned' (charakter.$charId.tsx:321, 623-640)",
+  "verarbeitung": "canonical_stem blendet unbestätigte Session-Werte aus (learning.py:203-229)",
+  "speicherung": "characters.json learnedItems",
+  "wiederlesen": "canonical_stem in Spiegel/Appraisal (kernel.py:13955-13957, 3377, 3892)",
+  "entscheidung": "nur bestätigte Werte wirken als Stamm",
+  "folgewirkung": "Stamm unverändert durch Turns",
+  "frontend": "charakter.$charId.tsx:321, 623-640 Tab 'Gelernt'"
+ },
+ "ui_bedienung": "Charakterseite Tab 'Gelernt' (bestätigen/entfernen)",
+ "statischer_befund": "LÜCKE_IM_CODE",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": [
+  "repos.learn_into_character (repos.py:2649) und learning.local_learning/apply_learning (learning.py:47, 111) haben keinen Aufrufer – learning.py erzeugt keinen neuen Lerneintrag; 'erfahrungsbasiertes Lernen' existiert nur als Sessionzustand (Memory/Runtime/Relationship), nicht als Stammvorschlag (Review-Kette anderer Bereich).",
+  "Probe: neue Session übernimmt Stammbeziehungen (provenienz 'stamm', seed_session_relations_from_world repos.py:2044) – Isolation zwischen Sessions nicht separat ausgeführt."
+ ],
+ "abhaengig_von": ["Review/Stammübernahme (§52)", "Charakterbereich"],
+ "auswirkung_bestehender_fehler": "Kein automatischer Stamm-Leak; aber auch kein Weg von Sessionerfahrung zum Stammvorschlag aus diesem Modul.",
+ "belege": ["grep local_learning|apply_learning|learn_into_character: nur Definitionen/Selbstaufruf (codefluss)", "learning.py:195-229 (codefluss)"]
+},
+{
+ "id": "Z-28",
+ "funktion": "Social/Synapsen als abgeleiteter Zustand (graph_edges, Aktivierung)",
+ "amaster": "§45 (Z. 1712-1728)",
+ "soll": "Aktivierung, Nähe, Spannung, Dominanz, Assoziation, Wiedererkennung, Priorisierung als abgeleitete Zustände ohne zweite Wahrheit, gebunden an User/Welt/Session/Figur/Dyade/Quelle.",
+ "kettenvertrag": "§4 'Social/Synapsen: abgeleitete Aktivierung, niemals zweite Wahrheit', §1 'gespeicherter Wert ohne realen Folgereader ist ROT'",
+ "sps_loesung": "graph_edges: SPS Z. 1969 ('unberührt, keine Prüfung neu gebaut'); Synapsen V60/V62 (Z-22)",
+ "owner": "Python amaster_ext.create_graph_edge (amaster_ext.py:84-114) aus kernel_commit (app.py:2167-2182) und Social-UI; kernel.apply_synapses (Z-22); Kompass-Linse fire_compass_lens im Spiegel",
+ "owner_soll_nach_architektur": "abgeleitete Schicht über RelationshipState/RuntimeState",
+ "kette": {
+  "eingang": "jeder Commit mit Antwort-Target (app.py:2157-2167); Social-UI",
+  "verarbeitung": "Kante kind turn_address speaker->target",
+  "speicherung": "graph_edges (amaster_ext.py:109)",
+  "wiederlesen": "nur list_graph_edges (amaster_ext.py:116-128) für social.tsx:31; kein Kernel-Reader (kernel.py ohne graph_edges)",
+  "entscheidung": "FEHLT (graph_edges); 'Bond/Risiko' nur im Frontend berechnet (social.tsx:167)",
+  "folgewirkung": "keine",
+  "frontend": "social.tsx:31, 149-170"
+ },
+ "ui_bedienung": "Socialseite Graph",
+ "statischer_befund": "LÜCKE_IM_CODE",
+ "status": "ROT",
+ "defekte": [
+  "graph_edges wird je Turn geschrieben, aber von keinem Systemreader gelesen (KV §1).",
+  "Abgeleitete Social-Werte (Bond, Risiko) werden im Client berechnet (social.tsx:167), nicht serverseitig an Quelle gebunden.",
+  "Social-/Synapsenaktivierung im BrainContext (§41 Z. 1590) nur als lexikalische Kompass-Linse (SPS Z. 5201)."
+ ],
+ "abhaengig_von": ["Z-22", "Z-25"],
+ "auswirkung_bestehender_fehler": "Socialseite suggeriert Wirkung, die keine Figur erreicht.",
+ "belege": ["app.py:2167-2182 (codefluss)", "amaster_ext.py:116-128 (codefluss)"]
+},
+{
+ "id": "Z-29",
+ "funktion": "Kettenvertrag §10 Gesamtkette: Wissen -> Bedeutung -> Folgezustand -> Recall -> Reaktion",
+ "amaster": "§38-§42, §44; Matrix10 Nr. 16, 20",
+ "soll": "Neues Wissen trifft Stamm, Erinnerungen, Ziele, Beziehungen und verändert Runtime/Goal/Relationship/Recall und damit die nächste Reaktion; gespeichertes Wissen ohne psychologische Lesewirkung ist nur TEILGESCHLOSSEN.",
+ "kettenvertrag": "§10 (Z. 444-459)",
+ "sps_loesung": "V62 (SPS Z. 5128-5170)",
+ "owner": "Python app._appraise_perceived -> kernel.apply_appraisals; kernel.commit_turn Memory/Witness; kernel.recall/bind_formulation_spiegel",
+ "owner_soll_nach_architektur": "Memory + WitnessKnowledge + RuntimeState + RelationshipState, BrainContext als Spiegel",
+ "kette": {
+  "eingang": "Ereignis (Z-01)",
+  "verarbeitung": "Witness (Z-15) -> Memory (Z-13) -> Appraisal (Z-21, nur mit Provider) bzw. Synapse-Fallback (Z-22, Client-Result)",
+  "speicherung": "witness_knowledge, memories, sessions.json runtimes, relationships, scene_facts appraisal",
+  "wiederlesen": "prepare: _appraise_perceived vor prepare_turn (app.py:1791-1799) -> recall -> Spiegel",
+  "entscheidung": "Code: rank_speakers, Capability; sonst Prompttext",
+  "folgewirkung": "nach neuer App-Instanz erhalten (ausgeführt)",
+  "frontend": "Gedächtnis-/Social-/Chatseite (teilweise)"
+ },
+ "ui_bedienung": "verteilt",
+ "statischer_befund": "LÜCKE_IM_CODE",
+ "status": "BLOCKIERT",
+ "defekte": [
+  "Lokal (ohne Provider) ausgeführt: Ereignis -> Witness -> Memory -> SQLite -> Recall nach Neustart geschlossen; Bedeutungsglied (Runtime/Relationship/Goal) fehlt – nach KV §10 höchstens TEILGESCHLOSSEN; mit Provider BLOCKIERT (kein Key, Netzwerk verboten).",
+  "Einziger lokaler Bedeutungswriter ist der Client-Synapse-Pfad (Z-22, ROT).",
+  "Epistemische Zustände fehlen (Z-14)."
+ ],
+ "abhaengig_von": ["Z-13", "Z-15", "Z-19", "Z-21", "Z-22", "Z-25", "LLM-Provider"],
+ "auswirkung_bestehender_fehler": "Produktziel 'erfahrungsbasiert lernende Figuren' ist ohne Modell nur als Erinnern (Text im Brief) vorhanden, nicht als Zustandswirkung.",
+ "belege": ["probe_z.py/probe_z2.py vollständige Ausgabe (ausgeführt)"]
+},
+{
+ "id": "Z-30",
+ "funktion": "Persistenz über Neustart (Writer erreicht Reader im Folgeturn)",
+ "amaster": "§63 (Persistenz, Bezug), Matrix10 Nr. 20 (Z. 171-177)",
+ "soll": "Ein Writer ist erst implementiert, wenn sein Ergebnis beim nächsten zuständigen Reader ankommt; Zustand übersteht Reload/Neustart.",
+ "kettenvertrag": "§1 (Z. 77-78)",
+ "sps_loesung": "SPS Z. 5738 (FB08L.5), Z. 5454 (FB08M.3)",
+ "owner": "Python repos.save_session (repos.py:6371) / rehydrate_session_row (repos.py:1279)",
+ "owner_soll_nach_architektur": "SQLite als einziger Master",
+ "kette": {
+  "eingang": "commit (app.py:2148-2196, _run_write)",
+  "verarbeitung": "Envelope-Merge der CANONICAL_ENVELOPE_FIELDS (repos.py:6401-6405) + Child-Writer",
+  "speicherung": "sessions.json (runtimes, frames, claims, time, currentState) + Child-Tabellen",
+  "wiederlesen": "_kernel_stored_session bei jedem prepare/commit (app.py:1575, 1918)",
+  "entscheidung": "-",
+  "folgewirkung": "Folgeturn liest SQLite-Stand",
+  "frontend": "apiGetSession (api.ts:519)"
+ },
+ "ui_bedienung": "Reload",
+ "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+ "status": "TEILGESCHLOSSEN",
+ "defekte": [
+  "Kein echter Prozess-Neustart geprüft (START.py verboten); geprüft: neue create_app-Instanz und neue SQLite-Verbindung.",
+  "Mutable Teilzustände (runtimes, frames, claims) liegen als JSON im Session-Envelope, nicht in eigenen Owner-Tabellen."
+ ],
+ "abhaengig_von": ["Persistenzbereich"],
+ "auswirkung_bestehender_fehler": "-",
+ "belege": ["probe_z2.py: RESTART mara fear 0.46 über neue Verbindung; brainContext T2 mit T1-Memories nach neuer App-Instanz (ausgeführt)"]
+}
+]

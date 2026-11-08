@@ -1,0 +1,84 @@
+{
+  "produktordner": "/tmp/claude-0/-home-user-DeepSeek-V3/fe0b93ac-e3e4-569a-9216-d3a55d143b32/scratchpad/live07/MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107",
+  "vorlage_sha256": "f751a20c70a780f0e5f45f25bdbcf82367c7c04c59e7ca2091217a48e2732a15",
+  "native_sha256": "146db175eb140c5917f84b24d0cdd922dd4a5da73f2e12d18c4666188045d6f7",
+  "pid_1": 11825,
+  "health": {
+    "status": 200,
+    "provider": null
+  },
+  "L1_prepare": {
+    "status": 200,
+    "code": null,
+    "neue_facts": [
+      {
+        "id": "fact_1a1bad26c6d_33704ad10006",
+        "kind": "speech",
+        "actor": "char_g7_mara",
+        "authority": "teilnehmer",
+        "text": "Johann, ich gebe zu: Ich habe Gustavs Geld genommen.",
+        "source_turn_id": "tt_1a1bad26c5d_a00cc8350001"
+      }
+    ],
+    "eingabe_fact_actor_ist_mara": true,
+    "soll": "Ohne Avatar/Puppet ist die Eingabe die Rede der Bedienperson; ein vom Client gesetzter inputActorId darf keine Figur zum Sprecher machen (AMASTER §23/§25/§27, KV §4, §12.2)."
+  },
+  "L2_commit": {
+    "status": 200,
+    "code": null,
+    "pending_vorher": "tt_1a1bad26c5d_a00cc8350001",
+    "formulate_aufgerufen": false,
+    "neue_facts": [
+      {
+        "id": "fact_1a1bad26cb2_920ae5d3001a",
+        "kind": "speech",
+        "actor": "char_g7_johann",
+        "authority": "character",
+        "text": "ERFUNDEN-VOM-CLIENT: Ich, Johann, habe Gustav verraten.",
+        "source_turn_id": "tt_1a1bad26c5d_a00cc8350001"
+      }
+    ],
+    "erfundene_rede_committet": true,
+    "runtime_johann_vorher": {
+      "emotion": "wach",
+      "intensity": 0.35,
+      "fear": 0.25,
+      "stress": 0.25,
+      "intent": "",
+      "activeCause": null,
+      "activeCauseText": null
+    },
+    "runtime_johann_nachher": {
+      "emotion": "wach",
+      "intensity": 0.35,
+      "fear": 0.25,
+      "stress": 0.25,
+      "intent": "",
+      "activeCause": null,
+      "activeCauseText": null
+    },
+    "soll": "Committet wird nur, was der Server für diesen Turn formuliert/validiert hat; Client sendet Bedienabsicht, keine Figurenrede und keinen Runtime-Zustand (AMASTER §28 Schritt 18-20, §50; KV §4)."
+  },
+  "pid_2": 11845,
+  "L3_nach_neustart": {
+    "status": 200,
+    "erfundene_rede_im_http_reader": true,
+    "erfundene_rede_in_sqlite": true,
+    "runtime_johann": {
+      "emotion": "wach",
+      "intensity": 0.35,
+      "fear": 0.25,
+      "stress": 0.25,
+      "intent": "",
+      "activeCause": null,
+      "activeCauseText": null
+    }
+  },
+  "L4_isolation_ses_av06_unveraendert": true,
+  "defekt_reproduziert": {
+    "client_input_actor": true,
+    "client_ergebnis_ohne_server_formulierung": true,
+    "client_fired_aendert_runtime": false,
+    "persistiert_nach_neustart": true
+  }
+}
