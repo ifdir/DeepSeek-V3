@@ -127,3 +127,23 @@ Die 06-Proben, die committeten, laufen als 07-Fassungen (`probe_http_503_07.py`,
 - **Ausgabeprüfung:** §28 Schritt 19 (Darstellungsgrenzen) fehlt weiterhin. Gehört zur LLM-/Renderer-Kette.
 - **Hörer der Antwortphase:** Sie stammen vom Eingabezeitpunkt. Ein Writer für „später informiert“ fehlt (T-20).
 - **Modell-Synapsen:** Sie wirken weiter als `validated`, mit fester Wirkungstabelle (Z-22). Gehört zu K-03.
+
+## 8. Einordnung nach Nutzerentscheidung vom 08.11.2026 (vor Beginn von K-02)
+
+- **Verifikation `1f75d3c` am frisch ausgecheckten Stand:**
+  - `run_chain_07` läuft mit Exit 2 (ROT), identisch zu `329df34`.
+  - Alle K-01- und SEC-Stufen PASS.
+  - Belege: `evidence/verifikation_1f75d3c/`.
+- **Vertragsabweichung der bisherigen Testsuite:**
+  - Mit K-01 schlägt **ein P25-Test zusätzlich fehl**: `P18AvatarAndFigure::test_avatar_position_and_figure_reply_with_forged_and_real_readings`, Suite 421/25/1 statt 422/24/1.
+  - Der Test verlangt, dass eine vom Client geschriebene Figurenantwort committet wird. Genau das schließt K-01 (AMASTER §28 Schritt 20, §50; KV §4).
+  - Der Fehlschlag bleibt **bestehen und dokumentiert**. Ab Kette 08 steht er als eigener Vertragsstatus `P25_testsuite_zusaetzlich_rot_durch_k01 = ROT`.
+  - Der portierte Test mit unveränderten Assertions (`tests/test_k01_p18_portiert_07.py`) ist ein **zusätzlicher** Nachweis. Er macht den ursprünglichen Fehlschlag nicht ungeschehen.
+- **§28 Schritt 19 (Ausgabe auf Darstellungsgrenzen prüfen):**
+  - Zugeordnet der offenen Kette **K-13 „LLM-Grenze, Renderer, Narrator, Finalizer“** (AMASTER §28 Schritt 19, §50, §51; Karte A-Bereich, T-S19).
+  - Abhängig von K-02: Für die Wissensgrenze „kein nicht vorhandenes Wissen voraussetzen“ ist der Figurenabruf jetzt kanonisch.
+  - Ebenfalls abhängig von K-03 und vom Provider-Schlüssel (Modellausgabe).
+- **K-01 Gesamtstatus:**
+  - **TEILGESCHLOSSEN** (offline deterministisch abgenommen, Formulierung mit echtem Modell BLOCKIERT).
+  - Ab Kette 08 als `K01_gesamt = TEILGESCHLOSSEN` geführt.
+  - Gesamtprodukt **ROT**.

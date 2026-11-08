@@ -1,0 +1,31 @@
+--- stand_07/src/routes/memory.tsx
++++ stand_08/src/routes/memory.tsx
+@@ -195,11 +195,27 @@
+         <button
+           type="button"
+           className="rounded-md border border-border px-3 text-sm"
++          data-k02="figur-recall"
+           onClick={async () => {
+             if (!session?.id) return;
++            if (charId) {
++              // Stand 08 / K-02: what THIS figure recalls (the reader of her turn), never the overlap of all figures
++              try {
++                const r = await apiRecall(session.id, cue, charId);
++                const mems = (r.memories as { kind?: string; text?: string }[]) || [];
++                const name = String(r.characterName || charId);
++                setHits(mems.length
++                  ? `Abruf von ${name} (kanonisch, ${mems.length} Erinnerungen, ${((r.facts as unknown[]) || []).length} bekannte Ereignisse): ` +
++                    mems.map((m) => `${m.kind}: ${m.text}`).join(" · ")
++                  : `Abruf von ${name} (kanonisch): keine Erinnerung zu diesem Stichwort.`);
++              } catch (e) {
++                setHits(`Recall fehlgeschlagen: ${e instanceof Error ? e.message : String(e)}`);
++              }
++              return;
++            }
+             const r = await apiRecall(session.id, cue);
+             const list = ((r.hits as { text?: string }[]) || []).map((h) => h.text || "").join(" · ");
+-            setHits(list || "keine Treffer");
++            setHits(list ? `Cache (abgeleitet, kein Kanon, alle Figuren): ${list} — für den Abruf einer Figur oben die Figur wählen.` : "keine Treffer");
+             setLayer("cache");
+           }}
+         >

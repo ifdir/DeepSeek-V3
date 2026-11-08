@@ -1,0 +1,26 @@
+--- stand_07/matrix_api/app.py
++++ stand_08/matrix_api/app.py
+@@ -1535,6 +1535,23 @@
+         body = _body() or {}
+         cue = str((body or {}).get("cue") or (body or {}).get("q") or "")
+         character_id = (body or {}).get("characterId") or (body or {}).get("character_id")
++        if character_id:
++            # Stand 08 / K-02 (AMASTER §41, KV §5 "wo kann der Nutzer den gespeicherten Zustand pruefen ... welcher reale Reader
++            # benutzt ihn"): with a chosen figure the page shows exactly what THIS figure recalls - the same reader the
++            # figure's turn uses (kernel.recall: witnessed facts, own memories, own relations), not the cache overlap over
++            # every figure's memories. Read only.
++            def _figur(conn):
++                sess = get_session(conn, actor or "admin", session_id)
++                ch = get_character(conn, str(character_id), actor or "admin")
++                if not isinstance(ch, dict) or ch.get("worldId") != sess.get("worldId"):
++                    raise WriterError("Figur gehört nicht zur Welt dieser Session.", 422, "CHARACTER_NOT_IN_WORLD")
++                rc = kernel.recall(sess, str(character_id), cue or None)
++                mems = [{k: m.get(k) for k in ("id", "kind", "text", "turn", "factId", "sourceTurnId")} for m in rc.get("memories") or []]
++                facts = [{k: f.get(k) for k in ("id", "kind", "actorId", "text", "turn")} for f in rc.get("facts") or []]
++                return {"ok": True, "engine": "kernel.recall", "kanonisch": True, "characterId": str(character_id),
++                        "characterName": ch.get("name"), "cue": cue, "memories": mems, "facts": facts,
++                        "hits": [{"id": m["id"], "text": f"{m.get('kind')}: {m.get('text')}", "sourceMemoryId": m["id"]} for m in mems]}
++            return _run_read(_figur)
+         return _run_read(lambda conn: recall_patterns(conn, session_id, actor, cue, character_id=character_id))
+ 
+     def kernel_session_response(conn, actor, session):
