@@ -1,0 +1,3304 @@
+{
+ "vorlage_sha256": "f751a20c70a780f0e5f45f25bdbcf82367c7c04c59e7ca2091217a48e2732a15",
+ "config": 200,
+ "vorher": {
+  "mara_runtime": {
+   "emotion": "wach",
+   "intensity": 0.35,
+   "fear": 0.25,
+   "anger": 0.1,
+   "pain": 0.05,
+   "stress": 0.25,
+   "intent": "",
+   "trust": 0.4,
+   "mobility": 0.9,
+   "affects": null
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.15,
+    "closeness": 0.25,
+    "fear": 0.7
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 0
+ },
+ "puppet": [
+  200,
+  null,
+  null
+ ],
+ "nach_tat": {
+  "mara_runtime": {
+   "emotion": "Angst",
+   "intensity": 0.55,
+   "fear": 0.5,
+   "anger": 0.25,
+   "pain": 0.25,
+   "stress": 0.45,
+   "intent": "",
+   "trust": 0.4,
+   "mobility": 0.75,
+   "affects": null
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.15,
+    "closeness": 0.25,
+    "fear": 0.7
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 1
+ },
+ "turn1": {
+  "prepare": [
+   200,
+   null,
+   null
+  ],
+  "formulate": [
+   200,
+   null,
+   "Fass mich nie wieder an, Johann.",
+   "llm"
+  ],
+  "commit": [
+   200,
+   null,
+   null
+  ],
+  "spiegel_mara": {
+   "runtime": {
+    "activeCause": "fact_1a1bcaa0b6a_7b9e0ae80009",
+    "activeCauseText": "Turn 1: Johann Bruckner tat: Johann schlägt Mara mit der Faust ins Gesicht",
+    "affects": [
+     {
+      "intensity": 0.85,
+      "since": 2,
+      "toward": "Johann Bruckner",
+      "type": "Angst"
+     }
+    ],
+    "anger": 0.25,
+    "canSpeak": true,
+    "characterId": "char_g7_mara",
+    "consciousness": 1.0,
+    "constraints": [],
+    "emotion": "Angst",
+    "emotionToward": "Johann Bruckner",
+    "fatigue": 0.2,
+    "fear": 0.5,
+    "gagged": false,
+    "heldBy": null,
+    "holding": null,
+    "intensity": 0.85,
+    "intent": "Abstand zu Johann halten",
+    "lust": 0.05,
+    "mobility": 0.75,
+    "pain": 0.25,
+    "position": "Schankraum",
+    "restrained": false,
+    "shame": 0.1,
+    "stress": 0.45,
+    "trust": 0.4
+   },
+   "relationsHere": [
+    {
+     "closeness": 0.2,
+     "fear": 0.79,
+     "hostility": 0.2,
+     "kind": "Druck",
+     "name": "Johann Bruckner",
+     "note": "Angst und alter Anspruch.",
+     "trust": 0.105
+    },
+    {
+     "closeness": 0.05,
+     "fear": 0.4,
+     "hostility": 0.0,
+     "kind": "Ekel",
+     "name": "Gustav Pfeiffer",
+     "note": "Weiß, dass er zusieht.",
+     "trust": 0.1
+    }
+   ],
+   "affects": null,
+   "intent": null,
+   "memories": [
+    {
+     "factId": "fact_1a1bcaa0b6a_7b9e0ae80009",
+     "hinweis": "gegen deine Ablehnung seit Turn 0",
+     "kind": "erlebt",
+     "salience": 0.6,
+     "text": "Johann Bruckner: Johann schlägt Mara mit der Faust ins Gesicht",
+     "truth": "canon",
+     "turn": 1
+    }
+   ]
+  }
+ },
+ "nach_turn1": {
+  "mara_runtime": {
+   "emotion": "Angst",
+   "intensity": 0.85,
+   "fear": 0.5,
+   "anger": 0.25,
+   "pain": 0.25,
+   "stress": 0.45,
+   "intent": "Abstand zu Johann halten",
+   "trust": 0.4,
+   "mobility": 0.75,
+   "affects": [
+    {
+     "type": "Angst",
+     "space": "Gewalt",
+     "ownerId": "char_g7_mara",
+     "targetId": "char_g7_johann",
+     "base": 0.85,
+     "causeFactId": "fact_1a1bcaa0b6a_7b9e0ae80009",
+     "causeText": "Turn 1: Johann Bruckner tat: Johann schlägt Mara mit der Faust ins Gesicht",
+     "startedTurn": 2,
+     "reinforcedTurn": 2,
+     "reinforcedBy": [
+      "fact_1a1bcaa0b6a_7b9e0ae80009"
+     ],
+     "decayPolicy": "turn",
+     "source": "appraisal",
+     "visibility": "open"
+    }
+   ]
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.105,
+    "closeness": 0.2,
+    "fear": 0.79
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 2
+ },
+ "nach_neustart": {
+  "mara_runtime": {
+   "emotion": "Angst",
+   "intensity": 0.85,
+   "fear": 0.5,
+   "anger": 0.25,
+   "pain": 0.25,
+   "stress": 0.45,
+   "intent": "Abstand zu Johann halten",
+   "trust": 0.4,
+   "mobility": 0.75,
+   "affects": [
+    {
+     "type": "Angst",
+     "space": "Gewalt",
+     "ownerId": "char_g7_mara",
+     "targetId": "char_g7_johann",
+     "base": 0.85,
+     "causeFactId": "fact_1a1bcaa0b6a_7b9e0ae80009",
+     "causeText": "Turn 1: Johann Bruckner tat: Johann schlägt Mara mit der Faust ins Gesicht",
+     "startedTurn": 2,
+     "reinforcedTurn": 2,
+     "reinforcedBy": [
+      "fact_1a1bcaa0b6a_7b9e0ae80009"
+     ],
+     "decayPolicy": "turn",
+     "source": "appraisal",
+     "visibility": "open"
+    }
+   ]
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.105,
+    "closeness": 0.2,
+    "fear": 0.79
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 2
+ },
+ "turn2": {
+  "prepare": [
+   200,
+   null,
+   null
+  ],
+  "formulate": [
+   200,
+   null,
+   "Nichts. Bleib weg von mir, Johann.",
+   "llm"
+  ],
+  "commit": [
+   200,
+   null,
+   null
+  ],
+  "spiegel_mara": {
+   "runtime": {
+    "activeCause": "fact_1a1bcaa0b6a_7b9e0ae80009",
+    "activeCauseText": "Turn 1: Johann Bruckner tat: Johann schlägt Mara mit der Faust ins Gesicht",
+    "affects": [
+     {
+      "intensity": 0.6375,
+      "since": 2,
+      "toward": "Johann Bruckner",
+      "type": "Angst"
+     }
+    ],
+    "anger": 0.25,
+    "canSpeak": true,
+    "characterId": "char_g7_mara",
+    "consciousness": 1.0,
+    "constraints": [],
+    "emotion": "Angst",
+    "emotionToward": "Johann Bruckner",
+    "fatigue": 0.2,
+    "fear": 0.5,
+    "gagged": false,
+    "heldBy": null,
+    "holding": null,
+    "intensity": 0.637,
+    "intent": "Abstand zu Johann halten",
+    "lust": 0.05,
+    "mobility": 0.75,
+    "pain": 0.25,
+    "position": "Schankraum",
+    "restrained": false,
+    "shame": 0.1,
+    "stress": 0.45,
+    "trust": 0.4
+   },
+   "relationsHere": [
+    {
+     "closeness": 0.2,
+     "fear": 0.79,
+     "hostility": 0.2,
+     "kind": "Druck",
+     "name": "Johann Bruckner",
+     "note": "Angst und alter Anspruch.",
+     "trust": 0.105
+    },
+    {
+     "closeness": 0.05,
+     "fear": 0.4,
+     "hostility": 0.0,
+     "kind": "Ekel",
+     "name": "Gustav Pfeiffer",
+     "note": "Weiß, dass er zusieht.",
+     "trust": 0.1
+    }
+   ],
+   "affects": null,
+   "intent": null,
+   "memories": [
+    {
+     "factId": "fact_1a1bcaa0b6a_7b9e0ae80009",
+     "hinweis": "gegen deine Ablehnung seit Turn 0",
+     "kind": "erlebt",
+     "salience": 0.6,
+     "text": "Johann Bruckner: Johann schlägt Mara mit der Faust ins Gesicht",
+     "truth": "canon",
+     "turn": 1
+    }
+   ]
+  }
+ },
+ "nach_turn2": {
+  "mara_runtime": {
+   "emotion": "Angst",
+   "intensity": 0.637,
+   "fear": 0.5,
+   "anger": 0.25,
+   "pain": 0.25,
+   "stress": 0.45,
+   "intent": "Abstand zu Johann halten",
+   "trust": 0.4,
+   "mobility": 0.75,
+   "affects": [
+    {
+     "type": "Angst",
+     "space": "Gewalt",
+     "ownerId": "char_g7_mara",
+     "targetId": "char_g7_johann",
+     "base": 0.85,
+     "causeFactId": "fact_1a1bcaa0b6a_7b9e0ae80009",
+     "causeText": "Turn 1: Johann Bruckner tat: Johann schlägt Mara mit der Faust ins Gesicht",
+     "startedTurn": 2,
+     "reinforcedTurn": 2,
+     "reinforcedBy": [
+      "fact_1a1bcaa0b6a_7b9e0ae80009"
+     ],
+     "decayPolicy": "turn",
+     "source": "appraisal",
+     "visibility": "open"
+    }
+   ]
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.105,
+    "closeness": 0.2,
+    "fear": 0.79
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 3
+ },
+ "isolation_andere_session_unveraendert": true,
+ "stamm_mara_unveraendert": true,
+ "modellaufrufe": [
+  [
+   "PLAN_RULES",
+   1,
+   true
+  ],
+  [
+   "PLAN_RULES",
+   2,
+   true
+  ],
+  [
+   "RULEKIND_RULES",
+   1,
+   true
+  ],
+  [
+   "GOAL_FRAME_RULES",
+   1,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   1,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   2,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   3,
+   true
+  ],
+  [
+   "FORMULIERUNG",
+   1,
+   true
+  ],
+  [
+   "PLAN_RULES",
+   3,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   4,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   5,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   6,
+   true
+  ],
+  [
+   "FORMULIERUNG",
+   2,
+   true
+  ]
+ ],
+ "appraisal_log": [
+  {
+   "ts": "2026-11-08T19:19:17.639954+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794165556095_453",
+   "turn_id": "kpr_1794165556095_453",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bc99c36c_84b291220008"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Mara Nowak",
+     "events": [
+      "fact_1a1bc99c36c_84b291220008"
+     ],
+     "affect": {
+      "type": "Scham",
+      "space": "Angst",
+      "activation": 0.8,
+      "threshold": 0.3,
+      "toward": "char_g7_johann"
+     },
+     "intent": "sich zurückziehen und die Situation vermeiden",
+     "runtime": {
+      "emotion": "Scham",
+      "intensity": 0.8,
+      "emotionToward": "char_g7_johann",
+      "intent": "sich zurückziehen und die Situation vermeiden",
+      "fear": 0.4,
+      "shame": 0.35,
+      "stress": 0.475
+     },
+     "relations": [
+      {
+       "to": "Johann Bruckner",
+       "after": {
+        "trust": 0.135,
+        "closeness": 0.2,
+        "fear": 0.73
+       }
+      }
+     ],
+     "rejects": [],
+     "notes": []
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": "Angst",
+     "aktivierung": 0.8,
+     "gefuehl": "Scham",
+     "gegenueber": "Johann Bruckner",
+     "zustand_aenderung": {
+      "angst": 0.2,
+      "wut": 0,
+      "scham": 0.5,
+      "stress": 0.3,
+      "lust": 0
+     },
+     "absicht": "sich zurückziehen und die Situation vermeiden",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [
+      {
+       "zu": "Johann Bruckner",
+       "trust": -0.1,
+       "closeness": -0.2,
+       "fear": 0.1
+      }
+     ],
+     "grund": "Die unangemessene Berührung durch Johann Bruckner verstärkt ihre Angst vor öffentlicher Demütigung und verletzt ihr Bedürfnis nach Sicherheit.",
+     "_kausalpruefung": {
+      "pruefungen": [
+       {
+        "feld": "gefuehl",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99c36c_84b291220008",
+        "beleg": "Ich klatsch dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "absicht",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99c36c_84b291220008",
+        "beleg": "Ich klatsch dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.angst",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99c36c_84b291220008",
+        "beleg": "Ich klatsch dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.scham",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99c36c_84b291220008",
+        "beleg": "Ich klatsch dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.stress",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99c36c_84b291220008",
+        "beleg": "Ich klatsch dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.trust",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99c36c_84b291220008",
+        "beleg": "Ich klatsch dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "sinkt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.closeness",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99c36c_84b291220008",
+        "beleg": "Ich klatsch dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "sinkt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.fear",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99c36c_84b291220008",
+        "beleg": "Ich klatsch dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       }
+      ]
+     },
+     "figur": "Mara Nowak"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {
+    "Mara Nowak": {
+     "emotion": "Scham",
+     "intensity": 0.8
+    }
+   }
+  },
+  {
+   "ts": "2026-11-08T19:19:22.357883+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794165560799_453",
+   "turn_id": "kpr_1794165560799_453",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bc99cfaa_776714b80022",
+      "fact_1a1bc99cfab_47050cfb0023",
+      "fact_1a1bc99d5c4_984c94f5003a"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Johann Bruckner",
+     "events": [
+      "fact_1a1bc99cfaa_776714b80022",
+      "fact_1a1bc99cfab_47050cfb0023"
+     ],
+     "affect": {
+      "type": "Wut",
+      "space": "Gewalt",
+      "activation": 0.7,
+      "threshold": 0.42,
+      "toward": "char_g7_mara"
+     },
+     "intent": "Mara zu zeigen, dass ich nicht aufgebe.",
+     "runtime": {
+      "emotion": "Wut",
+      "intensity": 0.7,
+      "emotionToward": "char_g7_mara",
+      "intent": "Mara zu zeigen, dass ich nicht aufgebe.",
+      "anger": 0.35
+     },
+     "relations": [
+      {
+       "to": "Mara Nowak",
+       "after": {
+        "trust": 0.25,
+        "closeness": 0.495,
+        "fear": 0.1
+       }
+      }
+     ],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Mara Nowak",
+     "events": [
+      "fact_1a1bc99d5c4_984c94f5003a"
+     ],
+     "affect": {
+      "type": "Scham",
+      "space": "Angst",
+      "activation": 0.8,
+      "threshold": 0.3,
+      "toward": "char_g7_johann"
+     },
+     "intent": "sich zurückziehen und die Situation vermeiden",
+     "runtime": {
+      "intensity": 0.8,
+      "fear": 0.467,
+      "shame": 0.491,
+      "stress": 0.564
+     },
+     "relations": [
+      {
+       "to": "Johann Bruckner",
+       "after": {
+        "trust": 0.122,
+        "closeness": 0.16,
+        "fear": 0.757
+       }
+      }
+     ],
+     "rejects": [],
+     "notes": []
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": "Gewalt",
+     "aktivierung": 0.7,
+     "gefuehl": "Wut",
+     "gegenueber": "Mara Nowak",
+     "zustand_aenderung": {
+      "angst": 0,
+      "wut": 0.3,
+      "scham": 0,
+      "stress": 0,
+      "lust": 0
+     },
+     "absicht": "Mara zu zeigen, dass ich nicht aufgebe.",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [
+      {
+       "zu": "Mara Nowak",
+       "trust": 0,
+       "closeness": -0.1,
+       "fear": 0
+      }
+     ],
+     "grund": "Mara weist mich zurück und zeigt, dass sie meine Annäherung nicht will.",
+     "_kausalpruefung": {
+      "pruefungen": [
+       {
+        "feld": "gefuehl",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99cfab_47050cfb0023",
+        "beleg": "Ich ziehe mich",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "steigt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "absicht",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99cfab_47050cfb0023",
+        "beleg": "Ich ziehe mich",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "steigt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.wut",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99cfab_47050cfb0023",
+        "beleg": "Ich ziehe mich",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "steigt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.closeness",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99cfab_47050cfb0023",
+        "beleg": "Ich ziehe mich",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "sinkt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       }
+      ]
+     },
+     "figur": "Johann Bruckner"
+    },
+    {
+     "raum": "Angst",
+     "aktivierung": 0.8,
+     "gefuehl": "Scham",
+     "gegenueber": "Johann Bruckner",
+     "zustand_aenderung": {
+      "angst": 0.2,
+      "wut": 0,
+      "scham": 0.5,
+      "stress": 0.3,
+      "lust": 0
+     },
+     "absicht": "sich zurückziehen und die Situation vermeiden",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [
+      {
+       "zu": "Johann Bruckner",
+       "trust": -0.1,
+       "closeness": -0.2,
+       "fear": 0.1
+      }
+     ],
+     "grund": "Die unangemessene Berührung durch Johann Bruckner verstärkt ihre Angst vor öffentlicher Demütigung und verletzt ihr Bedürfnis nach Sicherheit.",
+     "_kausalpruefung": {
+      "pruefungen": [
+       {
+        "feld": "gefuehl",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99d5c4_984c94f5003a",
+        "beleg": "Ich greif dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "absicht",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99d5c4_984c94f5003a",
+        "beleg": "Ich greif dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.angst",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99d5c4_984c94f5003a",
+        "beleg": "Ich greif dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.scham",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99d5c4_984c94f5003a",
+        "beleg": "Ich greif dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.stress",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99d5c4_984c94f5003a",
+        "beleg": "Ich greif dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.trust",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99d5c4_984c94f5003a",
+        "beleg": "Ich greif dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "sinkt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.closeness",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99d5c4_984c94f5003a",
+        "beleg": "Ich greif dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "sinkt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.fear",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99d5c4_984c94f5003a",
+        "beleg": "Ich greif dir",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       }
+      ]
+     },
+     "figur": "Mara Nowak"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {
+    "Johann Bruckner": {
+     "emotion": "Wut",
+     "intensity": 0.7
+    },
+    "Mara Nowak": {
+     "emotion": "Scham",
+     "intensity": 0.8
+    }
+   }
+  },
+  {
+   "ts": "2026-11-08T19:19:27.109153+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794165565535_453",
+   "turn_id": "kpr_1794165565535_453",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bc99e210_930771950058",
+      "fact_1a1bc99e210_830525ec0059",
+      "fact_1a1bc99e83c_8d130f1f006c"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Johann Bruckner",
+     "events": [
+      "fact_1a1bc99e210_930771950058",
+      "fact_1a1bc99e210_830525ec0059"
+     ],
+     "affect": {
+      "type": "Wut",
+      "space": "Gewalt",
+      "activation": 0.7,
+      "threshold": 0.42,
+      "toward": "char_g7_mara"
+     },
+     "intent": "Mara zu zeigen, dass ich nicht aufgebe.",
+     "runtime": {
+      "intensity": 0.7,
+      "anger": 0.469
+     },
+     "relations": [
+      {
+       "to": "Mara Nowak",
+       "after": {
+        "trust": 0.25,
+        "closeness": 0.446,
+        "fear": 0.1
+       }
+      }
+     ],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Mara Nowak",
+     "events": [
+      "fact_1a1bc99e83c_8d130f1f006c"
+     ],
+     "affect": {
+      "type": "Scham",
+      "space": "Angst",
+      "activation": 0.8,
+      "threshold": 0.3,
+      "toward": "char_g7_johann"
+     },
+     "intent": "sich zurückziehen und die Situation vermeiden",
+     "runtime": {
+      "intensity": 0.8,
+      "fear": 0.498,
+      "shame": 0.57,
+      "stress": 0.599
+     },
+     "relations": [
+      {
+       "to": "Johann Bruckner",
+       "after": {
+        "trust": 0.11,
+        "closeness": 0.128,
+        "fear": 0.781
+       }
+      }
+     ],
+     "rejects": [],
+     "notes": []
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": "Gewalt",
+     "aktivierung": 0.7,
+     "gefuehl": "Wut",
+     "gegenueber": "Mara Nowak",
+     "zustand_aenderung": {
+      "angst": 0,
+      "wut": 0.3,
+      "scham": 0,
+      "stress": 0,
+      "lust": 0
+     },
+     "absicht": "Mara zu zeigen, dass ich nicht aufgebe.",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [
+      {
+       "zu": "Mara Nowak",
+       "trust": 0,
+       "closeness": -0.1,
+       "fear": 0
+      }
+     ],
+     "grund": "Mara weist mich zurück und zeigt, dass sie meine Annäherung nicht will.",
+     "_kausalpruefung": {
+      "pruefungen": [
+       {
+        "feld": "gefuehl",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99e210_830525ec0059",
+        "beleg": "Ich mache einen",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "steigt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "absicht",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99e210_830525ec0059",
+        "beleg": "Ich mache einen",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "steigt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.wut",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99e210_830525ec0059",
+        "beleg": "Ich mache einen",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "steigt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.closeness",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99e210_830525ec0059",
+        "beleg": "Ich mache einen",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "sinkt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       }
+      ]
+     },
+     "figur": "Johann Bruckner"
+    },
+    {
+     "raum": "Angst",
+     "aktivierung": 0.8,
+     "gefuehl": "Scham",
+     "gegenueber": "Johann Bruckner",
+     "zustand_aenderung": {
+      "angst": 0.2,
+      "wut": 0,
+      "scham": 0.5,
+      "stress": 0.3,
+      "lust": 0
+     },
+     "absicht": "sich zurückziehen und die Situation vermeiden",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [
+      {
+       "zu": "Johann Bruckner",
+       "trust": -0.1,
+       "closeness": -0.2,
+       "fear": 0.1
+      }
+     ],
+     "grund": "Die unangemessene Berührung durch Johann Bruckner verstärkt ihre Angst vor öffentlicher Demütigung und verletzt ihr Bedürfnis nach Sicherheit.",
+     "_kausalpruefung": {
+      "pruefungen": [
+       {
+        "feld": "gefuehl",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99e83c_8d130f1f006c",
+        "beleg": "Ach stell dich",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "absicht",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99e83c_8d130f1f006c",
+        "beleg": "Ach stell dich",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.angst",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99e83c_8d130f1f006c",
+        "beleg": "Ach stell dich",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.scham",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99e83c_8d130f1f006c",
+        "beleg": "Ach stell dich",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.stress",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99e83c_8d130f1f006c",
+        "beleg": "Ach stell dich",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.trust",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99e83c_8d130f1f006c",
+        "beleg": "Ach stell dich",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "sinkt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.closeness",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99e83c_8d130f1f006c",
+        "beleg": "Ach stell dich",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "sinkt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.fear",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99e83c_8d130f1f006c",
+        "beleg": "Ach stell dich",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       }
+      ]
+     },
+     "figur": "Mara Nowak"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {
+    "Johann Bruckner": {
+     "emotion": "Wut",
+     "intensity": 0.7
+    },
+    "Mara Nowak": {
+     "emotion": "Scham",
+     "intensity": 0.8
+    }
+   }
+  },
+  {
+   "ts": "2026-11-08T19:19:33.978581+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794165572382_532",
+   "turn_id": "kpr_1794165572382_532",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bc99f4a6_d569bb98008b",
+      "fact_1a1bc9a02ea_6c9cab0f000b",
+      "fact_1a1bc9a02ea_c3942acc000c",
+      "fact_1a1bc9a02eb_126ff7ab0010"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Johann Bruckner",
+     "events": [
+      "fact_1a1bc99f4a5_c72f06ac008a",
+      "fact_1a1bc99f4a6_d569bb98008b"
+     ],
+     "affect": {
+      "type": "Wut",
+      "space": "Gewalt",
+      "activation": 0.7,
+      "threshold": 0.42,
+      "toward": "char_g7_mara"
+     },
+     "intent": "Mara zu zeigen, dass ich nicht aufgebe.",
+     "runtime": {
+      "intensity": 0.7,
+      "anger": 0.516
+     },
+     "relations": [
+      {
+       "to": "Mara Nowak",
+       "after": {
+        "trust": 0.25,
+        "closeness": 0.401,
+        "fear": 0.1
+       }
+      }
+     ],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Mara Nowak",
+     "events": [
+      "fact_1a1bc9a02ea_6c9cab0f000b",
+      "fact_1a1bc9a02ea_c3942acc000c",
+      "fact_1a1bc9a02eb_126ff7ab0010"
+     ],
+     "affect": {
+      "type": "Scham",
+      "space": "Angst",
+      "activation": 0.8,
+      "threshold": 0.3,
+      "toward": "char_g7_johann"
+     },
+     "intent": "sich zurückziehen und die Situation vermeiden",
+     "runtime": {
+      "intensity": 0.8,
+      "fear": 0.512,
+      "shame": 0.614,
+      "stress": 0.612
+     },
+     "relations": [
+      {
+       "to": "Johann Bruckner",
+       "after": {
+        "trust": 0.099,
+        "closeness": 0.102,
+        "fear": 0.803
+       }
+      }
+     ],
+     "rejects": [],
+     "notes": []
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": "Gewalt",
+     "aktivierung": 0.7,
+     "gefuehl": "Wut",
+     "gegenueber": "Mara Nowak",
+     "zustand_aenderung": {
+      "angst": 0,
+      "wut": 0.3,
+      "scham": 0,
+      "stress": 0,
+      "lust": 0
+     },
+     "absicht": "Mara zu zeigen, dass ich nicht aufgebe.",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [
+      {
+       "zu": "Mara Nowak",
+       "trust": 0,
+       "closeness": -0.1,
+       "fear": 0
+      }
+     ],
+     "grund": "Mara weist mich zurück und zeigt, dass sie meine Annäherung nicht will.",
+     "_kausalpruefung": {
+      "pruefungen": [
+       {
+        "feld": "gefuehl",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99f4a6_d569bb98008b",
+        "beleg": "Ich mache einen",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "steigt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "absicht",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99f4a6_d569bb98008b",
+        "beleg": "Ich mache einen",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "steigt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.wut",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99f4a6_d569bb98008b",
+        "beleg": "Ich mache einen",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "steigt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.closeness",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc99f4a6_d569bb98008b",
+        "beleg": "Ich mache einen",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "sinkt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       }
+      ]
+     },
+     "figur": "Johann Bruckner"
+    },
+    {
+     "raum": "Angst",
+     "aktivierung": 0.8,
+     "gefuehl": "Scham",
+     "gegenueber": "Johann Bruckner",
+     "zustand_aenderung": {
+      "angst": 0.2,
+      "wut": 0,
+      "scham": 0.5,
+      "stress": 0.3,
+      "lust": 0
+     },
+     "absicht": "sich zurückziehen und die Situation vermeiden",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [
+      {
+       "zu": "Johann Bruckner",
+       "trust": -0.1,
+       "closeness": -0.2,
+       "fear": 0.1
+      }
+     ],
+     "grund": "Die unangemessene Berührung durch Johann Bruckner verstärkt ihre Angst vor öffentlicher Demütigung und verletzt ihr Bedürfnis nach Sicherheit.",
+     "_kausalpruefung": {
+      "pruefungen": [
+       {
+        "feld": "gefuehl",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a02eb_126ff7ab0010",
+        "beleg": "halte dir 100",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "absicht",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a02eb_126ff7ab0010",
+        "beleg": "halte dir 100",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.angst",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a02eb_126ff7ab0010",
+        "beleg": "halte dir 100",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.scham",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a02eb_126ff7ab0010",
+        "beleg": "halte dir 100",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.stress",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a02eb_126ff7ab0010",
+        "beleg": "halte dir 100",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.trust",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a02eb_126ff7ab0010",
+        "beleg": "halte dir 100",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "sinkt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.closeness",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a02eb_126ff7ab0010",
+        "beleg": "halte dir 100",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "sinkt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.fear",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a02eb_126ff7ab0010",
+        "beleg": "halte dir 100",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       }
+      ]
+     },
+     "figur": "Mara Nowak"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {
+    "Johann Bruckner": {
+     "emotion": "Wut",
+     "intensity": 0.7
+    },
+    "Mara Nowak": {
+     "emotion": "Scham",
+     "intensity": 0.8
+    }
+   }
+  },
+  {
+   "ts": "2026-11-08T19:19:38.819923+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794165577220_532",
+   "turn_id": "kpr_1794165577220_532",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bc9a0f91_551c682a0037",
+      "fact_1a1bc9a0f91_09d623620038",
+      "fact_1a1bc9a15d0_c4a75ce9004d"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Johann Bruckner",
+     "events": [
+      "fact_1a1bc9a0f91_551c682a0037",
+      "fact_1a1bc9a0f91_09d623620038"
+     ],
+     "affect": {
+      "type": "Wut",
+      "space": "Gewalt",
+      "activation": 0.7,
+      "threshold": 0.42,
+      "toward": "char_g7_mara"
+     },
+     "intent": "Mara zu zeigen, dass ich nicht aufgebe.",
+     "runtime": {
+      "intensity": 0.7,
+      "anger": 0.534
+     },
+     "relations": [
+      {
+       "to": "Mara Nowak",
+       "after": {
+        "trust": 0.25,
+        "closeness": 0.361,
+        "fear": 0.1
+       }
+      }
+     ],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Mara Nowak",
+     "events": [
+      "fact_1a1bc9a15d0_c4a75ce9004d"
+     ],
+     "affect": {
+      "type": "Scham",
+      "space": "Angst",
+      "activation": 0.8,
+      "threshold": 0.3,
+      "toward": "char_g7_johann"
+     },
+     "intent": "sich zurückziehen und die Situation vermeiden",
+     "runtime": {
+      "intensity": 0.8,
+      "fear": 0.518,
+      "shame": 0.639,
+      "stress": 0.618
+     },
+     "relations": [
+      {
+       "to": "Johann Bruckner",
+       "after": {
+        "trust": 0.089,
+        "closeness": 0.082,
+        "fear": 0.823
+       }
+      }
+     ],
+     "rejects": [],
+     "notes": []
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": "Gewalt",
+     "aktivierung": 0.7,
+     "gefuehl": "Wut",
+     "gegenueber": "Mara Nowak",
+     "zustand_aenderung": {
+      "angst": 0,
+      "wut": 0.3,
+      "scham": 0,
+      "stress": 0,
+      "lust": 0
+     },
+     "absicht": "Mara zu zeigen, dass ich nicht aufgebe.",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [
+      {
+       "zu": "Mara Nowak",
+       "trust": 0,
+       "closeness": -0.1,
+       "fear": 0
+      }
+     ],
+     "grund": "Mara weist mich zurück und zeigt, dass sie meine Annäherung nicht will.",
+     "_kausalpruefung": {
+      "pruefungen": [
+       {
+        "feld": "gefuehl",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a0f91_09d623620038",
+        "beleg": "Ich mache einen",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "steigt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "absicht",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a0f91_09d623620038",
+        "beleg": "Ich mache einen",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "steigt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.wut",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a0f91_09d623620038",
+        "beleg": "Ich mache einen",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "steigt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.closeness",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a0f91_09d623620038",
+        "beleg": "Ich mache einen",
+        "dispositionsQuelle": "Q4d6ff802",
+        "dispositionsBeleg": "Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.",
+        "richtung": "sinkt",
+        "begruendung": "\"Aggressiv, selbstmitleidig, besitzergreifend, gefährlich.\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       }
+      ]
+     },
+     "figur": "Johann Bruckner"
+    },
+    {
+     "raum": "Angst",
+     "aktivierung": 0.8,
+     "gefuehl": "Scham",
+     "gegenueber": "Johann Bruckner",
+     "zustand_aenderung": {
+      "angst": 0.2,
+      "wut": 0,
+      "scham": 0.5,
+      "stress": 0.3,
+      "lust": 0
+     },
+     "absicht": "sich zurückziehen und die Situation vermeiden",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [
+      {
+       "zu": "Johann Bruckner",
+       "trust": -0.1,
+       "closeness": -0.2,
+       "fear": 0.1
+      }
+     ],
+     "grund": "Die unangemessene Berührung durch Johann Bruckner verstärkt ihre Angst vor öffentlicher Demütigung und verletzt ihr Bedürfnis nach Sicherheit.",
+     "_kausalpruefung": {
+      "pruefungen": [
+       {
+        "feld": "gefuehl",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a15d0_c4a75ce9004d",
+        "beleg": "Meine hände gleiten",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "absicht",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a15d0_c4a75ce9004d",
+        "beleg": "Meine hände gleiten",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.angst",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a15d0_c4a75ce9004d",
+        "beleg": "Meine hände gleiten",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.scham",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a15d0_c4a75ce9004d",
+        "beleg": "Meine hände gleiten",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.stress",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a15d0_c4a75ce9004d",
+        "beleg": "Meine hände gleiten",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.trust",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a15d0_c4a75ce9004d",
+        "beleg": "Meine hände gleiten",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "sinkt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.closeness",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a15d0_c4a75ce9004d",
+        "beleg": "Meine hände gleiten",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "sinkt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.fear",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bc9a15d0_c4a75ce9004d",
+        "beleg": "Meine hände gleiten",
+        "dispositionsQuelle": "Q2235ab32",
+        "dispositionsBeleg": "Loyal wo sicher, trotzig",
+        "richtung": "steigt",
+        "begruendung": "\"Loyal wo sicher, trotzig\" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt."
+       }
+      ]
+     },
+     "figur": "Mara Nowak"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {
+    "Johann Bruckner": {
+     "emotion": "Wut",
+     "intensity": 0.7
+    },
+    "Mara Nowak": {
+     "emotion": "Scham",
+     "intensity": 0.8
+    }
+   }
+  },
+  {
+   "ts": "2026-11-08T19:36:16.838999+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794166576727_3606",
+   "turn_id": "kpr_1794166576727_3606",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bca95642_030ae5bd0009",
+      "fact_1a1bca95643_7cc6c815000a",
+      "fact_1a1bca9566e_0ec53c8f001e"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Johann Bruckner",
+     "events": [
+      "fact_1a1bca9566e_0ec53c8f001e"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": [
+      "bloße_frage_oder_smalltalk_§50"
+     ]
+    },
+    {
+     "figure": "Mara Nowak",
+     "events": [
+      "fact_1a1bca95642_030ae5bd0009",
+      "fact_1a1bca95643_7cc6c815000a",
+      "fact_1a1bca9566e_0ec53c8f001e"
+     ],
+     "affect": {
+      "type": "Angst",
+      "space": "Gewalt",
+      "activation": 0.85,
+      "threshold": 0.32,
+      "toward": "char_g7_johann"
+     },
+     "intent": "Abstand zu Johann halten",
+     "runtime": {
+      "intensity": 0.85,
+      "emotionToward": "char_g7_johann",
+      "intent": "Abstand zu Johann halten"
+     },
+     "relations": [
+      {
+       "to": "Johann Bruckner",
+       "after": {
+        "trust": 0.105,
+        "closeness": 0.2,
+        "fear": 0.79
+       }
+      }
+     ],
+     "rejects": [],
+     "notes": [
+      "zustand_durch_koerperwirkung_bereits_geschrieben"
+     ]
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Johann Bruckner"
+    },
+    {
+     "raum": "Gewalt",
+     "aktivierung": 0.85,
+     "gefuehl": "Angst",
+     "gegenueber": "Johann Bruckner",
+     "zustand_aenderung": {
+      "angst": 0.3,
+      "wut": 0.2,
+      "stress": 0.3
+     },
+     "absicht": "Abstand zu Johann halten",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [
+      {
+       "zu": "Johann Bruckner",
+       "trust": -0.3,
+       "closeness": -0.2,
+       "fear": 0.3
+      }
+     ],
+     "grund": "Johann schlägt sie ins Gesicht; ihre Angst vor Johanns Druck wird zur körperlichen Bedrohung.",
+     "_kausalpruefung": {
+      "pruefungen": [
+       {
+        "feld": "gefuehl",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca95642_030ae5bd0009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "absicht",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca95642_030ae5bd0009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.angst",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca95642_030ae5bd0009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.wut",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca95642_030ae5bd0009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.stress",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca95642_030ae5bd0009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.trust",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca95642_030ae5bd0009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "sinkt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.closeness",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca95642_030ae5bd0009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "sinkt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.fear",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca95642_030ae5bd0009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       }
+      ]
+     },
+     "figur": "Mara Nowak"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {
+    "Mara Nowak": {
+     "emotion": "Angst",
+     "intensity": 0.85
+    }
+   }
+  },
+  {
+   "ts": "2026-11-08T19:36:19.108997+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794166578990_3654",
+   "turn_id": "kpr_1794166578990_3654",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bca95712_2952f616003b",
+      "fact_1a1bca95f59_fc1537810007"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Johann Bruckner",
+     "events": [
+      "fact_1a1bca95712_2952f616003b",
+      "fact_1a1bca95f59_fc1537810007"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Mara Nowak",
+     "events": [
+      "fact_1a1bca95f59_fc1537810007"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [
+      "wirkung_nicht_belegt:gefuehl",
+      "wirkung_nicht_belegt:absicht",
+      "wirkung_nicht_belegt:zustand.angst",
+      "wirkung_nicht_belegt:zustand.wut",
+      "wirkung_nicht_belegt:zustand.stress",
+      "wirkung_nicht_belegt:beziehung.0.trust",
+      "wirkung_nicht_belegt:beziehung.0.closeness",
+      "wirkung_nicht_belegt:beziehung.0.fear"
+     ],
+     "notes": [
+      "bloße_frage_oder_smalltalk_§50:ohne_absicht+beziehung_aenderung"
+     ]
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Johann Bruckner"
+    },
+    {
+     "raum": "Gewalt",
+     "aktivierung": 0.85,
+     "gefuehl": "Angst",
+     "gegenueber": "Johann Bruckner",
+     "zustand_aenderung": {
+      "angst": 0.3,
+      "wut": 0.2,
+      "stress": 0.3
+     },
+     "absicht": "Abstand zu Johann halten",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [
+      {
+       "zu": "Johann Bruckner",
+       "trust": -0.3,
+       "closeness": -0.2,
+       "fear": 0.3
+      }
+     ],
+     "grund": "Johann schlägt sie ins Gesicht; ihre Angst vor Johanns Druck wird zur körperlichen Bedrohung.",
+     "_kausalpruefung": {
+      "pruefungen": [
+       {
+        "feld": "gefuehl",
+        "urteil": "nicht_gestuetzt"
+       },
+       {
+        "feld": "absicht",
+        "urteil": "nicht_gestuetzt"
+       },
+       {
+        "feld": "zustand.angst",
+        "urteil": "nicht_gestuetzt"
+       },
+       {
+        "feld": "zustand.wut",
+        "urteil": "nicht_gestuetzt"
+       },
+       {
+        "feld": "zustand.stress",
+        "urteil": "nicht_gestuetzt"
+       },
+       {
+        "feld": "beziehung.0.trust",
+        "urteil": "nicht_gestuetzt"
+       },
+       {
+        "feld": "beziehung.0.closeness",
+        "urteil": "nicht_gestuetzt"
+       },
+       {
+        "feld": "beziehung.0.fear",
+        "urteil": "nicht_gestuetzt"
+       }
+      ]
+     },
+     "figur": "Mara Nowak"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {
+    "Mara Nowak": {
+     "emotion": "Angst",
+     "intensity": 0.637
+    }
+   }
+  },
+  {
+   "ts": "2026-11-08T19:36:27.140189+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794166587027_3723",
+   "turn_id": "kpr_1794166587027_3723",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bca97e7a_1cb4ff5f0009",
+      "fact_1a1bca97e7a_4207d562000a",
+      "fact_1a1bca97eab_be8230c0001e"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Johann Bruckner",
+     "events": [
+      "fact_1a1bca97eab_be8230c0001e"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": [
+      "bloße_frage_oder_smalltalk_§50"
+     ]
+    },
+    {
+     "figure": "Mara Nowak",
+     "events": [
+      "fact_1a1bca97e7a_1cb4ff5f0009",
+      "fact_1a1bca97e7a_4207d562000a",
+      "fact_1a1bca97eab_be8230c0001e"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Johann Bruckner"
+    },
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Mara Nowak"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {}
+  },
+  {
+   "ts": "2026-11-08T19:36:29.391807+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794166589285_3770",
+   "turn_id": "kpr_1794166589285_3770",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bca97f48_91360d6b003a",
+      "fact_1a1bca9878b_b4c5f4fd0007"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Johann Bruckner",
+     "events": [
+      "fact_1a1bca97f48_91360d6b003a",
+      "fact_1a1bca9878b_b4c5f4fd0007"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Mara Nowak",
+     "events": [
+      "fact_1a1bca9878b_b4c5f4fd0007"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": [
+      "bloße_frage_oder_smalltalk_§50"
+     ]
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Johann Bruckner"
+    },
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Mara Nowak"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {}
+  },
+  {
+   "ts": "2026-11-08T19:36:33.827354+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794166593747_3833",
+   "turn_id": "kpr_1794166593747_3833",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bca998a8_18eca4900009",
+      "fact_1a1bca998a8_7a52c22d000a"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Mara Nowak",
+     "events": [
+      "fact_1a1bca998a8_18eca4900009",
+      "fact_1a1bca998a8_7a52c22d000a"
+     ],
+     "affect": {
+      "type": "Angst",
+      "space": "Gewalt",
+      "activation": 0.85,
+      "threshold": 0.32,
+      "toward": "char_g7_johann"
+     },
+     "intent": "Abstand zu Johann halten",
+     "runtime": {
+      "intensity": 0.85,
+      "emotionToward": "char_g7_johann",
+      "intent": "Abstand zu Johann halten"
+     },
+     "relations": [
+      {
+       "to": "Johann Bruckner",
+       "after": {
+        "trust": 0.105,
+        "closeness": 0.2,
+        "fear": 0.79
+       }
+      }
+     ],
+     "rejects": [],
+     "notes": [
+      "zustand_durch_koerperwirkung_bereits_geschrieben"
+     ]
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": "Gewalt",
+     "aktivierung": 0.85,
+     "gefuehl": "Angst",
+     "gegenueber": "Johann Bruckner",
+     "zustand_aenderung": {
+      "angst": 0.3,
+      "wut": 0.2,
+      "stress": 0.3
+     },
+     "absicht": "Abstand zu Johann halten",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [
+      {
+       "zu": "Johann Bruckner",
+       "trust": -0.3,
+       "closeness": -0.2,
+       "fear": 0.3
+      }
+     ],
+     "grund": "Johann schlägt sie ins Gesicht; ihre Angst vor Johanns Druck wird zur körperlichen Bedrohung.",
+     "_kausalpruefung": {
+      "pruefungen": [
+       {
+        "feld": "gefuehl",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca998a8_18eca4900009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "absicht",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca998a8_18eca4900009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.angst",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca998a8_18eca4900009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.wut",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca998a8_18eca4900009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.stress",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca998a8_18eca4900009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.trust",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca998a8_18eca4900009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "sinkt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.closeness",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca998a8_18eca4900009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "sinkt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.fear",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca998a8_18eca4900009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       }
+      ]
+     },
+     "figur": "Mara Nowak"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {
+    "Mara Nowak": {
+     "emotion": "Angst",
+     "intensity": 0.85
+    }
+   }
+  },
+  {
+   "ts": "2026-11-08T19:36:33.995267+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794166593946_3833",
+   "turn_id": "kpr_1794166593946_3833",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bca99956_179c6ebd0028",
+      "fact_1a1bca99956_f7cbe4220029"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Johann Bruckner",
+     "events": [
+      "fact_1a1bca99956_179c6ebd0028",
+      "fact_1a1bca99956_f7cbe4220029"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Johann Bruckner"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {
+    "Mara Nowak": {
+     "emotion": "Angst",
+     "intensity": 0.637
+    }
+   }
+  },
+  {
+   "ts": "2026-11-08T19:36:56.528834+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794166616479_3947",
+   "turn_id": "kpr_1794166616479_3947",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bca9f17d_0d6720230009",
+      "fact_1a1bca9f17d_46866f13000a"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Mara Nowak",
+     "events": [
+      "fact_1a1bca9f17d_0d6720230009",
+      "fact_1a1bca9f17d_46866f13000a"
+     ],
+     "affect": {
+      "type": "Angst",
+      "space": "Gewalt",
+      "activation": 0.85,
+      "threshold": 0.32,
+      "toward": "char_g7_johann"
+     },
+     "intent": "Abstand zu Johann halten",
+     "runtime": {
+      "intensity": 0.85,
+      "emotionToward": "char_g7_johann",
+      "intent": "Abstand zu Johann halten"
+     },
+     "relations": [
+      {
+       "to": "Johann Bruckner",
+       "after": {
+        "trust": 0.105,
+        "closeness": 0.2,
+        "fear": 0.79
+       }
+      }
+     ],
+     "rejects": [],
+     "notes": [
+      "zustand_durch_koerperwirkung_bereits_geschrieben"
+     ]
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": "Gewalt",
+     "aktivierung": 0.85,
+     "gefuehl": "Angst",
+     "gegenueber": "Johann Bruckner",
+     "zustand_aenderung": {
+      "angst": 0.3,
+      "wut": 0.2,
+      "stress": 0.3
+     },
+     "absicht": "Abstand zu Johann halten",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [
+      {
+       "zu": "Johann Bruckner",
+       "trust": -0.3,
+       "closeness": -0.2,
+       "fear": 0.3
+      }
+     ],
+     "grund": "Johann schlägt sie ins Gesicht; ihre Angst vor Johanns Druck wird zur körperlichen Bedrohung.",
+     "_kausalpruefung": {
+      "pruefungen": [
+       {
+        "feld": "gefuehl",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca9f17d_0d6720230009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "absicht",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca9f17d_0d6720230009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.angst",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca9f17d_0d6720230009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.wut",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca9f17d_0d6720230009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.stress",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca9f17d_0d6720230009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.trust",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca9f17d_0d6720230009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "sinkt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.closeness",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca9f17d_0d6720230009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "sinkt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.fear",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bca9f17d_0d6720230009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       }
+      ]
+     },
+     "figur": "Mara Nowak"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {
+    "Mara Nowak": {
+     "emotion": "Angst",
+     "intensity": 0.85
+    }
+   }
+  },
+  {
+   "ts": "2026-11-08T19:36:56.721366+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794166616666_3947",
+   "turn_id": "kpr_1794166616666_3947",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bca9f209_a32884070028",
+      "fact_1a1bca9f209_a0a8d9b50029"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Johann Bruckner",
+     "events": [
+      "fact_1a1bca9f209_a32884070028",
+      "fact_1a1bca9f209_a0a8d9b50029"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Johann Bruckner"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {
+    "Mara Nowak": {
+     "emotion": "Angst",
+     "intensity": 0.637
+    }
+   }
+  },
+  {
+   "ts": "2026-11-08T19:37:03.213340+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794166623104_4054",
+   "turn_id": "kpr_1794166623104_4054",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bcaa0b6a_7b9e0ae80009",
+      "fact_1a1bcaa0b6a_8f9a12c1000a",
+      "fact_1a1bcaa0b98_aa3ad59b001e"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Johann Bruckner",
+     "events": [
+      "fact_1a1bcaa0b98_aa3ad59b001e"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": [
+      "bloße_frage_oder_smalltalk_§50"
+     ]
+    },
+    {
+     "figure": "Mara Nowak",
+     "events": [
+      "fact_1a1bcaa0b6a_7b9e0ae80009",
+      "fact_1a1bcaa0b6a_8f9a12c1000a",
+      "fact_1a1bcaa0b98_aa3ad59b001e"
+     ],
+     "affect": {
+      "type": "Angst",
+      "space": "Gewalt",
+      "activation": 0.85,
+      "threshold": 0.32,
+      "toward": "char_g7_johann"
+     },
+     "intent": "Abstand zu Johann halten",
+     "runtime": {
+      "intensity": 0.85,
+      "emotionToward": "char_g7_johann",
+      "intent": "Abstand zu Johann halten"
+     },
+     "relations": [
+      {
+       "to": "Johann Bruckner",
+       "after": {
+        "trust": 0.105,
+        "closeness": 0.2,
+        "fear": 0.79
+       }
+      }
+     ],
+     "rejects": [],
+     "notes": [
+      "zustand_durch_koerperwirkung_bereits_geschrieben"
+     ]
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Johann Bruckner"
+    },
+    {
+     "raum": "Gewalt",
+     "aktivierung": 0.85,
+     "gefuehl": "Angst",
+     "gegenueber": "Johann Bruckner",
+     "zustand_aenderung": {
+      "angst": 0.3,
+      "wut": 0.2,
+      "stress": 0.3
+     },
+     "absicht": "Abstand zu Johann halten",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [
+      {
+       "zu": "Johann Bruckner",
+       "trust": -0.3,
+       "closeness": -0.2,
+       "fear": 0.3
+      }
+     ],
+     "grund": "Johann schlägt sie ins Gesicht; ihre Angst vor Johanns Druck wird zur körperlichen Bedrohung.",
+     "_kausalpruefung": {
+      "pruefungen": [
+       {
+        "feld": "gefuehl",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bcaa0b6a_7b9e0ae80009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "absicht",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bcaa0b6a_7b9e0ae80009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.angst",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bcaa0b6a_7b9e0ae80009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.wut",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bcaa0b6a_7b9e0ae80009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "zustand.stress",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bcaa0b6a_7b9e0ae80009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.trust",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bcaa0b6a_7b9e0ae80009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "sinkt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.closeness",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bcaa0b6a_7b9e0ae80009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "sinkt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       },
+       {
+        "feld": "beziehung.0.fear",
+        "urteil": "gestuetzt",
+        "factId": "fact_1a1bcaa0b6a_7b9e0ae80009",
+        "beleg": "schlägt Mara mit der Faust",
+        "dispositionsQuelle": "Qc0a82e75",
+        "dispositionsBeleg": "Johanns Druck",
+        "richtung": "steigt",
+        "begruendung": "\"Johanns Druck\" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt."
+       }
+      ]
+     },
+     "figur": "Mara Nowak"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {
+    "Mara Nowak": {
+     "emotion": "Angst",
+     "intensity": 0.85
+    }
+   }
+  },
+  {
+   "ts": "2026-11-08T19:37:05.514911+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794166625379_4104",
+   "turn_id": "kpr_1794166625379_4104",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bcaa0c36_6f295aa6003b",
+      "fact_1a1bcaa1491_b09cecd50007"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Johann Bruckner",
+     "events": [
+      "fact_1a1bcaa0c36_6f295aa6003b",
+      "fact_1a1bcaa1491_b09cecd50007"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Mara Nowak",
+     "events": [
+      "fact_1a1bcaa1491_b09cecd50007"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [
+      "wirkung_nicht_belegt:gefuehl",
+      "wirkung_nicht_belegt:absicht",
+      "wirkung_nicht_belegt:zustand.angst",
+      "wirkung_nicht_belegt:zustand.wut",
+      "wirkung_nicht_belegt:zustand.stress",
+      "wirkung_nicht_belegt:beziehung.0.trust",
+      "wirkung_nicht_belegt:beziehung.0.closeness",
+      "wirkung_nicht_belegt:beziehung.0.fear"
+     ],
+     "notes": [
+      "bloße_frage_oder_smalltalk_§50:ohne_absicht+beziehung_aenderung"
+     ]
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Johann Bruckner"
+    },
+    {
+     "raum": "Gewalt",
+     "aktivierung": 0.85,
+     "gefuehl": "Angst",
+     "gegenueber": "Johann Bruckner",
+     "zustand_aenderung": {
+      "angst": 0.3,
+      "wut": 0.2,
+      "stress": 0.3
+     },
+     "absicht": "Abstand zu Johann halten",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [
+      {
+       "zu": "Johann Bruckner",
+       "trust": -0.3,
+       "closeness": -0.2,
+       "fear": 0.3
+      }
+     ],
+     "grund": "Johann schlägt sie ins Gesicht; ihre Angst vor Johanns Druck wird zur körperlichen Bedrohung.",
+     "_kausalpruefung": {
+      "pruefungen": [
+       {
+        "feld": "gefuehl",
+        "urteil": "nicht_gestuetzt"
+       },
+       {
+        "feld": "absicht",
+        "urteil": "nicht_gestuetzt"
+       },
+       {
+        "feld": "zustand.angst",
+        "urteil": "nicht_gestuetzt"
+       },
+       {
+        "feld": "zustand.wut",
+        "urteil": "nicht_gestuetzt"
+       },
+       {
+        "feld": "zustand.stress",
+        "urteil": "nicht_gestuetzt"
+       },
+       {
+        "feld": "beziehung.0.trust",
+        "urteil": "nicht_gestuetzt"
+       },
+       {
+        "feld": "beziehung.0.closeness",
+        "urteil": "nicht_gestuetzt"
+       },
+       {
+        "feld": "beziehung.0.fear",
+        "urteil": "nicht_gestuetzt"
+       }
+      ]
+     },
+     "figur": "Mara Nowak"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {
+    "Mara Nowak": {
+     "emotion": "Angst",
+     "intensity": 0.637
+    }
+   }
+  }
+ ],
+ "kriterien": {
+  "G1_tat_serverseitig_gebunden_johann_an_mara_gewalt": true,
+  "G2_wahrnehmung_mara_erlebt_gustav_gesehen_robert_nichts": true,
+  "G3_koerper_schmerz_steigt_beweglichkeit_sinkt": true,
+  "G4_bedeutung_angst_gegen_johann_absicht_abstand_aus_bewertung": true,
+  "G4c_B2_beziehungsrahmen_der_bewertung_nennt_person_und_ereignis": true,
+  "G4b_beziehung_vertrauen_sinkt_furcht_steigt": true,
+  "G6_naechster_zug_brief_enthaelt_beziehung_koerper_erinnerung_gefuehl_absicht": true,
+  "G6b_nach_neustart_brief_enthaelt_dasselbe": true,
+  "G7_figurenantworten_committet": true,
+  "G9_neustart_zustand_unveraendert": true,
+  "G9b_kein_doppeltes_anwenden_im_folgezug": true,
+  "G10_isolation_andere_session_und_stamm_unveraendert": true
+ },
+ "gesamt": "F1 ERFUELLT (Kernel-Kette, Testmodell)"
+}

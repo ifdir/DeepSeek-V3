@@ -1,0 +1,43 @@
+MATRIX10 - Arbeitsstand 11 - Android (aarch64) - Pydroid 3 oder Termux
+=======================================================================
+
+STATUS: ROT - KEINE Produktfreigabe. Auf einem echten Android-Geraet NICHT getestet (kein Geraet verfuegbar).
+
+Was 11 aendert (SPS V62.7):
+- Je Austausch nur noch: 1 Planer-Lesung deiner Eingabe + 1 Erlebens-Lesung je Figur, die es wahrnimmt + 1 Formulierung.
+  Die frueheren Einzelpruefungen (Vollzug, Wirkung, Koerper, Grenze, Sprecher, Sprache, Namen ...) stehen in derselben
+  ersten Antwort; der Kernel prueft sie wie bisher. Gemessen mit Testmodell (1,5 s je Aufruf): 4-5 statt 9-15 Aufrufe.
+- Im Figurenbrief steht zuerst die aktuelle Lage der Figur (Gefuehl, Ursache, Absicht, Grenze, Schmerz, Beziehung),
+  danach Profil und Kompass. Die Figur soll aus der Lage handeln; Profil und Kompass faerben nur.
+- Mit echtem Modell auf dem Handy NICHT geprueft - bitte zurueckmelden, wie lange ein Austausch dauert und wie Mara reagiert.
+
+Was 10a fuer dein Handy repariert:
+- Der Fehler "503 Rust-Schreibgrenze konnte nicht geladen werden" bei Beruehrungs-Eingaben kam daher, dass Android aus
+  Download / Interner Speicher keine Bibliothek laden darf (Pydroid 3 + Ordner in Download). P25 brauchte keine.
+- Ab 10a laedt START.py dieselbe Rust-Bibliothek (byte-gleich, SHA-256 geprueft) aus dem eigenen App-Speicher.
+  Der Ordner darf in Download bleiben. Nachgestellt und geprueft auf einem solchen Speicher (Pruefprotokoll 9d).
+- Beim Start steht: [RUST] Einwilligungskern geladen (...). Laedt er trotzdem nicht, steht dort der Grund, und in der
+  Oberflaeche erscheint oben ein roter Balken mit Grund und Abhilfe.
+
+Wichtig: das ANDROID-Paket verwenden (Name enthaelt "android-aarch64"), nicht das Linux-Paket.
+
+Pydroid 3
+---------
+1. ZIP entpacken (z. B. in Download), wie bisher.
+2. In Pydroid 3: Menue -> Pip -> "flask" installieren (einmalig).
+3. START.py im entpackten Ordner in Pydroid oeffnen und ausfuehren (gelber Knopf).
+4. In der Ausgabe muss stehen: [RUST] Einwilligungskern geladen
+5. Browser: http://127.0.0.1:8080 (START.py versucht ihn selbst zu oeffnen).
+
+Termux (Alternative)
+--------------------
+   pkg install python unzip && pip install flask
+   termux-setup-storage
+   mkdir -p ~/m10 && cd ~/m10 && unzip ~/storage/downloads/MATRIX10_STAND11_PRODUKT_android-aarch64_<commit>.zip
+   cd MATRIX10_STAND11_PRODUKT_android-aarch64_<commit> && python START.py
+   Falls "[RUST-FEHLER] ... cannot locate symbol ...": bash RUST_AUF_DEM_HANDY_BAUEN.sh (baut den Kern auf dem Handy).
+
+Bitte zurueckmelden: die [RUST]- bzw. [RUST-FEHLER]-Zeile aus der Pydroid-Ausgabe.
+
+Ohne Modell-Schluessel aendern Erlebnisse Gefuehl, Absicht und Beziehung NICHT. Mit Schluessel: Provider + API-Key unter
+"Konfiguration" eintragen (nie in den Chat). Offene Punkte: MATRIX10_STAND11_STATUS.json.

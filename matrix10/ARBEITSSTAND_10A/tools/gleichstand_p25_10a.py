@@ -61,8 +61,8 @@ def main() -> int:
         (root / "data" / f).unlink(missing_ok=True)
     shutil.copy(vorlage, db)
     env = dict(os.environ, F1_VERZOEGERUNG=str(verz), F1_KAUSAL_ALLGEMEIN="1")
-    tm = subprocess.Popen([sys.executable, "-I", str(T09 / "testmodell_f1_09.py"), str(root), str(F1.PORT), str(prot),
-                           str(HIER / "drehbuch_geraet_10a.json")], env=env)
+    buch = Path(sys.argv[5]).resolve() if len(sys.argv) > 5 else HIER / "drehbuch_geraet_10a.json"
+    tm = subprocess.Popen([sys.executable, "-I", str(T09 / "testmodell_f1_09.py"), str(root), str(F1.PORT), str(prot), str(buch)], env=env)
     E: dict = {"produkt": str(root), "verzoegerung_s": float(verz), "austausch": []}
     try:
         time.sleep(1.0)
