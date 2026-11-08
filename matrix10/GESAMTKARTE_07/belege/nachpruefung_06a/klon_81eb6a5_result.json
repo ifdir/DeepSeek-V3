@@ -1,0 +1,337 @@
+{
+  "stand": "06",
+  "einordnung": "Teilreparatur des P25-Einwilligungskerns, keine vollstaendige Rust-Migration",
+  "product_release": false,
+  "teilpruefungen": {
+    "0_integritaet": {
+      "status": "PASS",
+      "basis_sha256": "33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1",
+      "ersetzt": {
+        "matrix_api/scene_state.py": "34c70dbd12281e2b2656171b25fc6bd517f6288533b67a6f02ec92c66c4ffee6",
+        "matrix_api/app.py": "a17b6f47012df1751c9551402e8b195549348e58906a949bd6e108c0375519a3",
+        "src/lib/matrix/api.ts": "e6d31f9fd46615df354bb5f614ae6a0ed06ae62004814a2e6d0124b5853d4fc5",
+        "src/routes/chat.index.tsx": "446627abfaa51f6d0f9e13fb17cc80c7f5a7a38e36294859386edecdbf6c1952"
+      },
+      "overlay_dateien": 11
+    },
+    "A_fail_closed_ohne_bibliothek": {
+      "status": "PASS",
+      "ausgabe": [
+        "FAILCLOSED body_contact_standing NATIVE_BOUNDARY_UNAVAILABLE 503",
+        "FAILCLOSED restricted_refusals_standing NATIVE_BOUNDARY_UNAVAILABLE 503",
+        "FAILCLOSED restricted_permissions_standing NATIVE_BOUNDARY_UNAVAILABLE 503"
+      ]
+    },
+    "B_cargo_test": {
+      "status": "PASS",
+      "passed": 86,
+      "failed": 0
+    },
+    "C_build_und_K1_abi3": {
+      "status": "PASS",
+      "abi3_tests": 6
+    },
+    "D_einwilligungskette_stage06": {
+      "status": "PASS",
+      "soll_erfuellt": "9/10",
+      "rot": [
+        "W2_ACTOR_NICHT_SPRECHER"
+      ]
+    },
+    "D2_differenz_p25": {
+      "status": "PASS",
+      "p25_rot": [
+        "C04_FREMDER_GIVER",
+        "C04_ABGELAUFENE_BREITE_ZUSTIMMUNG",
+        "C04_ABGELAUFENE_EINZELABLEHNUNG",
+        "C04_ABGELAUFENE_EINZELZUSTIMMUNG",
+        "S05_WIDERRUF_DER_AUSNAHME",
+        "W2_ACTOR_NICHT_SPRECHER",
+        "W3_OHNE_PROPOSITION"
+      ],
+      "repariert": [
+        "C04_ABGELAUFENE_BREITE_ZUSTIMMUNG",
+        "C04_ABGELAUFENE_EINZELABLEHNUNG",
+        "C04_ABGELAUFENE_EINZELZUSTIMMUNG",
+        "C04_FREMDER_GIVER",
+        "S05_WIDERRUF_DER_AUSNAHME",
+        "W3_OHNE_PROPOSITION"
+      ],
+      "verschlechtert": []
+    },
+    "D3_http_503": {
+      "status": "PASS",
+      "anfragen_je_variante": 12,
+      "ok_alle_200": true,
+      "abweichungen": []
+    },
+    "D3_K2a_verschluckte_pfade": {
+      "status": "PASS",
+      "m2_prepare_meldung_falsch": [],
+      "ausfallpunkte": 84,
+      "fail_open": 0,
+      "stellen": [
+        {
+          "stelle": "kernel_regie:2792",
+          "status": "BELEGT_FAIL_CLOSED",
+          "ausfallpunkte": 3
+        },
+        {
+          "stelle": "_extract_user_plan:3994",
+          "status": "BLOCKIERT_NICHT_ERREICHT",
+          "ausfallpunkte": 0
+        },
+        {
+          "stelle": "kernel_regie:2716",
+          "status": "BELEGT_FAIL_CLOSED",
+          "ausfallpunkte": 2
+        },
+        {
+          "stelle": "kernel_puppet:3034",
+          "status": "BELEGT_FAIL_CLOSED",
+          "ausfallpunkte": 2
+        },
+        {
+          "stelle": "_read:1794",
+          "status": "BELEGT_FAIL_CLOSED",
+          "ausfallpunkte": 12
+        },
+        {
+          "stelle": "kernel_commit:2066",
+          "status": "BELEGT_FAIL_CLOSED",
+          "ausfallpunkte": 2
+        },
+        {
+          "stelle": "_read:1782",
+          "status": "BLOCKIERT_NICHT_ERREICHT",
+          "ausfallpunkte": 0
+        }
+      ],
+      "teilcommit_vor_ausfall": 24
+    },
+    "D3F_frontend": {
+      "status": "ROT",
+      "m3_kriterien": {
+        "ok_liste_sichtbar_ohne_fehler": true,
+        "ok_leere_liste_zeigt_keine_session": true,
+        "fehlt_U0b_chat_seite_fehler_mit_code_keine_leer_kein_laedt": false,
+        "fehlt_U3_neuladen_gespeicherter_nutzer_fehler_mit_code_keine_leer_kein_laedt": false,
+        "abi2_U0b_chat_seite_fehler_mit_code_keine_leer_kein_laedt": false,
+        "abi2_U3_neuladen_gespeicherter_nutzer_fehler_mit_code_keine_leer_kein_laedt": false
+      },
+      "kurz": {
+        "ok": [
+          [
+            "U0_nutzer_waehlen",
+            false,
+            null
+          ],
+          [
+            "U0b_chat_seite",
+            false,
+            null
+          ],
+          [
+            "U2_chat_reset",
+            false,
+            null
+          ],
+          [
+            "U1_oeffnen",
+            false,
+            null
+          ],
+          [
+            "U4_nutzer_ohne_session",
+            false,
+            null
+          ]
+        ],
+        "fehlt": [
+          [
+            "U0_nutzer_waehlen",
+            true,
+            null
+          ],
+          [
+            "U0b_chat_seite",
+            true,
+            null
+          ],
+          [
+            "U2_chat_reset",
+            null,
+            "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
+          ],
+          [
+            "U1_oeffnen",
+            null,
+            "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
+          ],
+          [
+            "U3_neuladen_gespeicherter_nutzer",
+            true,
+            null
+          ]
+        ],
+        "abi2": [
+          [
+            "U0_nutzer_waehlen",
+            true,
+            null
+          ],
+          [
+            "U0b_chat_seite",
+            true,
+            null
+          ],
+          [
+            "U2_chat_reset",
+            null,
+            "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
+          ],
+          [
+            "U1_oeffnen",
+            null,
+            "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
+          ],
+          [
+            "U3_neuladen_gespeicherter_nutzer",
+            true,
+            null
+          ]
+        ]
+      }
+    },
+    "E_gegenprobe": {
+      "status": "ROT",
+      "mutationen": {
+        "rust_ohne_sprecherbindung": {
+          "erkannt": false,
+          "soll_erfuellt": "9/10",
+          "neu_rot": []
+        },
+        "rust_ohne_gueltigkeitsfenster": {
+          "erkannt": true,
+          "soll_erfuellt": "6/10",
+          "neu_rot": [
+            "C04_ABGELAUFENE_BREITE_ZUSTIMMUNG",
+            "C04_ABGELAUFENE_EINZELABLEHNUNG",
+            "C04_ABGELAUFENE_EINZELZUSTIMMUNG"
+          ]
+        },
+        "rust_taetantwort_hebt_grenze_auf": {
+          "erkannt": true,
+          "soll_erfuellt": "8/10",
+          "neu_rot": [
+            "S05_WIDERRUF_DER_AUSNAHME"
+          ]
+        },
+        "rust_taetantwort_ohne_bindung": {
+          "erkannt": true,
+          "soll_erfuellt": "8/10",
+          "neu_rot": [
+            "S05_ANDERE_STELLE"
+          ]
+        },
+        "python_lifecycle_bound_ohne_giverregel": {
+          "erkannt": true,
+          "soll_erfuellt": "8/10",
+          "neu_rot": [
+            "C04_FREMDER_GIVER"
+          ]
+        }
+      },
+      "hinweis": "Rust-only-Sprecherbindung ueber die P25-Kette nicht beobachtbar (verdeckt durch lifecycle_bound + _checked_index); Redundanz vom Nutzer als verbindlich entschieden",
+      "rust_unit_sprecherbindung": {
+        "cargo_test_rot": true,
+        "rote_tests": [
+          "consent::tests::different_speaker_cannot_undo_broad_refusal",
+          "consent::tests::different_speaker_cannot_undo_narrow_refusal",
+          "consent::tests::empty_actor_cannot_undo_narrow_refusal",
+          "consent::tests::narrow_permission_is_scoped_to_the_giver",
+          "consent::tests::s05_foreign_or_expired_answer_ends_nothing"
+        ],
+        "status": "PASS"
+      },
+      "kombiniert_fail_closed": {
+        "status": "PASS",
+        "c04_fremder_giver": [
+          "write f2: SOLL REJECT, IST OK",
+          "state: SOLL declined, IST None",
+          "act_consent a3: SOLL declined, IST None",
+          "Lesen gescheitert: NativeBoundaryError:NATIVE_REPLY_INVALID:Native consent result has an unbound evidence index"
+        ]
+      }
+    },
+    "F_p25_testsuite": {
+      "status": "PASS",
+      "p25": {
+        "error": 1,
+        "failure": 24,
+        "pass": 422
+      },
+      "stage06": {
+        "error": 1,
+        "failure": 24,
+        "pass": 422
+      },
+      "abweichungen": [],
+      "p25_altbefunde_rot": [
+        "::tests.test_v92_launcher_delivers_ui",
+        "tests.test_v83_overlay.V85OverlayRegression::test_floating_button_not_in_served_frontend_html",
+        "tests.test_v83_overlay.V85OverlayRegression::test_new_assets_exist_and_are_referenced",
+        "tests.test_v83_overlay.V85OverlayRegression::test_storage_link_still_in_normal_navigation_and_working_page",
+        "tests.test_v83_projekt_db.ProjectDatabaseContract::test_delivered_ui_has_delete_button_for_all_worlds",
+        "tests.test_v83_projekt_db.ProjectDatabaseContract::test_static_app_assets_match_version",
+        "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_browser_api_shell_routes_send_and_check_server_current_build",
+        "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_build_is_from_source_and_checksums_match_delivered_files",
+        "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_checksum_contract_detects_a_tampered_or_old_bundle",
+        "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_delivered_ui_contains_new_controls_and_backend_shares_build_identity",
+        "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_entrypoints_share_v88_and_sqlite_is_not_bundled",
+        "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_html_metadata_source_and_server_are_consistent",
+        "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_versioned_asset_graph_resolves_and_not_old_build",
+        "tests.test_v90_regie_bound_real_fixture.V90LiveFixtureBinding::test_existing_frontend_reaches_same_ids_and_mixed_order_followup",
+        "tests.test_v92_p13_identitaet.P13AvatarRoute::test_avatar_unknown_full_name_target_and_referents",
+        "tests.test_v92_p13_identitaet.P13PuppetRoute::test_n1_n2_live_shape_planner_maps_to_mara_nowak_server_locks",
+        "tests.test_v92_p13_identitaet.P13PuppetRoute::test_two_maras_present_reversed_order_and_absent_schmidt",
+        "tests.test_v92_p16_identitaet.P16AvatarRoute::test_avatar_question_nothing_stored_then_answer",
+        "tests.test_v92_p16_identitaet.P16PuppetRoute::test_question_then_answer_over_http_sqlite_and_follow_up",
+        "tests.test_v92_p22_component_art_and_name_gate.P22NameGate::test_puppet_route_passes_authenticated_actor_id_not_name_lookup",
+        "tests.test_v92_puppet_kette.BerührungStattVerletzung::test_denied_injury_with_touch_reading_keeps_the_touch_class_with_audit",
+        "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_denied_act_with_real_speech_stores_only_the_speech",
+        "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_p10_partial_and_multiple_markers_over_the_route",
+        "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_p12_two_figures_called_mara_target_and_body_chain",
+        "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_p8_pure_foreign_speech_stores_nothing"
+      ]
+    },
+    "G_pruefmaschine_v12": {
+      "status": "BLOCKIERT",
+      "grund": [
+        "Original-DB e03dc445... fehlt",
+        "Modell-/Providerschluessel fuer --modell live fehlt",
+        "P23/P24/P25-Selbstabnahme-ZIPs nicht vorhanden"
+      ]
+    }
+  },
+  "vertragsstatus": {
+    "C04_fremder_giver_und_abgelaufene_fenster": "GRUEN",
+    "S05_tat_antwort_hebt_keine_grenze_auf": "GRUEN",
+    "W1_W3_schreibgrenze_giver_und_proposition": "GRUEN",
+    "W2_actor_gleich_turntruth_sprecher": "ROT",
+    "K1_abi3": "GRUEN",
+    "K2_http_503": "GRUEN",
+    "K2a_verschluckte_pfade": "BLOCKIERT",
+    "K2_frontend_fehler_sichtbar": "ROT",
+    "P25_altbefunde_testsuite": "ROT",
+    "modell_folgeturn_live": "BLOCKIERT",
+    "pruefmaschine_v12_achsen": "BLOCKIERT",
+    "M1_rust_sprecherbindung_eigene_tests": "GRUEN",
+    "M1_kette_fail_closed_ohne_python_und_rust_schicht": "GRUEN",
+    "M1_rust_only_mutation_ueber_kette": "ROT",
+    "M2_prepare_meldung_teilcommit": "GRUEN",
+    "M3_chatliste_fehler_statt_leer": "ROT"
+  },
+  "vertragsstatus_gesamt": "ROT",
+  "exitcode": 2
+}
