@@ -1,0 +1,106 @@
+{
+  "mutationen": {
+    "M1_beleg_ohne_signaturpruefung": {
+      "datei": "matrix_api/app.py",
+      "ersetzungen": 1,
+      "erkannt": true,
+      "rote_tests": [
+        "Negativ::test_restart_invalidates_unfinished_formulations"
+      ],
+      "zusammenfassung": "1 failed, 25 passed in 3.35s"
+    },
+    "M2_eingabe_actor_vom_client": {
+      "datei": "matrix_api/app.py",
+      "ersetzungen": 1,
+      "erkannt": true,
+      "rote_tests": [
+        "Negativ::test_L1_forged_input_actor_is_rejected",
+        "Negativ::test_figure_mode_on_normal_route_is_rejected"
+      ],
+      "zusammenfassung": "2 failed, 24 passed in 3.67s"
+    },
+    "M3_formulierung_ohne_beleg": {
+      "datei": "matrix_api/app.py",
+      "ersetzungen": 1,
+      "erkannt": true,
+      "rote_tests": [
+        "Positiv::test_autochat_follow_up_without_text",
+        "Positiv::test_operator_turn_binds_user_figure_and_server_text_and_follow_up_reads_it",
+        "AvatarPositiv::test_avatar_input_binds_the_avatar_and_mara_answers",
+        "Negativ::test_L2_invented_figure_speech_without_formulation_is_rejected",
+        "Negativ::test_changed_server_text_is_rejected",
+        "Negativ::test_formulation_of_another_turn_is_rejected",
+        "Negativ::test_older_attempt_of_the_same_input_is_rejected",
+        "Negativ::test_proposals_synapsen_cannot_be_added_by_client",
+        "Negativ::test_reused_formulation_is_rejected",
+        "Wahrnehmung::test_explicitly_empty_hearer_list_is_not_everybody"
+      ],
+      "zusammenfassung": "10 failed, 16 passed in 3.71s"
+    },
+    "M4_fired_vom_client": {
+      "datei": "matrix_api/app.py",
+      "ersetzungen": 1,
+      "erkannt": true,
+      "rote_tests": [
+        "Negativ::test_forged_fired_is_rejected"
+      ],
+      "zusammenfassung": "1 failed, 25 passed in 3.82s"
+    },
+    "M5_sprecher_ohne_faehigkeit": {
+      "datei": "matrix_api/kernel.py",
+      "ersetzungen": 1,
+      "erkannt": true,
+      "rote_tests": [
+        "Negativ::test_unconscious_selected_speaker_cannot_speak"
+      ],
+      "zusammenfassung": "1 failed, 25 passed in 4.09s"
+    },
+    "M6_hoerer_rueckfall": {
+      "datei": "matrix_api/kernel.py",
+      "ersetzungen": 3,
+      "erkannt": true,
+      "rote_tests": [
+        "Wahrnehmung::test_explicitly_empty_hearer_list_is_not_everybody"
+      ],
+      "zusammenfassung": "1 failed, 25 passed in 3.66s"
+    },
+    "M7_w2_fremde_evidenz_kernel": {
+      "datei": "matrix_api/kernel.py",
+      "ersetzungen": 1,
+      "erkannt": true,
+      "rote_tests": [
+        "W2::test_named_foreign_fact_is_no_evidence"
+      ],
+      "zusammenfassung": "1 failed, 25 passed in 3.93s"
+    },
+    "M8_w2_status_ohne_evidenz": {
+      "datei": "matrix_api/kernel.py",
+      "ersetzungen": 1,
+      "erkannt": true,
+      "rote_tests": [
+        "W2::test_answer_without_own_utterance_changes_nothing",
+        "W2::test_named_foreign_fact_is_no_evidence"
+      ],
+      "zusammenfassung": "2 failed, 24 passed in 4.36s"
+    },
+    "M9_w2_leseseite": {
+      "datei": "matrix_api/scene_state.py",
+      "ersetzungen": 1,
+      "erkannt": true,
+      "rote_tests": [
+        "W2::test_stored_lifecycle_with_foreign_evidence_is_not_bound"
+      ],
+      "zusammenfassung": "1 failed, 25 passed in 3.69s"
+    },
+    "M10_sec_schluessel_im_mcc": {
+      "datei": "matrix_api/repos.py",
+      "ersetzungen": 1,
+      "erkannt": true,
+      "rote_tests": [
+        "SecMcc::test_mcc_carries_no_key_but_presence"
+      ],
+      "zusammenfassung": "1 failed, 25 passed in 3.59s"
+    }
+  },
+  "alle_erkannt": true
+}

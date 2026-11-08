@@ -3819,7 +3819,18 @@ def _check_lifecycle_actor(conn: sqlite3.Connection, row: sqlite3.Row, payload: 
     if payload.get("kind") not in ("lifecycle", "goal_state_changed"):
         return
     from matrix_api import scene_state as _sc
-    if not _sc.lifecycle_bound(_session_matters(conn, row), payload):
+    view = dict(_session_matters(conn, row))
+    # Stand 07 / K-01 (W2): the write boundary applies the readers' evidence rule too - the named evidence fact and the
+    # Quellturn of this lifecycle row, from this session's stored rows (read only)
+    _rid = str(payload.get("responds_to_fact_id") or payload.get("respondsToFactId") or "")
+    _st = str(payload.get("sourceTurnId") or payload.get("source_turn_id") or "")
+    if _rid:
+        _r = conn.execute("SELECT json FROM scene_facts WHERE session_id=? AND id=?", (row["id"], _rid)).fetchone()
+        view["facts"] = [_loads(_r[0])] if _r else []
+    if _st:
+        _t = conn.execute("SELECT json FROM turn_truth WHERE session_id=? AND id=?", (row["id"], _st)).fetchone()
+        view["turnTruths"] = [_loads(_t[0])] if _t else []
+    if not _sc.lifecycle_bound(view, payload):
         raise WriterError("lifecycle fact from no party of the matter it names", 422, "LIFECYCLE_ACTOR_UNBOUND")
 
 

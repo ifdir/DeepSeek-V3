@@ -1,0 +1,51 @@
+--- basis_06a/src/routes/chat.$sessionId.tsx
++++ stand_07/src/routes/chat.$sessionId.tsx
+@@ -422,6 +422,7 @@
+         sessionId: prepared.session.id,
+         sourceTurnId: prepared.truth.id,
+         speakerId: commitSpeaker.id,
++        turnBeleg: prepared.turnBeleg,
+         turnIndex: prepared.session.turnIndex,
+         traceId: prepared.traceId,
+         temperature: config.temperature,
+@@ -435,6 +436,7 @@
+         provider: config.provider || "openai",
+       };
+       let formulated: FormulateResult | null = null;
++      let formulierungsBeleg: string | undefined;
+       let formulateOk = true;
+       let formulateError = "";
+       let formulateSource = "synapse";
+@@ -453,6 +455,7 @@
+           };
+           if (raw.proposals && typeof raw.proposals === "object") res.proposals = raw.proposals as Record<string, unknown>;
+           formulated = res;
++          formulierungsBeleg = typeof raw.formulierungsBeleg === "string" ? raw.formulierungsBeleg : undefined;
+           formulateSource = String(res.source || raw.source || "synapse");
+         }
+       } catch (e) {
+@@ -484,6 +487,8 @@
+         userName,
+         truth: prepared.truth,
+         traceId: prepared.traceId,
++        turnBeleg: prepared.turnBeleg,
++        formulierungsBeleg,
+       });
+       applyKernel(committed, trace);
+       // V35 (§65): Ein Turn ohne sichtbare neue Figurenzeile ist ein Fehler, keine stille Lücke.
+@@ -842,6 +847,7 @@
+           userName: live.alias || user?.name,
+           truth: { ...prepared.truth, role: "beobachter", authority: "observer", inputKind: "comment", input_kind: "comment", inputActorId: "observer" },
+           traceId: prepared.traceId,
++          turnBeleg: prepared.turnBeleg,
+         });
+         applyKernel(next, trace);
+       } catch (e) {
+@@ -918,6 +924,7 @@
+             userName: live.alias || av.name || user?.name,
+             truth: { ...prepared.truth, role: "avatar", authority: "avatar", inputKind: "speech", input_kind: "speech" },
+             traceId: prepared.traceId,
++            turnBeleg: prepared.turnBeleg,
+           });
+           applyKernel(next, trace);
+           setError("Deine Avatar-Zeile ist gespeichert, aber keine Figur konnte antworten: keine Weltfigur in der Szene. Figur unter Anwesend setzen oder als Puppet holen.");

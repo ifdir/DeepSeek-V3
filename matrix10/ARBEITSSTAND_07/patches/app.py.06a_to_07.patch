@@ -1,0 +1,267 @@
+--- basis_06a/matrix_api/app.py
++++ stand_07/matrix_api/app.py
+@@ -347,6 +347,133 @@
+ import uuid as _uuid  # noqa: E402
+ SERVER_BOOT_ID = _uuid.uuid4().hex[:12]
+ 
++# ---------------------------------------------------------------------------------------------------------------------
++# Stand 07 / K-01 (AMASTER §23 TurnTruth, §28 Schritte 8/16/18-20, §50 "Das LLM formuliert nur"; Kettenvertrag §4 "Der Client
++# darf Bedienabsicht, Auswahl und erwartete Revision senden, aber keine kanonischen ... ueberschreiben"; SPS V65U "ein Neustart
++# beweist das Ende jedes aelteren Versuchs").
++# prepare binds the TurnTruth, /api/llm/formulate re-reads the session and formulates (llm_contract.canonical_formulation_
++# context) - but commit took `truth`, `result`, `fired` and `contradictions` from the request body. A Beleg is this server
++# process's proof that it issued exactly these values for exactly this session, TurnTruth and turn index. It stores NOTHING
++# (no table, no envelope field, no second truth): the data stay in their owners (TurnTruth, pendingInputAttempt, session);
++# the key exists only in this process, so a restart ends every unfinished formulation exactly like V65U ends its attempt.
++import base64 as _b64  # noqa: E402
++import hashlib as _hashlib  # noqa: E402
++import hmac as _hmac  # noqa: E402
++import secrets as _secrets  # noqa: E402
++
++_BELEG_KEY = _secrets.token_bytes(32)
++
++
++def _kanon(obj) -> str:
++    return json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str)
++
++
++def beleg_ausstellen(art: str, daten: dict) -> str:
++    raw = _kanon({"art": art, "boot": SERVER_BOOT_ID, **daten}).encode("utf-8")
++    sig = _hmac.new(_BELEG_KEY, raw, _hashlib.sha256).digest()
++    return _b64.urlsafe_b64encode(raw).decode("ascii") + "." + _b64.urlsafe_b64encode(sig).decode("ascii")
++
++
++def beleg_lesen(art: str, token) -> dict | None:
++    """The payload of a Beleg this process issued for `art`, or None (forged, foreign process, other kind)."""
++    try:
++        raw_b, sig_b = str(token or "").split(".", 1)
++        raw = _b64.urlsafe_b64decode(raw_b.encode("ascii"))
++        sig = _b64.urlsafe_b64decode(sig_b.encode("ascii"))
++    except Exception:
++        return None
++    if not _hmac.compare_digest(_hmac.new(_BELEG_KEY, raw, _hashlib.sha256).digest(), sig):
++        return None
++    try:
++        data = json.loads(raw.decode("utf-8"))
++    except Exception:
++        return None
++    return data if isinstance(data, dict) and data.get("art") == art and data.get("boot") == SERVER_BOOT_ID else None
++
++
++def beleg_hash(token) -> str:
++    return _hashlib.sha256(str(token or "").encode("utf-8")).hexdigest()
++
++
++def turn_kern(truth: dict) -> dict:
++    """The identity of a turn that must not change between prepare, formulate and commit."""
++    t = truth if isinstance(truth, dict) else {}
++
++    def g(a, b):
++        v = t.get(a) if a in t else t.get(b)
++        return "" if v is None else str(v)
++    return {"tt": g("id", "id"), "sid": g("session_id", "sessionId"), "speaker": g("speaker_id", "speakerId"),
++            "inputActor": g("input_actor_id", "inputActorId"), "target": g("target_id", "targetId"),
++            "kind": g("input_kind", "inputKind"), "text": g("text", "text"), "directive": g("directive", "directive")[:300]}
++
++
++def formulierung_kern(result) -> dict:
++    """What a commit takes from a formulation: the figure's speech, action and the model's proposals."""
++    r = result if isinstance(result, dict) else {}
++    props = r.get("proposals") if isinstance(r.get("proposals"), dict) and r.get("proposals") else None
++    act = r.get("action")
++    return {"speech": str(r.get("speech") or ""), "action": (str(act) if act not in (None, "") else None), "proposals": props}
++
++
++def formulierung_leer(result) -> bool:
++    k = formulierung_kern(result)
++    comps = (result or {}).get("components") if isinstance(result, dict) else None
++    return not k["speech"].strip() and not (k["action"] or "").strip() and not k["proposals"] and not comps
++
++
++_SPEAK_AS_OPERATOR = ("operator", "user", "bedienperson")
++
++
++def gebundener_eingabe_actor(session: dict, raw: dict) -> str:
++    """Who produced the input text of an ordinary turn (prepare/commit) - from the canonical session and the UI's
++    stated mode (Bedienabsicht), never from a client actor id (Stand 07 / K-01; AMASTER §8 "der Nutzer ist nicht
++    automatisch eine Figur", §23, §27.2; SPS V65F Bedienperson `user`, V65F.4 followAs). The same mapping as
++    kernel.default_input_actor_id without its first line (an explicit client value won). A figure speaks for herself
++    only through the Puppet route (§27.4). Raises WriterError 422 for a mode this route cannot bind."""
++    speak_as = str(raw.get("speakAs") or raw.get("speak_as") or "").strip().lower()
++    kind = str(raw.get("inputKind") or raw.get("input_kind") or "").strip().lower()
++    role = str((session or {}).get("role") or "teilnehmer").strip().lower()
++    avatar = str((session or {}).get("avatarId") or "")
++    if speak_as in _SPEAK_AS_OPERATOR:
++        return "user"
++    if speak_as == "observer" or kind in ("comment", "observer") or (role == "beobachter" and not speak_as):
++        return "observer"
++    if speak_as == "avatar" or (not speak_as and role in ("avatar", "teilnehmer")):
++        if speak_as == "avatar" and not avatar:
++            raise WriterError("„Als Avatar“ ist gewählt, diese Session hat aber keinen Avatar. Nichts wurde gespeichert.",
++                              422, "EINGABE_ACTOR_UNGEBUNDEN", details={"speakAs": speak_as})
++        return avatar or "user"
++    if not speak_as:
++        return avatar or "user"
++    raise WriterError("Diese Eingabeart ist auf dem normalen Chatweg nicht zulässig (für eine Figur sprechen nur über "
++                      "„Puppet“). Nichts wurde gespeichert.", 422, "EINGABE_ACTOR_UNGEBUNDEN", details={"speakAs": speak_as})
++
++
++def eingabe_binden(session: dict, raw: dict, bound: dict, aid: str) -> dict:
++    """Server-bind the client TurnTruth fields that are not Bedienabsicht. A sent input actor that differs from the bound
++    one is rejected (visible, nothing stored) instead of silently replaced."""
++    derived = gebundener_eingabe_actor(session, raw)
++    sent = str(raw.get("inputActorId") or raw.get("input_actor_id") or "")
++    if sent and sent != derived:
++        raise WriterError("Die Eingabe ist einer anderen Person zugeordnet als dieser Session-Modus erlaubt "
++                          f"(gesendet: {sent}, gebunden: {derived}). Für eine Figur sprechen nur über „Puppet“. "
++                          "Nichts wurde gespeichert.", 422, "EINGABE_ACTOR_UNGEBUNDEN",
++                          details={"gesendet": sent, "gebunden": derived})
++    for k in ("inputActorId", "input_actor_id", "puppetId", "puppet_id", "operatorId", "operator_id", "sceneId",
++              "scene_id", "timeRef", "time_ref", "uploadRef", "upload_ref", "responseSpeakerId", "response_speaker_id"):
++        bound.pop(k, None)
++    scene = (session or {}).get("scene") or {}
++    bound["inputActorId"] = derived
++    bound["operatorId"] = aid or (session or {}).get("userId") or ""
++    if scene.get("placeId"):
++        bound["sceneId"] = scene.get("placeId")
++    if scene.get("time"):
++        bound["timeRef"] = scene.get("time")
++    _up = ((session or {}).get("focus") or {}).get("uploadId") if isinstance((session or {}).get("focus"), dict) else None
++    if _up:
++        bound["uploadRef"] = _up
++    return bound
++
+ # V65W (Tiefenpruefung v1 P05/P07/C6; AMASTER §63 sichere Wiederaufnahme): a boot id alone is no proof that its process
+ # still runs (two server processes on one database, or a restart that overlaps the old process). Every server process
+ # holds an exclusive OS lock on its own start file next to the database (`.matrix_boot/<boot>.lock`) for its lifetime;
+@@ -1585,8 +1712,8 @@
+                 if session.get("avatarId") and not (bound.get("avatarId") or bound.get("avatar_id")):
+                     bound["avatarId"] = session.get("avatarId")
+                 _bind_scene_perception(session, bound)
+-                input_actor_keep = bound.get("inputActorId") or bound.get("input_actor_id")
+-                speak_as_keep = bound.get("speakAs") or bound.get("speak_as")
++                eingabe_binden(session, raw, bound, aid)   # Stand 07 / K-01: input actor, scene/time/upload from the server
++                bound.pop("id", None)   # the TurnTruth id is the server's (an open input keeps its stored one below)
+                 speaker = body.get("speaker") or {}
+                 if not isinstance(speaker, dict):
+                     speaker = {}
+@@ -1662,6 +1789,11 @@
+                     bound["speaker_id"] = chosen["id"]
+                 elif requested and requested != session.get("avatarId") and requested not in present_ids:
+                     raise WriterError("selected speaker is not present", 409, "SPEAKER_NOT_PRESENT")
++                elif requested and requested != session.get("avatarId") and not kernel.figure_speaker_eligible(
++                        session, next((c for c in natives if isinstance(c, dict) and c.get("id") == requested), {"id": requested})):
++                    # Stand 07 / K-01 (AMASTER §28 Schritt 16, §43): the selected figure is present but cannot speak now
++                    raise WriterError("Die gewählte Figur kann gerade nicht sprechen (bewusstlos, geknebelt oder ohne Stimme). "
++                                      "Nichts wurde gespeichert.", 409, "SPEAKER_NOT_CAPABLE", details={"speakerId": requested})
+                 present = natives
+                 world = {}
+                 wid = session.get("worldId")
+@@ -1839,9 +1971,16 @@
+                 from matrix_api import truth as _truth_mod
+                 sp_ = prepared.get("spiegel") or {}
+                 sp_["contradictionsText"] = _truth_mod.render_contradictions(sp_.get("contradictions") or [])
++                # Stand 07 / K-01: the server's proof of THIS turn (identity, turn index, its own fired synapses and
++                # contradictions); formulate and commit accept the turn only with it.
++                _turn_beleg = beleg_ausstellen("turn", {**turn_kern(prepared["truth"]),
++                                                        "turnIndex": int(session.get("turnIndex") or 0),
++                                                        "fired": sp_.get("fired") or [],
++                                                        "contradictions": sp_.get("contradictions") or []})
+                 return {
+                     "ok": True,
+                     "writable": False,
++                    "turnBeleg": _turn_beleg,
+                     "truth": prepared["truth"],
+                     "brainContext": prepared["brainContext"],
+                     "spiegel": prepared.get("spiegel"),
+@@ -1932,7 +2071,9 @@
+             bound["presentIds"] = list((session.get("scene") or {}).get("presentIds") or [])
+             bound.pop("present_ids", None)
+             _bind_scene_perception(session, bound)
++            eingabe_binden(session, raw, bound, aid)   # Stand 07 / K-01: same binding as prepare
+             truth = kernel.normalize_truth(bound)
++            _kern_gesendet = turn_kern(truth)          # Stand 07 / K-01: compared with the Turn-Beleg below
+             conn_read = _get_conn()
+             natives = _sql_natives(conn_read, aid, session)
+             speaker_in = body.get("speaker") or {}
+@@ -1989,7 +2130,49 @@
+             # generated figure output by the normal commit endpoint.
+             if spid and spid == session.get("avatarId") and _normal_kernel_avatar_output_present(result):
+                 return _json_error("AVATAR_NOT_SPEAKER", "Avatar output must come from the user, not normal figure generation", 400, "AVATAR_NOT_SPEAKER")
+-            fired = body.get("fired") or []
++            # Stand 07 / K-01 (AMASTER §23, §28 Schritte 8/18-20, §50; KV §4): commit only the turn this server prepared and
++            # only the formulation this server produced for it. Client `result`, `fired`, `contradictions` and `proposals`
++            # are no source; a deviation is rejected visibly with nothing stored.
++            _tb = beleg_lesen("turn", body.get("turnBeleg"))
++            _tb_kern = {k: (_tb or {}).get(k) for k in _kern_gesendet}
++            if (_tb is None or _tb_kern != _kern_gesendet or _tb.get("sid") != str(session.get("id") or "")
++                    or int(_tb.get("turnIndex") or 0) != int(session.get("turnIndex") or 0)
++                    or (spid and str(spid) != str(_tb.get("speaker") or ""))):
++                _abw = sorted(k for k in _kern_gesendet if _tb is not None and _tb_kern.get(k) != _kern_gesendet[k])
++                return _json_error("TURN_BELEG_UNGUELTIG", "Dieser Turn wurde so nicht vom Server vorbereitet "
++                                   "(Turn, Sprecher, Eingabe oder Stand weichen ab, oder der Server wurde neu gestartet). "
++                                   "Nichts wurde gespeichert.", 422, "TURN_BELEG_UNGUELTIG",
++                                   details={"abweichend": _abw or ["beleg"], "turnIndexServer": session.get("turnIndex")})
++            if spid and str(spid) != str(session.get("avatarId") or "") and not kernel.figure_speaker_eligible(
++                    session, next((c for c in natives if isinstance(c, dict) and c.get("id") == spid), {"id": spid})):
++                return _json_error("SPEAKER_NOT_CAPABLE", "Die Figur kann gerade nicht sprechen. Nichts wurde gespeichert.",
++                                   409, "SPEAKER_NOT_CAPABLE", details={"speakerId": spid})
++            for _key, _own in (("fired", _tb.get("fired") or []), ("contradictions", _tb.get("contradictions") or [])):
++                if body.get(_key) not in (None, []) and _kanon(body.get(_key)) != _kanon(_own):
++                    return _json_error("TURN_BELEG_UNGUELTIG", f"„{_key}“ stammt nicht aus der Vorbereitung dieses Turns. "
++                                       "Nichts wurde gespeichert.", 422, "TURN_BELEG_UNGUELTIG", details={"abweichend": [_key]})
++            if not formulierung_leer(result):
++                _fb = beleg_lesen("formulierung", body.get("formulierungsBeleg"))
++                _att = session.get("pendingInputAttempt") if isinstance(session.get("pendingInputAttempt"), dict) else {}
++                # the latest FINISHED attempt of this open input (repos.mark_pending_attempt) must be the formulation
++                _fertig = [a for a in (_att.get("attempts") or []) if isinstance(a, dict)
++                           and a.get("state") in ("formuliert", "provider_fehler")] \
++                    if str(_att.get("turnTruthId") or "") == str(truth.get("id") or "") else None
++                if (_fb is None or _fb.get("sid") != str(session.get("id") or "") or _fb.get("tt") != str(truth.get("id") or "")
++                        or _fb.get("speaker") != str(spid or "") or _fb.get("turnIndex") != _tb.get("turnIndex")
++                        or _fb.get("turnBeleg") != beleg_hash(body.get("turnBeleg"))
++                        or _kanon(formulierung_kern(result)) != _kanon(_fb.get("result"))
++                        or (_fertig is not None and (not _fertig or str(_fertig[-1].get("id") or "") != str(_fb.get("attempt") or "")))):
++                    return _json_error("FORMULIERUNG_UNGEBUNDEN", "Diese Figurenantwort hat der Server für diesen Turn nicht "
++                                       "formuliert (fremder, veränderter oder älterer Text). Nichts wurde gespeichert.",
++                                       422, "FORMULIERUNG_UNGEBUNDEN")
++                _fk = _fb["result"]
++                result = {"speech": _fk.get("speech") or "", "action": _fk.get("action"),
++                          **({"proposals": _fk["proposals"]} if isinstance(_fk.get("proposals"), dict) else {})}
++            else:
++                result = {"speech": "", "action": None}
++            fired = list(_tb.get("fired") or [])
++            body = {**body, "contradictions": list(_tb.get("contradictions") or []), "proposals": None}
+             matrix_live_log.live_log(
+                 "KERNEL_BIND",
+                 trace_id=trace_id,
+@@ -2304,6 +2487,15 @@
+         body = request.get_json(silent=True) or {}
+         body = body if isinstance(body, dict) else {}
+         _sid, _tt = str(body.get("sessionId") or ""), str(body.get("sourceTurnId") or "")
++        # Stand 07 / K-01: a character formulation belongs to a turn this server prepared (session, TurnTruth, speaker,
++        # turn index from the Turn-Beleg - the client's turnIndex is not the source)
++        _tb = beleg_lesen("turn", body.get("turnBeleg"))
++        if (_tb is None or _tb.get("sid") != _sid or _tb.get("tt") != _tt
++                or (str(body.get("speakerId") or "") and str(body.get("speakerId")) != _tb.get("speaker"))):
++            return _json_error("TURN_BELEG_UNGUELTIG", "Diese Formulierung gehört zu keinem vom Server vorbereiteten Turn "
++                               "(Session, Turn oder Sprecher stimmen nicht, oder der Server wurde neu gestartet). "
++                               "Nichts wurde formuliert oder gespeichert; bitte den Turn neu senden.", 422, "TURN_BELEG_UNGUELTIG")
++        body = {**body, "speakerId": _tb.get("speaker"), "turnIndex": _tb.get("turnIndex")}
+ 
+         _attempt_id = _uuid.uuid4().hex[:10]
+ 
+@@ -2337,6 +2529,13 @@
+             _mark("provider_fehler", error=str(out.get("llmError") or out.get("error") or "")[:120], at=_now_iso())
+         else:
+             _mark("formuliert", at=_now_iso())
++        if isinstance(out, dict) and out.get("ok") is not False and isinstance(out.get("result"), dict):
++            # Stand 07 / K-01: exactly this server formulation may be committed for this turn (AMASTER §28 Schritt 20).
++            # Also for the local Synapse text, which P25 marks as attempt `provider_fehler` (llmError LLM_REQUIRED).
++            out["formulierungsBeleg"] = beleg_ausstellen("formulierung", {
++                "sid": _sid, "tt": _tt, "speaker": _tb.get("speaker"), "turnIndex": _tb.get("turnIndex"),
++                "turnBeleg": beleg_hash(body.get("turnBeleg")), "attempt": _attempt_id,
++                "result": formulierung_kern(out["result"])})
+         if isinstance(out, tuple) and len(out) == 2 and isinstance(out[1], int):
+             return jsonify(out[0]), out[1]
+         return jsonify(out), 200
