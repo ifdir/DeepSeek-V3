@@ -1,0 +1,224 @@
+{
+  "phase": "1",
+  "schritte": [
+    {
+      "name": "P1_nutzer",
+      "fehler": null
+    },
+    {
+      "name": "P1_config_synapse",
+      "fehler": null
+    },
+    {
+      "name": "P1_senden",
+      "fehler": null
+    }
+  ],
+  "api": [
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "/api/users",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "/api/mcc",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/llm/ping",
+      "code": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "/api/mcc",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "/api/config?scope=user",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "PUT",
+      "url": "/api/config",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "/api/mcc",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "PATCH",
+      "url": "/api/users/admin",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "/api/sessions/ses_v92",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "PUT",
+      "url": "/api/sessions/ses_v92",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/logs/live",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/logs/live",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/kernel/prepare",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/ids/allocate",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/llm/formulate",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/logs/live",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/kernel/commit",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/logs",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "/api/sessions/ses_v92",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/logs/live",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "/api/sessions/ses_v92",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/ids/allocate",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/logs/live",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/logs/live",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/logs/live",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/ids/allocate",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/ids/allocate",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/ids/allocate",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/ids/allocate",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/logs",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/logs",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/logs",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/logs",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/logs",
+      "code": null
+    }
+  ],
+  "recalls": []
+}

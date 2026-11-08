@@ -1,0 +1,53 @@
+MATRIX10 Stand 08 - Pruefprotokoll des frisch entpackten Produktpakets
+Paket: MATRIX10_STAND08_PRODUKT_linux-x86_64_6713376.zip
+SHA-256: 50155ec2abdb88bc9fc367b010f81d469a0d931799bfad1e63871b9f265c903c
+Commit (Quellstand des Pakets): 671337640fc1f0bfb4505b2f72398cb3d69d6f29
+Plattform: Linux x86_64 - nur hier gebaut und getestet (Python 3.13, Chromium). Windows/Android: NICHT getestet.
+
+PAKETPRUEFUNG: BESTANDEN  (11/11 Kriterien)
+  PASS  1a_zip_crc_ok
+  PASS  1b_zip_sha256
+  PASS  1c_alle_reparaturebenen_06_07_08_im_paket
+  PASS  1d_rust_bibliothek_und_frontend_vorhanden
+  PASS  2_erststart_ohne_db_ui_api_und_welt
+  PASS  3_cargo_test
+  PASS  4_k01_k02_sec_tests
+  PASS  5_einwilligungskette_10_von_10
+  PASS  6_p25_suite_keine_verschlechterung_ausser_k01_dokumentiert
+  PASS  7a_live_k01_sec_14_kriterien
+  PASS  7b_live_k02_10_kriterien
+
+P25-Testsuite: unveraendertes P25 {'failure': 24, 'error': 1, 'pass': 422}  ->  Paket {'failure': 13, 'pass': 435}
+  rot geworden (dokumentierte K-01-Vertragsabweichung): ['tests.test_v92_p18_koerper.P18AvatarAndFigure::test_avatar_position_and_figure_reply_with_forged_and_real_readings']
+  gruen geworden (gebautes Frontend wird ausgeliefert): 14 Tests
+K-01/K-02/SEC-Tests: ['33 passed in 6.89s']
+
+VERTRAGSSTATUS GESAMT: ROT - keine Produktfreigabe
+  GRUEN            C04_fremder_giver_und_abgelaufene_fenster
+  GRUEN            S05_tat_antwort_hebt_keine_grenze_auf
+  GRUEN            W1_W3_schreibgrenze_giver_und_proposition
+  GRUEN            W2_lifecycle_evidenz_eigene_aeusserung
+  GRUEN            K1_abi3
+  GRUEN            K2_http_503
+  BLOCKIERT        K2a_verschluckte_pfade
+  GRUEN            K2_frontend_fehler_sichtbar
+  ROT              P25_altbefunde_testsuite
+  BLOCKIERT        modell_folgeturn_live
+  BLOCKIERT        pruefmaschine_v12_achsen
+  GRUEN            M1_rust_sprecherbindung_eigene_tests
+  GRUEN            M1_kette_fail_closed_ohne_python_und_rust_schicht
+  ROT              M1_rust_only_mutation_ueber_kette
+  GRUEN            M2_prepare_meldung_teilcommit
+  GRUEN            M3_chatliste_fehler_statt_leer
+  GRUEN            K01_turntruth_und_commit_bindung_offline_deterministisch
+  TEILGESCHLOSSEN  K01_gesamt
+  BLOCKIERT        K01_formulierung_mit_echtem_modell
+  GRUEN            SEC_kein_schluessel_in_antworten_browser_logs
+  ROT              P25_testsuite_zusaetzlich_rot_durch_k01
+  GRUEN            P25_p18_assertions_ueber_produktweg_portiert
+  GRUEN            K02_wahrnehmung_antwortphase_offline_deterministisch
+  GRUEN            K02_figurenabruf_frontend_kanonisch
+  GRUEN            K02_verhalten_aus_erinnerung_offline_synapse
+  BLOCKIERT        K02_verhalten_aus_erinnerung_mit_modell
+  ROT              K02_epistemische_zustaende_und_hoerensagen
+  TEILGESCHLOSSEN  K02_gesamt
