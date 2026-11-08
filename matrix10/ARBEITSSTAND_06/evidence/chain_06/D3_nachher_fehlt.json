@@ -11,8 +11,8 @@
       "sqlite_unveraendert": true,
       "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
       "app_stapelzeilen": [
-        1538,
-        1883
+        1559,
+        1918
       ]
     },
     {
@@ -25,10 +25,10 @@
       "sqlite_unveraendert": true,
       "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
       "app_stapelzeilen": [
-        233,
-        1538,
-        1554,
-        1831
+        254,
+        1559,
+        1575,
+        1854
       ]
     },
     {
@@ -41,8 +41,8 @@
       "sqlite_unveraendert": true,
       "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
       "app_stapelzeilen": [
-        1538,
-        2923
+        1559,
+        2958
       ]
     },
     {
@@ -56,10 +56,10 @@
       "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
       "app_stapelzeilen": [
         188,
-        1538,
-        2549,
-        2763,
-        2884
+        1559,
+        2584,
+        2798,
+        2919
       ]
     },
     {
@@ -72,8 +72,8 @@
       "sqlite_unveraendert": true,
       "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
       "app_stapelzeilen": [
-        1538,
-        2371
+        1559,
+        2406
       ]
     },
     {
@@ -87,9 +87,9 @@
       "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
       "app_stapelzeilen": [
         188,
-        1538,
-        4029,
-        4039
+        1559,
+        4064,
+        4074
       ]
     },
     {
@@ -103,9 +103,9 @@
       "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
       "app_stapelzeilen": [
         188,
-        1538,
-        4060,
-        4085
+        1559,
+        4095,
+        4120
       ]
     },
     {
@@ -119,9 +119,9 @@
       "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
       "app_stapelzeilen": [
         188,
-        1538,
-        3997,
-        4010
+        1559,
+        4032,
+        4045
       ]
     },
     {
@@ -135,9 +135,9 @@
       "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
       "app_stapelzeilen": [
         188,
-        1538,
-        4099,
-        4129
+        1559,
+        4134,
+        4164
       ]
     },
     {
@@ -150,10 +150,10 @@
       "sqlite_unveraendert": true,
       "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
       "app_stapelzeilen": [
-        233,
-        1538,
-        4144,
-        4172
+        254,
+        1559,
+        4179,
+        4207
       ]
     },
     {
@@ -166,7 +166,7 @@
       "sqlite_unveraendert": true,
       "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
       "app_stapelzeilen": [
-        678
+        699
       ]
     },
     {
@@ -180,9 +180,9 @@
       "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
       "app_stapelzeilen": [
         188,
-        1538,
-        4203,
-        4221
+        1559,
+        4238,
+        4256
       ]
     }
   ]

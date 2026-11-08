@@ -6,6 +6,6 @@ test_missing_abi3_field_is_rejected_in_python_before_transport (__main__.Abi3Con
 test_p25_entries_carry_abi3_fields_for_every_kind (__main__.Abi3Contract.test_p25_entries_carry_abi3_fields_for_every_kind) ... ok
 
 ----------------------------------------------------------------------
-Ran 6 tests in 0.013s
+Ran 6 tests in 0.010s
 
 OK

@@ -19,9 +19,11 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      1538,
-      1883
+      1559,
+      1918
      ]
     },
     {
@@ -33,8 +35,10 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      2068
+      2103
      ]
     },
     {
@@ -46,11 +50,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      2114,
-      2161
+      1445,
+      2149,
+      2196
      ]
     },
     {
@@ -62,11 +68,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      2114,
-      2161
+      1445,
+      2149,
+      2196
      ]
     },
     {
@@ -78,15 +86,18 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      2114,
-      2161
+      1445,
+      2149,
+      2196
      ]
     }
    ],
-   "teilcommit_vor_ausfall": []
+   "teilcommit_vor_ausfall": [],
+   "meldung_falsch": []
   },
   {
    "anfrage": "puppet",
@@ -107,9 +118,11 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      1538,
-      2923
+      1559,
+      2958
      ]
     },
     {
@@ -121,10 +134,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      2990,
-      3328,
-      3387
+      3025,
+      3363,
+      3422
      ]
     },
     {
@@ -136,10 +151,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      2990,
-      3330,
-      3387
+      3025,
+      3365,
+      3422
      ]
     },
     {
@@ -151,11 +168,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1538,
-      3005,
-      3114
+      1559,
+      3040,
+      3149
      ]
     },
     {
@@ -167,10 +186,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      3085,
-      3114
+      3120,
+      3149
      ]
     },
     {
@@ -182,10 +203,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      3085,
-      3114
+      3120,
+      3149
      ]
     },
     {
@@ -197,11 +220,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      3110,
-      3114
+      1445,
+      3145,
+      3149
      ]
     },
     {
@@ -213,11 +238,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      3110,
-      3114
+      1445,
+      3145,
+      3149
      ]
     },
     {
@@ -229,15 +256,18 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      3110,
-      3114
+      1445,
+      3145,
+      3149
      ]
     }
    ],
-   "teilcommit_vor_ausfall": []
+   "teilcommit_vor_ausfall": [],
+   "meldung_falsch": []
   },
   {
    "anfrage": "regie",
@@ -258,9 +288,11 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      1538,
-      2549
+      1559,
+      2584
      ]
     },
     {
@@ -272,9 +304,11 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      2675,
-      3328
+      2710,
+      3363
      ]
     },
     {
@@ -286,9 +320,11 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      2675,
-      3330
+      2710,
+      3365
      ]
     },
     {
@@ -300,11 +336,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1538,
-      2763,
-      2884
+      1559,
+      2798,
+      2919
      ]
     },
     {
@@ -316,10 +354,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      2795,
-      2884
+      2830,
+      2919
      ]
     },
     {
@@ -331,10 +371,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      2795,
-      2884
+      2830,
+      2919
      ]
     },
     {
@@ -346,11 +388,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      2873,
-      2884
+      1445,
+      2908,
+      2919
      ]
     },
     {
@@ -362,11 +406,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      2873,
-      2884
+      1445,
+      2908,
+      2919
      ]
     },
     {
@@ -378,15 +424,18 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      2873,
-      2884
+      1445,
+      2908,
+      2919
      ]
     }
    ],
-   "teilcommit_vor_ausfall": []
+   "teilcommit_vor_ausfall": [],
+   "meldung_falsch": []
   },
   {
    "anfrage": "god",
@@ -407,9 +456,11 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      1538,
-      2371
+      1559,
+      2406
      ]
     },
     {
@@ -421,11 +472,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1538,
-      2377,
-      2514
+      1559,
+      2412,
+      2549
      ]
     },
     {
@@ -437,10 +490,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      2490,
-      2514
+      2525,
+      2549
      ]
     },
     {
@@ -452,11 +507,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      2510,
-      2514
+      1445,
+      2545,
+      2549
      ]
     },
     {
@@ -468,11 +525,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      2510,
-      2514
+      1445,
+      2545,
+      2549
      ]
     },
     {
@@ -484,15 +543,18 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      2510,
-      2514
+      1445,
+      2545,
+      2549
      ]
     }
    ],
-   "teilcommit_vor_ausfall": []
+   "teilcommit_vor_ausfall": [],
+   "meldung_falsch": []
   },
   {
    "anfrage": "prepare_nach_commit",
@@ -513,11 +575,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1538,
-      1554,
-      1831
+      254,
+      1559,
+      1575,
+      1854
      ]
     },
     {
@@ -529,11 +593,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1538,
-      1707,
-      1831
+      254,
+      1559,
+      1728,
+      1854
      ]
     },
     {
@@ -545,10 +611,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1711,
-      1831
+      254,
+      1732,
+      1854
      ]
     },
     {
@@ -560,11 +628,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1718,
-      1831
+      254,
+      1445,
+      1739,
+      1854
      ]
     },
     {
@@ -576,11 +646,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1718,
-      1831
+      254,
+      1445,
+      1739,
+      1854
      ]
     },
     {
@@ -592,11 +664,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1718,
-      1831
+      254,
+      1445,
+      1739,
+      1854
      ]
     },
     {
@@ -608,12 +682,14 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1538,
-      1768,
-      1831,
-      3796
+      254,
+      1559,
+      1791,
+      1854,
+      3831
      ]
     },
     {
@@ -625,12 +701,14 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1768,
-      1831,
-      3801
+      254,
+      1445,
+      1791,
+      1854,
+      3836
      ]
     },
     {
@@ -642,12 +720,14 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1768,
-      1831,
-      3801
+      254,
+      1445,
+      1791,
+      1854,
+      3836
      ]
     },
     {
@@ -659,12 +739,14 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1768,
-      1831,
-      3801
+      254,
+      1445,
+      1791,
+      1854,
+      3836
      ]
     },
     {
@@ -676,10 +758,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1776,
-      1831
+      254,
+      1799,
+      1854
      ]
     },
     {
@@ -691,10 +775,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1776,
-      1831
+      254,
+      1799,
+      1854
      ]
     },
     {
@@ -706,10 +792,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1776,
-      1831
+      254,
+      1799,
+      1854
      ]
     },
     {
@@ -721,10 +809,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1776,
-      1831
+      254,
+      1799,
+      1854
      ]
     }
    ],
@@ -737,7 +827,8 @@
     11,
     12,
     13
-   ]
+   ],
+   "meldung_falsch": []
   },
   {
    "anfrage": "prepare_avatar_tat",
@@ -758,11 +849,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1538,
-      1554,
-      1831
+      254,
+      1559,
+      1575,
+      1854
      ]
     },
     {
@@ -774,11 +867,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1538,
-      1707,
-      1831
+      254,
+      1559,
+      1728,
+      1854
      ]
     },
     {
@@ -790,10 +885,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1711,
-      1831
+      254,
+      1732,
+      1854
      ]
     },
     {
@@ -805,11 +902,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1718,
-      1831
+      254,
+      1445,
+      1739,
+      1854
      ]
     },
     {
@@ -821,11 +920,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1718,
-      1831
+      254,
+      1445,
+      1739,
+      1854
      ]
     },
     {
@@ -837,11 +938,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1718,
-      1831
+      254,
+      1445,
+      1739,
+      1854
      ]
     },
     {
@@ -853,12 +956,14 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1538,
-      1768,
-      1831,
-      3796
+      254,
+      1559,
+      1791,
+      1854,
+      3831
      ]
     },
     {
@@ -870,12 +975,14 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1768,
-      1831,
-      3801
+      254,
+      1445,
+      1791,
+      1854,
+      3836
      ]
     },
     {
@@ -887,12 +994,14 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1768,
-      1831,
-      3801
+      254,
+      1445,
+      1791,
+      1854,
+      3836
      ]
     },
     {
@@ -904,12 +1013,14 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1768,
-      1831,
-      3801
+      254,
+      1445,
+      1791,
+      1854,
+      3836
      ]
     },
     {
@@ -921,10 +1032,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1776,
-      1831
+      254,
+      1799,
+      1854
      ]
     },
     {
@@ -936,10 +1049,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1776,
-      1831
+      254,
+      1799,
+      1854
      ]
     },
     {
@@ -951,10 +1066,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1776,
-      1831
+      254,
+      1799,
+      1854
      ]
     },
     {
@@ -966,10 +1083,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1776,
-      1831
+      254,
+      1799,
+      1854
      ]
     }
    ],
@@ -982,7 +1101,8 @@
     11,
     12,
     13
-   ]
+   ],
+   "meldung_falsch": []
   },
   {
    "anfrage": "prepare_avatar_tat_mit_wangengrenze",
@@ -1003,11 +1123,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1538,
-      1554,
-      1831
+      254,
+      1559,
+      1575,
+      1854
      ]
     },
     {
@@ -1019,11 +1141,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1538,
-      1707,
-      1831
+      254,
+      1559,
+      1728,
+      1854
      ]
     },
     {
@@ -1035,10 +1159,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1711,
-      1831
+      254,
+      1732,
+      1854
      ]
     },
     {
@@ -1050,11 +1176,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1718,
-      1831
+      254,
+      1445,
+      1739,
+      1854
      ]
     },
     {
@@ -1066,11 +1194,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1718,
-      1831
+      254,
+      1445,
+      1739,
+      1854
      ]
     },
     {
@@ -1082,11 +1212,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1718,
-      1831
+      254,
+      1445,
+      1739,
+      1854
      ]
     },
     {
@@ -1098,12 +1230,14 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1538,
-      1768,
-      1831,
-      3796
+      254,
+      1559,
+      1791,
+      1854,
+      3831
      ]
     },
     {
@@ -1115,12 +1249,14 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1768,
-      1831,
-      3801
+      254,
+      1445,
+      1791,
+      1854,
+      3836
      ]
     },
     {
@@ -1132,12 +1268,14 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1768,
-      1831,
-      3801
+      254,
+      1445,
+      1791,
+      1854,
+      3836
      ]
     },
     {
@@ -1149,12 +1287,14 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1424,
-      1768,
-      1831,
-      3801
+      254,
+      1445,
+      1791,
+      1854,
+      3836
      ]
     },
     {
@@ -1166,10 +1306,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1776,
-      1831
+      254,
+      1799,
+      1854
      ]
     },
     {
@@ -1181,10 +1323,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1776,
-      1831
+      254,
+      1799,
+      1854
      ]
     },
     {
@@ -1196,10 +1340,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1776,
-      1831
+      254,
+      1799,
+      1854
      ]
     },
     {
@@ -1211,10 +1357,12 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": true,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
      "app_stapel_erster_fehler": [
-      233,
-      1776,
-      1831
+      254,
+      1799,
+      1854
      ]
     }
    ],
@@ -1227,7 +1375,8 @@
     11,
     12,
     13
-   ]
+   ],
+   "meldung_falsch": []
   },
   {
    "anfrage": "commit_mit_tat_gegen_grenze",
@@ -1248,9 +1397,11 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      1538,
-      1883
+      1559,
+      1918
      ]
     },
     {
@@ -1262,9 +1413,11 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      1538,
-      1883
+      1559,
+      1918
      ]
     },
     {
@@ -1276,9 +1429,11 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      2025,
-      3328
+      2060,
+      3363
      ]
     },
     {
@@ -1290,9 +1445,11 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      2025,
-      3330
+      2060,
+      3365
      ]
     },
     {
@@ -1304,8 +1461,10 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      2068
+      2103
      ]
     },
     {
@@ -1317,8 +1476,10 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      2068
+      2103
      ]
     },
     {
@@ -1330,8 +1491,10 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
-      2068
+      2103
      ]
     },
     {
@@ -1343,11 +1506,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      2114,
-      2161
+      1445,
+      2149,
+      2196
      ]
     },
     {
@@ -1359,11 +1524,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      2114,
-      2161
+      1445,
+      2149,
+      2196
      ]
     },
     {
@@ -1375,11 +1542,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      2114,
-      2161
+      1445,
+      2149,
+      2196
      ]
     },
     {
@@ -1391,11 +1560,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      2114,
-      2161
+      1445,
+      2149,
+      2196
      ]
     },
     {
@@ -1407,11 +1578,13 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      2114,
-      2161
+      1445,
+      2149,
+      2196
      ]
     },
     {
@@ -1423,15 +1596,18 @@
      "geschrieben_nach_ausfall": false,
      "teilcommit_vor_ausfall": false,
      "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
      "app_stapel_erster_fehler": [
       188,
-      1424,
-      2114,
-      2161
+      1445,
+      2149,
+      2196
      ]
     }
    ],
-   "teilcommit_vor_ausfall": []
+   "teilcommit_vor_ausfall": [],
+   "meldung_falsch": []
   }
  ]
 }

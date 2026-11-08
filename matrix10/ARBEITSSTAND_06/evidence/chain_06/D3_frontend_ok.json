@@ -1,5 +1,6 @@
 {
   "variante": "ok",
+  "code_erwartet": null,
   "handlungen": [
     {
       "handlung": "U0_nutzer_waehlen",
@@ -19,18 +20,26 @@
           "ok": false
         }
       ],
-      "dialoge": [],
-      "sichtbar_alerts": [],
-      "sichtbar_fehler": false,
-      "text_auszug": "Zum Inhalt ChatHere Start MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103 admin Start Chat Welten Figuren Upload Config Diagnose Löschen / Speicher Mehr CHATHERE · MATRIX10 Start Lokales, zustandsbasiertes KI-Universum. Stamm, Spiegel, Session. Systemstatus BUILD MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103 SERVER läuft AKTIVE DATENBANK /tmp/matrix06_chain_r6vwi7m3/fe/data/matrix10.sqlite SPRACHDIENST / PROVIDER openai · t (Schlüssel: Konfiguration) AKTIVER USER admin ZULETZT VERWENDETE WELT — ZULETZT VERWENDETE SESSION — Weiter Gespräch beginnen Direkte Zugänge Welten anlegen, analysieren, verwalten Figuren Stamm, Kompass, Spawn Chat / Sessions Szenen führen Uploads Mode A prägend, Mode B Wissen Konfiguration Provider, API-Key, Modell Diagnose Ketten, Writer, Reader"
+      "sessions_ladefehler": null,
+      "ladefehler_mit_code": false,
+      "keine_session_sichtbar": false,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": false,
+      "alerts": [],
+      "alert_mit_code": false,
+      "sichtbar_fehler": false
     },
     {
       "handlung": "U0b_chat_seite",
       "api": [],
-      "dialoge": [],
-      "sichtbar_alerts": [],
-      "sichtbar_fehler": false,
-      "text_auszug": "Zum Inhalt ChatHere Chat MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103 admin Start Chat Welten Figuren Upload Config Diagnose Löschen / Speicher Mehr MCC Chat Session wählen. Ohne Session kein Turn. Umbenennen, Reset und Snapshot schreiben denselben SQLite-Owner. Sessions dieses Users Fall 06 Avatar Gasthaus zum siebten Kreis · Turn 1 · Schankraum Öffnen Umbenennen Chat-Reset Runtime Memory Uploads Voll-Reset Snapshot Duplizieren Export Löschen Fall 06 Gasthaus zum siebten Kreis · Turn 0 · Schankraum Öffnen Umbenennen Chat-Reset Runtime Memory Uploads Voll-Reset Snapshot Duplizieren Export Löschen Welt ausdrücklich wählen Gasthaus zum siebten Kreis Avatar wählen oder unten neu anlegen kein Avatar / neu anlegen Stamm als Avatar: Clara Mertens Stamm als Avatar: Johann Bruckner Stamm als Avatar: Mara Nowak Stamm als Avatar: Gustav Pfeiffer Stamm als Avatar: Robert Färber Startsituation Sta"
+      "sessions_ladefehler": null,
+      "ladefehler_mit_code": false,
+      "keine_session_sichtbar": false,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": true,
+      "alerts": [],
+      "alert_mit_code": false,
+      "sichtbar_fehler": false
     },
     {
       "handlung": "U2_chat_reset",
@@ -57,12 +66,14 @@
           "ok": true
         }
       ],
-      "dialoge": [
-        "confirm: Fall 06\n\nChat zurücksetzen: Die Dialogzeilen werden entfernt. Eingaben, Ereignisse, Gedächtnis, Runtime und Uploads bleiben.\n\nFortfahren?"
-      ],
-      "sichtbar_alerts": [],
-      "sichtbar_fehler": false,
-      "text_auszug": "Zum Inhalt ChatHere Chat MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103 admin Start Chat Welten Figuren Upload Config Diagnose Löschen / Speicher Mehr MCC Chat Session wählen. Ohne Session kein Turn. Umbenennen, Reset und Snapshot schreiben denselben SQLite-Owner. Sessions dieses Users Fall 06 Avatar Gasthaus zum siebten Kreis · Turn 1 · Schankraum Öffnen Umbenennen Chat-Reset Runtime Memory Uploads Voll-Reset Snapshot Duplizieren Export Löschen Fall 06 Gasthaus zum siebten Kreis · Turn 0 · Schankraum Öffnen Umbenennen Chat-Reset Runtime Memory Uploads Voll-Reset Snapshot Duplizieren Export Löschen 12:46:11 AM · Nur Chat/Turns — Stand jetzt: 5 Runtime-Figuren, 20 Beziehungen, 0 Erinnerungen, Turn 0 Welt ausdrücklich wählen Gasthaus zum siebten Kreis Avatar wählen oder unten neu anlegen kein Avatar / neu anlegen Stamm als Avatar: Clara Mertens Stamm als Avatar: Johann Bruckner Stamm als A"
+      "sessions_ladefehler": null,
+      "ladefehler_mit_code": false,
+      "keine_session_sichtbar": false,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": true,
+      "alerts": [],
+      "alert_mit_code": false,
+      "sichtbar_fehler": false
     },
     {
       "handlung": "U1_oeffnen",
@@ -82,12 +93,49 @@
           "ok": true
         }
       ],
-      "dialoge": [],
-      "sichtbar_alerts": [
-        "Sprecherbindung fehlt – bitte unter „Spreche als“ wählen, wie du sprichst. Bis dahin wird nichts gespeichert."
+      "sessions_ladefehler": null,
+      "ladefehler_mit_code": false,
+      "keine_session_sichtbar": false,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": true,
+      "alerts": [],
+      "alert_mit_code": false,
+      "sichtbar_fehler": false
+    },
+    {
+      "handlung": "U4_nutzer_ohne_session",
+      "api": [
+        {
+          "status": 200,
+          "method": "GET",
+          "url": "/api/mcc",
+          "code": null,
+          "ok": true
+        },
+        {
+          "status": 200,
+          "method": "POST",
+          "url": "/api/llm/ping",
+          "code": "LLM_REQUIRED",
+          "ok": false
+        },
+        {
+          "status": 200,
+          "method": "GET",
+          "url": "/api/mcc",
+          "code": null,
+          "ok": true
+        }
       ],
+      "sessions_ladefehler": null,
+      "ladefehler_mit_code": false,
+      "keine_session_sichtbar": true,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": false,
+      "alerts": [],
+      "alert_mit_code": false,
       "sichtbar_fehler": false,
-      "text_auszug": "Zum Inhalt ChatHere Chat · Fall 06 MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103 admin Start Chat Welten Figuren Upload Config Diagnose Löschen / Speicher Mehr GASTHAUS ZUM SIEBTEN KREIS Schankraum Johann Mara Gustav Steuerung ausblenden MCC Chat Aktiv Turn 0 Gasthaus zum siebten Kreis admin Teilnehmer Beobachter Teilnehmer Avatar Puppet Regisseur Gott Spreche als – bitte wählen – Als Avatar Als Bedienperson (außerhalb der Welt) Als Beobachter Regie-Stimme Gott / System Puppet: Clara Mertens (nicht anwesend – wird beim Senden in die Szene geholt) Puppet: Johann Bruckner Puppet: Mara Nowak Puppet: Gustav Pfeiffer Puppet: Robert Färber (nicht anwesend – wird beim Senden in die Szene geholt) Direktes Ziel (betroffene Figur, nicht der Handelnde) Ziel wählen… Johann Bruckner Mara Nowak Gustav Pfeiffer Fate Meta Erzähler SYSTEMLAGE Modus teilnehmer Sprecher Avatar keiner Uploadbezug keiner Sz"
+      "anlage_status": 200
     }
   ]
 }

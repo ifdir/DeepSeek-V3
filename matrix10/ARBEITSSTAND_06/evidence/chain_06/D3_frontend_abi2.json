@@ -1,5 +1,6 @@
 {
   "variante": "abi2",
+  "code_erwartet": "NATIVE_ABI_MISMATCH",
   "handlungen": [
     {
       "handlung": "U0_nutzer_waehlen",
@@ -33,30 +34,69 @@
           "ok": false
         }
       ],
-      "dialoge": [],
-      "sichtbar_alerts": [
-        "Speichern fehlgeschlagen\nTechnische Angabe: GET /api/mcc: GET /api/mcc 503"
+      "sessions_ladefehler": null,
+      "ladefehler_mit_code": false,
+      "keine_session_sichtbar": false,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": false,
+      "alerts": [
+        "Speichern fehlgeschlagen Technische Angabe: GET /api/mcc: GET /api/mcc 503 NATIVE_ABI_MISMATCH: Rust-Schreibgrenze: ABI stimmt nicht ueberein"
       ],
-      "sichtbar_fehler": true,
-      "text_auszug": "Zum Inhalt ChatHere Start MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103 admin Start Chat Welten Figuren Upload Config Diagnose Löschen / Speicher Mehr Speichern fehlgeschlagen Technische Angabe: GET /api/mcc: GET /api/mcc 503 CHATHERE · MATRIX10 Start Lokales, zustandsbasiertes KI-Universum. Stamm, Spiegel, Session. Systemstatus BUILD MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103 SERVER läuft AKTIVE DATENBANK /tmp/matrix06_chain_r6vwi7m3/fe/data/matrix10.sqlite SPRACHDIENST / PROVIDER openai · t (Schlüssel: Konfiguration) AKTIVER USER admin ZULETZT VERWENDETE WELT — ZULETZT VERWENDETE SESSION — Weiter Gespräch beginnen Direkte Zugänge Welten anlegen, analysieren, verwalten Figuren Stamm, Kompass, Spawn Chat / Sessions Szenen führen Uploads Mode A prägend, Mode B Wissen Konfiguration Provider, API-Key, Modell Diagnose Ketten, Writer, Reader"
+      "alert_mit_code": true,
+      "sichtbar_fehler": true
     },
     {
       "handlung": "U0b_chat_seite",
-      "api": [],
-      "dialoge": [],
-      "sichtbar_alerts": [
-        "Speichern fehlgeschlagen\nTechnische Angabe: GET /api/mcc: GET /api/mcc 503"
+      "api": [
+        {
+          "status": 503,
+          "method": "GET",
+          "url": "/api/mcc",
+          "code": "NATIVE_ABI_MISMATCH",
+          "ok": false
+        }
       ],
-      "sichtbar_fehler": true,
-      "text_auszug": "Zum Inhalt ChatHere Chat MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103 admin Start Chat Welten Figuren Upload Config Diagnose Löschen / Speicher Mehr Speichern fehlgeschlagen Technische Angabe: GET /api/mcc: GET /api/mcc 503 MCC Chat Session wählen. Ohne Session kein Turn. Umbenennen, Reset und Snapshot schreiben denselben SQLite-Owner. Sessions dieses Users Keine Session. Unten anlegen — Welt muss ausdrücklich gewählt werden. Welt ausdrücklich wählen Avatar wählen oder unten neu anlegen kein Avatar / neu anlegen Startsituation Standard Anwesend zu Beginn (Vorgabe aus der Startsituation, abwählbar) Neue Session Session-Packung importieren"
+      "sessions_ladefehler": "Sessions konnten nicht geladen werden – technischer Fehler, keine leere Liste: GET /api/mcc 503 NATIVE_ABI_MISMATCH: Rust-Schreibgrenze: ABI stimmt nicht ueberein",
+      "ladefehler_mit_code": true,
+      "keine_session_sichtbar": false,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": false,
+      "alerts": [
+        "Speichern fehlgeschlagen Technische Angabe: GET /api/mcc: GET /api/mcc 503 NATIVE_ABI_MISMATCH: Rust-Schreibgrenze: ABI stimmt nicht ueberein",
+        "Sessions konnten nicht geladen werden – technischer Fehler, keine leere Liste: GET /api/mcc 503 NATIVE_ABI_MISMATCH: Rust-Schreibgrenze: ABI stimmt nicht ueberein"
+      ],
+      "alert_mit_code": true,
+      "sichtbar_fehler": true
     },
     {
       "handlung": "U2_chat_reset",
-      "nicht_bedienbar": "Session-Liste nicht geladen (keine Karte \"Fall 06\" sichtbar)"
+      "nicht_bedienbar": "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
     },
     {
       "handlung": "U1_oeffnen",
-      "nicht_bedienbar": "Session-Liste nicht geladen (keine Karte \"Fall 06\" sichtbar)"
+      "nicht_bedienbar": "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
+    },
+    {
+      "handlung": "U3_neuladen_gespeicherter_nutzer",
+      "api": [
+        {
+          "status": 503,
+          "method": "GET",
+          "url": "/api/mcc",
+          "code": "NATIVE_ABI_MISMATCH",
+          "ok": false
+        }
+      ],
+      "sessions_ladefehler": "Sessions konnten nicht geladen werden – technischer Fehler, keine leere Liste: GET /api/mcc 503 NATIVE_ABI_MISMATCH: Rust-Schreibgrenze: ABI stimmt nicht ueberein",
+      "ladefehler_mit_code": true,
+      "keine_session_sichtbar": false,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": false,
+      "alerts": [
+        "Sessions konnten nicht geladen werden – technischer Fehler, keine leere Liste: GET /api/mcc 503 NATIVE_ABI_MISMATCH: Rust-Schreibgrenze: ABI stimmt nicht ueberein"
+      ],
+      "alert_mit_code": true,
+      "sichtbar_fehler": true
     }
   ]
 }

@@ -8,9 +8,11 @@
       "basis_sha256": "33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1",
       "ersetzt": {
         "matrix_api/scene_state.py": "34c70dbd12281e2b2656171b25fc6bd517f6288533b67a6f02ec92c66c4ffee6",
-        "matrix_api/app.py": "a17b6f47012df1751c9551402e8b195549348e58906a949bd6e108c0375519a3"
+        "matrix_api/app.py": "a17b6f47012df1751c9551402e8b195549348e58906a949bd6e108c0375519a3",
+        "src/lib/matrix/api.ts": "e6d31f9fd46615df354bb5f614ae6a0ed06ae62004814a2e6d0124b5853d4fc5",
+        "src/routes/chat.index.tsx": "446627abfaa51f6d0f9e13fb17cc80c7f5a7a38e36294859386edecdbf6c1952"
       },
-      "overlay_dateien": 10
+      "overlay_dateien": 12
     },
     "A_fail_closed_ohne_bibliothek": {
       "status": "PASS",
@@ -65,41 +67,42 @@
     },
     "D3_K2a_verschluckte_pfade": {
       "status": "PASS",
+      "m2_prepare_meldung_falsch": [],
       "ausfallpunkte": 84,
       "fail_open": 0,
       "stellen": [
         {
-          "stelle": "kernel_regie:2757",
+          "stelle": "kernel_regie:2792",
           "status": "BELEGT_FAIL_CLOSED",
           "ausfallpunkte": 3
         },
         {
-          "stelle": "_extract_user_plan:3959",
+          "stelle": "_extract_user_plan:3994",
           "status": "BLOCKIERT_NICHT_ERREICHT",
           "ausfallpunkte": 0
         },
         {
-          "stelle": "kernel_regie:2681",
+          "stelle": "kernel_regie:2716",
           "status": "BELEGT_FAIL_CLOSED",
           "ausfallpunkte": 2
         },
         {
-          "stelle": "kernel_puppet:2999",
+          "stelle": "kernel_puppet:3034",
           "status": "BELEGT_FAIL_CLOSED",
           "ausfallpunkte": 2
         },
         {
-          "stelle": "_read:1771",
+          "stelle": "_read:1794",
           "status": "BELEGT_FAIL_CLOSED",
           "ausfallpunkte": 12
         },
         {
-          "stelle": "kernel_commit:2031",
+          "stelle": "kernel_commit:2066",
           "status": "BELEGT_FAIL_CLOSED",
           "ausfallpunkte": 2
         },
         {
-          "stelle": "_read:1759",
+          "stelle": "_read:1782",
           "status": "BLOCKIERT_NICHT_ERREICHT",
           "ausfallpunkte": 0
         }
@@ -108,6 +111,14 @@
     },
     "D3F_frontend": {
       "status": "PASS",
+      "m3_kriterien": {
+        "ok_liste_sichtbar_ohne_fehler": true,
+        "ok_leere_liste_zeigt_keine_session": true,
+        "fehlt_U0b_chat_seite_fehler_mit_code_keine_leer_kein_laedt": true,
+        "fehlt_U3_neuladen_gespeicherter_nutzer_fehler_mit_code_keine_leer_kein_laedt": true,
+        "abi2_U0b_chat_seite_fehler_mit_code_keine_leer_kein_laedt": true,
+        "abi2_U3_neuladen_gespeicherter_nutzer_fehler_mit_code_keine_leer_kein_laedt": true
+      },
       "kurz": {
         "ok": [
           [
@@ -129,6 +140,11 @@
             "U1_oeffnen",
             false,
             null
+          ],
+          [
+            "U4_nutzer_ohne_session",
+            false,
+            null
           ]
         ],
         "fehlt": [
@@ -145,12 +161,17 @@
           [
             "U2_chat_reset",
             null,
-            "Session-Liste nicht geladen (keine Karte \"Fall 06\" sichtbar)"
+            "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
           ],
           [
             "U1_oeffnen",
             null,
-            "Session-Liste nicht geladen (keine Karte \"Fall 06\" sichtbar)"
+            "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
+          ],
+          [
+            "U3_neuladen_gespeicherter_nutzer",
+            true,
+            null
           ]
         ],
         "abi2": [
@@ -167,12 +188,17 @@
           [
             "U2_chat_reset",
             null,
-            "Session-Liste nicht geladen (keine Karte \"Fall 06\" sichtbar)"
+            "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
           ],
           [
             "U1_oeffnen",
             null,
-            "Session-Liste nicht geladen (keine Karte \"Fall 06\" sichtbar)"
+            "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
+          ],
+          [
+            "U3_neuladen_gespeicherter_nutzer",
+            true,
+            null
           ]
         ]
       }
@@ -215,19 +241,40 @@
             "C04_FREMDER_GIVER"
           ]
         }
+      },
+      "hinweis": "Rust-only-Sprecherbindung ueber die P25-Kette nicht beobachtbar (verdeckt durch lifecycle_bound + _checked_index); Redundanz vom Nutzer als verbindlich entschieden",
+      "rust_unit_sprecherbindung": {
+        "cargo_test_rot": true,
+        "rote_tests": [
+          "consent::tests::different_speaker_cannot_undo_broad_refusal",
+          "consent::tests::different_speaker_cannot_undo_narrow_refusal",
+          "consent::tests::empty_actor_cannot_undo_narrow_refusal",
+          "consent::tests::narrow_permission_is_scoped_to_the_giver",
+          "consent::tests::s05_foreign_or_expired_answer_ends_nothing"
+        ],
+        "status": "PASS"
+      },
+      "kombiniert_fail_closed": {
+        "status": "PASS",
+        "c04_fremder_giver": [
+          "write f2: SOLL REJECT, IST OK",
+          "state: SOLL declined, IST None",
+          "act_consent a3: SOLL declined, IST None",
+          "Lesen gescheitert: NativeBoundaryError:NATIVE_REPLY_INVALID:Native consent result has an unbound evidence index"
+        ]
       }
     },
     "F_p25_testsuite": {
       "status": "PASS",
       "p25": {
-        "error": 1,
+        "pass": 422,
         "failure": 24,
-        "pass": 422
+        "error": 1
       },
       "stage06": {
-        "error": 1,
+        "pass": 422,
         "failure": 24,
-        "pass": 422
+        "error": 1
       },
       "abweichungen": [],
       "p25_altbefunde_rot": [
@@ -279,8 +326,11 @@
     "P25_altbefunde_testsuite": "ROT",
     "modell_folgeturn_live": "BLOCKIERT",
     "pruefmaschine_v12_achsen": "BLOCKIERT",
-    "offen_meldung_teilcommit_prepare": "OFFEN",
-    "offen_chatliste_keine_session_statt_fehler": "OFFEN"
+    "M1_rust_sprecherbindung_eigene_tests": "GRUEN",
+    "M1_kette_fail_closed_ohne_python_und_rust_schicht": "GRUEN",
+    "M1_rust_only_mutation_ueber_kette": "ROT",
+    "M2_prepare_meldung_teilcommit": "GRUEN",
+    "M3_chatliste_fehler_statt_leer": "GRUEN"
   },
   "vertragsstatus_gesamt": "ROT",
   "exitcode": 2

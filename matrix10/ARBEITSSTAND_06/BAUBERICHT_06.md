@@ -50,7 +50,8 @@
 | Datei | Änderung | Erzeugung |
 | --- | --- | --- |
 | `matrix_api/scene_state.py` | Drei Reader + `names_restriction`/`same_restriction` über Rust (aus 05). `body_contact_entries` liefert zusätzlich `actTexts`/`actsBound`. `lifecycle_bound`: Körperkontakt-Antwort nur vom Giver; ohne `propositionId` ungebunden. | `tools/build_overlay_06.py`, Patch `patches/scene_state.py.P25_to_06.patch` |
-| `matrix_api/app.py` | **nur K2**: `NativeBoundaryError` → Rollback + 503 mit Code in `_run_write`, `_run_read`, Routen `prepare`/`commit`/`god`/`puppet`, ein `errorhandler` | `tools/build_overlay_app_06.py`, Patch `patches/app.py.P25_to_06.patch` |
+| `matrix_api/app.py` | **nur K2 + 06a/M2**: `NativeBoundaryError` → Rollback + 503 mit Code in `_run_write`, `_run_read`, Routen `prepare`/`commit`/`god`/`puppet`, ein `errorhandler`; `prepare` meldet einen Teilcommit zutreffend | `tools/build_overlay_app_06.py`, Patch `patches/app.py.P25_to_06.patch` |
+| `src/lib/matrix/api.ts`, `src/routes/chat.index.tsx` | **nur 06a/M3** (Fehleranzeige) | `tools/build_overlay_frontend_06.py`, Patches `patches/*.P25_to_06.patch` |
 | `matrix_api/native_boundary.py` (neu) | FFI-Brücke ABI 3 (aus 05). `validate()` ist **nicht verdrahtet**: der P25-Python-Writer bleibt Owner. | Kopie |
 | `native_core/matrix-boundary-core` (neu) | Rust-Crate aus 05 (ABI 3). `boundary.rs` ist im Crate, aber in 06 nicht verdrahtet. | Kopie |
 
@@ -88,8 +89,8 @@
 ## 5. Offene Befunde (nicht gepatcht, brauchen Entscheidung)
 
 1. **W2** – siehe oben.
-2. **`prepare`-Meldung bei Teilcommit:** Die Eingabe wird *vor* dem Ausfall mit gültiger Rust-Entscheidung gespeichert (P25-Design „committed input stays valid“). Danach meldet die Route 503 „keine Speicherung freigegeben“. Die Meldung ist damit irreführend.
-3. **Chat-Liste im Ausfall:** „Keine Session. Unten anlegen“ statt eines Fehlers. Das Banner nennt nur „503“, nicht den Code. Betrifft `chat.index.tsx`/`apiGetMcc` und bräuchte eine gesonderte Freigabe.
+2. ~~**`prepare`-Meldung bei Teilcommit:**~~ erledigt in 06a/M2. Die Eingabe wird *vor* dem Ausfall mit gültiger Rust-Entscheidung gespeichert (P25-Design „committed input stays valid“). Danach meldet die Route 503 „keine Speicherung freigegeben“. Die Meldung ist damit irreführend.
+3. ~~**Chat-Liste im Ausfall:**~~ erledigt in 06a/M3. „Keine Session. Unten anlegen“ statt eines Fehlers. Das Banner nennt nur „503“, nicht den Code. Betrifft `chat.index.tsx`/`apiGetMcc` und bräuchte eine gesonderte Freigabe.
 4. **P25-Altbefunde:** 24 rote Tests + 1 Sammelfehler, identisch in P25 und Stage 06.
 5. V12, Modell-Folgeturn live: BLOCKIERT (siehe FEHLT).
 
@@ -137,9 +138,35 @@ Bewertung: Teilprüfung E bleibt ROT. Entweder fängt eine künftige Gegenprobe 
 | Modell-Folgeturn live, V12-Achsen | BLOCKIERT |
 | Meldung Teilcommit `prepare`, Chat-Liste „Keine Session“ | OFFEN |
 
+## 7. Nachtrag 06a – drei Entscheidungen des Nutzers (8.11.2026)
+
+Alle drei Maßnahmen bleiben in der P25-Architektur: keine neue Route, keine zweite Zustandsverwaltung, keine neue Einwilligungsregel, keine verlorene Funktion. Gesamtlauf danach: **Exit 2 (ROT)**.
+
+| Maßnahme | Umsetzung | Nachweis | Status |
+| --- | --- | --- | --- |
+| **M1** Rust-Sprecherbindung bleibt (Redundanz verbindlich) | keine Produktänderung | `cargo test` wird bei Entfernen der Rust-Bindung **rot** (5 Tests: `different_speaker_cannot_undo_broad_refusal`, `…_narrow_refusal`, `empty_actor_cannot_undo_narrow_refusal`, `narrow_permission_is_scoped_to_the_giver`, `s05_foreign_or_expired_answer_ends_nothing`); kombinierte Gegenprobe (Python- + Rust-Schicht entfernt) bleibt fail-closed | eigene Tests GRÜN, Kette fail-closed GRÜN; **Rust-only-Mutation über die Kette: weiter nicht erkannt, ROT, dokumentiert** |
+| **M2** `prepare`-Meldung | `app.py`-Overlay: `last = "INPUT_COMMITTED"` nach TX1 (vorhandene Variable), Helfer `_prepare_teilcommit_antwort`; 503 meldet „Eingabe gespeichert. Die Antwort wurde nicht vorbereitet …“ mit `eingabeGespeichert`/`antwortVorbereitet`/`sourceTurnId`, sonst ausdrücklich `eingabeGespeichert: false` | Fehlerinjektion: 42 `prepare`-Ausfallpunkte, Meldung == SQLite-Befund in allen; 84 Ausfallpunkte gesamt, 0 fail-open | GRÜN |
+| **M3** Chat-Liste | `api.ts` (`apiGetMcc` liest Code und Meldung); `chat.index.tsx` („Keine Session“ nur nach erfolgreicher Abfrage mit leerer Liste, sonst `role=alert` mit Code; Startleser-Fehler statt „Lädt…“) | gebaute UI im Chromium: ohne `.so` / ABI 2 nach Nutzerwahl **und** nach Neuladen Fehler mit `NATIVE_BOUNDARY_UNAVAILABLE` / `NATIVE_ABI_MISMATCH`, keine Leer- oder Lademeldung; mit Rust Liste sichtbar; Nutzer ohne Session → „Keine Session“; TypeScript-Fehlermenge identisch (606) | GRÜN |
+
+**AMASTER-Prüfung zu M2:** Die Speicherung der Eingabe vor der Antwortvorbereitung ist zulässig, Atomarität wird nicht verlangt. Belege:
+- §4 Gesamtfluss: Fakten schreiben vor dem BrainContext;
+- §28 Schritt 20;
+- §34.1: Das Scheitern einer Komponente vernichtet keine gültige andere;
+- P25 hat den Zustand „offene Eingabe“ (V65U).
+
+Die Transaktionsgrenze bleibt deshalb. Die Einwilligung der Eingabe-Handlungen wird **in** TX1 mit funktionierendem Kern entschieden; nicht abgeschlossen sind nur die Wahrnehmungsbewertung und die Antwortvorbereitung. Die Meldung sagt genau das.
+
+**Regression:** Alle Stufen 0–F wurden erneut ausgeführt.
+- P25-Suite: P25 und Stage 06 identisch (422/24/1).
+- HTTP: mit Rust 12×200, im Ausfall 24/24 Antworten 503.
+
+**Resthinweis (nicht in den freigegebenen Dateien):** Das Shell-Banner (`confirm-reset.ts`/`shell.tsx`) trägt beim Laden den Titel „Speichern fehlgeschlagen“. Es zeigt jetzt aber den Code.
+
+**Weiter ROT:** W2, P25-Altbefunde, Rust-only-Mutation über die Kette. **BLOCKIERT:** V12, Modell-Folgeturn live, K2a-Stellen Z. 3959/1759.
+
 ## No-Touch (eingehalten)
 
-Übrige P25-Kernel- und Writer-Logik, `act_consent`, Einwilligungsregeln ausserhalb der Rust-Reducer, Routen (keine neuen), Frontend, P25-Tests (keine Assertion geändert), Original-DB, `VERSION.txt`, Prüfmaschine V12.
+Übrige P25-Kernel- und Writer-Logik, `act_consent`, Einwilligungsregeln ausserhalb der Rust-Reducer, Routen (keine neuen), Frontend ausser `api.ts`/`chat.index.tsx` (06a/M3), P25-Tests (keine Assertion geändert), Original-DB, `VERSION.txt`, Prüfmaschine V12.
 
 ## Reproduktion
 
