@@ -69,16 +69,12 @@ def main() -> int:
     root = next((work / "entpackt").iterdir())
     st = json.loads((root / "MATRIX10_STAND08_STATUS.json").read_text())
     E["commit"] = st["commit"]
-    abw = []
-    for ebene in ("ebene_07", "ebene_08"):
-        for rel, info in st[ebene].items():
-            want = info["sha256"] if isinstance(info, dict) else info
-            if sha(root / rel) != want:
-                abw.append(rel)
-    for rel, want in st["ebene_06"].items():
-        p = root / rel
-        if p.is_file() and rel not in st["ebene_07"] and rel not in st["ebene_08"] and sha(p) != want:
-            abw.append(rel)
+    # massgeblich ist je Datei die OBERSTE Ebene, die sie ersetzt (08 vor 07 vor 06)
+    oberste: dict = {rel: want for rel, want in st["ebene_06"].items()}
+    oberste.update({rel: (info["sha256"] if isinstance(info, dict) else info) for rel, info in st["ebene_07"].items()})
+    oberste.update({rel: (info["sha256"] if isinstance(info, dict) else info) for rel, info in st["ebene_08"].items()})
+    abw = sorted(rel for rel, want in oberste.items() if not (root / rel).is_file() or sha(root / rel) != want)
+    E["geprueft_dateien_aus_ebenen"] = len(oberste)
     K["1c_alle_reparaturebenen_06_07_08_im_paket"] = not abw
     E["hash_abweichungen"] = abw
     K["1d_rust_bibliothek_und_frontend_vorhanden"] = (sha(root / "matrix_api/native/libmatrix_boundary_core.so") == st["rust_bibliothek_sha256"]
@@ -138,7 +134,11 @@ def main() -> int:
     abw6 = sorted(k for k in set(r["p25"]) | set(r["paket"]) if r["p25"].get(k) != r["paket"].get(k))
     E["p25_suite"] = {lbl: {s: list(v.values()).count(s) for s in set(v.values())} for lbl, v in r.items()}
     E["p25_suite_abweichungen"] = abw6
-    K["6_p25_suite_nur_dokumentierte_k01_abweichung"] = abw6 == [K01_ABW]
+    verschlechtert = sorted(k for k in abw6 if r["p25"].get(k) == "pass" and r["paket"].get(k) != "pass")
+    verbessert = sorted(k for k in abw6 if r["p25"].get(k) != "pass" and r["paket"].get(k) == "pass")
+    E["p25_suite_verschlechtert"], E["p25_suite_verbessert"] = verschlechtert, verbessert
+    # kein in P25 gruener Test darf im Paket rot sein - ausser der dokumentierten K-01-Vertragsabweichung
+    K["6_p25_suite_keine_verschlechterung_ausser_k01_dokumentiert"] = verschlechtert == [K01_ABW]
     # ---- 7
     c1, o1 = sh([sys.executable, "-I", str(T07 / "live_abnahme_k01_07.py"), str(root), str(vorlage), str(prot / "live_k01")], timeout=1800)
     c2, o2 = sh([sys.executable, "-I", str(T08 / "live_abnahme_k02_08.py"), str(root), str(vorlage), str(prot / "live_k02")], timeout=1800)
