@@ -44,3 +44,12 @@
 2. **Nur dort reparieren**, über den vorhandenen Owner `apply_appraisals`. Zweite Schreiber (Wortlisten, Socialseite ohne Ereignis) werden nicht weiter gebaut, sondern nach Kettenvertrag §6 als Owner-Konflikt behandelt.
 3. **Wiederholen, bis F1 mit dem Test-Modell durchläuft.** Danach folgen ein Paket für Linux und Android und deine Abnahme auf dem Handy mit echtem Modell.
 4. Erst danach geht es um K-05: Mara handelt von selbst.
+
+## Nachtrag: Schritt 1 gemessen (Paket 9b94cb8, Testmodell)
+Die Kernel-Kette F1 ist **ERFÜLLT (11/11)**. Die Gegenprobe ohne Bedeutung ist ROT. Befunde B1–B4 stehen in `ARBEITSSTAND_09/BEFUND_F1_DURCHLAUF_09.md`.
+
+Damit ändern sich in der Tabelle:
+- Glied 3 und Glied 6: von UNKLAR auf **gemessen erfüllt** (mit Testmodell).
+- Glied 4: Die Kette ist erfüllt, **sobald ein Modell die Bewertung liefert**. Ohne Schlüssel bleibt sie ROT/BLOCKIERT.
+
+Echte Abnahme steht weiter aus: echtes Modell, auf dem Handy.
