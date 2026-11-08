@@ -35,6 +35,12 @@ def sha(p: Path) -> str:
 
 def main() -> int:
     zpath, target = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()
+    # Nachpruefung 06a: jede ersetzte P25-Datei MUSS im Overlay liegen (sonst bliebe still das Original stehen,
+    # z. B. wenn eine .gitignore-Regel die Overlay-Datei aus dem Commit ausschliesst).
+    fehlend = sorted(rel for rel in REPLACED if not (OVERLAY / rel).is_file())
+    if fehlend:
+        print(f"ABBRUCH: Overlay unvollstaendig, fehlt: {fehlend}")
+        return 2
     if target.exists():
         print(f"ABBRUCH: Zielordner existiert bereits: {target}")
         return 2
