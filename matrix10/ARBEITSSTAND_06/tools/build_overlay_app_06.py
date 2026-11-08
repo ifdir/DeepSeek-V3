@@ -5,6 +5,7 @@ Eingriffe ausschliesslich an den gemessen betroffenen Stellen (evidence/chain_06
   1. _run_write: Rollback + 503 vor den allgemeinen Zweigen (regie, presence, perception, move, fate, reset);
      _run_read: 503 (autochat-gate).
   2. Routen /api/kernel/god, /puppet, /prepare, /commit: eigener Zweig vor `except Exception` (dort sonst 400 KERNEL_FAILED).
+     06a / M2: prepare meldet, ob die Eingabe VOR dem Ausfall bereits gespeichert war (details.eingabeGespeichert).
   3. create_app: errorhandler fuer nicht abgefangene Faelle (GET /api/sessions/<id>), mit Rollback.
 Keine neue Route, keine Aenderung an Einwilligungsregeln oder Zustandsverwaltung.
 Aufruf: python3 -I build_overlay_app_06.py <P25-app.py> <ziel>
@@ -79,8 +80,86 @@ def main():
         return _json_error(exc.code, exc.message, 503, exc.code)
     except IsolationError as exc:
         return _json_error(str(exc), str(exc), 403, "ISOLATION")''')
+    # 06a / M2: Helfer fuer die zutreffende Meldung, wenn die Eingabe vor dem Ausfall gespeichert war
+    rep('''def _run_read(fn):''',
+        '''_PREPARE_NACH_EINGABE = ("INPUT_COMMITTED", "KERNEL_BIND", "BRAIN_CONTEXT")
+
+
+def _prepare_teilcommit_antwort(code, body):
+    """Stand 06a / M2 (AMASTER §4/§28/§34.1, §65): prepare committed the input BEFORE the consent core failed (its own
+    consent was decided inside that transaction with a working core); the reply was not prepared. Say exactly that -
+    never "nothing stored", never success. The pending input id is read from the stored session envelope."""
+    _pending = None
+    try:
+        _sid = str((body or {}).get("sessionId") or ((body or {}).get("truth") or {}).get("sessionId") or "")
+        _row = _get_conn().execute("SELECT json FROM sessions WHERE id=?", (_sid,)).fetchone()
+        _pending = (json.loads(_row[0]) or {}).get("pendingInputTurnId") if _row else None
+    except Exception:
+        _pending = None
+    return _json_error(code,
+                       "Eingabe gespeichert. Die Antwort wurde nicht vorbereitet: die Rust-Einwilligungspruefung ist "
+                       "waehrend der Wahrnehmungsbewertung/Antwortvorbereitung ausgefallen. Es wurde keine Antwort erzeugt "
+                       "und nichts Weiteres freigegeben; die gespeicherte Eingabe bleibt offen (Antwort erneut erzeugen).",
+                       503, code, details={"eingabeGespeichert": True, "antwortVorbereitet": False, "sourceTurnId": _pending})
+
+
+def _run_read(fn):''')
+    rep('''                    "trace_id": trace_id,
+                }
+
+            return _run_read(_read)
+        except IsolationError as exc:
+            matrix_live_log.live_error(trace_id=trace_id, stage="VALIDATION", exc=exc, last_successful_stage=last)''',
+        '''                    "trace_id": trace_id,
+                }
+
+            _antwort = _run_read(_read)
+            # 06a / M2: _run_read maps a consent-core failure to 503; if the input was already committed, say so
+            if isinstance(_antwort, tuple) and len(_antwort) == 2 and _antwort[1] == 503:
+                _j = _antwort[0].get_json(silent=True) or {}
+                if str(_j.get("code") or "").startswith("NATIVE_"):
+                    if last in _PREPARE_NACH_EINGABE:
+                        return _prepare_teilcommit_antwort(_j.get("code"), body)
+                    return _json_error(_j.get("code"), str(_j.get("message") or ""), 503, _j.get("code"),
+                                       details={"eingabeGespeichert": False, "antwortVorbereitet": False})
+            return _antwort
+        except IsolationError as exc:
+            matrix_live_log.live_error(trace_id=trace_id, stage="VALIDATION", exc=exc, last_successful_stage=last)''')
     # Routen prepare / commit (gemessen: 400 KERNEL_FAILED, Kern ausserhalb _run_write erreicht)
-    for stage in ("KERNEL_PREPARE", "KERNEL_COMMIT"):
+    # Stand 06a / M2: in prepare die tatsaechlich erreichte Stufe nach TX1 festhalten (vorhandene Variable `last`)
+    rep('''                        except Exception:
+                            conn.rollback()
+                            raise
+                        matrix_live_log.live_log("SQLITE_COMMIT", trace_id=trace_id,
+                            status="INPUT_COMMITTED", session_id=session.get("id"),''',
+        '''                        except Exception:
+                            conn.rollback()
+                            raise
+                        # Stand 06a / M2: the input is committed (its own consent was decided inside this transaction)
+                        last = "INPUT_COMMITTED"
+                        matrix_live_log.live_log("SQLITE_COMMIT", trace_id=trace_id,
+                            status="INPUT_COMMITTED", session_id=session.get("id"),''')
+    rep('''        except WriterError as exc:
+            return _json_error(exc.error, exc.message, exc.status, exc.error, details=getattr(exc, "details", None))
+        except Exception as exc:
+            matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_PREPARE", exc=exc, last_successful_stage=last)
+            return _json_error("KERNEL_FAILED", str(exc), 400)''',
+        '''        except WriterError as exc:
+            return _json_error(exc.error, exc.message, exc.status, exc.error, details=getattr(exc, "details", None))
+        except NativeBoundaryError as exc:   # Stand 06 / K2 + 06a / M2: measured 400 KERNEL_FAILED before
+            matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_PREPARE", exc=exc, last_successful_stage=last)
+            try:
+                _get_conn().rollback()
+            except Exception:
+                pass
+            if last in _PREPARE_NACH_EINGABE:
+                return _prepare_teilcommit_antwort(exc.code, body)
+            return _json_error(exc.code, exc.message, 503, exc.code,
+                               details={"eingabeGespeichert": False, "antwortVorbereitet": False})
+        except Exception as exc:
+            matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_PREPARE", exc=exc, last_successful_stage=last)
+            return _json_error("KERNEL_FAILED", str(exc), 400)''')
+    for stage in ("KERNEL_COMMIT",):
         rep(f'''        except WriterError as exc:
             return _json_error(exc.error, exc.message, exc.status, exc.error, details=getattr(exc, "details", None))
         except Exception as exc:

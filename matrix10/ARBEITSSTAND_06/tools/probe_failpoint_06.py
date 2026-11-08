@@ -239,13 +239,19 @@ def main() -> int:
                            "geschrieben_nach_ausfall": nach_ausfall_geschrieben,
                            "teilcommit_vor_ausfall": bei is not None and bei != vorher,
                            "fail_open": nach_ausfall_geschrieben or erfolg,
+                           # 06a / M2: gemeldete Speicherung (Antwortfeld) gegen den gemessenen SQLite-Befund
+                           "eingabe_gespeichert_gemeldet": j.get("eingabeGespeichert"),
+                           "meldung_stimmt": (None if not name.startswith("prepare") else
+                                              (isinstance(j.get("eingabeGespeichert"), bool)
+                                               and j.get("eingabeGespeichert") == (bei is not None and bei != vorher))),
                            "app_stapel_erster_fehler": st["erster_fehler"]})
         ergebnis.append({"anfrage": name, "kernaufrufe_ohne_ausfall": n_ok, "status_ohne_ausfall": status_ok,
                          "geprueft_k": len(punkte), "fail_open": [p for p in punkte if p["fail_open"]],
                          "status_verteilung": sorted({f"{p['status']}:{p['code']}" for p in punkte}), "punkte": punkte})
         ergebnis[-1]["teilcommit_vor_ausfall"] = [p["k"] for p in punkte if p["teilcommit_vor_ausfall"]]
+        ergebnis[-1]["meldung_falsch"] = [p["k"] for p in punkte if p["meldung_stimmt"] is False]
         print(f"{name:8} Kernaufrufe {n_ok:4} geprueft {len(punkte):4} fail_open {len(ergebnis[-1]['fail_open'])} "
-              f"teilcommit_vor_ausfall {len(ergebnis[-1]['teilcommit_vor_ausfall'])} "
+              f"teilcommit_vor_ausfall {len(ergebnis[-1]['teilcommit_vor_ausfall'])} meldung_falsch {len(ergebnis[-1]['meldung_falsch'])} "
               f"Status {ergebnis[-1]['status_verteilung']}")
     a.output.parent.mkdir(parents=True, exist_ok=True)
     a.output.write_text(json.dumps({"anfragen": ergebnis}, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")

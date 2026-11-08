@@ -227,6 +227,27 @@ def _run_write(fn, *, checkpoint_after: bool = False):
         return _json_error("WRITE_FAILED", str(exc), 500)
 
 
+_PREPARE_NACH_EINGABE = ("INPUT_COMMITTED", "KERNEL_BIND", "BRAIN_CONTEXT")
+
+
+def _prepare_teilcommit_antwort(code, body):
+    """Stand 06a / M2 (AMASTER §4/§28/§34.1, §65): prepare committed the input BEFORE the consent core failed (its own
+    consent was decided inside that transaction with a working core); the reply was not prepared. Say exactly that -
+    never "nothing stored", never success. The pending input id is read from the stored session envelope."""
+    _pending = None
+    try:
+        _sid = str((body or {}).get("sessionId") or ((body or {}).get("truth") or {}).get("sessionId") or "")
+        _row = _get_conn().execute("SELECT json FROM sessions WHERE id=?", (_sid,)).fetchone()
+        _pending = (json.loads(_row[0]) or {}).get("pendingInputTurnId") if _row else None
+    except Exception:
+        _pending = None
+    return _json_error(code,
+                       "Eingabe gespeichert. Die Antwort wurde nicht vorbereitet: die Rust-Einwilligungspruefung ist "
+                       "waehrend der Wahrnehmungsbewertung/Antwortvorbereitung ausgefallen. Es wurde keine Antwort erzeugt "
+                       "und nichts Weiteres freigegeben; die gespeicherte Eingabe bleibt offen (Antwort erneut erzeugen).",
+                       503, code, details={"eingabeGespeichert": True, "antwortVorbereitet": False, "sourceTurnId": _pending})
+
+
 def _run_read(fn):
     conn = _get_conn()
     try:
@@ -1720,6 +1741,8 @@ def create_app(db_path_arg=None) -> Flask:
                         except Exception:
                             conn.rollback()
                             raise
+                        # Stand 06a / M2: the input is committed (its own consent was decided inside this transaction)
+                        last = "INPUT_COMMITTED"
                         matrix_live_log.live_log("SQLITE_COMMIT", trace_id=trace_id,
                             status="INPUT_COMMITTED", session_id=session.get("id"),
                             source_turn_id=incoming.get("id"))
@@ -1828,20 +1851,32 @@ def create_app(db_path_arg=None) -> Flask:
                     "trace_id": trace_id,
                 }
 
-            return _run_read(_read)
+            _antwort = _run_read(_read)
+            # 06a / M2: _run_read maps a consent-core failure to 503; if the input was already committed, say so
+            if isinstance(_antwort, tuple) and len(_antwort) == 2 and _antwort[1] == 503:
+                _j = _antwort[0].get_json(silent=True) or {}
+                if str(_j.get("code") or "").startswith("NATIVE_"):
+                    if last in _PREPARE_NACH_EINGABE:
+                        return _prepare_teilcommit_antwort(_j.get("code"), body)
+                    return _json_error(_j.get("code"), str(_j.get("message") or ""), 503, _j.get("code"),
+                                       details={"eingabeGespeichert": False, "antwortVorbereitet": False})
+            return _antwort
         except IsolationError as exc:
             matrix_live_log.live_error(trace_id=trace_id, stage="VALIDATION", exc=exc, last_successful_stage=last)
             matrix_live_log.live_log("VALIDATION", trace_id=trace_id, result="REJECT", reject_reason=str(exc))
             return _json_error(str(exc), str(exc), 403, "ISOLATION")
         except WriterError as exc:
             return _json_error(exc.error, exc.message, exc.status, exc.error, details=getattr(exc, "details", None))
-        except NativeBoundaryError as exc:   # Stand 06 / K2: measured 400 KERNEL_FAILED before
+        except NativeBoundaryError as exc:   # Stand 06 / K2 + 06a / M2: measured 400 KERNEL_FAILED before
             matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_PREPARE", exc=exc, last_successful_stage=last)
             try:
                 _get_conn().rollback()
             except Exception:
                 pass
-            return _json_error(exc.code, exc.message, 503, exc.code)
+            if last in _PREPARE_NACH_EINGABE:
+                return _prepare_teilcommit_antwort(exc.code, body)
+            return _json_error(exc.code, exc.message, 503, exc.code,
+                               details={"eingabeGespeichert": False, "antwortVorbereitet": False})
         except Exception as exc:
             matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_PREPARE", exc=exc, last_successful_stage=last)
             return _json_error("KERNEL_FAILED", str(exc), 400)
