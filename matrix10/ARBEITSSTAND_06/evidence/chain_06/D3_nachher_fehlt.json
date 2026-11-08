@@ -1,0 +1,77 @@
+{
+  "variante": "fehlt",
+  "anfragen": [
+    {
+      "anfrage": "POST /api/kernel/puppet (Johann streichelt Mara)",
+      "erreicht_native_grenze": true,
+      "status": 503,
+      "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+      "erfolgsmeldung": false,
+      "sqlite_unveraendert": true,
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben."
+    },
+    {
+      "anfrage": "POST /api/kernel/regie (Johann streichelt Mara)",
+      "erreicht_native_grenze": true,
+      "status": 503,
+      "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+      "erfolgsmeldung": false,
+      "sqlite_unveraendert": true,
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben."
+    },
+    {
+      "anfrage": "POST /api/kernel/god (Koerper Mara)",
+      "erreicht_native_grenze": true,
+      "status": 503,
+      "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+      "erfolgsmeldung": false,
+      "sqlite_unveraendert": true,
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben."
+    },
+    {
+      "anfrage": "POST /api/kernel/presence",
+      "erreicht_native_grenze": true,
+      "status": 503,
+      "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+      "erfolgsmeldung": false,
+      "sqlite_unveraendert": true,
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben."
+    },
+    {
+      "anfrage": "POST /api/kernel/perception",
+      "erreicht_native_grenze": true,
+      "status": 503,
+      "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+      "erfolgsmeldung": false,
+      "sqlite_unveraendert": true,
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben."
+    },
+    {
+      "anfrage": "POST /api/kernel/move",
+      "erreicht_native_grenze": true,
+      "status": 503,
+      "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+      "erfolgsmeldung": false,
+      "sqlite_unveraendert": true,
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben."
+    },
+    {
+      "anfrage": "POST /api/kernel/fate",
+      "erreicht_native_grenze": true,
+      "status": 503,
+      "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+      "erfolgsmeldung": false,
+      "sqlite_unveraendert": true,
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben."
+    },
+    {
+      "anfrage": "GET /api/sessions/<id>",
+      "erreicht_native_grenze": true,
+      "status": 503,
+      "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+      "erfolgsmeldung": false,
+      "sqlite_unveraendert": true,
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben."
+    }
+  ]
+}

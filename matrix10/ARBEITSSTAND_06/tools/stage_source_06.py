@@ -22,7 +22,8 @@ P25_ZIP_SHA256 = "33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860
 P25_DIR = "MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107"
 OVERLAY = Path(__file__).resolve().parents[1] / "overlay"
 # Original-Datei in P25 -> erwarteter SHA-256 (nur Dateien, die das Overlay ERSETZT)
-REPLACED = {"matrix_api/scene_state.py": None}
+REPLACED = {"matrix_api/scene_state.py": "34c70dbd12281e2b2656171b25fc6bd517f6288533b67a6f02ec92c66c4ffee6",
+            "matrix_api/app.py": "a17b6f47012df1751c9551402e8b195549348e58906a949bd6e108c0375519a3"}   # K2: nur NativeBoundaryError -> 503
 NEW = {"matrix_api/native_boundary.py", "native_core/matrix-boundary-core"}
 
 
@@ -51,6 +52,10 @@ def main() -> int:
         z.extractall(target)
     root = target / P25_DIR
     original = {rel: sha(root / rel) for rel in REPLACED}
+    for rel, want in REPLACED.items():
+        if original[rel] != want:
+            print(f"ABBRUCH: {rel} in P25 hat nicht den erwarteten Originalhash")
+            return 2
     for rel in NEW:
         if (root / rel).exists():
             print(f"ABBRUCH: {rel} existiert in P25 bereits; Overlay wuerde ueberschreiben")

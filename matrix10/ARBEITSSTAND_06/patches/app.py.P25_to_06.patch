@@ -1,0 +1,66 @@
+--- a/matrix_api/app.py
++++ b/matrix_api/app.py
+@@ -26,6 +26,7 @@
+ from matrix_api.db import connect, db_path, init_schema
+ from matrix_api.isolation import get_actor, read_actor_raw
+ from matrix_api import kernel
++from matrix_api.native_boundary import NativeBoundaryError   # Stand 06 / K2: Fehler des Rust-Einwilligungskerns
+ from matrix_api import live_log as matrix_live_log
+ from matrix_api.analyze import analyze_text
+ from matrix_api.genre_policy import evaluate_genre
+@@ -204,6 +205,11 @@
+             body, status = out
+             return jsonify(body), status
+         return jsonify(out), 200
++    except NativeBoundaryError as exc:
++        # Stand 06 / K2 (AMASTER §65 "Fehler duerfen nicht verschluckt werden", fail-closed): the Rust consent core is
++        # unavailable or refused its contract - nothing is committed, the client gets 503 with the boundary's code.
++        conn.rollback()
++        return _json_error(exc.code, exc.message, 503, exc.code)
+     except SnapshotForbidden as exc:
+         conn.rollback()
+         return _json_error("SNAPSHOT_OWNER_FORBIDDEN", str(exc), 409, "SNAPSHOT_OWNER_FORBIDDEN")
+@@ -440,6 +446,15 @@
+ def create_app(db_path_arg=None) -> Flask:
+     app = Flask(__name__)
+     app.config["JSON_SORT_KEYS"] = False
++
++    @app.errorhandler(NativeBoundaryError)
++    def _native_boundary_unavailable(exc):
++        # Stand 06 / K2: a consent-core failure no route caught itself (measured: puppet, GET /api/sessions/<id>)
++        try:
++            _get_conn().rollback()
++        except Exception:
++            pass
++        return _json_error(exc.code, exc.message, 503, exc.code)
+     if db_path_arg is not None:
+         app.config["MATRIX_DB"] = str(db_path_arg)
+ 
+@@ -2487,6 +2502,13 @@
+             return _json_error(str(exc), str(exc), 403, "ISOLATION")
+         except WriterError as exc:
+             return _json_error(exc.error, exc.message, exc.status, exc.error, details=getattr(exc, "details", None))
++        except NativeBoundaryError as exc:   # Stand 06 / K2: the God path reaches the consent core outside _run_write
++            matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_GOD", exc=exc, last_successful_stage=last)
++            try:
++                _get_conn().rollback()
++            except Exception:
++                pass
++            return _json_error(exc.code, exc.message, 503, exc.code)
+         except Exception as exc:
+             matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_GOD", exc=exc, last_successful_stage=last)
+             return _json_error("KERNEL_FAILED", str(exc), 400)
+@@ -3080,6 +3102,13 @@
+             return _json_error(str(exc), str(exc), 403, "ISOLATION")
+         except WriterError as exc:
+             return _json_error(exc.error, exc.message, exc.status, exc.error, details=getattr(exc, "details", None))
++        except NativeBoundaryError as exc:   # Stand 06 / K2: measured 400 KERNEL_FAILED before (puppet reaches the core outside _run_write)
++            matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_PUPPET", exc=exc, last_successful_stage=last)
++            try:
++                _get_conn().rollback()
++            except Exception:
++                pass
++            return _json_error(exc.code, exc.message, 503, exc.code)
+         except Exception as exc:
+             matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_PUPPET", exc=exc, last_successful_stage=last)
+             return _json_error("KERNEL_FAILED", str(exc), 400)
