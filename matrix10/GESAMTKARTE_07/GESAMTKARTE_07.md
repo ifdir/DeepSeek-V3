@@ -204,3 +204,57 @@ Die Reihenfolge richtet sich danach, welche Kette Voraussetzung für andere ist 
 - `belege/live/`: `L_turntruth_07.json`, Startlog, Vorlage-DB (aus dem Gesamtlauf `1b56e13`, mit Rust erzeugt).
 - `belege/proben/`: ausgeführte Proben der Bereichsprüfer (Testclient). Sie erwarten Pfade zu einer Kopie des Stage-Ordners als Argument.
 - `belege/nachpruefung_06a/`: Nachprüfung am frischen Klon.
+
+---
+
+## Nachtrag Stand 07: Fortschritt nach K-01 und SEC
+
+**Abnahme:** frischer Klon von `329df34`, `ARBEITSSTAND_07/tools/run_chain_07.py`, Exit 2 = **ROT**. Bericht: `ARBEITSSTAND_07/BERICHT_K01_07.md`.
+
+**Karte:** Eingetragen per `tools/karte_fortschritt_07.py`. Der alte Status steht in `status_05d8e8a`, Details in `stand_07`.
+
+| | vorher (05d8e8a) | nach Stand 07 |
+|---|---:|---:|
+| GRÜN | 0 | 0 |
+| ROT | 85 | **81** |
+| TEILGESCHLOSSEN | 83 | **87** |
+| UNGEPRÜFT | 11 | 11 |
+| BLOCKIERT | 4 | 4 |
+
+**Von ROT auf TEILGESCHLOSSEN:**
+- T-13 TurnTruth serverseitig;
+- T-S05 Wahrnehmung in Claims/Frames;
+- T-S18 Formulierung → Commit;
+- T-W2.
+
+Ihre Ketten sind offline vollständig abgenommen: UI, Neustart, Folgeturn, Negativ- und Mutationsproben. GRÜN ist erst mit echtem Modell erreichbar, das ist BLOCKIERT.
+
+**Teilweise geschlossen, weiter ROT (übrige Defekte benannt):** T-17, T-24, T-S03, T-S16, T-28, T-20, Z-22, P-21, T-K9.
+
+### Routen-Differenz (124 = 90 + 28 + 6)
+
+- **90** haben einen Frontendaufruf und eine sichtbare Kontrolle.
+- **28** haben keinen Aufruf oder keine Kontrolle:
+  - 18 ohne Frontendaufruf;
+  - 7 ohne sichtbare Kontrolle;
+  - 3 nur aus `matrix_speicher_v91.html` außerhalb von `src`: `DELETE /api/users/<id>/logs`, `DELETE /api/users/<id>/logs/orphan-sessions`, `GET /api/sessions`.
+- **6** weitere, korrekt eingeordnet:
+  - 2 technisch intern ohne Produktwahrheit: `POST /api/ids/allocate` (ID-Vergabe), `POST /api/logs/live` (Trace);
+  - 2 Diagnose-Proben: `PUT`/`DELETE /api/logs/<id>` (diagnose.tsx);
+  - 2 mit Frontendaufruf ohne Backendwirkung: `POST /api/speech/stt` und `POST /api/speech/tts` sind lokale Stubs; STT und TTS laufen im Browser. Diese beiden sind eine Funktionslücke, kein „intern“.
+- Die **14 Frontendfelder ohne nachgewiesene Backendwirkung** bleiben als eigene Lücken in `karte/P.json` (`P-MATRIX.frontendfelder_ohne_backendwirkung`).
+
+### Nächste Kette (Vorschlag aus der Abhängigkeitskarte, nicht begonnen)
+
+**K-02 Wahrnehmung → WitnessKnowledge → Memory → Recall.** Sie ist jetzt auf einer gebundenen TurnTruth aufgesetzt. Sie ist die Voraussetzung für:
+- K-03 (Bedeutung von Erfahrung → Runtime/Beziehung/Ziel),
+- K-05 (eigenständiges Handeln aus Wissen),
+- Mode B.
+
+Offene Glieder:
+- Writer für epistemische Zustände (geglaubt, bezweifelt, vergessen…; Z-14);
+- Hörensagen ohne Bezug zum erzählten Ereignis (Z-15/Z-17);
+- Hörer der Antwortphase (T-20);
+- Writer für „später informiert“.
+
+K-03 hängt danach zusätzlich am Provider (BLOCKIERT ohne Schlüssel).

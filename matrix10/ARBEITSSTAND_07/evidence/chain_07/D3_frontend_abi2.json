@@ -1,0 +1,102 @@
+{
+  "variante": "abi2",
+  "code_erwartet": "NATIVE_ABI_MISMATCH",
+  "handlungen": [
+    {
+      "handlung": "U0_nutzer_waehlen",
+      "api": [
+        {
+          "status": 503,
+          "method": "GET",
+          "url": "/api/mcc",
+          "code": "NATIVE_ABI_MISMATCH",
+          "ok": false
+        },
+        {
+          "status": 200,
+          "method": "POST",
+          "url": "/api/ids/allocate",
+          "code": null,
+          "ok": true
+        },
+        {
+          "status": 401,
+          "method": "POST",
+          "url": "/api/logs",
+          "code": "UNAUTHORIZED",
+          "ok": false
+        },
+        {
+          "status": 200,
+          "method": "POST",
+          "url": "/api/llm/ping",
+          "code": "URLError: <urlopen error [Errno 111] Connection refused>",
+          "ok": false
+        }
+      ],
+      "sessions_ladefehler": null,
+      "ladefehler_mit_code": false,
+      "keine_session_sichtbar": false,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": false,
+      "alerts": [
+        "Speichern fehlgeschlagen Technische Angabe: GET /api/mcc: GET /api/mcc 503 NATIVE_ABI_MISMATCH: Rust-Schreibgrenze: ABI stimmt nicht ueberein"
+      ],
+      "alert_mit_code": true,
+      "sichtbar_fehler": true
+    },
+    {
+      "handlung": "U0b_chat_seite",
+      "api": [
+        {
+          "status": 503,
+          "method": "GET",
+          "url": "/api/mcc",
+          "code": "NATIVE_ABI_MISMATCH",
+          "ok": false
+        }
+      ],
+      "sessions_ladefehler": "Sessions konnten nicht geladen werden – technischer Fehler, keine leere Liste: GET /api/mcc 503 NATIVE_ABI_MISMATCH: Rust-Schreibgrenze: ABI stimmt nicht ueberein",
+      "ladefehler_mit_code": true,
+      "keine_session_sichtbar": false,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": false,
+      "alerts": [
+        "Speichern fehlgeschlagen Technische Angabe: GET /api/mcc: GET /api/mcc 503 NATIVE_ABI_MISMATCH: Rust-Schreibgrenze: ABI stimmt nicht ueberein",
+        "Sessions konnten nicht geladen werden – technischer Fehler, keine leere Liste: GET /api/mcc 503 NATIVE_ABI_MISMATCH: Rust-Schreibgrenze: ABI stimmt nicht ueberein"
+      ],
+      "alert_mit_code": true,
+      "sichtbar_fehler": true
+    },
+    {
+      "handlung": "U2_chat_reset",
+      "nicht_bedienbar": "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
+    },
+    {
+      "handlung": "U1_oeffnen",
+      "nicht_bedienbar": "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
+    },
+    {
+      "handlung": "U3_neuladen_gespeicherter_nutzer",
+      "api": [
+        {
+          "status": 503,
+          "method": "GET",
+          "url": "/api/mcc",
+          "code": "NATIVE_ABI_MISMATCH",
+          "ok": false
+        }
+      ],
+      "sessions_ladefehler": "Sessions konnten nicht geladen werden – technischer Fehler, keine leere Liste: GET /api/mcc 503 NATIVE_ABI_MISMATCH: Rust-Schreibgrenze: ABI stimmt nicht ueberein",
+      "ladefehler_mit_code": true,
+      "keine_session_sichtbar": false,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": false,
+      "alerts": [
+        "Sessions konnten nicht geladen werden – technischer Fehler, keine leere Liste: GET /api/mcc 503 NATIVE_ABI_MISMATCH: Rust-Schreibgrenze: ABI stimmt nicht ueberein"
+      ],
+      "alert_mit_code": true,
+      "sichtbar_fehler": true
+    }
+  ]
+}

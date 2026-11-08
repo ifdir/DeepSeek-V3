@@ -1,6 +1,6 @@
 # KARTE_GESAMT_07 – alle kartierten AMASTER-Funktionen (generiert, nicht von Hand ändern)
 
-Funktionen: **183** · Status: BLOCKIERT 4, ROT 85, TEILGESCHLOSSEN 83, UNGEPRÜFT 11 · GRÜN: 0 (keine Live-Abnahme)
+Funktionen: **183** · Status: BLOCKIERT 4, ROT 81, TEILGESCHLOSSEN 87, UNGEPRÜFT 11 · GRÜN: 0 (keine Live-Abnahme)
 
 Statischer Codefluss: FEHLT_IM_CODE 10, KETTE_IM_CODE_GESCHLOSSEN 54, LÜCKE_IM_CODE 104, UNKLAR 15
 
@@ -45,7 +45,7 @@ Status: ROT 16, TEILGESCHLOSSEN 12, UNGEPRÜFT 4
 
 ## T – Session, Szene, Turn, TurnTruth, Orchestrierung (§18–§28, KV §9)
 
-Status: ROT 20, TEILGESCHLOSSEN 30, UNGEPRÜFT 3
+Status: ROT 16, TEILGESCHLOSSEN 34, UNGEPRÜFT 3
 
 | ID | AMASTER | Funktion | Owner (IST) | Status | Codefluss | Erster Defekt | abhängig von |
 |---|---|---|---|---|---|---|---|
@@ -61,7 +61,7 @@ Status: ROT 20, TEILGESCHLOSSEN 30, UNGEPRÜFT 3
 | T-10 | §21 (Z. 717–746) | Timeline: Felder und Filter | Python repos.list_session_evidence (repos.py:4899) / View v… | TEILGESCHLOSSEN | LÜCKE_IM_CODE | timeline.tsx:84 – fällt bei leerer Server-Evidenz auf session.facts aus dem Client-Store zurück (zweite Quelle) | SceneFact-Writer, WitnessKnowledge |
 | T-11 | §22 (Z. 747–768) | Chat-Eingangsarten (Text, Sprache, Upload, Avatar/Puppet, R… | Python app.kernel_prepare/commit/puppet/regie/god (app.py:1… | ROT | LÜCKE_IM_CODE | Normale Route nimmt beliebiges client-inputActorId an (ausgeführt, siehe T-13): Puppet-Wirkung ohne Puppet-Route möglich | T-13, Upload (Bereich U) |
 | T-12 | §22 (Z. 770–785) | Rohtext nicht ungeprüft ans LLM; LLM liest serverseitigen Z… | Python llm_contract.canonical_formulation_context (llm_cont… | TEILGESCHLOSSEN | KETTE_IM_CODE_GESCHLOSSEN | – | T-13 TurnTruth, BrainContext (Bereich B) |
-| T-13 | §23 (Z. 787–816) | TurnTruth serverseitig bilden (alle Pflichtfelder) | Python kernel.bind_turn_truth/normalize_truth (kernel.py:91… | ROT | LÜCKE_IM_CODE | app.py:1579–1588 – inputActorId aus dem Client wird nicht gegen {Avatar, 'user', 'observer'} geprüft (input_actor_keep wird gelesen, nie verwendet) | T-S08, T-W2 |
+| T-13 | §23 (Z. 787–816) | TurnTruth serverseitig bilden (alle Pflichtfelder) | Python kernel.bind_turn_truth/normalize_truth (kernel.py:91… | TEILGESCHLOSSEN | LÜCKE_IM_CODE | app.py:1579–1588 – inputActorId aus dem Client wird nicht gegen {Avatar, 'user', 'observer'} geprüft (input_actor_keep wird gelesen, nie verwendet) | T-S08, T-W2 |
 | T-14 | §23 (Z. 815–816), §8 | ID-Bedeutungsstabilität (User/Avatar/Charakter; Sprecherfel… | Python kernel.bind_turn_truth (kernel.py:913) | ROT | LÜCKE_IM_CODE | Feld speaker_id hat je Eingangsweg eine andere Bedeutung (Antwortsprecher / tatsächlicher Sprecher / erster Regie-Akteur) – die TurnTruth benennt den 'tatsächlichen Spre… | T-13 |
 | T-15 | §23, §28 Schritt 8/20 | Zwei-Phasen-Turn: Eingabe vor Antwort committen, dieselbe T… | Python kernel.commit_turn phase input/response (kernel.py:8… | TEILGESCHLOSSEN | KETTE_IM_CODE_GESCHLOSSEN | – | – |
 | T-16 | §24 (Z. 817–841) | Eingabenormalisierung / Namens- und Identitätsklärung | Python llm_contract.name_boundary_check + kernel.with_name_… | TEILGESCHLOSSEN | LÜCKE_IM_CODE | Keine Tippfehler-/Dialekt-/Slang-Normalisierung gefunden; Normalisierung beschränkt sich auf Namens-/Identitätsklärung (AMASTER 'darf', daher keine harte Verletzung) | Provider (name_boundary_check) |
@@ -81,7 +81,7 @@ Status: ROT 20, TEILGESCHLOSSEN 30, UNGEPRÜFT 3
 | T-S02 | §28 Z. 1018 | §28 Schritt 2: User, Welt und Session binden | Python app._kernel_stored_session (app.py:1544), app.py:158… | TEILGESCHLOSSEN | KETTE_IM_CODE_GESCHLOSSEN | – | – |
 | T-S03 | §28 Z. 1019 | §28 Schritt 3: Sprecher bestimmen | Client (pickSpeaker, inputActorForSession) + app.py:1590–16… | ROT | LÜCKE_IM_CODE | Eingabe-Actor ungeprüft aus Client (T-13, ausgeführt) | T-13, T-28 |
 | T-S04 | §28 Z. 1020 | §28 Schritt 4: Ziel bestimmen | Python kernel.resolve_target_detail via app.py:1622–1630 | ROT | LÜCKE_IM_CODE | Mehrfach- und Nichtfigurenziele fehlen (T-18) | T-18 |
-| T-S05 | §28 Z. 1021 | §28 Schritt 5: Anwesenheit und Wahrnehmung bestimmen | Python app._bind_scene_perception (app.py:1500) -> kernel._… | ROT | LÜCKE_IM_CODE | Ergebnis wird von Claims/Frames NICHT gelesen: hears_now aus scene.hearsIds//presentIds (kernel.py:8688, 8978, 12542) statt TurnTruth.hears_ids (T-20) | T-20 |
+| T-S05 | §28 Z. 1021 | §28 Schritt 5: Anwesenheit und Wahrnehmung bestimmen | Python app._bind_scene_perception (app.py:1500) -> kernel._… | TEILGESCHLOSSEN | LÜCKE_IM_CODE | Ergebnis wird von Claims/Frames NICHT gelesen: hears_now aus scene.hearsIds//presentIds (kernel.py:8688, 8978, 12542) statt TurnTruth.hears_ids (T-20) | T-20 |
 | T-S06 | §28 Z. 1022 | §28 Schritt 6: Uploadkontext prüfen | keiner (nur Feld upload_ref) | ROT | FEHLT_IM_CODE | kernel.py:933/971/12634 – upload_ref gespeichert, aber kein Reader im Turnpfad; Schritt 6 hat keine Prüfung und keine Wirkung auf Schritte 7–17 | Upload Mode A/B (Bereich U) |
 | T-S07 | §28 Z. 1023 | §28 Schritt 7: Authority bestimmen | Python app.normal_kernel_authority (app.py:292) + repos._ch… | TEILGESCHLOSSEN | KETTE_IM_CODE_GESCHLOSSEN | authority 'teilnehmer' wird auch für Facts mit actorId einer NPC-Figur akzeptiert (Probe CASE1) – Authority prüft Rolle, nicht Actor | T-13 |
 | T-S08 | §28 Z. 1024 | §28 Schritt 8: TurnTruth bilden | Python kernel.normalize_truth (app.py:1678 -> kernel.py:126… | ROT | LÜCKE_IM_CODE | Felder aus Client (T-13) | T-13 |
@@ -94,14 +94,14 @@ Status: ROT 20, TEILGESCHLOSSEN 30, UNGEPRÜFT 3
 | T-S15 | §28 Z. 1031 | §28 Schritt 15: Fate vorbereiten | Python kernel._derive_fate am Ende von commit_turn (kernel.… | TEILGESCHLOSSEN | LÜCKE_IM_CODE | kernel.py:9185 setzt fate.enabled=True, wenn None – Fate wird ohne Nutzerwahl aktiv (versteckter Default, Kettenvertrag §5) | Bereich F |
 | T-S16 | §28 Z. 1032 | §28 Schritt 16: nächsten Sprecher bestimmen | Client pickSpeaker / kernel.pick_speaker (app.py:1652) | ROT | LÜCKE_IM_CODE | Sprecherwahl liest den Zustand VOR Eingabe-Commit/Appraisal/Fate dieses Turns (app.py:1652 vor 1732/1791) – Schritte 9–15 fließen nicht ein | T-28 |
 | T-S17 | §28 Z. 1033 | §28 Schritt 17: BrainContext bilden | Python kernel.prepare_turn (kernel.py:14793), brain_context… | TEILGESCHLOSSEN | KETTE_IM_CODE_GESCHLOSSEN | – | T-S09..T-S15 |
-| T-S18 | §28 Z. 1034 | §28 Schritt 18: LLM oder Narrator aufrufen | Python llm_contract.formulate_from_config (llm_contract.py:… | ROT | LÜCKE_IM_CODE | Zwischen Formulierung und Commit keine Bindung: kernel_commit (app.py:1987) übernimmt result.speech/action/proposals aus dem Client-Body, ohne Abgleich mit der gespeiche… | Bereich L (LLM/Provider) |
+| T-S18 | §28 Z. 1034 | §28 Schritt 18: LLM oder Narrator aufrufen | Python llm_contract.formulate_from_config (llm_contract.py:… | TEILGESCHLOSSEN | LÜCKE_IM_CODE | Zwischen Formulierung und Commit keine Bindung: kernel_commit (app.py:1987) übernimmt result.speech/action/proposals aus dem Client-Body, ohne Abgleich mit der gespeiche… | Bereich L (LLM/Provider) |
 | T-S19 | §28 Z. 1035, §51 | §28 Schritt 19: Ausgabe auf Darstellungsgrenzen prüfen | keiner als eigener Schritt; Teilprüfungen in app.kernel_com… | ROT | FEHLT_IM_CODE | llm_contract.py:2276 '_try_llm … return the provider text intact' – keine Prüfung, ob die NPC-Ausgabe Avatar-Rede/-Handlung, Wissen außerhalb des Spiegels oder Rede abwe… | Bereich L/R (Finalizer) |
 | T-S20 | §28 Z. 1036 | §28 Schritt 20: Rede-/Handlungskomponenten getrennt committ… | Python kernel.commit_turn (kernel.py:8074), bind_input_comp… | TEILGESCHLOSSEN | LÜCKE_IM_CODE | Antwort: Turnzeile, 'getan'-Memory und SceneState nutzen nur die ERSTE validierte Handlung (kernel.py:8515–8521 action_comp = next(...)) – weitere Handlungskomponenten b… | T-S19 |
 | T-S21 | §28 Z. 1037 | §28 Schritt 21: Wissen und Folgezustände fortschreiben | Python kernel._record_fact_witnesses (kernel.py:8941), Memo… | ROT | LÜCKE_IM_CODE | Witness-Quellen inkonsistent (T-20: hears_now vs TurnTruth.hears_ids) | T-20, T-W2 |
 | T-S22 | §28 Z. 1038 | §28 Schritt 22: Timeline und Logs aktualisieren | Python kernel.annotate_turn_rows (kernel.py:9829), matrix_l… | TEILGESCHLOSSEN | KETTE_IM_CODE_GESCHLOSSEN | s. T-10 | T-10 |
 | T-S23 | §28 Z. 1039 | §28 Schritt 23: sichtbare Antwort ausgeben | Frontend applyKernel/mergeKernelSession (kernel-bridge.ts:2… | TEILGESCHLOSSEN | LÜCKE_IM_CODE | chat.$sessionId.tsx:519 TTS spricht formulated.speech (Client-Formulierung), nicht den committed Fact-Text – bei Knebel/abgewiesener Rede wird Ungeschehenes vorgelesen | – |
 | T-K9 | §18–§28 | Kettenvertrag §9 Pflichtkette Session, Szene, normaler Turn… | Python app.kernel_prepare/kernel_commit + kernel.commit_turn | ROT | LÜCKE_IM_CODE | Glied 'serverseitige TurnTruth' gebrochen: Client-inputActorId/scene/time/upload (T-13, ausgeführt) | alle T-S |
-| T-W2 | §23 (Z. 787–816), §25, §2… | Offener Befund W2: Lifecycle-Actor ≠ TurnTruth-Sprecher – E… | Python kernel._bind_lifecycle_evidence (kernel.py:11866) vi… | ROT | LÜCKE_IM_CODE | kernel.py:11895 – positionelle Suche akzeptiert 'f.targetId == actor_id': der Lifecycle-Fact des Antwortenden wird an die REDE DES FRAGENDEN gebunden. Ausgeführt (probe_… | T-13 (TurnTruth-Felder), T-14 (Bedeutung speaker_id), Proposition/Lifecycle (Be… |
+| T-W2 | §23 (Z. 787–816), §25, §2… | Offener Befund W2: Lifecycle-Actor ≠ TurnTruth-Sprecher – E… | Python kernel._bind_lifecycle_evidence (kernel.py:11866) vi… | TEILGESCHLOSSEN | LÜCKE_IM_CODE | kernel.py:11895 – positionelle Suche akzeptiert 'f.targetId == actor_id': der Lifecycle-Fact des Antwortenden wird an die REDE DES FRAGENDEN gebunden. Ausgeführt (probe_… | T-13 (TurnTruth-Felder), T-14 (Bedeutung speaker_id), Proposition/Lifecycle (Be… |
 
 ## Z – Fakten, Lifecycle, Memory, Witness, Runtime, Beziehung (§34–§45, KV §10–§11)
 

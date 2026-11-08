@@ -737,7 +737,20 @@
   "belege": [
    "probe1 mcc_config_apiKey 'sk-GEHEIM-1234567890' (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))",
    "probe1 get_config_has_plain false (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))"
-  ]
+  ],
+  "status_05d8e8a": "ROT",
+  "stand_07": {
+   "status": "ROT",
+   "geschlossen": [
+    "SEC: GET /api/mcc ohne Klartext-Schluessel (maskierte Sicht wie /api/config)"
+   ],
+   "offen": [
+    "zweite Modellquelle user.providerConfig",
+    "Felder ohne Backendleser",
+    "verschluckter Fehler"
+   ],
+   "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
+  }
  },
  {
   "id": "P-22",

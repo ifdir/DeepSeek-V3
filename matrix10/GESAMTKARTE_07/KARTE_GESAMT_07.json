@@ -1,9 +1,9 @@
 {
  "funktionen": 183,
  "status_gesamt": {
-  "TEILGESCHLOSSEN": 83,
+  "TEILGESCHLOSSEN": 87,
   "UNGEPRÜFT": 11,
-  "ROT": 85,
+  "ROT": 81,
   "BLOCKIERT": 4
  },
  "status_je_bereich": {
@@ -13,9 +13,9 @@
    "ROT": 16
   },
   "T": {
-   "TEILGESCHLOSSEN": 30,
+   "TEILGESCHLOSSEN": 34,
    "UNGEPRÜFT": 3,
-   "ROT": 20
+   "ROT": 16
   },
   "Z": {
    "TEILGESCHLOSSEN": 19,
@@ -3004,7 +3004,7 @@
    },
    "ui_bedienung": "'Spreche als' (chat.$sessionId.tsx:1187)",
    "statischer_befund": "LÜCKE_IM_CODE",
-   "status": "ROT",
+   "status": "TEILGESCHLOSSEN",
    "defekte": [
     "app.py:1579–1588 – inputActorId aus dem Client wird nicht gegen {Avatar, 'user', 'observer'} geprüft (input_actor_keep wird gelesen, nie verwendet)",
     "Ausgeführt: POST /api/kernel/prepare mit role teilnehmer, inputActorId=char_g7_mara, speakerId=Mara -> HTTP 200, speech-Fact actorId=Mara authority 'teilnehmer' gespeichert, TurnTruth puppet_id=None (Puppet-Route umgangen)",
@@ -3020,6 +3020,19 @@
     "app.py:1588–1589 input_actor_keep/speak_as_keep ungenutzt (codefluss)",
     "Probe tmp_T.dDgq/probe_t.py CASE1: status 200, tt {'role':'teilnehmer','speaker_id':'char_g7_mara','input_actor_id':'char_g7_mara','puppet_id':None}, facts [('speech', actor=Mara, 'teilnehmer', 'Ich verrate dir mein Geheimnis.')] (ausgeführt)"
    ],
+   "status_05d8e8a": "ROT",
+   "stand_07": {
+    "status": "TEILGESCHLOSSEN",
+    "geschlossen": [
+     "Eingabe-Actor serverseitig aus Session + Modus (app.eingabe_binden), abweichender inputActorId 422 EINGABE_ACTOR_UNGEBUNDEN",
+     "sceneId/timeRef/uploadRef aus SceneState/Fokus",
+     "Phase 'complete': Client-TurnTruth nur noch mit Turn-Beleg (Kern-Felder gegen prepare)"
+    ],
+    "offen": [
+     "Modell-Live-Lauf BLOCKIERT"
+    ],
+    "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
+   },
    "bereich": "T"
   },
   {
@@ -3155,6 +3168,17 @@
     "kernel.py:1000–1026 (codefluss)",
     "kernel.py:8311–8326 (codefluss)"
    ],
+   "status_05d8e8a": "ROT",
+   "stand_07": {
+    "status": "ROT",
+    "geschlossen": [
+     "Sprecherart Eingabe aus speak_as + Session gebunden"
+    ],
+    "offen": [
+     "Narrator und Beobachter fallen zusammen"
+    ],
+    "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
+   },
    "bereich": "T"
   },
   {
@@ -3265,6 +3289,18 @@
     "kernel.py:8688 / 8978 / 12542 (codefluss)",
     "kernel.py:11125–11132 explizites [] (codefluss)"
    ],
+   "status_05d8e8a": "ROT",
+   "stand_07": {
+    "status": "ROT",
+    "geschlossen": [
+     "leere Hoererliste faellt nicht mehr auf alle Anwesenden zurueck (Claims/Frames)"
+    ],
+    "offen": [
+     "Hoerer der Antwortphase vom Eingabezeitpunkt",
+     "kein Writer fuer 'spaeter informiert' im Turnpfad"
+    ],
+    "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
+   },
    "bereich": "T"
   },
   {
@@ -3403,6 +3439,17 @@
     "kernel.py:12338–12340 (codefluss)",
     "probe_t.py CASE1 (ausgeführt)"
    ],
+   "status_05d8e8a": "ROT",
+   "stand_07": {
+    "status": "ROT",
+    "geschlossen": [
+     "normale Route kann keine Figurenrede mehr unterschieben (char:/fremder Actor 422)"
+    ],
+    "offen": [
+     "speakAs 'char:<id>' bleibt dauerhaft in der Session (Wertung UNKLAR)"
+    ],
+    "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
+   },
    "bereich": "T"
   },
   {
@@ -3546,6 +3593,17 @@
     "chat.$sessionId.tsx:887–890, 941 (codefluss)",
     "app.py:1612–1616, 1663–1664 (codefluss)"
    ],
+   "status_05d8e8a": "ROT",
+   "stand_07": {
+    "status": "ROT",
+    "geschlossen": [
+     "Server prueft Anwesenheit + Faehigkeit"
+    ],
+    "offen": [
+     "Browser-Heuristik pickSpeaker bleibt zweiter Owner - K-05"
+    ],
+    "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
+   },
    "bereich": "T"
   },
   {
@@ -3641,6 +3699,18 @@
    "belege": [
     "probe_t.py CASE1 (ausgeführt)"
    ],
+   "status_05d8e8a": "ROT",
+   "stand_07": {
+    "status": "ROT",
+    "geschlossen": [
+     "Eingabe-Actor gebunden",
+     "Antwortsprecher muss anwesend UND sprechfaehig sein (figure_speaker_eligible)"
+    ],
+    "offen": [
+     "Auswahl selbst weiter im Browser (pickSpeaker) - K-05"
+    ],
+    "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
+   },
    "bereich": "T"
   },
   {
@@ -3697,7 +3767,7 @@
    },
    "ui_bedienung": "Hört/Sieht",
    "statischer_befund": "LÜCKE_IM_CODE",
-   "status": "ROT",
+   "status": "TEILGESCHLOSSEN",
    "defekte": [
     "Ergebnis wird von Claims/Frames NICHT gelesen: hears_now aus scene.hearsIds||presentIds (kernel.py:8688, 8978, 12542) statt TurnTruth.hears_ids (T-20)"
    ],
@@ -3709,6 +3779,17 @@
     "app.py:1500–1518 (codefluss)",
     "kernel.py:8688 (codefluss)"
    ],
+   "status_05d8e8a": "ROT",
+   "stand_07": {
+    "status": "TEILGESCHLOSSEN",
+    "geschlossen": [
+     "Claims/Frames lesen die kanonische Wahrnehmung (_scene_perception) statt hearsIds||presentIds"
+    ],
+    "offen": [
+     "Antwortphase nutzt Hoerer der Eingabe-TurnTruth (T-20 Defekt 3)"
+    ],
+    "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
+   },
    "bereich": "T"
   },
   {
@@ -4073,6 +4154,17 @@
    "belege": [
     "app.py:1645–1662 vs 1732/1791 (codefluss)"
    ],
+   "status_05d8e8a": "ROT",
+   "stand_07": {
+    "status": "ROT",
+    "geschlossen": [
+     "Faehigkeitspruefung des gewaehlten Sprechers (Bewusstsein 0 galt als 1)"
+    ],
+    "offen": [
+     "Sprecherwahl vor Eingabe-Commit/Appraisal/Fate; Owner doppelt (Browser/Server) - K-05"
+    ],
+    "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
+   },
    "bereich": "T"
   },
   {
@@ -4127,7 +4219,7 @@
    },
    "ui_bedienung": "Provider-Konfiguration",
    "statischer_befund": "LÜCKE_IM_CODE",
-   "status": "ROT",
+   "status": "TEILGESCHLOSSEN",
    "defekte": [
     "Zwischen Formulierung und Commit keine Bindung: kernel_commit (app.py:1987) übernimmt result.speech/action/proposals aus dem Client-Body, ohne Abgleich mit der gespeicherten Formulierung (pending attempt nur Status 'formuliert', app.py:2339) – jeder Client kann beliebige Figurenrede committen"
    ],
@@ -4139,6 +4231,17 @@
     "app.py:1987 result = body.get('result') (codefluss)",
     "app.py:2335–2339 _mark nur Status (codefluss)"
    ],
+   "status_05d8e8a": "ROT",
+   "stand_07": {
+    "status": "TEILGESCHLOSSEN",
+    "geschlossen": [
+     "commit nimmt nur die Serverformulierung dieses Turns (Formulierungsbeleg, juengster beendeter Antwortversuch V65U); fremder/veraenderter/aelterer Text 422"
+    ],
+    "offen": [
+     "Modell-Live-Lauf BLOCKIERT"
+    ],
+    "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
+   },
    "bereich": "T"
   },
   {
@@ -4347,6 +4450,19 @@
    "belege": [
     "probe_t.py CASE1 (ausgeführt)"
    ],
+   "status_05d8e8a": "ROT",
+   "stand_07": {
+    "status": "ROT",
+    "geschlossen": [
+     "Glieder serverseitige TurnTruth, Perception (Claims/Frames), Formulierung->Commit geschlossen (offline)"
+    ],
+    "offen": [
+     "Upload-Bindung T-S06",
+     "Sprecherwahl clientseitig T-28",
+     "Modell-Live BLOCKIERT"
+    ],
+    "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
+   },
    "bereich": "T"
   },
   {
@@ -4369,7 +4485,7 @@
    },
    "ui_bedienung": "keine eigene Kontrolle",
    "statischer_befund": "LÜCKE_IM_CODE",
-   "status": "ROT",
+   "status": "TEILGESCHLOSSEN",
    "defekte": [
     "kernel.py:11895 – positionelle Suche akzeptiert 'f.targetId == actor_id': der Lifecycle-Fact des Antwortenden wird an die REDE DES FRAGENDEN gebunden. Ausgeführt (probe_w2.py, Szenario 3): ohne Johann-Antwort-Fact erzeugt apply_proposition(actor=Johann, kind=acceptance, fact_id=None) einen Lifecycle-Fact mit responds_to=Maras Frage fM, sourceTurnId=ttA, turn=1 (rückdatiert), stempelt fM mit propositionId, lifecycle_bound=True, Proposition 'accepted' – eine Annahme ohne eigene Äußerung.",
     "In den Produktpfaden ist der positionelle Zweig derzeit nicht erreichbar: beide Aufrufer übergeben fact_id eines im selben Session-Dict vorhandenen Facts (kernel.py:9147–9155, 12562–12573); erreichbar für direkte Kernel-Aufrufer und jeden künftigen Aufrufer ohne fact_id. Die Grenzen (repos.py:3815, scene_state.py:224) würden ein solches Ergebnis nicht abweisen.",
@@ -4439,6 +4555,19 @@
     "probe_w2.py Szenario 1: {lf_actor: char_j, responds_to: fJ, sourceTurnId: ttB, tt_speaker: char_m, tt_input_actor: char_j, lifecycle_bound: true, prop_status: accepted} (ausgeführt)",
     "probe_w2.py Szenario 3: {lf_actor: char_j, responds_to: fM, sourceTurnId: ttA, turn: 1, tt_speaker: char_m, lifecycle_bound: true, stamped_fM_prop: p1, prop_status: accepted} (ausgeführt)"
    ],
+   "status_05d8e8a": "ROT",
+   "stand_07": {
+    "status": "TEILGESCHLOSSEN",
+    "geschlossen": [
+     "Evidenz = eigene Aeusserung/Handlung des Actors (kernel.lifecycle_evidence_fact)",
+     "Status aendert sich ohne Evidenz nicht",
+     "Leser + Schreibgrenze: fremde Evidenz / keine Quellturn-Partei -> nicht gebunden; Avatar-/Bedienpersonen-Antwort bleibt gueltig"
+    ],
+    "offen": [
+     "Produktpfad mit Modell-Plan (Annahme/Ablehnung durch Figur) live BLOCKIERT"
+    ],
+    "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
+   },
    "bereich": "T"
   },
   {
@@ -5244,6 +5373,17 @@
     "probe_z2.py AFTER T2 mara runtime {'emotion':'Angst','fear':0.46,'stress':0.39,'intent':'überleben'} + synapse-Fact; RESTART fear 0.46 (ausgeführt)",
     "kernel.py:3251-3307 (codefluss)"
    ],
+   "status_05d8e8a": "ROT",
+   "stand_07": {
+    "status": "ROT",
+    "geschlossen": [
+     "Client kann keine Synapsen/fired mehr setzen (Ausgangsnachweis: proposals.synapsen aenderten die Runtime)"
+    ],
+    "offen": [
+     "Modell-Vorschlaege laufen weiter als validated in apply_synapses; feste Wirkungstabelle - K-03"
+    ],
+    "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
+   },
    "bereich": "Z"
   },
   {
@@ -7563,6 +7703,19 @@
     "probe1 mcc_config_apiKey 'sk-GEHEIM-1234567890' (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))",
     "probe1 get_config_has_plain false (ausgeführt (Flask-Testclient, Temp-SQLite-Kopie, Provider synapse, probe1.py/probe2.py))"
    ],
+   "status_05d8e8a": "ROT",
+   "stand_07": {
+    "status": "ROT",
+    "geschlossen": [
+     "SEC: GET /api/mcc ohne Klartext-Schluessel (maskierte Sicht wie /api/config)"
+    ],
+    "offen": [
+     "zweite Modellquelle user.providerConfig",
+     "Felder ohne Backendleser",
+     "verschluckter Fehler"
+    ],
+    "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
+   },
    "bereich": "P"
   },
   {
