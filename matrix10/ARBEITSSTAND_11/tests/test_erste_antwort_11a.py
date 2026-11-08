@@ -66,9 +66,18 @@ def strikt_gueltig(tc, schema, pfad="$"):
 
 
 def pruefung_mit(**werte):
-    p = {k: None for k in L.P_KOMPONENTEN_PRUEFUNG["properties"]}
+    p = {k: None for k in L.P_HANDLUNG_PRUEFUNG["properties"]}
     p.update(werte)
     return p
+
+
+# woertlich: Geraet 08.11. 21:58 (Upload 74b5e4f1, logs) - Erlebensantwort mit dem Nachweis als freie Liste: "aktivierung" statt
+# "gefuehl", "absicht" fehlt -> beides wurde verworfen
+GERAET_ERLEBEN_ALT = {"raum": "Angst", "aktivierung": 0.8, "gefuehl": "Bedrohung", "gegenueber": "Johann Bruckner",
+                      "zustand_aenderung": {"angst": 0.3, "wut": 0, "scham": 0, "stress": 0, "lust": 0}, "absicht": "sich zurückziehen",
+                      "vorher_absicht_erledigt": False,
+                      "beziehung_aenderung": [{"zu": "Johann Bruckner", "trust": -0.3, "closeness": -0.3, "fear": 0.3}],
+                      "kausalpruefung": {"pruefungen": [{"feld": "aktivierung", "urteil": "gestuetzt"}, {"feld": "zustand.angst", "urteil": "gestuetzt"}]}}
 
 
 class ErsteAntwort11a(unittest.TestCase):
@@ -95,17 +104,23 @@ class ErsteAntwort11a(unittest.TestCase):
         self.assertIn('"pruefung"', L.PLAN_PRUEFUNG_RULES); self.assertIn('"teilstellen"', L.PLAN_PRUEFUNG_RULES)
 
     def test_schemas_sind_strikt_gueltig(self):
-        for s in (L.PLAN_SCHEMA, L.FORMULATION_SCHEMA, L.GOD_SCHEMA, L.GOD_BODY_SCHEMA):
+        for s in (L.PLAN_SCHEMA, L.FORMULATION_SCHEMA, L.GOD_SCHEMA, L.GOD_BODY_SCHEMA, L.APPRAISAL_SCHEMA):
             strikt_gueltig(self, s)
-        k = L.PLAN_SCHEMA["properties"]["komponenten"]["items"]
-        self.assertIn("pruefung", k["required"])
-        self.assertEqual(sorted(k["properties"]["pruefung"]["required"]),
-                         sorted(["vollzug", "komponentenart", "sprecher", "koerper", "koerperBestaetigung", "wirkung", "beruehrung",
+        rede, handlung = L.PLAN_SCHEMA["properties"]["komponenten"]["items"]["anyOf"]
+        self.assertIn("pruefung", rede["required"]); self.assertIn("pruefung", handlung["required"])
+        self.assertEqual(sorted(rede["properties"]["pruefung"]["required"]), ["komponentenart", "sprecher"])
+        self.assertEqual(sorted(handlung["properties"]["pruefung"]["required"]),
+                         sorted(["vollzug", "komponentenart", "koerper", "koerperBestaetigung", "wirkung", "beruehrung",
                                  "bewegung", "bittebezug", "erlaubnisbezug", "grenzbezug"]))
+        # Stand 11B: Erleben - Nachweis neben jedem Wert, Pflicht
+        a = L.APPRAISAL_SCHEMA
+        self.assertTrue({"gefuehl_nachweis", "absicht_nachweis", "vorher_absicht_art"} <= set(a["required"]))
+        self.assertIn("nachweis", a["properties"]["zustand_aenderung"]["items"]["required"])
+        self.assertTrue({"trust_nachweis", "closeness_nachweis", "fear_nachweis"} <= set(a["properties"]["beziehung_aenderung"]["items"]["required"]))
 
     def test_jede_lesestelle_hat_ein_pflichtfeld(self):
         abgedeckt = set()
-        for feld in L.P_KOMPONENTEN_PRUEFUNG["properties"]:
+        for feld in list(L.P_HANDLUNG_PRUEFUNG["properties"]) + list(L.P_REDE_PRUEFUNG["properties"]):
             abgedeckt |= set(L._PRUEFUNG_LESUNG.get(feld, ()))
         abgedeckt |= {"koerper_bestaetigung"}                                                  # koerperBestaetigung
         abgedeckt |= {n for n in ("sprache", "namen", "grenzumfang") if n in L.PLAN_SCHEMA["required"]}
@@ -134,7 +149,7 @@ class ErsteAntwort11a(unittest.TestCase):
         kp = {"haltung": "sitzend", "schlaf": None, "zeit": "jetzt", "beleg": "klatsche"}
         kb = {"art": "tatsaechlich", "inhalt": "gleich", "beleg": "klatsche"}
         p["komponenten"][0]["pruefung"] = pruefung_mit(vollzug=vz, wirkung=wk, koerper=kp, koerperBestaetigung=kb)
-        p["komponenten"][1]["pruefung"] = pruefung_mit()
+        p["komponenten"][1]["pruefung"] = {"komponentenart": None, "sprecher": None}
         p.update({"teilstellen": [], "sprache": {"stellen": []}, "namen": [], "grenzumfang": None})
         les = L.plan_lesungen(p, TEXT)
         self.assertNotIn("pruefung", p["komponenten"][0]); self.assertNotIn("teilstellen", p)
@@ -144,6 +159,28 @@ class ErsteAntwort11a(unittest.TestCase):
         self.assertEqual(L._llm_json(OPENAI, L.KOERPER_BESTAETIGUNG_RULES, {"text": TEXT, "stelle": "klatsche"}), kb)
         self.assertEqual(L._llm_json(OPENAI, L.SPRACHE_RULES if hasattr(L, "SPRACHE_RULES") else L.LANGUAGE_RULES,
                                      {"aeusserung": TEXT}), {"stellen": []})
+
+
+    def test_erleben_nachweis_neben_dem_wert(self):
+        from matrix_api import kernel as K
+        # die woertliche Geraeteantwort (alte Form): gefuehl und absicht ohne Nachweis - bleibt so (Kernel verwirft beides)
+        alt = L.erleben_aus_antwort(json.loads(json.dumps(GERAET_ERLEBEN_ALT)))
+        self.assertNotIn("gefuehl", [p["feld"] for p in alt["kausalpruefung"]["pruefungen"]])
+        # Schema-Form: jeder Wert traegt seinen Nachweis -> Felder exakt wie kernel.appraisal_effect_fields
+        n = {"urteil": "gestuetzt", "factId": "f1", "beleg": "streiche", "dispositionsQuelle": "Q1", "dispositionsBeleg": "unter Bedrohung",
+             "richtung": None, "begruendung": "x"}
+        neu = {"raum": "Angst", "aktivierung": 0.8, "gefuehl": "Bedrohung", "gefuehl_nachweis": n, "gegenueber": "Johann Bruckner",
+               "zustand_aenderung": [{"name": "angst", "wert": 0.3, "nachweis": dict(n, richtung="steigt")}], "absicht": "sich zurückziehen",
+               "absicht_nachweis": n, "vorher_absicht_erledigt": False, "vorher_absicht_art": None,
+               "beziehung_aenderung": [{"zu": "Johann Bruckner", "trust": -0.3, "trust_nachweis": dict(n, richtung="sinkt"), "closeness": 0,
+                                        "closeness_nachweis": None, "fear": 0.3, "fear_nachweis": dict(n, richtung="steigt")}], "grund": "g"}
+        o = L.erleben_aus_antwort(neu)
+        self.assertEqual(sorted(p["feld"] for p in o["kausalpruefung"]["pruefungen"]), sorted(K.appraisal_effect_fields(o)))
+        self.assertEqual(o["zustand_aenderung"], {"angst": 0.3})
+        self.assertNotIn("trust_nachweis", o["beziehung_aenderung"][0])
+        # ein Wert ohne Nachweis bekommt keinen Eintrag (Kernel verwirft nur ihn)
+        o2 = L.erleben_aus_antwort(dict(neu, absicht_nachweis=None))
+        self.assertNotIn("absicht", [p["feld"] for p in o2["kausalpruefung"]["pruefungen"]])
 
 
 if __name__ == "__main__":

@@ -125,7 +125,10 @@ class FakeProvider:
         kp = pr.get("koerper")
         pr["koerperBestaetigung"] = (self.bestaetigung(dict(payload, stelle=kp["beleg"]))
                                      if isinstance(kp, dict) and kp.get("beleg") else None)
-        return pr
+        # Stand 11B: Pflichtfelder nach Komponententyp (PLAN_SCHEMA) - rede: komponentenart + sprecher; handlung: ohne sprecher
+        if str(c.get("typ") or "") == "rede":
+            return {k: pr[k] for k in ("komponentenart", "sprecher")}
+        return {k: v for k, v in pr.items() if k != "sprecher"}
 
     def erste_antwort(self, pl, user):
         import re as _re
@@ -147,7 +150,7 @@ class FakeProvider:
             t = str(t or "").strip().strip("*").strip()
             if t and t not in gesehen:
                 gesehen.append(t)
-                teil.append({"stelle": t, "pruefung": self._pruefung(t, c, u, text)})
+                teil.append({"stelle": t, "pruefung": self._pruefung(t, dict(c or {}, typ="handlung"), u, text)})   # Teilstelle = Tat
         for c in pl.get("komponenten") or []:
             if isinstance(c, dict) and c.get("einleitung"):
                 add(c.get("einleitung"), c)

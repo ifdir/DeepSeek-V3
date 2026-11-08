@@ -72,11 +72,9 @@ def rede_bedienperson(user: str) -> dict:
             "komponenten": [{"typ": "rede", "segment": t, "akteur": str(p.get("sprecher") or ""), "ziel": "Mara Nowak", "zeit": "jetzt",
                              "wirkung": None, "bezug": None, "einleitung": None, "geschieht": None,
                              # Stand 11a: Pflichtfelder der ersten Antwort (reine Rede der Bedienperson)
-                             "pruefung": {"vollzug": None, "komponentenart": {"art": "rede", "beleg": t, "wirkung": None},
+                             "pruefung": {"komponentenart": {"art": "rede", "beleg": t, "wirkung": None},
                                           "sprecher": {"sprecher": "figur", "beleg": None, "handlung": None, "adressat": None,
-                                                       "ansageRolle": "unklar", "ansageBeleg": None},
-                                          "koerper": None, "koerperBestaetigung": None, "wirkung": None, "beruehrung": None,
-                                          "bewegung": None, "bittebezug": None, "erlaubnisbezug": None, "grenzbezug": None}}],
+                                                       "ansageRolle": "unklar", "ansageBeleg": None}}}],
             "teilstellen": [], "sprache": {"stellen": []}, "namen": [], "grenzumfang": None}
 
 
@@ -138,7 +136,7 @@ def erleben_mit_kausal(user: str, param: dict) -> dict:
                     "dispositionsQuelle": q.get("id"), "dispositionsBeleg": qb, "richtung": r,
                     "begruendung": f'"{qb}" - das Geschehen trifft genau das, was diese Quelle bei ihr beschreibt.'})
     v["kausalpruefung"] = {"pruefungen": out}
-    return v
+    return _nachweis_neben_wert(v)
 
 
 def mit_kausal(user: str, param: dict) -> dict:
@@ -159,7 +157,28 @@ def mit_kausal(user: str, param: dict) -> dict:
         p = {}
     v["kausalpruefung"] = kausal(json.dumps({"figur": p, "zu_pruefen": felder}, ensure_ascii=False))
     v.setdefault("vorher_absicht_art", None)
-    return v
+    return _nachweis_neben_wert(v)
+
+
+def _nachweis_neben_wert(v: dict) -> dict:
+    """Stand 11B: die Erlebensantwort im Schema-Format (APPRAISAL_SCHEMA): Nachweis direkt neben jedem Wert."""
+    pr = {p.get("feld"): {k: x for k, x in p.items() if k != "feld"} for p in ((v.pop("kausalpruefung", None) or {}).get("pruefungen") or [])}
+    def nw(f):
+        n = pr.get(f)
+        if not isinstance(n, dict) or n.get("urteil") != "gestuetzt":
+            return {"urteil": "nicht_gestuetzt", "factId": "", "beleg": "", "dispositionsQuelle": "", "dispositionsBeleg": "",
+                    "richtung": None, "begruendung": ""} if n is not None else None
+        return {k: n.get(k) for k in ("urteil", "factId", "beleg", "dispositionsQuelle", "dispositionsBeleg", "richtung", "begruendung")}
+    out = {"raum": v.get("raum"), "aktivierung": v.get("aktivierung") or 0, "gefuehl": str(v.get("gefuehl") or ""),
+           "gefuehl_nachweis": nw("gefuehl") if str(v.get("gefuehl") or "").strip() else None, "gegenueber": str(v.get("gegenueber") or ""),
+           "zustand_aenderung": [{"name": k, "wert": x, "nachweis": nw("zustand." + k)} for k, x in (v.get("zustand_aenderung") or {}).items() if x],
+           "absicht": str(v.get("absicht") or ""), "absicht_nachweis": nw("absicht") if str(v.get("absicht") or "").strip() else None,
+           "vorher_absicht_erledigt": bool(v.get("vorher_absicht_erledigt")), "vorher_absicht_art": v.get("vorher_absicht_art"),
+           "beziehung_aenderung": [{"zu": b.get("zu"), **{d: b.get(d) or 0 for d in ("trust", "closeness", "fear")},
+                                    **{d + "_nachweis": (nw(f"beziehung.{i}.{d}") if b.get(d) else None) for d in ("trust", "closeness", "fear")}}
+                                   for i, b in enumerate(v.get("beziehung_aenderung") or []) if isinstance(b, dict)],
+           "grund": str(v.get("grund") or "")}
+    return out
 
 
 DYNAMISCH = {"mit_kausal": mit_kausal, "erleben_mit_kausal": erleben_mit_kausal, "kausal": kausal, "rede_bedienperson": rede_bedienperson, "komponentenart": komponentenart, "vollzug": vollzug,

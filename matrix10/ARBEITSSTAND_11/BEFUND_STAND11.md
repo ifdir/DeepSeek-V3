@@ -92,3 +92,38 @@ Im Protokoll gibt es keine ungeskriptete Lesung. `llm_contract.vorab_abrufe()` w
 **Weiter offen:**
 - **Echtes Modell:** Hier nicht prüfbar, das Netzgeheimnis der Umgebung bekommt 401. Abnahme auf dem Gerät.
 - **Erleben mit 20 s auf dem Gerät:** Ob 11A insgesamt schneller ist als 10C, zeigt erst der Gerätelauf.
+
+## 7. Stand 11B – zweiter Gerätelauf (Upload `74b5e4f1`, 08.11. 21:58, gpt-4o-mini)
+
+**Befund:**
+1. „Ich streiche über deine schenkel“ wurde gespeichert, Mara reagierte. Der Planer las dieselben Worte zweimal, als handlung **und** als rede. Die Folge war ein interner Hinweis „Rede überschneidet sich mit einer Handlung“ an dich.
+2. „Ach komm, ich streiche über deibe brust, dir gefällt das ja“ wurde **ganz abgewiesen** (422 PUPPET_TEILABLEHNUNG). Grund: Der Planer ließ „dir gefällt das ja“ aus, und `input_binding_outcome` verwirft bei jedem ungelesenen Rest alles.
+3. Maras Gefühl und Absicht wurden verworfen (`kausalpruefung_fehlend:gefuehl/absicht`). Das Modell schrieb den Nachweis in der freien Liste für „aktivierung“ und vergaß „absicht“. Im Brief standen nur Schmerz und die letzte Tat.
+4. Dauer: Planer 17 s, Erleben 13 s, Formulierung 16 s.
+
+**Reparatur 11B** (`kernel.py` neu im Overlay, Basis Ebene 09; `llm_contract.py`):
+- **Ungelesener Rest:**
+  - Er wird **nie** Rede (P25 Paket-8-Prüfung C6 bleibt).
+  - Er kippt die Eingabe nur, wenn er ungekennzeichnet eine Person nennt (P24 „Gustav, setz dich.“, R1 „Robert steht auf.“, beide weiter geschützt). Sonst wird gespeichert, was gelesen ist, und der Rest bleibt sichtbar.
+  - Rest in einem `*Marker*`: Die Tat bleibt unbewiesen, die Eingabe läuft.
+- **Wortgleiche Doppel-Lesung** rede = gelesene handlung: Die Handlung zählt, es gibt keinen Hinweis. Überschneidungen mit anderen Worten oder mit einem Marker bleiben sichtbar.
+- **Erleben:** `APPRAISAL_SCHEMA`, bei OpenAI strikt. Der Nachweis steht **direkt neben** jedem vorgeschlagenen Wert. `erleben_aus_antwort` baut daraus die bisherige Struktur mit exakten Feldnamen; `_appraisal_cause_proofs` ist unverändert. Ein Wert ohne Nachweis wird allein verworfen.
+- **Planer-Komponente nach Typ:** rede `{komponentenart, sprecher}`, handlung ohne `sprecher`. Deine echten Antworten wären damit rund 24 % kürzer (1 907 → 1 457, 2 088 → 1 578 Zeichen).
+
+**Geprüft:**
+- Deine zwei Eingaben **wörtlich** (rohe gpt-4o-mini-Antworten, `tools/drehbuch_geraetefall_2158_11b.json`, `tools/geraetefall_11b.py`):
+  - beide 200;
+  - Johann: Tat Schenkel / „Ach komm“ + Tat Brust;
+  - Hinweis nur `rest_ohne_komponente: dir gefällt das ja`, kein Doppelungs-Hinweis;
+  - Mara: Gefühl Bedrohung 0,80, Absicht „sich zurückziehen“, Furcht zu Johann 0,79 → 0,853;
+  - im Brief des Folgezugs: Gefühl, Ursache, Absicht und Grenzverletzung.
+- F1: 12/12. Gegenprobe: 8/12, also wie erwartet rot.
+- F2: 7/7.
+- F1-Rest: Grenze im Brief.
+- 5 Gerätefälle: 4–5 Aufrufe, Mara 0,73 → 0,823.
+- K-Tests: 50/50.
+- P25-Suite: 436 bestanden, 12 rot (alle vorbekannt), **neu grün:** `test_p10_partial_and_multiple_markers_over_the_route`.
+
+**Offen:**
+- „dir gefällt das ja“ wird nicht zur Rede, solange das Modell es keinem Teil zuordnet. Der Planer-Text verlangt jetzt ausdrücklich, dass jedes Wort in einer Komponente steht.
+- Echtes Modell, Zeit und Reaktion: Abnahme auf dem Gerät.

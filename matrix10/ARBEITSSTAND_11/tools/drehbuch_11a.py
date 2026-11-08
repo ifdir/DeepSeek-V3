@@ -37,7 +37,10 @@ def main() -> int:
     def nach_schema(wert, schema):
         """Nur die Felder des Schemas (ein striktes Modell kann keine anderen liefern)."""
         if "anyOf" in schema:
-            schema = next((x for x in schema["anyOf"] if x.get("type") == "object"), schema["anyOf"][0])
+            objs = [x for x in schema["anyOf"] if x.get("type") == "object"]
+            typ = wert.get("typ") if isinstance(wert, dict) else None
+            schema = next((x for x in objs if typ in ((x.get("properties") or {}).get("typ") or {}).get("enum", [])), None) \
+                or (objs[0] if objs and isinstance(wert, dict) else schema["anyOf"][-1] if wert is None else schema["anyOf"][0])
         if isinstance(wert, dict) and schema.get("type") == "object":
             return {k: nach_schema(wert.get(k), v) for k, v in schema["properties"].items()}
         if isinstance(wert, list) and schema.get("type") == "array":
@@ -97,10 +100,14 @@ def main() -> int:
                 ea(buch, "GRENZE_CHECK_RULES", json.dumps({"beleg": g["beleg"]}, ensure_ascii=False))
         a["grenzumfang"] = gu if isinstance(gu, dict) else None
         for c in a["komponenten"]:
-            if isinstance(c, dict):
-                c["pruefung"] = nach_schema(c["pruefung"], LC.P_KOMPONENTEN_PRUEFUNG)
+            # Pflichtfeld komponentenart: fehlte es im alten Drehbuch, antwortet das Drehbuch-Modell so, wie es die Komponente selbst
+            # typisiert hat (eigene Handlung bzw. eigene Rede) - im Drehbuch sichtbar, nicht vom Testmodell ergaenzt
+            if isinstance(c, dict) and not isinstance((c.get("pruefung") or {}).get("komponentenart"), dict):
+                c["pruefung"]["komponentenart"] = {"art": c.get("typ"), "beleg": c.get("segment"),
+                                                   "wirkung": c.get("wirkung") if c.get("typ") == "handlung" else None}
+        a["komponenten"] = nach_schema(a["komponenten"], LC.PLAN_SCHEMA["properties"]["komponenten"])
         for t in a["teilstellen"]:
-            t["pruefung"] = nach_schema(t["pruefung"], LC.P_KOMPONENTEN_PRUEFUNG)
+            t["pruefung"] = nach_schema(t["pruefung"], LC.P_HANDLUNG_PRUEFUNG)
         return a
 
     def formulierung(a):
@@ -128,7 +135,7 @@ def main() -> int:
     def erleben(a):
         if not isinstance(a, dict):
             return a
-        if "dynamisch" in a:   # z. B. erleben_mit_kausal (Stand 11) liefert den Kausalnachweis bereits selbst
+        if "dynamisch" in a:   # erleben_mit_kausal / mit_kausal liefern den Nachweis neben jedem Wert (Stand 11B)
             return a
         if "kausalpruefung" in a:
             return a

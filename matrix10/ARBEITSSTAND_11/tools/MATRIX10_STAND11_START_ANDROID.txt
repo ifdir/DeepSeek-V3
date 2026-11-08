@@ -1,7 +1,15 @@
-MATRIX10 - Arbeitsstand 11A - Android (aarch64) - Pydroid 3 oder Termux
+MATRIX10 - Arbeitsstand 11B - Android (aarch64) - Pydroid 3 oder Termux
 =======================================================================
 
 STATUS: ROT - KEINE Produktfreigabe. Auf einem echten Android-Geraet NICHT getestet (kein Geraet verfuegbar).
+
+Was 11B repariert (dein Lauf 08.11., 21:58):
+- "Ach komm, ich streiche ueber deine brust, dir gefaellt das ja" wurde ganz abgewiesen, weil das Modell "dir gefaellt das ja" keinem
+  Teil zugeordnet hat. Jetzt wird gespeichert, was gelesen ist (Rede und Tat); der ungelesene Rest bleibt als Hinweis sichtbar.
+  Nur ein Rest, der eine andere Person nennt, haelt die Eingabe weiter an (Schutz vor falsch adressierter Rede).
+- Die Meldung "Diese Rede ueberschneidet sich mit einer Handlung" kam von einer doppelten Lesung derselben Worte - kommt nicht mehr.
+- Maras Gefuehl und Absicht gingen verloren (der Nachweis stand getrennt vom Wert). Jetzt steht er direkt daneben (Pflicht);
+  im naechsten Zug kennt Mara ihr Gefuehl, die Ursache und was sie vorhat.
 
 Was 11A gegenueber 11 repariert (dein Lauf 08.11., 20:51):
 - "Ich klatsche auf deinen arsch" wurde zweimal abgewiesen: das Modell (gpt-4o-mini) hat die Pruefangaben, die Stand 11 nur als
@@ -38,8 +46,8 @@ Termux (Alternative)
 --------------------
    pkg install python unzip && pip install flask
    termux-setup-storage
-   mkdir -p ~/m10 && cd ~/m10 && unzip ~/storage/downloads/MATRIX10_STAND11A_PRODUKT_android-aarch64_<commit>.zip
-   cd MATRIX10_STAND11A_PRODUKT_android-aarch64_<commit> && python START.py
+   mkdir -p ~/m10 && cd ~/m10 && unzip ~/storage/downloads/MATRIX10_STAND11B_PRODUKT_android-aarch64_<commit>.zip
+   cd MATRIX10_STAND11B_PRODUKT_android-aarch64_<commit> && python START.py
    Falls "[RUST-FEHLER] ... cannot locate symbol ...": bash RUST_AUF_DEM_HANDY_BAUEN.sh (baut den Kern auf dem Handy).
 
 Bitte zurueckmelden: die [RUST]- bzw. [RUST-FEHLER]-Zeile aus der Pydroid-Ausgabe.

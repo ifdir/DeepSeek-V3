@@ -42,8 +42,11 @@
         "taeter": "Ich",
         "ziel": "dir"
        },
-       "komponentenart": null,
-       "sprecher": null,
+       "komponentenart": {
+        "art": "handlung",
+        "beleg": "Ich klatsch dir auf deinen arsch",
+        "wirkung": "zaertlich"
+       },
        "koerper": {
         "haltung": null,
         "schlaf": null,
@@ -108,7 +111,6 @@
       "einleitung": null,
       "geschieht": null,
       "pruefung": {
-       "vollzug": null,
        "komponentenart": {
         "art": "rede",
         "beleg": "Ich greif dir auf die schenkel",
@@ -121,15 +123,7 @@
         "adressat": null,
         "ansageRolle": "unklar",
         "ansageBeleg": null
-       },
-       "koerper": null,
-       "koerperBestaetigung": null,
-       "wirkung": null,
-       "beruehrung": null,
-       "bewegung": null,
-       "bittebezug": null,
-       "erlaubnisbezug": null,
-       "grenzbezug": null
+       }
       }
      }
     ],
@@ -176,7 +170,6 @@
       "einleitung": null,
       "geschieht": null,
       "pruefung": {
-       "vollzug": null,
        "komponentenart": {
         "art": "rede",
         "beleg": "Ach stell dich nicht so an",
@@ -189,15 +182,7 @@
         "adressat": null,
         "ansageRolle": "unklar",
         "ansageBeleg": null
-       },
-       "koerper": null,
-       "koerperBestaetigung": null,
-       "wirkung": null,
-       "beruehrung": null,
-       "bewegung": null,
-       "bittebezug": null,
-       "erlaubnisbezug": null,
-       "grenzbezug": null
+       }
       }
      }
     ],
@@ -251,8 +236,11 @@
         "taeter": "Ich",
         "ziel": "dir"
        },
-       "komponentenart": null,
-       "sprecher": null,
+       "komponentenart": {
+        "art": "handlung",
+        "beleg": "Ich streiche dir über die schenkel",
+        "wirkung": "zaertlich"
+       },
        "koerper": {
         "haltung": null,
         "schlaf": null,
@@ -291,8 +279,11 @@
         "taeter": "figur",
         "ziel": "dir"
        },
-       "komponentenart": null,
-       "sprecher": null,
+       "komponentenart": {
+        "art": "handlung",
+        "beleg": "halte dir 100 Euro hin",
+        "wirkung": "ohne_koerperwirkung"
+       },
        "koerper": {
         "haltung": null,
         "schlaf": null,
@@ -319,7 +310,6 @@
       "einleitung": null,
       "geschieht": null,
       "pruefung": {
-       "vollzug": null,
        "komponentenart": {
         "art": "rede",
         "beleg": "und sag gehen wir ins hinterzimmer",
@@ -332,15 +322,7 @@
         "adressat": null,
         "ansageRolle": "unklar",
         "ansageBeleg": null
-       },
-       "koerper": null,
-       "koerperBestaetigung": null,
-       "wirkung": null,
-       "beruehrung": null,
-       "bewegung": null,
-       "bittebezug": null,
-       "erlaubnisbezug": null,
-       "grenzbezug": null
+       }
       }
      }
     ],
@@ -394,8 +376,11 @@
         "taeter": "figur",
         "ziel": ""
        },
-       "komponentenart": null,
-       "sprecher": null,
+       "komponentenart": {
+        "art": "handlung",
+        "beleg": "Meine hände gleiten zwischen deine schenkel",
+        "wirkung": "zaertlich"
+       },
        "koerper": {
         "haltung": null,
         "schlaf": null,

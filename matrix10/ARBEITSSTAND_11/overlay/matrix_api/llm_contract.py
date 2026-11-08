@@ -1506,18 +1506,18 @@ APPRAISAL_CAUSAL_CHECK_RULES = (
 )
 # Stand 11: derselbe Kausalnachweis als Teil der EINEN Erlebensantwort (SPS V62.7 + V84-Belege, ohne zweiten Aufruf).
 APPRAISAL_KAUSAL_IN_ERSTER_ANTWORT = (
-    " ZUSÄTZLICH im selben JSON das Feld \"kausalpruefung\": {\"pruefungen\": [...]} - für JEDES Feld deiner Antwort, das eine Änderung "
-    "vorschlägt, genau ein Eintrag. Feldnamen exakt: \"gefuehl\" (wenn gefuehl nicht leer), \"absicht\" (wenn absicht nicht leer), "
-    "\"zustand.<name>\" für jeden Wert in zustand_aenderung ungleich 0 (z. B. zustand.angst), \"beziehung.<i>.<dim>\" für jeden Wert ungleich 0 "
-    "in beziehung_aenderung (i = Position in der Liste ab 0, dim = trust|closeness|fear). Jeder Eintrag: {\"feld\": string, \"urteil\": "
-    "\"gestuetzt|nicht_gestuetzt\", \"factId\": \"<ID aus gerade_geschehen>\", \"beleg\": \"<wörtlicher Ausschnitt aus gerade_geschehen.text>\", "
-    "\"dispositionsQuelle\": \"<ID aus dispositionsquellen>\", \"dispositionsBeleg\": \"<wörtlicher Ausschnitt (mindestens zwei Wörter oder die "
-    "ganze Quelle) aus genau dem Text dieser Quelle>\", \"richtung\": \"steigt|sinkt\" (nur Zahlenfelder), \"begruendung\": \"\\\"<derselbe "
-    "dispositionsBeleg>\\\" - <warum diese Quelle die Änderung bei dieser Figur trägt>\"}. Ohne konkreten Beleg im Geschehen und in einer ihrer "
-    "Dispositionsquellen ist das Urteil nicht_gestuetzt; nichts erfinden. Das System prüft jede ID und jedes Zitat wörtlich. "
-    "PFLICHT im selben JSON auch das Feld \"vorher_absicht_art\": ist vorher_absicht_erledigt true, \"rede\" oder \"handlung\" - wie "
-    "vorher.absicht ausgeführt wird: rede = indem sie etwas sagt, fragt, bittet oder mitteilt; handlung = durch ein körperliches oder "
-    "räumliches Tun; sonst null."
+    " FORMAT (ersetzt die Objektform von zustand_aenderung oben): zustand_aenderung ist eine Liste [{\"name\": angst|wut|scham|stress|lust, "
+    "\"wert\": -0.3..0.3, \"nachweis\"}] nur mit den Werten ungleich 0. PFLICHT: JEDE vorgeschlagene Änderung trägt DIREKT daneben "
+    "ihren Kausalnachweis - gefuehl_nachweis (wenn gefuehl nicht leer, sonst null), absicht_nachweis (wenn absicht nicht leer, sonst "
+    "null), nachweis je zustand_aenderung-Eintrag, trust_nachweis / closeness_nachweis / fear_nachweis je beziehung_aenderung-Eintrag "
+    "(wenn der Wert ungleich 0, sonst null). Ein nachweis: {\"urteil\": \"gestuetzt|nicht_gestuetzt\", \"factId\": \"<ID aus "
+    "gerade_geschehen>\", \"beleg\": \"<wörtlicher Ausschnitt aus gerade_geschehen.text>\", \"dispositionsQuelle\": \"<ID aus "
+    "dispositionsquellen>\", \"dispositionsBeleg\": \"<wörtlicher Ausschnitt (mindestens zwei Wörter oder die ganze Quelle) aus genau "
+    "dem Text dieser Quelle>\", \"richtung\": \"steigt|sinkt\" (nur bei Zahlen, sonst null), \"begruendung\": \"\\\"<derselbe "
+    "dispositionsBeleg>\\\" - <warum diese Quelle die Änderung bei dieser Figur trägt>\"}. Ohne konkreten Beleg im Geschehen und in einer "
+    "ihrer Dispositionsquellen ist das urteil nicht_gestuetzt; nichts erfinden. Das System prüft jede ID und jedes Zitat wörtlich. "
+    "PFLICHT auch \"vorher_absicht_art\": ist vorher_absicht_erledigt true, \"rede\" oder \"handlung\" - wie vorher.absicht ausgeführt "
+    "wird: rede = indem sie etwas sagt, fragt, bittet oder mitteilt; handlung = durch ein körperliches oder räumliches Tun; sonst null."
 )
 
 
@@ -1571,7 +1571,8 @@ def appraise_events(conn, actor: str, payload: dict[str, Any], *, data: dict[str
             # Stand 11 (SPS V62.7): EIN Aufruf je Figur; der Kausalnachweis (frueher zweiter Aufruf V84) kommt in derselben Antwort
             # Antwortraum = bisheriges Erleben (320) + bisheriger Hoechstwert des Kausalnachweises (3200, je Wirkungsfeld ein Eintrag)
             res = _llm_json(routing, _system + APPRAISAL_KAUSAL_IN_ERSTER_ANTWORT, {"personen": persons, **fig}, temperature=0.0,
-                            max_tokens=APPRAISAL_ANTWORTRAUM, timeout=60, max_input_chars=30000, audit=lambda ph, d: rec.append((ph, d)), attempts=1)
+                            max_tokens=APPRAISAL_ANTWORTRAUM, timeout=60,
+                            response_format=_strikt(routing, "erleben", APPRAISAL_SCHEMA), max_input_chars=30000, audit=lambda ph, d: rec.append((ph, d)), attempts=1)
             err = _last_llm_error()
         except Exception as exc:   # any transport/shape error = failed for her (review finding 9)
             res, err = None, f"{type(exc).__name__}: {str(exc)[:120]}"
@@ -1584,6 +1585,7 @@ def appraise_events(conn, actor: str, payload: dict[str, Any], *, data: dict[str
             # (_appraisal_cause_proofs) prueft jede Fakt-ID, jedes woertliche Zitat und jede Dispositionsquelle selbst.
             from matrix_api.kernel import appraisal_effect_fields
             fields = appraisal_effect_fields(res)
+            res = erleben_aus_antwort(res)   # Stand 11B: Nachweise neben den Werten -> bisherige Struktur
             _kp = res.pop("kausalpruefung", None)
             res["_kausalpruefung"] = _kp if isinstance(_kp, dict) else {"pruefungen": []}
             # Stand 11a: die Absichtsart (frueher INTENT_KIND-Aufruf) aus demselben Pflichtfeld
@@ -2325,12 +2327,35 @@ P_AUSSAGE = _obj({"verneint": _SN, "gegenstand": _E("geschehen", "bewertung", "g
 P_AUSSAGE_TAT = _obj({"ereignis": _S, "bestreitet": _B, "verneint": _SN, "tat": _SN})
 P_OFFENBARUNG = _obj({"offenbart": _B, "beleg": _SN})
 
+# Stand 11B (Geraet 08.11. 21:58: der Nachweis als freie Liste mit Feldnamen fehlte fuer gefuehl/absicht - beides verworfen): der
+# Kausalnachweis steht als Pflichtfeld DIREKT neben jedem vorgeschlagenen Wert. Der Server baut daraus die bisherige Struktur
+# (zustand_aenderung-Dict, _kausalpruefung.pruefungen mit exakten Feldnamen); _appraisal_cause_proofs prueft unveraendert.
+P_NACHWEIS = _obj({"urteil": _E("gestuetzt", "nicht_gestuetzt"), "factId": _S, "beleg": _S, "dispositionsQuelle": _S,
+                   "dispositionsBeleg": _S, "richtung": _E("steigt", "sinkt", null=True), "begruendung": _S})
+_ZAHL = {"type": "number"}
+APPRAISAL_SCHEMA: dict[str, Any] = _obj({
+    "raum": _SN, "aktivierung": _ZAHL, "gefuehl": _S, "gefuehl_nachweis": _nullable(P_NACHWEIS), "gegenueber": _S,
+    "zustand_aenderung": {"type": "array", "items": _obj({"name": _E("angst", "wut", "scham", "stress", "lust"), "wert": _ZAHL,
+                                                          "nachweis": _nullable(P_NACHWEIS)})},
+    "absicht": _S, "absicht_nachweis": _nullable(P_NACHWEIS), "vorher_absicht_erledigt": _B,
+    "vorher_absicht_art": _E("rede", "handlung", null=True),
+    "beziehung_aenderung": {"type": "array", "items": _obj({
+        "zu": _S, "trust": _ZAHL, "trust_nachweis": _nullable(P_NACHWEIS), "closeness": _ZAHL,
+        "closeness_nachweis": _nullable(P_NACHWEIS), "fear": _ZAHL, "fear_nachweis": _nullable(P_NACHWEIS)})},
+    "grund": _S})
+
 # je Komponente (Planer) bzw. Teilstelle: alle Schluessel Pflicht, nicht zutreffend = null
 P_KOMPONENTEN_PRUEFUNG = _obj({
     "vollzug": _nullable(P_VOLLZUG), "komponentenart": _nullable(P_KOMPONENTENART), "sprecher": _nullable(P_SPRECHER),
     "koerper": _nullable(P_KOERPER), "koerperBestaetigung": _nullable(P_KOERPER_BESTAETIGUNG), "wirkung": _nullable(P_WIRKUNG),
     "beruehrung": _nullable(P_BERUEHRUNG), "bewegung": _nullable(P_BEWEGUNG), "bittebezug": _nullable(P_BITTEBEZUG),
     "erlaubnisbezug": _nullable(P_ERLAUBNISBEZUG), "grenzbezug": _nullable(P_GRENZBEZUG)})
+P_REDE_PRUEFUNG = _obj({"komponentenart": P_KOMPONENTENART, "sprecher": P_SPRECHER})
+P_HANDLUNG_PRUEFUNG = _obj({
+    "vollzug": P_VOLLZUG, "komponentenart": P_KOMPONENTENART, "koerper": P_KOERPER,
+    "koerperBestaetigung": _nullable(P_KOERPER_BESTAETIGUNG), "wirkung": _nullable(P_WIRKUNG), "beruehrung": _nullable(P_BERUEHRUNG),
+    "bewegung": _nullable(P_BEWEGUNG), "bittebezug": _nullable(P_BITTEBEZUG), "erlaubnisbezug": _nullable(P_ERLAUBNISBEZUG),
+    "grenzbezug": _nullable(P_GRENZBEZUG)})
 # eigene Antwort einer Figur (Formulierung)
 P_ANTWORT_PRUEFUNG = _obj({
     "koerper": _nullable(P_KOERPER), "koerperBestaetigung": _nullable(P_KOERPER_BESTAETIGUNG), "wirkung": _nullable(P_WIRKUNG),
@@ -2354,11 +2379,14 @@ PLAN_SCHEMA: dict[str, Any] = _obj({
                               "zeit": _nullable(_obj({"relativ": _E("heute", "morgen", "übermorgen", null=True), "wochentag": _SN,
                                                       "datum": _SN}))})),
     "verweis": _nullable(_obj({"pronomen": _S, "genus": _E("m", "f", "n")})),
-    "komponenten": {"type": "array", "items": _obj({
-        "typ": _E("rede", "handlung"), "segment": _S, "akteur": _S, "ziel": _SN, "zeit": _ZEIT,
-        "wirkung": _E(*_WIRKUNGEN, null=True), "bezug": _SN, "einleitung": _SN, "geschieht": _BN,
-        "pruefung": P_KOMPONENTEN_PRUEFUNG})},
-    "teilstellen": {"type": "array", "items": _obj({"stelle": _S, "pruefung": P_KOMPONENTEN_PRUEFUNG})},
+    # Stand 11B: Komponente nach Typ - rede traegt nur ihre zwei Lesungen, handlung nur die Handlungslesungen (kuerzere Antwort)
+    "komponenten": {"type": "array", "items": {"anyOf": [
+        _obj({"typ": _E("rede"), "segment": _S, "akteur": _S, "ziel": _SN, "zeit": _ZEIT, "wirkung": {"type": "null"},
+              "bezug": _SN, "einleitung": _SN, "geschieht": {"type": "null"}, "pruefung": P_REDE_PRUEFUNG}),
+        _obj({"typ": _E("handlung"), "segment": _S, "akteur": _S, "ziel": _SN, "zeit": _ZEIT,
+              "wirkung": _E(*_WIRKUNGEN), "bezug": _SN, "einleitung": {"type": "null"}, "geschieht": _B,
+              "pruefung": P_HANDLUNG_PRUEFUNG})]}},
+    "teilstellen": {"type": "array", "items": _obj({"stelle": _S, "pruefung": P_HANDLUNG_PRUEFUNG})},
     "sprache": P_SPRACHE, "namen": P_NAMEN, "grenzumfang": _nullable(P_GRENZUMFANG),
 })
 # V65S (AMASTER §50 Z. 2831 "Promptregeln sind Transport", §24.2 strukturierter EffectPlan; route run 30.10.: in
@@ -5399,9 +5427,10 @@ _NAMEN_TEXT = ("namen = je zusammenhängender Wortfolge, in der der Name einer P
                "(diese Person wird angesprochen) | nennung, status eindeutig | unklar}; keine solche Wortfolge: []. ")
 
 PLAN_PRUEFUNG_RULES = (
-    " PRÜFUNG (PFLICHT, AMASTER §24.2/§24.7): Jede Komponente hat das Feld \"pruefung\" mit ALLEN Schlüsseln vollzug, komponentenart, "
-    "sprecher, koerper, koerperBestaetigung, wirkung, beruehrung, bewegung, bittebezug, erlaubnisbezug, grenzbezug; was für diese "
-    "Komponente nicht zutrifft, ist null. Jeder beleg ist WÖRTLICH aus der Äußerung kopiert; das System prüft jeden Beleg am Text. Was "
+    " PRÜFUNG (PFLICHT, AMASTER §24.2/§24.7): Jede Komponente hat das Feld \"pruefung\" - bei rede genau {komponentenart, sprecher}, "
+    "bei handlung genau {vollzug, komponentenart, koerper, koerperBestaetigung, wirkung, beruehrung, bewegung, bittebezug, "
+    "erlaubnisbezug, grenzbezug}; was nicht zutrifft, ist null. Die segmente zusammen enthalten JEDES Wort der Äußerung: auch ein "
+    "Nachsatz nach einer Handlung (etwa eine Bemerkung an die Angesprochene) ist eine eigene rede-Komponente. Jeder beleg ist WÖRTLICH aus der Äußerung kopiert; das System prüft jeden Beleg am Text. Was "
     "du nicht sicher belegen kannst, beantwortest du verneinend bzw. ohne Beleg - nie raten. zeit überall: jetzt|vergangen|zukunft|moeglich. "
     "vollzug (jede handlung): {geschieht, art, beleg, taeter, ziel} - wird die Handlung in diesem Moment tatsächlich ausgeführt? "
     + _ART_TEXT +
@@ -5476,3 +5505,57 @@ GOD_KOERPER_PRUEFUNG_RULES = (
 GOD_NAMEN_PRUEFUNG_RULES = (
     " PFLICHT im selben JSON auch das Feld \"namen\" (Wortfolgen im godText): " + _NAMEN_TEXT
 )
+
+
+def erleben_aus_antwort(res: dict) -> dict:
+    """Stand 11B: Erlebensantwort mit Nachweis NEBEN jedem Wert (APPRAISAL_SCHEMA) -> die bisherige Struktur: zustand_aenderung als
+    Dict und kausalpruefung.pruefungen mit genau den Feldnamen von kernel.appraisal_effect_fields. Eine Antwort in der alten Form
+    (kausalpruefung als Liste) bleibt unveraendert. Ein Wert ohne Nachweis bekommt keinen Eintrag - der Kernel verwirft nur ihn."""
+    if not isinstance(res, dict):
+        return res
+    neu = isinstance(res.get("zustand_aenderung"), list) or any(k in res for k in ("gefuehl_nachweis", "absicht_nachweis"))
+    if not neu:
+        return res
+    out = dict(res)
+    pruef: list[dict] = []
+
+    def _nw(feld: str, n: Any) -> None:
+        if isinstance(n, dict):
+            pruef.append({"feld": feld, **{k: v for k, v in n.items() if k != "feld"}})
+
+    zustand: dict = {}
+    for e in res.get("zustand_aenderung") if isinstance(res.get("zustand_aenderung"), list) else []:
+        if not isinstance(e, dict) or not str(e.get("name") or "").strip():
+            continue
+        try:
+            wert = float(e.get("wert") or 0)
+        except (TypeError, ValueError):
+            continue
+        zustand[str(e["name"])] = wert
+        if abs(wert) > 1e-9:
+            _nw("zustand." + str(e["name"]), e.get("nachweis"))
+    if isinstance(res.get("zustand_aenderung"), dict):
+        zustand = dict(res["zustand_aenderung"])
+    out["zustand_aenderung"] = zustand
+    if str(res.get("gefuehl") or "").strip():
+        _nw("gefuehl", res.get("gefuehl_nachweis"))
+    if str(res.get("absicht") or "").strip():
+        _nw("absicht", res.get("absicht_nachweis"))
+    bez = []
+    for i, b in enumerate(res.get("beziehung_aenderung") if isinstance(res.get("beziehung_aenderung"), list) else []):
+        if not isinstance(b, dict):
+            continue
+        for d in ("trust", "closeness", "fear"):
+            try:
+                if abs(float(b.get(d) or 0)) > 1e-9:
+                    _nw(f"beziehung.{i}.{d}", b.get(d + "_nachweis"))
+            except (TypeError, ValueError):
+                pass
+        bez.append({k: v for k, v in b.items() if not k.endswith("_nachweis")})
+    out["beziehung_aenderung"] = bez
+    out.pop("gefuehl_nachweis", None)
+    out.pop("absicht_nachweis", None)
+    alt = res.get("kausalpruefung") if isinstance(res.get("kausalpruefung"), dict) else {}
+    out["kausalpruefung"] = {"pruefungen": pruef + [p for p in (alt.get("pruefungen") or []) if isinstance(p, dict)
+                                                    and p.get("feld") not in {x["feld"] for x in pruef}]}
+    return out

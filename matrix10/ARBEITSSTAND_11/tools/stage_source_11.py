@@ -21,6 +21,7 @@ P25_DIR = "MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107"
 BASIS = {   # Datei im Stage-10C-Stand -> SHA-256 der Basis
     "matrix_api/llm_contract.py": "65b5d8f430d034b97102e4f0c26c5ebb7501d6a46c985e8a959a027f159a8112",   # Overlay 10C
     "matrix_api/app.py": "e6c3f6d445453654b4b38ad4bab8e36061151852a396282cc2304dcf03466ae8",   # Overlay 10B
+    "matrix_api/kernel.py": "0bad26d267cd195b0093e59e0c6b73f7673cbd09553d0bde8581e9c147e00846",   # Overlay 09 (Stand 11B: Rest/Doppelung)
     # P25-Tests, deren Aufrufstruktur Stand 11 anpasst (Lesungen aus der ersten Antwort); Schutzaussagen bleiben
     "tests/test_v92_puppet_vertrag.py": "8415cff5db50f2d6b1fa48b4ae941b6c868c05bb124e3cf6fb8dbcdd18edfb0c",   # P25
     "tests/test_v92_avatar_route.py": "74fb8df70fbd42ab116fa36fc8cf28ebe233a341914c5b023fb271df69aef581",   # P25
