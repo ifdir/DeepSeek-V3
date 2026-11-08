@@ -144,6 +144,14 @@ def kriterien(db, E, calls):
         return (abs(float(werte.get("Vertrauen", 9)) - rel.get("trust", -9)) < 0.006 and abs(float(werte.get("Furcht", 9)) - rel.get("fear", -9)) < 0.006
                 and "[erlebt] Johann Bruckner: Johann schlägt Mara" in b and f"Schmerz {rm(t).get('pain')}" in b
                 and rt.get("intent") == rm(a1).get("intent") and rt.get("emotionToward") == "Johann Bruckner")
+    def rahmen_benannt():
+        for c in calls:
+            if c["lesung"] != "APPRAISAL_RULES" or '"figur": "Mara Nowak"' not in c["user"]:
+                continue
+            u = json.loads(c["user"])
+            r, gg = u.get("beziehung_zum_handelnden"), u.get("gerade_geschehen") or []
+            return isinstance(r, dict) and bool(gg) and r.get("person") == gg[-1].get("wer") and r.get("ereignis") == gg[-1].get("id")
+        return False
     return {
         "G1_tat_serverseitig_gebunden_johann_an_mara_gewalt": E["puppet"][0] == 200 and bool(tat)
             and (tat[0].get("effect") or {}).get("wirkung") == "gewalt" and (tat[0].get("effect") or {}).get("validated") is True,
@@ -151,6 +159,7 @@ def kriterien(db, E, calls):
             and [m.get("kind") for m in mem(G)] == ["gesehen"] and not mem(R),
         "G3_koerper_schmerz_steigt_beweglichkeit_sinkt": rm(t)["pain"] > rm(v)["pain"] and rm(t)["mobility"] < rm(v)["mobility"],
         "G4_bedeutung_angst_gegen_johann_absicht_abstand_aus_bewertung": bool(aff) and bool(rm(a1).get("intent")),
+        "G4c_B2_beziehungsrahmen_der_bewertung_nennt_person_und_ereignis": rahmen_benannt(),
         "G4b_beziehung_vertrauen_sinkt_furcht_steigt": rj(a1).get("trust", 1) < rj(v)["trust"] and rj(a1).get("fear", 0) > rj(v)["fear"],
         "G6_naechster_zug_brief_enthaelt_beziehung_koerper_erinnerung_gefuehl_absicht": len(briefe) >= 1 and im_brief(briefe[0]),
         "G6b_nach_neustart_brief_enthaelt_dasselbe": len(briefe) >= 2 and im_brief(briefe[1]),
