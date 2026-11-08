@@ -107,13 +107,18 @@ def main() -> int:
         except Exception:
             time.sleep(1)
     welt = False
-    if ok:
+    E["erststart_versuche"] = []
+    for _ in range(10 if ok else 0):          # wiederholt, jedes Ergebnis protokolliert (1. Lauf: Ursache des Fehlschlags UNKLAR)
         r = urllib.request.Request("http://127.0.0.1:5150/api/mcc", headers={"X-Matrix-Actor": "admin"})
         try:
             j = json.loads(urllib.request.urlopen(r, timeout=10).read())
             welt = bool(j.get("worlds")) and bool(j.get("characters"))
+            E["erststart_versuche"].append({"welten": len(j.get("worlds") or []), "figuren": len(j.get("characters") or [])})
         except Exception as e:
-            E["erststart_mcc_fehler"] = str(e)[:200]
+            E["erststart_versuche"].append({"fehler": str(e)[:200]})
+        if welt:
+            break
+        time.sleep(1)
     sh(["bash", str(T06 / "ui_stop.sh")])
     K["2_erststart_ohne_db_ui_api_und_welt"] = ok and welt and (root / "data/matrix10.sqlite").is_file()
     # ---- 3
