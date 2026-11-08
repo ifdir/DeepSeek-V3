@@ -414,7 +414,9 @@ def main() -> int:
         from matrix_api import native_boundary as _nb
         _rk = _nb.status()
         if _rk.get("ok"):
-            print(f"[RUST] Einwilligungskern geladen (ABI {_rk.get('abi')}, Geraet {_rk.get('geraet')}).")
+            print(f"[RUST] Einwilligungskern geladen (ABI {_rk.get('abi')}, Geraet {_rk.get('geraet')}"
+                  + (", aus dem App-Speicher geladen - der Paketordner erlaubt kein Laden (z. B. Download)" if _rk.get("geladenAus") == "app_kopie" else "")
+                  + ").")
         else:
             print("[RUST-FEHLER] Einwilligungskern NICHT ladbar: " + str(_rk.get("grund")), file=sys.stderr)
             if _rk.get("abhilfe"):

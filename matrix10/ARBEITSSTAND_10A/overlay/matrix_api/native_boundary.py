@@ -10,9 +10,11 @@ Source work only: Rust compilation and end-to-end acceptance are still blocked.
 from __future__ import annotations
 
 import ctypes
+import hashlib
 import math
 import os
 import platform
+import tempfile
 import struct
 import sys
 import threading
@@ -183,22 +185,91 @@ def _load() -> Any:
         path = library_path()
         if not path.is_file():
             raise NativeBoundaryError("Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.")
+        global _loaded_from
         try:
-            lib = ctypes.CDLL(str(path))
-            lib.matrix_boundary_abi_version.argtypes = []
-            lib.matrix_boundary_abi_version.restype = ctypes.c_uint32
-            if lib.matrix_boundary_abi_version() != ABI:
-                raise NativeBoundaryError("Rust-Schreibgrenze: ABI stimmt nicht ueberein", "NATIVE_ABI_MISMATCH")
-            lib.matrix_boundary_check.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_size_t,
-                                                  ctypes.POINTER(ctypes.c_ubyte), ctypes.c_size_t]
-            lib.matrix_boundary_check.restype = ctypes.c_ssize_t
+            lib = _open(path)
+            _loaded_from = "paket"
         except (OSError, AttributeError) as exc:
-            # Stand 10a (Android-Ausfall 08.11., AMASTER §65 Diagnose): the real loader reason is shown, never swallowed.
-            d = load_diagnosis(path, exc)
-            raise NativeBoundaryError("Rust-Schreibgrenze konnte nicht geladen werden: " + d["grund"]
-                                      + (" -> " + d["abhilfe"] if d["abhilfe"] else "")) from exc
+            # Stand 10a (Android-Ausfall 08.11., Pydroid 3 + Ordner in Download): Android maps no native code from shared
+            # storage (noexec) - P25 needed none, since Stand 06 every touch/consent input does. The SAME library, byte-equal
+            # (SHA-256 checked), is loaded from the app's own storage instead. No fallback logic: Rust decides or nothing does.
+            kopie, kopie_fehler = _app_kopie(path), None
+            if kopie is not None:
+                try:
+                    lib = _open(kopie)
+                    _loaded_from = "app_kopie"
+                except (OSError, AttributeError) as exc2:
+                    kopie_fehler = exc2
+                    lib = None
+            else:
+                lib = None
+            if lib is None:
+                d = load_diagnosis(path, exc)
+                extra = ("; Kopie im App-Speicher laedt ebenfalls nicht: " + " ".join(str(kopie_fehler).split())[:160]) if kopie_fehler else (
+                    "" if kopie is not None else "; kein beschreibbarer App-Speicher fuer eine Kopie gefunden")
+                raise NativeBoundaryError("Rust-Schreibgrenze konnte nicht geladen werden: " + d["grund"] + extra
+                                          + (" -> " + d["abhilfe"] if d["abhilfe"] else "")) from exc
         _library = lib
         return lib
+
+
+_loaded_from = ""
+
+
+def _open(path: Path) -> Any:
+    lib = ctypes.CDLL(str(path))
+    lib.matrix_boundary_abi_version.argtypes = []
+    lib.matrix_boundary_abi_version.restype = ctypes.c_uint32
+    if lib.matrix_boundary_abi_version() != ABI:
+        raise NativeBoundaryError("Rust-Schreibgrenze: ABI stimmt nicht ueberein", "NATIVE_ABI_MISMATCH")
+    lib.matrix_boundary_check.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.c_size_t,
+                                          ctypes.POINTER(ctypes.c_ubyte), ctypes.c_size_t]
+    lib.matrix_boundary_check.restype = ctypes.c_ssize_t
+    return lib
+
+
+def _noexec_or_shared(d: Path) -> bool:
+    try:
+        if os.statvfs(str(d)).f_flag & getattr(os, "ST_NOEXEC", 8):
+            return True
+    except OSError:
+        return True
+    return str(d.resolve()).startswith(("/sdcard", "/storage/", "/mnt/sdcard"))
+
+
+def _app_kopie(path: Path) -> Path | None:
+    """Byte-equal copy of the package library in a private, exec-capable directory of THIS app/user (Pydroid 3: its own
+    cache/home; Linux: the user's temp dir). SHA-256 of the copy must equal the package file, else no copy is used."""
+    try:
+        data = path.read_bytes()
+    except OSError:
+        return None
+    want = hashlib.sha256(data).hexdigest()
+    kandidaten = [os.environ.get("MATRIX_NATIVE_DIR") or "", tempfile.gettempdir(), str(Path.home() / ".cache")]
+    for base in kandidaten:
+        if not base:
+            continue
+        try:
+            b = Path(base)
+            if not b.is_dir() or _noexec_or_shared(b):
+                continue
+            d = b / f"matrix10_native_{os.getuid() if hasattr(os, 'getuid') else 'u'}"
+            d.mkdir(mode=0o700, exist_ok=True)
+            if hasattr(os, "getuid") and d.stat().st_uid != os.getuid():
+                continue
+            os.chmod(d, 0o700)
+            ziel = d / f"libmatrix_boundary_core-{want[:16]}.so"
+            if not ziel.is_file() or hashlib.sha256(ziel.read_bytes()).hexdigest() != want:
+                tmp = d / f".{ziel.name}.{os.getpid()}.tmp"
+                tmp.write_bytes(data)
+                os.chmod(tmp, 0o700)
+                os.replace(tmp, ziel)
+            if hashlib.sha256(ziel.read_bytes()).hexdigest() != want:
+                continue
+            return ziel
+        except OSError:
+            continue
+    return None
 
 
 _ELF_MACHINE = {3: "x86 (32 Bit)", 40: "ARM (32 Bit)", 62: "x86-64", 183: "aarch64 (ARM 64 Bit)"}
@@ -244,7 +315,8 @@ def status() -> dict[str, Any]:
     """Stand 10a: load state of the Rust consent core for START.py and /api/health (read-only; loads like a request)."""
     try:
         lib = _load()
-        return {"ok": True, "abi": int(lib.matrix_boundary_abi_version()), "geraet": platform.machine().lower()}
+        return {"ok": True, "abi": int(lib.matrix_boundary_abi_version()), "geraet": platform.machine().lower(),
+                "geladenAus": _loaded_from or "paket"}
     except NativeBoundaryError as exc:
         d = load_diagnosis(library_path()) if library_path().is_file() else {"grund": "Datei fehlt", "abhilfe": "Paket neu entpacken",
                                                                              "geraet": platform.machine().lower()}

@@ -62,6 +62,28 @@ class RustDiagnose(unittest.TestCase):
         self.assertIn("Bibliothek ist fuer", st["grund"])
         self.assertTrue(st["abhilfe"])
 
+    def test_nicht_ladbarer_ort_wird_ueber_byte_gleiche_kopie_geladen(self):
+        """Pydroid 3 / Download: der Ort erlaubt kein Laden (noexec). Dieselbe Bibliothek wird aus dem App-Speicher geladen."""
+        import ctypes
+        import hashlib
+        echt = self.echt()
+        p = self.mit_datei(echt.read_bytes())
+        orig = ctypes.CDLL
+
+        def cdll(name, *a, **k):
+            if str(name) == str(p):
+                raise OSError(f"{p}: failed to map segment from shared object")
+            return orig(name, *a, **k)
+        self.nb.ctypes.CDLL = cdll
+        try:
+            st = self.nb.status()
+        finally:
+            self.nb.ctypes.CDLL = orig
+        self.assertTrue(st["ok"], st)
+        self.assertEqual(st["geladenAus"], "app_kopie")
+        kopien = list(Path(tempfile.gettempdir()).glob("matrix10_native_*/libmatrix_boundary_core-*.so"))
+        self.assertTrue(any(hashlib.sha256(k.read_bytes()).hexdigest() == hashlib.sha256(echt.read_bytes()).hexdigest() for k in kopien))
+
     def test_keine_elf_datei(self):
         self.mit_datei(b"")
         st = self.nb.status()

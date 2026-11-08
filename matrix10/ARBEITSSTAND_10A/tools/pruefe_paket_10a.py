@@ -262,6 +262,25 @@ def main() -> int:
     K["9a_laufendes_produkt_nutzt_paket_rust_bibliothek"] = r_ok["status"] == 200 and r_ok["geladene_bibliothek"] == [lib_paket]
     K["9b_ohne_bibliothek_fail_closed_503_keine_ersatzlogik"] = (r_ohne["status"] == 503 and r_ohne["code"] == "NATIVE_BOUNDARY_UNAVAILABLE"
                                                                  and not r_ohne["geladene_bibliothek"])
+    # 9d: Paket auf einem noexec-Speicher (wie Pydroid 3 mit Ordner in Download): F1 ueber den echten Weg muss laufen
+    nx = work / "noexec"
+    nx.mkdir()
+    m_ok = subprocess.run(["mount", "-t", "tmpfs", "-o", "noexec,size=200m", "tmpfs", str(nx)], capture_output=True).returncode == 0
+    r_nx = {"mount": m_ok}
+    if m_ok:
+        with zipfile.ZipFile(zp) as z:
+            z.extractall(nx)
+        prod_nx = next(nx.iterdir())
+        cn, on = sh([sys.executable, "-I", str(T09 / "f1_durchlauf_09.py"), str(prod_nx), str(vorlage), str(prot / "f1_noexec")], timeout=1800)
+        lnx = prot / "f1_noexec/f1_ergebnis.json"
+        r_nx.update({"exit": cn, "kriterien": json.loads(lnx.read_text())["kriterien"] if lnx.exists() else on[-600:],
+                     "start_rust_zeilen": [z for z in (prot / "f1_noexec/start.log").read_text(errors="replace").splitlines()
+                                           if z.startswith("[RUST")] if (prot / "f1_noexec/start.log").exists() else []})
+        sh(["bash", str(T06 / "ui_stop.sh")])
+        subprocess.run(["umount", str(nx)], capture_output=True)
+    E["rust_noexec_ort"] = r_nx
+    K["9d_paket_auf_noexec_speicher_f1_12_von_12_rust_aus_app_kopie"] = bool(m_ok and r_nx.get("exit") == 0
+        and any("App-Speicher" in z for z in r_nx.get("start_rust_zeilen") or []))
     K["9a2_start_meldet_rust_geladen"] = any("[RUST] Einwilligungskern geladen" in z for z in r_ok["start_rust_zeilen"]) \
         and (r_ok["health_rustKern"] or {}).get("ok") is True
     K["9c_fremde_bibliothek_grund_beim_start_in_health_und_im_503"] = (
