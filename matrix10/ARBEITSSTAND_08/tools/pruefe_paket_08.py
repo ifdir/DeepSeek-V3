@@ -9,6 +9,12 @@
 6  P25-Testsuite: entpacktes Paket vs. unveraendertes P25 (erlaubt nur die dokumentierte K-01-Abweichung)
 7  Live K-01 (live_abnahme_k01_07.py) und Live K-02 (live_abnahme_k02_08.py): START.py aus dem entpackten Paket, Chromium,
    echter Neustart (mit einer Kopie der Pruef-Vorlage-DB, nie der Original-DB)
+8  ABI-3-Vertrag (ARBEITSSTAND_06/tests/test_abi3_contract_06.py) gegen das entpackte Paket, Gegenprobe mit einer aus der
+   mitgelieferten Crate gebauten ABI-2-Bibliothek
+9  Rust im laufenden Produkt: START.py aus dem entpackten Paket, Anfrage an die Einwilligungsleser (GET /api/mcc) -> der
+   API-Prozess hat genau die Paket-Bibliothek geladen (/proc/<pid>/maps); Gegenprobe: zweite frische Entpackung ohne
+   Bibliothek -> 503 NATIVE_BOUNDARY_UNAVAILABLE, keine Python-Ersatzlogik
+Das Abnahmeverzeichnis ist NEU und LEER unter /tmp (nicht das Scratchpad); ZIP und .sha256 werden dorthin kopiert.
 Aufruf: python3 -I pruefe_paket_08.py <paket.zip> <vorlage.sqlite> <protokollordner>
 Exit = Vertragsstatus des Pakets: 2 ROT (bekannte offene Vertragsfehler) - Paketkriterien stehen getrennt im JSON.
 """
@@ -60,10 +66,15 @@ def main() -> int:
     # ---- 1
     with zipfile.ZipFile(zp) as z:
         K["1a_zip_crc_ok"] = z.testzip() is None
+    work = Path(f"/tmp/matrix10_abnahme_stand08_{time.strftime('%Y%m%d_%H%M%S')}")
+    work.mkdir(parents=True, exist_ok=False)                     # neu und leer, ausserhalb des Scratchpads
+    shutil.copy2(zp, work / zp.name)
+    shutil.copy2(zp.parent / (zp.name + ".sha256"), work / (zp.name + ".sha256"))
+    zp = work / zp.name
+    E["abnahmeverzeichnis"] = str(work)
     soll = (zp.parent / (zp.name + ".sha256")).read_text().split()[0]
     E["zip_sha256"] = sha(zp)
     K["1b_zip_sha256"] = E["zip_sha256"] == soll
-    work = Path(tempfile.mkdtemp(prefix="pruef08_"))
     with zipfile.ZipFile(zp) as z:
         z.extractall(work / "entpackt")
     root = next((work / "entpackt").iterdir())
@@ -153,12 +164,64 @@ def main() -> int:
     E["live_k02"] = json.loads(l2.read_text())["kriterien"] if l2.exists() else o2[-800:]
     K["7a_live_k01_sec_14_kriterien"] = c1 == 0
     K["7b_live_k02_10_kriterien"] = c2 == 0
+    # ---- 8 ABI 3
+    abi2 = work / "abi2_crate"
+    shutil.copytree(root / "native_core/matrix-boundary-core", abi2, ignore=shutil.ignore_patterns("target"))
+    lr = abi2 / "src/lib.rs"
+    import re as _re
+    lr.write_text(_re.sub(r"pub const ABI_VERSION: u32 = \d+;", "pub const ABI_VERSION: u32 = 2;", lr.read_text()))
+    c, o = sh(["cargo", "build", "--release", "--offline", "--locked"], cwd=abi2)
+    c, o = sh([sys.executable, "-I", str(M10 / "ARBEITSSTAND_06/tests/test_abi3_contract_06.py")],
+              env=dict(os.environ, MATRIX06_ROOT=str(root), MATRIX06_ABI2_LIB=str(abi2 / "target/release/libmatrix_boundary_core.so")))
+    (prot / "abi3_vertrag.log").write_text(o)
+    K["8_abi3_vertrag_und_abi2_gegenprobe"] = c == 0
+    # ---- 9 Rust im laufenden Produkt + Negativprobe ohne Bibliothek
+    def lauf(produkt: Path, tag: str):
+        sh(["bash", str(T06 / "ui_stop.sh")])
+        (produkt / "data").mkdir(exist_ok=True)
+        shutil.copy2(vorlage, produkt / "data/matrix10.sqlite")
+        lg = open(prot / f"rust_lauf_{tag}.log", "wb")
+        subprocess.Popen(["python3", "START.py"], cwd=produkt, env=env, stdout=lg, stderr=lg, stdin=subprocess.DEVNULL, start_new_session=True)
+        for _ in range(90):
+            try:
+                urllib.request.urlopen("http://127.0.0.1:5150/api/health", timeout=2)
+                break
+            except Exception:
+                time.sleep(1)
+        try:
+            resp = urllib.request.urlopen(urllib.request.Request("http://127.0.0.1:5150/api/mcc", headers={"X-Matrix-Actor": "admin"}), timeout=20)
+            status, code = resp.status, None
+        except urllib.error.HTTPError as he:
+            status, code = he.code, (json.loads(he.read() or b"{}") or {}).get("code")
+        pids = subprocess.run(["pgrep", "-f", "matrix_api.app"], capture_output=True, text=True).stdout.split()
+        geladen = []
+        for pid in pids:
+            try:
+                geladen += [ln.split()[-1] for ln in open(f"/proc/{pid}/maps") if "libmatrix_boundary_core" in ln]
+            except OSError:
+                pass
+        sh(["bash", str(T06 / "ui_stop.sh")])
+        return {"status": status, "code": code, "geladene_bibliothek": sorted(set(geladen))}
+    import urllib.error  # noqa: E402
+    r_ok = lauf(root, "mit_rust")
+    ohne_dir = work / "ohne_rust"
+    with zipfile.ZipFile(zp) as z:
+        z.extractall(ohne_dir)
+    ohne = next(ohne_dir.iterdir())
+    shutil.rmtree(ohne / "matrix_api/native")
+    r_ohne = lauf(ohne, "ohne_rust")
+    E["rust_im_laufenden_produkt"] = {"mit_bibliothek": r_ok, "ohne_bibliothek": r_ohne}
+    lib_paket = str((root / "matrix_api/native/libmatrix_boundary_core.so").resolve())
+    K["9a_laufendes_produkt_nutzt_paket_rust_bibliothek"] = r_ok["status"] == 200 and r_ok["geladene_bibliothek"] == [lib_paket]
+    K["9b_ohne_bibliothek_fail_closed_503_keine_ersatzlogik"] = (r_ohne["status"] == 503 and r_ohne["code"] == "NATIVE_BOUNDARY_UNAVAILABLE"
+                                                                 and not r_ohne["geladene_bibliothek"])
     E["paketpruefung"] = "BESTANDEN" if all(K.values()) else "NICHT BESTANDEN"
     E["vertragsstatus_gesamt"] = "ROT (bekannte offene Vertragsfehler; K-01/K-02 TEILGESCHLOSSEN; Modell BLOCKIERT)"
     E["vertragsstatus"] = st["vertragsstatus_aus_gesamtlauf_chain_08"]
     (prot / "MATRIX10_STAND08_PRUEFPROTOKOLL.json").write_text(json.dumps(E, indent=2, ensure_ascii=False) + "\n")
     print(json.dumps(K, indent=1, ensure_ascii=False))
-    shutil.rmtree(work, ignore_errors=True)
+    for x in ("suite", "p25", "ohne_rust", "abi2_crate"):
+        shutil.rmtree(work / x, ignore_errors=True)     # das entpackte Paket selbst bleibt fuer Einsicht liegen
     return 2 if all(K.values()) else 3
 
 
