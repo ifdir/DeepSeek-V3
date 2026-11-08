@@ -1,0 +1,36 @@
+MATRIX10 - Arbeitsstand 08 - Android (aarch64, Termux)
+======================================================
+
+STATUS: ROT - KEINE Produktfreigabe.
+ANDROID: GEBAUT, AUF ANDROID UNGETESTET. Es stand kein Android-Geraet/Emulator zur Verfuegung.
+Inhalt identisch mit dem gepruefte Linux-Paket (15/15 Paketpruefungen) - einzige Abweichung:
+matrix_api/native/libmatrix_boundary_core.so ist fuer aarch64-linux-android gebaut (statt x86_64).
+Ursache des frueheren Fehlers "503 NATIVE_BOUNDARY_UNAVAILABLE": das Linux-Paket enthaelt eine x86_64-Bibliothek,
+die auf einem ARM-Handy nicht geladen werden kann.
+
+Voraussetzungen
+---------------
+- Android-Handy mit 64-Bit-ARM (aarch64), Termux (aus F-Droid), Android 7 oder neuer
+- In Termux:   pkg install python unzip
+               pip install flask
+
+Starten
+-------
+1. ZIP in einen NEUEN, leeren Ordner entpacken, z. B.:
+     mkdir ~/m10 && cd ~/m10 && unzip /sdcard/Download/MATRIX10_STAND08_PRODUKT_android-aarch64_<commit>.zip
+2. cd MATRIX10_STAND08_PRODUKT_android-aarch64_<commit>
+3. Rust-Kern pruefen (muss "Rust OK 3" ausgeben):
+     python -c "import ctypes; l=ctypes.CDLL('matrix_api/native/libmatrix_boundary_core.so'); print('Rust OK', l.matrix_boundary_abi_version())"
+4. python START.py
+5. Browser: http://127.0.0.1:8080   (API: http://127.0.0.1:5050). START.py versucht ihn unter Android selbst zu oeffnen.
+   Andere Ports: MATRIX_UI_PORT=8180 MATRIX_API_PORT=5150 python START.py
+
+Falls Schritt 3 scheitert (Bibliothek laedt nicht) - Rust-Kern auf dem Handy selbst bauen:
+     pkg install rust
+     cd native_core/matrix-boundary-core && cargo build --release --offline --locked && cd ../..
+     cp native_core/matrix-boundary-core/target/release/libmatrix_boundary_core.so matrix_api/native/
+   Danach Schritt 3 wiederholen. Bitte die Fehlermeldung aus Schritt 3 zurueckmelden.
+
+Ohne Modell-Schluessel: unter "Konfiguration" Provider "Nur lokale Synapse (kein LLM)" waehlen.
+Echtes Modell: in diesem Stand NICHT abgenommen (BLOCKIERT).
+Offene Punkte: siehe MATRIX10_STAND08_STATUS.json und MATRIX10_STAND08_START.txt (Linux-Anleitung, gleiche Liste).
