@@ -91,26 +91,29 @@ def main() -> int:
     E["hash_abweichungen"] = abw
     K["1d_rust_bibliothek_und_frontend_vorhanden"] = (sha(root / "matrix_api/native/libmatrix_boundary_core.so") == st["rust_bibliothek_sha256"]
                                                       and (root / "frontend_dist/index.html").is_file())
-    # ---- 2 Erststart laut Anleitung (ohne data/)
+    # ---- 2 Erststart EXAKT nach der mitgelieferten Anleitung: `python3 START.py` ohne Port-Variablen, URLs aus der Anleitung
+    import re as _re2
+    anl = (root / "MATRIX10_STAND08_START.txt").read_text(encoding="utf-8")
+    ui_url = _re2.search(r"Browser selbst oeffnen: (http://127\.0\.0\.1:\d+)", anl)
+    api_url = _re2.search(r"\(API: (http://127\.0\.0\.1:\d+)\)", anl)
+    E["anleitung_urls"] = {"ui": ui_url and ui_url.group(1), "api": api_url and api_url.group(1)}
     sh(["bash", str(T06 / "ui_stop.sh")])
-    env = dict(os.environ, MATRIX_API_PORT="5150", MATRIX_UI_PORT="8180", MATRIX_NO_OPEN="1")
-    for k in ("XAI_API_KEY", "OPENAI_API_KEY", "MATRIX_API_KEY"):
-        env.pop(k, None)
+    env0 = {k: v for k, v in os.environ.items() if not k.startswith("MATRIX_") and k not in ("XAI_API_KEY", "OPENAI_API_KEY")}
     log = open(prot / "erststart.log", "wb")
-    subprocess.Popen(["python3", "START.py"], cwd=root, env=env, stdout=log, stderr=log, stdin=subprocess.DEVNULL, start_new_session=True)
+    subprocess.Popen(["python3", "START.py"], cwd=root, env=env0, stdout=log, stderr=log, stdin=subprocess.DEVNULL, start_new_session=True)
     ok = False
-    for _ in range(90):
+    for _ in range(90 if ui_url and api_url else 0):
         try:
-            urllib.request.urlopen("http://127.0.0.1:5150/api/health", timeout=2)
-            urllib.request.urlopen("http://127.0.0.1:8180/", timeout=2)
+            urllib.request.urlopen(api_url.group(1) + "/api/health", timeout=2)
+            urllib.request.urlopen(ui_url.group(1) + "/", timeout=2)
             ok = True
             break
         except Exception:
             time.sleep(1)
     welt = False
     E["erststart_versuche"] = []
-    for _ in range(10 if ok else 0):          # wiederholt, jedes Ergebnis protokolliert (1. Lauf: Ursache des Fehlschlags UNKLAR)
-        r = urllib.request.Request("http://127.0.0.1:5150/api/mcc", headers={"X-Matrix-Actor": "admin"})
+    for _ in range(10 if ok else 0):
+        r = urllib.request.Request(api_url.group(1) + "/api/mcc", headers={"X-Matrix-Actor": "admin"})
         try:
             j = json.loads(urllib.request.urlopen(r, timeout=10).read())
             welt = bool(j.get("worlds")) and bool(j.get("characters"))
@@ -120,8 +123,15 @@ def main() -> int:
         if welt:
             break
         time.sleep(1)
+    subprocess.run(["pkill", "-f", "python3 START.py"], check=False)
+    subprocess.run(["pkill", "-f", "matrix_api.app"], check=False)
+    time.sleep(2)
     sh(["bash", str(T06 / "ui_stop.sh")])
-    K["2_erststart_ohne_db_ui_api_und_welt"] = ok and welt and (root / "data/matrix10.sqlite").is_file()
+    K["2_erststart_exakt_nach_anleitung_ui_api_welt"] = ok and welt and (root / "data/matrix10.sqlite").is_file()
+    src = M10 / "MATRIX10_RUST_ARBEITSSTAND_04_20261107/sources"
+    K["2b_readme_stand08_und_vertragsdateien"] = (
+        "Arbeitsstand 08" in (root / "README.md").read_text(encoding="utf-8").splitlines()[0]
+        and all(sha(root / "vertrag" / n) == sha(src / n) for n in ("AMASTERv2.md(1).txt", "Matrix10.txt", "VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt")))
     # ---- 3
     c, o = sh(["cargo", "test", "--offline", "--locked"], cwd=root / "native_core/matrix-boundary-core")
     (prot / "cargo_test.log").write_text(o)
@@ -181,7 +191,8 @@ def main() -> int:
               env=dict(os.environ, MATRIX06_ROOT=str(root), MATRIX06_ABI2_LIB=str(abi2 / "target/release/libmatrix_boundary_core.so")))
     (prot / "abi3_vertrag.log").write_text(o)
     K["8_abi3_vertrag_und_abi2_gegenprobe"] = c == 0
-    # ---- 9 Rust im laufenden Produkt + Negativprobe ohne Bibliothek
+    # ---- 9 Rust im laufenden Produkt + Negativprobe ohne Bibliothek (Testaufbau auf 5150/8180)
+    env = dict(env0, MATRIX_API_PORT="5150", MATRIX_UI_PORT="8180", MATRIX_NO_OPEN="1")
     def lauf(produkt: Path, tag: str):
         sh(["bash", str(T06 / "ui_stop.sh")])
         (produkt / "data").mkdir(exist_ok=True)

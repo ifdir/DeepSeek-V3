@@ -71,6 +71,13 @@ def main() -> int:
         (pkg / "pruefung" / sub).mkdir(parents=True, exist_ok=True)
         for f in files:
             shutil.copy2(f, pkg / "pruefung" / sub / f.name)
+    # Lieferdokumente (keine Produktlogik): Vertragsgrundlage beilegen, README beschreibt den gelieferten Stand
+    src = M10 / "MATRIX10_RUST_ARBEITSSTAND_04_20261107/sources"
+    (pkg / "vertrag").mkdir()
+    for n in ("AMASTERv2.md(1).txt", "Matrix10.txt", "VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt"):
+        shutil.copy2(src / n, pkg / "vertrag" / n)
+    (pkg / "README.md").rename(pkg / "README_P25_QUELLARBEITSKOPIE.md")
+    shutil.copy2(HIER / "tools/README_STAND08.md", pkg / "README.md")
     res = json.loads((HIER / "evidence/chain_08/result_08.json").read_text())
     status = {
         "stand": "08", "plattform": PLATTFORM, "nur_getestet_auf": "Linux x86_64 (diese Umgebung); keine Aussage zu Windows/Android",
@@ -79,6 +86,10 @@ def main() -> int:
         "ebene_08": man["stand_08"]["overlay_08"], "rust_bibliothek_sha256": sha(pkg / "matrix_api/native" / LIB),
         "frontend_index_sha256": sha(pkg / "frontend_dist/index.html"),
         "gesamtstatus": "ROT - keine Produktfreigabe",
+        "vorgaenger_paket_eingefroren": {"datei": "MATRIX10_STAND08_PRODUKT_linux-x86_64_6713376.zip",
+                                         "sha256": "50155ec2abdb88bc9fc367b010f81d469a0d931799bfad1e63871b9f265c903c",
+                                         "fehler": "Startanleitung nannte 8180/5150, START.py startet auf 8080/5050"},
+        "vertrag_sha256": {n: sha(pkg / "vertrag" / n) for n in sorted(x.name for x in (pkg / "vertrag").iterdir())},
         "vertragsstatus_aus_gesamtlauf_chain_08": res["vertragsstatus"],
         "paketpruefung": "siehe MATRIX10_STAND08_PRUEFPROTOKOLL (wird nach Pruefung des entpackten ZIP mitgeliefert)",
     }

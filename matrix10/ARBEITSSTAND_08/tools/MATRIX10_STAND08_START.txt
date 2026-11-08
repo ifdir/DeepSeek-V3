@@ -4,6 +4,7 @@ MATRIX10 - Arbeitsstand 08 - Produktpaket Linux x86_64
 STATUS: ROT - KEINE Produktfreigabe. Arbeitsstand zum Pruefen und Weiterarbeiten.
 Plattform: Linux x86_64 (nur dort gebaut und getestet). Windows/Android: NICHT getestet, keine Aussage.
 Details: MATRIX10_STAND08_STATUS.json (Commit, Hashes je Ebene, Vertragsstatus) und das Pruefprotokoll.
+Vertragsgrundlage im Paket: vertrag/ (AMASTERv2, Matrix10.txt, Reparatur-Kettenvertrag); SPS: MATRIX10_SPS_MASTER.md.
 
 Inhalt: P25 + Reparaturen 06/06a (Rust-Einwilligungskern ABI 3, 503-Fehlerkette, Fehleranzeige), 07 (K-01
 TurnTruth- und Commit-Bindung, W2, SEC Schluesselleck), 08 (K-02 Wahrnehmung der Antwortphase, Figurenabruf auf der
@@ -20,9 +21,9 @@ Starten
 1. ZIP in einen NEUEN, leeren Ordner entpacken.
 2. cd MATRIX10_STAND08_PRODUKT_linux-x86_64_<commit>
 3. python3 START.py
-4. Browser: http://127.0.0.1:8180   (API: http://127.0.0.1:5150)
-   Andere Ports: MATRIX_API_PORT=... MATRIX_UI_PORT=... python3 START.py
-   Ohne automatisches Browser-Oeffnen: MATRIX_NO_OPEN=1 python3 START.py
+4. Browser selbst oeffnen: http://127.0.0.1:8080   (API: http://127.0.0.1:5050)
+   (Unter Linux oeffnet START.py den Browser nicht automatisch.)
+   Andere Ports, falls 8080/5050 belegt: MATRIX_UI_PORT=8180 MATRIX_API_PORT=5150 python3 START.py
 Datenbank: data/matrix10.sqlite (wird beim ersten Start mit der eingebauten Welt angelegt).
 
 Ohne Modell-Schluessel: unter "Konfiguration" Provider "Nur lokale Synapse (kein LLM)" waehlen. Dann antworten die
