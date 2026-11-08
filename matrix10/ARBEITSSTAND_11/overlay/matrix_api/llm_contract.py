@@ -2190,11 +2190,18 @@ def render_persona_brief(spiegel: dict[str, Any], utterance: str, uttered_by: st
         lines.append(f"REGIE-ANWEISUNG (verbindlich — setze sie JETZT in Rede und Handlung um, in deinem Ton): {str(spiegel.get('directive'))[:240]}")
     # V59C (AMASTER §41.1/§34.1): the immediate stimulus mirrors the committed
     # components: what was said and what was done are separate.
-    if utterance:
+    # Stand 11C (AMASTER §27.4, §34.1; Nutzer 08.11.): die Figur hoert die GANZE Aeusserung woertlich; was davon als Handlung
+    # wirklich geschehen ist, steht getrennt darunter (validierte Facts) - der Wortlaut allein beweist keine Tat.
+    _wl = str(spiegel.get("stimulusWortlaut") or "").strip()
+    if _wl:
+        lines.append(f"JETZT – {uttered_by or 'jemand'}, die ganze Äußerung wörtlich: „{_wl[:600]}“")
+        lines.append(f"Davon wirklich geschehen (geprüft): {stim_action[:200]}" if stim_action
+                     else "Davon ist keine Handlung geschehen – es sind nur Worte.")
+    if utterance and not _wl:
         lines.append(f"JETZT SAGT {uttered_by or 'jemand'}: \"{utterance}\"")
-    if stim_action:
+    if stim_action and not _wl:
         lines.append(f"JETZT TUT {uttered_by or 'jemand'} (Handlung, ist geschehen): {stim_action[:200]}")
-    if not utterance and not stim_action and not spiegel.get("directive") and not done and not _free:
+    if not utterance and not stim_action and not _wl and not spiegel.get("directive") and not done and not _free:
         lines.append(f"JETZT SAGT {uttered_by or 'jemand'}: \"(kein Text)\"")
     # V61 (AMASTER §15, §41.3, §49.3): an authored reaction rule of HER OWN
     # profile whose condition a validated Fact of this turn fulfils (kernel

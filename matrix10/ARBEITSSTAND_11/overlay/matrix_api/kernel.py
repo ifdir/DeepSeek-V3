@@ -5901,7 +5901,7 @@ def bind_input_components(
     out["speech"], _unassigned = _speech_from_components(raw, components, _place, spans, own, _intro, visible=_rejected_spans,
                                                          marked=[(a, b) for a, b, _t in _marks], actor_id=actor_id,
                                                          figures=present, actor_names=actor_names, addressee=_addr,
-                                                         own_act_subject_spans=own_act_subject_spans)
+                                                         own_act_subject_spans=own_act_subject_spans, cut=bool(cut))
     out["ambiguous"].extend(_unassigned)
     if _addr.get("conflict"):
         out["speechTargetConflict"] = True
@@ -5942,7 +5942,7 @@ def _speech_from_components(raw: str, components: list, place: dict[int, tuple[i
                             marked: list[tuple[int, int]] | None = None, actor_id: str = "",
                             figures: list[dict] | None = None, actor_names: Any = (),
                             addressee: dict | None = None,
-                            own_act_subject_spans: list[tuple[int, int]] | None = None) -> tuple[str | None, list[dict]]:
+                            own_act_subject_spans: list[tuple[int, int]] | None = None, cut: bool = False) -> tuple[str | None, list[dict]]:
     """V92 (AMASTER §34.1 jede Komponente eigene Validierung, §24.2/§24.7 keine geratene Wahrheit, keine stille Kuerzung; Kettenvertrag
     §6; live 04.11.: "Johann zieht Mara an sich und küsst sie." stored the speech "und." for Johann): what the figure SAYS is the
     text of the planner's validated `rede` components - each located literally in the input, by the figure itself, outside the
@@ -5956,6 +5956,7 @@ def _speech_from_components(raw: str, components: list, place: dict[int, tuple[i
     intro_cover: list[tuple[int, int]] = []
     # V92 (Paket-8-Pruefung): the parts of the input a rejected component stands on are visible under its rejection reason
     seen = [sp for sp in (visible or []) if sp]
+    _abgewiesen: list[tuple[int, int]] = list(seen)   # Stand 11C: Stellen abgewiesener Komponenten (ihr Rest wird nie Rede)
     for ci, comp in enumerate(components):
         if not isinstance(comp, dict) or str(comp.get("typ") or comp.get("type") or "").strip().lower() != "rede":
             continue
@@ -6053,18 +6054,18 @@ def _speech_from_components(raw: str, components: list, place: dict[int, tuple[i
                                    base=_cl[0] if _cl else 0) if _occA else None
             amb.append({"segment": seg[:160], "grund": "rede_akteur_ist_nicht_der_sprecher", "vorschlag": copy.deepcopy(comp),
                         **({"klaerung": _k} if _k else {})})
-            seen.append(((intro[ci][0] if intro and ci in intro else span[0]), span[1]))
+            seen.append(((intro[ci][0] if intro and ci in intro else span[0]), span[1])); _abgewiesen.append(seen[-1])
         elif _name_fault:
             _k = identity_klaerung(_unres, _ann, base=_cl[0] if _cl else 0)
             amb.append({"segment": seg[:160], "grund": "rede_sprecher_name_unklar", "vorschlag": copy.deepcopy(comp),
                         **({"klaerung": _k} if _k else {})})
-            seen.append(((intro[ci][0] if intro and ci in intro else span[0]), span[1]))
+            seen.append(((intro[ci][0] if intro and ci in intro else span[0]), span[1])); _abgewiesen.append(seen[-1])
         elif _sp in ("fehlt", "unklar") or (_ann_amb and str(actor_id or "") not in _ann_ids and not _ich) or _rd in ("fehlt", "unklar"):
             _k = identity_klaerung([o for o in _occA if o["state"] == "ok" and len(o["ids"]) > 1], _ann,
                                    base=_cl[0] if _cl else 0) if _ann_amb else None
             amb.append({"segment": seg[:160], "grund": "rede_sprecher_fehlt" if _sp == "fehlt" else "rede_sprecher_unklar",
                         "vorschlag": copy.deepcopy(comp), **({"klaerung": _k} if _k else {})})
-            seen.append(((intro[ci][0] if intro and ci in intro else span[0]), span[1]))
+            seen.append(((intro[ci][0] if intro and ci in intro else span[0]), span[1])); _abgewiesen.append(seen[-1])
         elif not any(span == r for r in rede):
             # P24: an independently verified address is SPOKEN, not an
             # announcement by somebody else. Keep the entire source span of
@@ -6142,6 +6143,17 @@ def _speech_from_components(raw: str, components: list, place: dict[int, tuple[i
             # was gelesen und gueltig ist, und der Rest bleibt sichtbar.
             _im_marker = any(a < mb and ma < b for ma, mb in (marked or []))
             _nennt = bool(name_occurrences(text, figures or [])) if figures else True
+            _an_abgewiesen = any(sp[1] == a or sp[0] == b for sp in _abgewiesen)   # Wortrest einer abgewiesenen Komponente
+            if not _im_marker and not _nennt and not cut and not _an_abgewiesen:
+                # Stand 11C (AMASTER §27.4 "Die Puppet-Eingabe ist die tatsaechliche Rede oder Handlung dieser Figur", §34.1
+                # "eine nicht validierte Komponente darf als sichtbare ... Redeprovenienz erhalten bleiben" - ohne Koerper-/Weltwirkung;
+                # Nutzerentscheidung 08.11. 22:22, hebt Paket-8-Pruefung C6 fuer diesen Fall auf): ungekennzeichneter Text, den keine
+                # geprufte Handlung deckt und der keine andere Person nennt, ist die eigene Rede der Figur - nichts geht verloren.
+                _w = re.search(r"\w[\s\S]*\w[.!?\u2026]*|\w[.!?\u2026]*", text)   # Satzzeichen am Ende gehoeren zur Rede
+                if _w:
+                    rede.append((a + _w.start(), a + _w.end()))
+                    amb.append({"segment": rest[:160], "grund": "rest_als_rede", "provenienz": True})
+                continue
             amb.append({"segment": rest[:160], "grund": "rest_ohne_komponente",
                         **({"inMarkierung": True} if _im_marker else {}), **({"nenntPerson": True} if _nennt else {})})
     speech = " ".join(raw[a:b].strip() for a, b in sorted(rede) if raw[a:b].strip()) or None
@@ -12374,6 +12386,7 @@ def commit_puppet(
     component_ambiguity: list[dict] | None = None,
     language: list[dict] | None = None,
     figures: list[dict] | None = None,
+    wortlaut: str | None = None,
 ) -> dict:
     """V65J (AMASTER §24.2/§24.6/§27.4, Prüfbericht v2.2 Kette C): the acts of a
     puppet figure are the SAME validated components as an avatar input (planner
@@ -12419,6 +12432,8 @@ def commit_puppet(
     truth = bind_from_session(
         s, role="puppet", authority="character", speaker_id=figure["id"], target_id=_tid, input_kind="puppet", text=speech
     )
+    if str(wortlaut or "").strip():
+        truth["wortlaut"] = str(wortlaut)[:1200]   # Stand 11C: die ganze Puppet-Aeusserung woertlich (Provenienz, keine Wahrheit)
     attach_turn_truth(s, truth)
     # Capability has already been decided against the canonical runtime before
     # the writer advances turnIndex; the same result is used for turn and Facts.
@@ -14166,6 +14181,18 @@ def bind_formulation_spiegel(
     stimulus_action = " / ".join(str(f.get("text") or "") for f in _in_facts
                                  if f.get("kind") == "action" and _scene.validiert(f)).strip()
     _fact_stimulus = " ".join(x for x in (stimulus_speech, stimulus_action) if x).strip()
+    # Stand 11C (AMASTER §27.4, §34.1; Nutzer 08.11. 22:22/22:37): die Figur hoert die GANZE Aeusserung der anderen Person -
+    # woertlich, wie sie gesagt bzw. geschrieben wurde (direkte Eingabe: Avatar, Teilnehmer, Puppet). Was davon als Handlung
+    # wirklich geschehen ist, bleibt allein die Liste der validierten Facts (stimulusAction) - der Wortlaut ist kein Beweis einer Tat.
+    stimulus_wortlaut = ""
+    _src_ids = {str(f.get("sourceTurnId") or f.get("source_turn_id") or "") for f in _in_facts}
+    for _tt in reversed(session.get("turnTruths") or []):
+        if (isinstance(_tt, dict) and str(_tt.get("id") or "") in _src_ids
+                and str(_tt.get("input_kind") or _tt.get("inputKind") or "").lower() in ("speech", "user", "puppet")):
+            stimulus_wortlaut = str(_tt.get("wortlaut") or _tt.get("text") or "").strip()
+            break
+    if stimulus_wortlaut and " ".join(stimulus_wortlaut.split()) == " ".join(_fact_stimulus.split()):
+        stimulus_wortlaut = ""   # nichts ausser dem Gespeicherten - keine zweite Zeile
     if _in_facts:
         stimulus = _fact_stimulus
     elif str(truth.get("input_kind") or truth.get("inputKind") or "").lower() == "autochat" and not str(truth.get("directive") or "").strip():
@@ -14725,6 +14752,7 @@ def bind_formulation_spiegel(
         "directiveDone": directive_done,
         "stimulusSpeech": stimulus_speech if stimulus_split else None,
         "stimulusAction": stimulus_action or None,
+        "stimulusWortlaut": stimulus_wortlaut[:600] or None,   # Stand 11C
         "turnMode": ("autochat" if str(truth.get("input_kind") or truth.get("inputKind") or "").lower() == "autochat" else "reply"),
         # V65G (AMASTER §26 / §68 Nr. 6 "Anwesenheit, Hören und Sehen bestimmen
         # Wissen", §44 gerichtet pro Person, §41.2): "present" of a Stamm bond is

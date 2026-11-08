@@ -68,7 +68,7 @@ def main() -> int:
     sh(["npm", "run", "build:dist"], cwd=root)
     if not (root / "frontend_dist/index.html").is_file():
         raise SystemExit("ABBRUCH: frontend_dist/index.html fehlt nach dem Build")
-    name = f"MATRIX10_STAND11B_PRODUKT_{PLATTFORM}_{kurz}"
+    name = f"MATRIX10_STAND11C_PRODUKT_{PLATTFORM}_{kurz}"
     pkg = tmp / name
     shutil.copytree(root, pkg, ignore=lambda d, n: [x for x in n if x in WEG])
     for sub, files in PRUEF.items():
@@ -84,7 +84,7 @@ def main() -> int:
     shutil.copy2(HIER / "tools/README_STAND11.md", pkg / "README.md")
     res = json.loads((M10 / "ARBEITSSTAND_08/evidence/chain_08/result_08.json").read_text())
     status = {
-        "stand": "11b", "plattform": PLATTFORM, "nur_getestet_auf": "Linux x86_64 (diese Umgebung); keine Aussage zu Windows/Android",
+        "stand": "11c", "plattform": PLATTFORM, "nur_getestet_auf": "Linux x86_64 (diese Umgebung); keine Aussage zu Windows/Android",
         "commit": commit, "branch": "claude/matrix10-rust-repair-xq9k34", "repository": "https://github.com/ifdir/DeepSeek-V3",
         "p25_zip_sha256": man["basis_sha256"], "ebene_06": man["overlay_sha256"], "ebene_07": man["stand_07"]["overlay_07"],
         "ebene_08": man["stand_08"]["overlay_08"],
@@ -98,6 +98,7 @@ def main() -> int:
         "aenderung_11": "SPS V62.7: Planer -> Erleben (je Figur EIN Aufruf mit Kausalnachweis) -> EINE Formulierung; alle Fachlesungen (Vollzug, Wirkung, Beruehrung, Bewegung, Koerper + Bestaetigung, Grenze, Bitte/Erlaubnis, Sprecher, Komponentenart, Sprache, Namen, Aussagen, Offenbarung) kommen aus der ersten Antwort und werden unveraendert vom Kernel geprueft; Brief: aktuelle Lage vor dem Profil",
         "aenderung_11a": "Geraet 08.11. 20:51: gpt-4o-mini lieferte die angehaengte Liste 'lesungen' nicht - Tat abgewiesen. 11a: Lesungen als PFLICHTFELDER je Komponente bzw. Antwort (PLAN_SCHEMA/FORMULATION_SCHEMA/GOD_SCHEMA/GOD_BODY_SCHEMA, bei OpenAI strikt erzwungen); Regeltext 30 000 -> 13 800 Zeichen",
         "aenderung_11b": "Geraet 08.11. 21:58: (1) ein ungelesener Rest ohne Personennamen kippt nicht mehr die ganze Eingabe (Gelesenes wird gespeichert, Rest sichtbar, nie Rede - P25 C6); (2) wortgleiche Doppel-Lesung rede/handlung ohne Hinweis; (3) Erleben: Nachweis neben jedem Wert (APPRAISAL_SCHEMA) - Gefuehl/Absicht gingen verloren; (4) Planer-Komponente nach Typ, Antwort ~24 % kuerzer",
+        "aenderung_11c": "Nutzer 08.11. 22:22/22:37 (AMASTER §27.4/§34.1): kein Wort geht verloren - ungelesener ungekennzeichneter Text ohne fremden Namen ist Rede der Figur (nie Tat); die reagierende Figur bekommt die ganze Aeusserung woertlich und getrennt, was davon geprueft geschehen ist; interne Lesevermerke nicht mehr in der UI",
         "offen_11": "11 P25-Tests sind schon im unveraenderten P25 rot (siehe ARBEITSSTAND_11/BEFUND_STAND11.md); echtes Modell und Android-Geraet UNGEPRUEFT",
         "anlass_10a": "Android 08.11.: 503 'Rust-Schreibgrenze konnte nicht geladen werden' ohne Grund bei der ersten Beruehrungs-Eingabe",
         "aenderung_09": "F1-B2: Beziehungsrahmen der Bewertung nennt Person und Ereignis (kernel.appraisal_payload)",

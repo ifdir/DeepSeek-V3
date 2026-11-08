@@ -1,7 +1,13 @@
-MATRIX10 - Arbeitsstand 11B - Android (aarch64) - Pydroid 3 oder Termux
+MATRIX10 - Arbeitsstand 11C - Android (aarch64) - Pydroid 3 oder Termux
 =======================================================================
 
 STATUS: ROT - KEINE Produktfreigabe. Auf einem echten Android-Geraet NICHT getestet (kein Geraet verfuegbar).
+
+Was 11C aendert (deine Rueckmeldung 22:22/22:37):
+- Kein Wort geht mehr verloren: was du fuer die Figur schreibst und nicht als Handlung erkannt wird, ist ihre Rede
+  ("Hey suesse", "dir gefaellt das ja"). Eine Handlung wirkt weiter nur, wenn sie geprueft geschehen ist.
+- Die antwortende Figur bekommt deine GANZE Aeusserung woertlich - und getrennt, was davon wirklich geschehen ist.
+- Keine internen Lesevermerke mehr unter dem Eingabefeld.
 
 Was 11B repariert (dein Lauf 08.11., 21:58):
 - "Ach komm, ich streiche ueber deine brust, dir gefaellt das ja" wurde ganz abgewiesen, weil das Modell "dir gefaellt das ja" keinem
@@ -46,8 +52,8 @@ Termux (Alternative)
 --------------------
    pkg install python unzip && pip install flask
    termux-setup-storage
-   mkdir -p ~/m10 && cd ~/m10 && unzip ~/storage/downloads/MATRIX10_STAND11B_PRODUKT_android-aarch64_<commit>.zip
-   cd MATRIX10_STAND11B_PRODUKT_android-aarch64_<commit> && python START.py
+   mkdir -p ~/m10 && cd ~/m10 && unzip ~/storage/downloads/MATRIX10_STAND11C_PRODUKT_android-aarch64_<commit>.zip
+   cd MATRIX10_STAND11C_PRODUKT_android-aarch64_<commit> && python START.py
    Falls "[RUST-FEHLER] ... cannot locate symbol ...": bash RUST_AUF_DEM_HANDY_BAUEN.sh (baut den Kern auf dem Handy).
 
 Bitte zurueckmelden: die [RUST]- bzw. [RUST-FEHLER]-Zeile aus der Pydroid-Ausgabe.

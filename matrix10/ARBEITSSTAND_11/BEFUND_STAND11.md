@@ -127,3 +127,36 @@ Im Protokoll gibt es keine ungeskriptete Lesung. `llm_contract.vorab_abrufe()` w
 **Offen:**
 - „dir gefällt das ja“ wird nicht zur Rede, solange das Modell es keinem Teil zuordnet. Der Planer-Text verlangt jetzt ausdrücklich, dass jedes Wort in einer Komponente steht.
 - Echtes Modell, Zeit und Reaktion: Abnahme auf dem Gerät.
+
+## 8. Stand 11C – eine Äußerung bleibt eine Äußerung (deine Rückmeldung 08.11. 22:22 / 22:37)
+
+**Befund:**
+- „Hey süsse“ (22:22) und „dir gefällt das ja“ (21:58) gingen verloren. Die P25-Regel C6 („ungelesener Rest nie Rede“) hat sie verworfen, weil das Modell sie keinem Teil zugeordnet hat.
+- Maras Brief zeigte deine Eingabe nur zerlegt („JETZT TUT …“). Weggefallene Worte hat sie nie erfahren.
+- Die Vergleichs-KI (22:37) gibt die ganze Nachricht an die Figur, und die Figur antwortet auf alles zusammen.
+
+**AMASTER:**
+- §27.4: Die Puppet-Eingabe ist die tatsächliche Rede oder Handlung der Figur.
+- §34.1: Getrennt wird nur zur Prüfung der Wirkungen. Ein Scheitern vernichtet keine andere Komponente. Ungeprüftes bleibt sichtbare Redeprovenienz, ohne Körper- oder Weltwirkung.
+
+**Reparatur 11C:**
+- **`kernel._speech_from_components`: kein Wort geht verloren.** Ungekennzeichneter Text ohne geprüfte Handlung und ohne fremden Namen ist Rede der Figur (Provenienz `rest_als_rede`, nie Tat).
+  - Ausnahmen bleiben geschützt: `*Marker*`-Rest, abgeschnittene Lesung, Wortrest direkt an einer abgewiesenen Komponente („Johann küsst Mara **nicht** und sagt: Hallo“), fremder Name (P24/R1).
+  - C6 ist für diesen Fall aufgehoben; Test `test_unassigned_text_is_visible_and_never_spoken` ist mit Begründung angepasst.
+- **Wahrnehmung der ganzen Äußerung:**
+  - Die Puppet-TurnTruth trägt `wortlaut` (die ganze Eingabe; Provenienz, keine Wahrheit).
+  - Die antwortende Figur bekommt im Brief „JETZT – …, die ganze Äußerung wörtlich: „…““ und darunter „Davon wirklich geschehen (geprüft): …“ bzw. „keine Handlung – nur Worte“.
+  - Wirkungen kommen weiter nur aus geprüften Facts.
+- **UI (`eingabe-hinweis.ts`):** Keine internen Lesevermerke mehr (Rest-als-Rede, Doppelung, verneinte oder ungeprüfte Teil-Tat, Marker-Rest). Hinweise mit Folge für dich bleiben (z. B. Wirkung nicht angewendet), ebenso Rückfragen.
+
+**Geprüft (Testmodell):**
+- Gerätefälle:
+  - „Hey süsse ich klatsche dir auf deinen arsch“ → Johann: Rede „Hey süsse“ + Tat.
+  - Schenkel → Tat.
+  - „Ach komm, ich streiche über deibe brust, dir gefällt das ja“ → Rede „Ach komm dir gefällt das ja“ + Tat; Maras Brief enthält den ganzen Satz wörtlich und darunter die geprüfte Tat.
+  - Mara: Bedrohung 0,80, Absicht „sich zurückziehen“, Furcht zu Johann 0,79 → 0,85 → 0,90.
+- F1: 12/12. Gegenprobe: 8/12, also wie erwartet rot.
+- F2: 7/7.
+- 5 Gerätefälle: 4–5 Aufrufe.
+- K-Tests: 50/50.
+- P25-Suite: keine neue Abweichung außer dem bewusst angepassten C6-Test.

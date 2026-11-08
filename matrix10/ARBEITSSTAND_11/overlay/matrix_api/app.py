@@ -3535,6 +3535,7 @@ def create_app(db_path_arg=None) -> Flask:
                                          actions=[{k: a.get(k) for k in ("text", "targetId", "effectKind", "effectValid", "wirkungPruefung")} for a in (_pin.get("actions") or [])],
                                          reading=bool(_pin.get("used")), ambiguous=_pin.get("ambiguous") or None)
                 out = kernel.commit_puppet(session, speaker, _pin.get("speech") or "", _pin.get("legacyAction"), plan=_pplan,
+                                           wortlaut=_praw,   # Stand 11C: die ganze Aeusserung woertlich fuer die Wahrnehmung
                                            # V92 Paket 14: the addressee the speech names in its own words outranks the selected one
                                            target_id=(_pin.get("speechTarget") if _pin.get("speechTargetSet") else _ptarget_id),
                                            actions=_pin.get("actions"),
