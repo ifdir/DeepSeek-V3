@@ -199,7 +199,9 @@ def main() -> int:
                             "status": ("FAIL_OPEN" if any(p["fail_open"] for p in pts) else "BELEGT_FAIL_CLOSED") if pts else "BLOCKIERT_NICHT_ERREICHT",
                             "ausfallpunkte": len(pts)})
         fail_open = [p for p in punkte if p["fail_open"]]
-        T["D3_K2a_verschluckte_pfade"] = {"status": "ROT" if fail_open or any(s["status"] == "FAIL_OPEN" for s in stellen) else "PASS",
+        meldung_falsch = [(x["anfrage"], p["k"]) for x in fp for p in x["punkte"] if p.get("meldung_stimmt") is False]
+        T["D3_K2a_verschluckte_pfade"] = {"status": "ROT" if fail_open or meldung_falsch or any(s["status"] == "FAIL_OPEN" for s in stellen) else "PASS",
+                                          "m2_prepare_meldung_falsch": meldung_falsch,
                                           "ausfallpunkte": len(punkte), "fail_open": len(fail_open), "stellen": stellen,
                                           "teilcommit_vor_ausfall": sum(len(x.get("teilcommit_vor_ausfall") or []) for x in fp)}
 
@@ -223,15 +225,28 @@ def main() -> int:
                     if c:
                         raise RuntimeError("UI-Start: " + o)
                     nodep = sh(["npm", "root", "-g"])[1].strip()
+                    extra = (["--storage-out", str(tmp / "storage_admin.json")] if v == "ok"
+                             else ["--storage-in", str(tmp / "storage_admin.json")])
                     c, o = sh(["node", str(TOOLS / "probe_frontend_503_06.cjs"), v, str(EVID / f"D3_frontend_{v}.json"),
-                               str(EVID / f"D3_frontend_{v}")], env=dict(os.environ, NODE_PATH=nodep), timeout=300)
+                               str(EVID / f"D3_frontend_{v}")] + extra, env=dict(os.environ, NODE_PATH=nodep), timeout=300)
                     ui[v] = json.loads((EVID / f"D3_frontend_{v}.json").read_text())["handlungen"] if c == 0 else {"fehler": o[-800:]}
                 sh(["bash", str(TOOLS / "ui_stop.sh")])
-                ok_fe = isinstance(ui.get("ok"), list) and all(
-                    isinstance(ui.get(v), list) and ui[v][0].get("sichtbar_fehler")
-                    and not any(x.get("api") and any(y["status"] == 200 and y["url"].startswith("/api/mcc") for y in x["api"]) for x in ui[v])
-                    for v in ("fehlt", "abi2"))
-                T["D3F_frontend"] = {"status": "PASS" if ok_fe else "ROT",
+                def h(v, name):
+                    return next((x for x in ui.get(v) or [] if isinstance(x, dict) and x.get("handlung") == name), {})
+                m3 = {
+                    "ok_liste_sichtbar_ohne_fehler": bool(h("ok", "U0b_chat_seite").get("fall06_karte_sichtbar"))
+                                                     and not h("ok", "U0b_chat_seite").get("sessions_ladefehler"),
+                    "ok_leere_liste_zeigt_keine_session": bool(h("ok", "U4_nutzer_ohne_session").get("keine_session_sichtbar"))
+                                                          and not h("ok", "U4_nutzer_ohne_session").get("sessions_ladefehler"),
+                }
+                for v in ("fehlt", "abi2"):
+                    for n in ("U0b_chat_seite", "U3_neuladen_gespeicherter_nutzer"):
+                        x = h(v, n)
+                        m3[f"{v}_{n}_fehler_mit_code_keine_leer_kein_laedt"] = bool(
+                            x.get("ladefehler_mit_code") and not x.get("keine_session_sichtbar") and not x.get("laedt_sichtbar")
+                            and not any(y["status"] == 200 and y["url"].startswith("/api/mcc") for y in x.get("api") or []))
+                ok_fe = all(m3.values())
+                T["D3F_frontend"] = {"status": "PASS" if ok_fe else "ROT", "m3_kriterien": m3,
                                      "kurz": {v: [(h["handlung"], h.get("sichtbar_fehler"), h.get("nicht_bedienbar")) for h in ui[v]]
                                               if isinstance(ui[v], list) else ui[v] for v in ui}}
 
@@ -259,7 +274,31 @@ def main() -> int:
             md = probe_consent(mroot, f"Mutation {name}", tmp / f"mut_{name}.json")
             erkannt[name] = {"erkannt": md["soll_erfuellt"] < d["soll_erfuellt"], "soll_erfuellt": f"{md['soll_erfuellt']}/{md['gesamt']}",
                              "neu_rot": sorted(set(md["rot"]) - rot06)}
-        T["E_gegenprobe"] = {"status": "PASS" if all(x["erkannt"] for x in erkannt.values()) else "ROT", "mutationen": erkannt}
+        # 06a / M1: die Rust-Sprecherbindung muss in Rusts EIGENEN Tests durchgesetzt sein (cargo test wird rot) ...
+        uroot = stage(tmp / "mut_unit_sprecher")
+        f = uroot / "native_core/matrix-boundary-core/src/consent.rs"
+        f.write_text(f.read_text().replace("e.active && e.by == giver", "e.active", 1))
+        code_u, out_u = sh(["cargo", "test", "--offline", "--locked"], cwd=uroot / "native_core/matrix-boundary-core")
+        rote_tests = sorted(set(re.findall(r"test (\S+) \.\.\. FAILED", out_u)))
+        (EVID / "E_rust_unit_sprecherbindung.log").write_text(out_u)
+        # ... und die P25-Kette bleibt fail-closed, auch wenn Python- UND Rust-Schicht fehlen (kombinierte Gegenprobe)
+        kroot = stage(tmp / "mut_kombiniert")
+        for rel, alt, neu in (("native_core/matrix-boundary-core/src/consent.rs", "e.active && e.by == giver", "e.active"),
+                              ("matrix_api/scene_state.py", '        return actor == str(props[pid].get("targetId") or "")', "        pass")):
+            ff = kroot / rel
+            ff.write_text(ff.read_text().replace(alt, neu, 1))
+        install_lib(kroot, build_lib(kroot / "native_core/matrix-boundary-core"))
+        kd = probe_consent(kroot, "Mutation Rust+Python ohne Sprecherbindung", EVID / "E_kombiniert_sprecherbindung.json")
+        fg = next(c for c in kd["faelle"] if c["fall"] == "C04_FREMDER_GIVER")
+        kombiniert_fail_closed = (fg["lesen"].get("state") != "accepted"
+                                  and (fg["lesen"].get("acts") or {}).get("a3") != "accepted")
+        T["E_gegenprobe"] = {"status": "PASS" if all(x["erkannt"] for x in erkannt.values()) else "ROT", "mutationen": erkannt,
+                             "hinweis": "Rust-only-Sprecherbindung ueber die P25-Kette nicht beobachtbar (verdeckt durch "
+                                        "lifecycle_bound + _checked_index); Redundanz vom Nutzer als verbindlich entschieden",
+                             "rust_unit_sprecherbindung": {"cargo_test_rot": code_u != 0, "rote_tests": rote_tests,
+                                                           "status": "PASS" if code_u != 0 and rote_tests else "ROT"},
+                             "kombiniert_fail_closed": {"status": "PASS" if kombiniert_fail_closed else "ROT",
+                                                        "c04_fremder_giver": fg["befunde"]}}
 
         # ---------- F
         r = {}
@@ -295,8 +334,11 @@ def main() -> int:
         V["P25_altbefunde_testsuite"] = "ROT" if T["F_p25_testsuite"]["p25_altbefunde_rot"] else "GRUEN"
         V["modell_folgeturn_live"] = "BLOCKIERT"
         V["pruefmaschine_v12_achsen"] = "BLOCKIERT"
-        V["offen_meldung_teilcommit_prepare"] = "OFFEN"
-        V["offen_chatliste_keine_session_statt_fehler"] = "OFFEN"
+        V["M1_rust_sprecherbindung_eigene_tests"] = T["E_gegenprobe"]["rust_unit_sprecherbindung"]["status"].replace("PASS", "GRUEN")
+        V["M1_kette_fail_closed_ohne_python_und_rust_schicht"] = T["E_gegenprobe"]["kombiniert_fail_closed"]["status"].replace("PASS", "GRUEN")
+        V["M1_rust_only_mutation_ueber_kette"] = "ROT" if not erkannt["rust_ohne_sprecherbindung"]["erkannt"] else "GRUEN"
+        V["M2_prepare_meldung_teilcommit"] = "GRUEN" if not meldung_falsch else "ROT"
+        V["M3_chatliste_fehler_statt_leer"] = {"PASS": "GRUEN", "ROT": "ROT"}.get(T["D3F_frontend"]["status"], "BLOCKIERT")
         technisch_rot = [k for k, x in T.items() if isinstance(x, dict) and x.get("status") == "ROT"]
         werte = list(V.values())
         gesamt = "ROT" if ("ROT" in werte or technisch_rot) else ("BLOCKIERT" if ("BLOCKIERT" in werte or "OFFEN" in werte) else "GRUEN")

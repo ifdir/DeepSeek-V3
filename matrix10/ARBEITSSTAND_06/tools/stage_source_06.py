@@ -23,7 +23,9 @@ P25_DIR = "MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107"
 OVERLAY = Path(__file__).resolve().parents[1] / "overlay"
 # Original-Datei in P25 -> erwarteter SHA-256 (nur Dateien, die das Overlay ERSETZT)
 REPLACED = {"matrix_api/scene_state.py": "34c70dbd12281e2b2656171b25fc6bd517f6288533b67a6f02ec92c66c4ffee6",
-            "matrix_api/app.py": "a17b6f47012df1751c9551402e8b195549348e58906a949bd6e108c0375519a3"}   # K2: nur NativeBoundaryError -> 503
+            "matrix_api/app.py": "a17b6f47012df1751c9551402e8b195549348e58906a949bd6e108c0375519a3",   # K2 + 06a/M2
+            "src/lib/matrix/api.ts": "e6d31f9fd46615df354bb5f614ae6a0ed06ae62004814a2e6d0124b5853d4fc5",   # 06a/M3
+            "src/routes/chat.index.tsx": "446627abfaa51f6d0f9e13fb17cc80c7f5a7a38e36294859386edecdbf6c1952"}   # 06a/M3
 NEW = {"matrix_api/native_boundary.py", "native_core/matrix-boundary-core"}
 
 
