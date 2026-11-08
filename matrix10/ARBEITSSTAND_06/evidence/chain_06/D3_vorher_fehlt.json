@@ -2,76 +2,188 @@
   "variante": "fehlt",
   "anfragen": [
     {
-      "anfrage": "POST /api/kernel/puppet (Johann streichelt Mara)",
+      "anfrage": "POST /api/kernel/commit (Figurenantwort)",
+      "session": "ses_av06",
       "erreicht_native_grenze": true,
       "status": 400,
       "code": "KERNEL_FAILED",
       "erfolgsmeldung": false,
       "sqlite_unveraendert": true,
-      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben."
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
+      "app_stapelzeilen": [
+        1521,
+        1859
+      ]
+    },
+    {
+      "anfrage": "POST /api/kernel/prepare (Avatar)",
+      "session": "ses_av06",
+      "erreicht_native_grenze": true,
+      "status": 400,
+      "code": "KERNEL_FAILED",
+      "erfolgsmeldung": false,
+      "sqlite_unveraendert": true,
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
+      "app_stapelzeilen": [
+        227,
+        1521,
+        1537,
+        1814
+      ]
+    },
+    {
+      "anfrage": "POST /api/kernel/puppet (Johann streichelt Mara)",
+      "session": "ses_v92",
+      "erreicht_native_grenze": true,
+      "status": 400,
+      "code": "KERNEL_FAILED",
+      "erfolgsmeldung": false,
+      "sqlite_unveraendert": true,
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
+      "app_stapelzeilen": [
+        1521,
+        2885
+      ]
     },
     {
       "anfrage": "POST /api/kernel/regie (Johann streichelt Mara)",
+      "session": "ses_v92",
       "erreicht_native_grenze": true,
       "status": 500,
       "code": "WRITE_FAILED",
       "erfolgsmeldung": false,
       "sqlite_unveraendert": true,
-      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben."
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
+      "app_stapelzeilen": [
+        187,
+        1521,
+        2511,
+        2725,
+        2846
+      ]
     },
     {
       "anfrage": "POST /api/kernel/god (Koerper Mara)",
+      "session": "ses_v92",
       "erreicht_native_grenze": true,
       "status": 400,
       "code": "KERNEL_FAILED",
       "erfolgsmeldung": false,
       "sqlite_unveraendert": true,
-      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben."
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
+      "app_stapelzeilen": [
+        1521,
+        2340
+      ]
     },
     {
       "anfrage": "POST /api/kernel/presence",
+      "session": "ses_v92",
       "erreicht_native_grenze": true,
       "status": 500,
       "code": "WRITE_FAILED",
       "erfolgsmeldung": false,
       "sqlite_unveraendert": true,
-      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben."
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
+      "app_stapelzeilen": [
+        187,
+        1521,
+        3984,
+        3994
+      ]
     },
     {
       "anfrage": "POST /api/kernel/perception",
+      "session": "ses_v92",
       "erreicht_native_grenze": true,
       "status": 500,
       "code": "WRITE_FAILED",
       "erfolgsmeldung": false,
       "sqlite_unveraendert": true,
-      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben."
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
+      "app_stapelzeilen": [
+        187,
+        1521,
+        4015,
+        4040
+      ]
     },
     {
       "anfrage": "POST /api/kernel/move",
+      "session": "ses_v92",
       "erreicht_native_grenze": true,
       "status": 500,
       "code": "WRITE_FAILED",
       "erfolgsmeldung": false,
       "sqlite_unveraendert": true,
-      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben."
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
+      "app_stapelzeilen": [
+        187,
+        1521,
+        3952,
+        3965
+      ]
     },
     {
       "anfrage": "POST /api/kernel/fate",
+      "session": "ses_v92",
       "erreicht_native_grenze": true,
       "status": 500,
       "code": "WRITE_FAILED",
       "erfolgsmeldung": false,
       "sqlite_unveraendert": true,
-      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben."
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
+      "app_stapelzeilen": [
+        187,
+        1521,
+        4054,
+        4084
+      ]
+    },
+    {
+      "anfrage": "POST /api/kernel/autochat-gate",
+      "session": "ses_v92",
+      "erreicht_native_grenze": true,
+      "status": 400,
+      "code": "KERNEL_FAILED",
+      "erfolgsmeldung": false,
+      "sqlite_unveraendert": true,
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
+      "app_stapelzeilen": [
+        227,
+        1521,
+        4099,
+        4127
+      ]
     },
     {
       "anfrage": "GET /api/sessions/<id>",
+      "session": "ses_v92",
       "erreicht_native_grenze": true,
       "status": 500,
       "code": null,
       "erfolgsmeldung": false,
       "sqlite_unveraendert": true,
-      "meldung": ""
+      "meldung": "",
+      "app_stapelzeilen": [
+        661
+      ]
+    },
+    {
+      "anfrage": "POST /api/kernel/reset (chat)",
+      "session": "ses_v92",
+      "erreicht_native_grenze": true,
+      "status": 500,
+      "code": "WRITE_FAILED",
+      "erfolgsmeldung": false,
+      "sqlite_unveraendert": true,
+      "meldung": "Rust-Schreibgrenze fehlt. Dieser Quellstand ist nicht startbereit; keine Speicherung freigegeben.",
+      "app_stapelzeilen": [
+        187,
+        1521,
+        4158,
+        4176
+      ]
     }
   ]
 }

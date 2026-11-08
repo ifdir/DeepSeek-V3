@@ -20,7 +20,16 @@
      except SnapshotForbidden as exc:
          conn.rollback()
          return _json_error("SNAPSHOT_OWNER_FORBIDDEN", str(exc), 409, "SNAPSHOT_OWNER_FORBIDDEN")
-@@ -440,6 +446,15 @@
+@@ -229,6 +235,8 @@
+             body, status = out
+             return jsonify(body), status
+         return jsonify(out), 200
++    except NativeBoundaryError as exc:   # Stand 06 / K2: read path of the consent core unavailable -> 503, no state derived
++        return _json_error(exc.code, exc.message, 503, exc.code)
+     except IsolationError as exc:
+         return _json_error(str(exc), str(exc), 403, "ISOLATION")
+     except WriterError as exc:
+@@ -440,6 +448,15 @@
  def create_app(db_path_arg=None) -> Flask:
      app = Flask(__name__)
      app.config["JSON_SORT_KEYS"] = False
@@ -36,7 +45,35 @@
      if db_path_arg is not None:
          app.config["MATRIX_DB"] = str(db_path_arg)
  
-@@ -2487,6 +2502,13 @@
+@@ -1818,6 +1835,13 @@
+             return _json_error(str(exc), str(exc), 403, "ISOLATION")
+         except WriterError as exc:
+             return _json_error(exc.error, exc.message, exc.status, exc.error, details=getattr(exc, "details", None))
++        except NativeBoundaryError as exc:   # Stand 06 / K2: measured 400 KERNEL_FAILED before
++            matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_PREPARE", exc=exc, last_successful_stage=last)
++            try:
++                _get_conn().rollback()
++            except Exception:
++                pass
++            return _json_error(exc.code, exc.message, 503, exc.code)
+         except Exception as exc:
+             matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_PREPARE", exc=exc, last_successful_stage=last)
+             return _json_error("KERNEL_FAILED", str(exc), 400)
+@@ -2141,6 +2165,13 @@
+             return _json_error(str(exc), str(exc), 403, "ISOLATION")
+         except WriterError as exc:
+             return _json_error(exc.error, exc.message, exc.status, exc.error, details=getattr(exc, "details", None))
++        except NativeBoundaryError as exc:   # Stand 06 / K2: measured 400 KERNEL_FAILED before
++            matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_COMMIT", exc=exc, last_successful_stage=last)
++            try:
++                _get_conn().rollback()
++            except Exception:
++                pass
++            return _json_error(exc.code, exc.message, 503, exc.code)
+         except Exception as exc:
+             matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_COMMIT", exc=exc, last_successful_stage=last)
+             return _json_error("KERNEL_FAILED", str(exc), 400)
+@@ -2487,6 +2518,13 @@
              return _json_error(str(exc), str(exc), 403, "ISOLATION")
          except WriterError as exc:
              return _json_error(exc.error, exc.message, exc.status, exc.error, details=getattr(exc, "details", None))
@@ -50,7 +87,7 @@
          except Exception as exc:
              matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_GOD", exc=exc, last_successful_stage=last)
              return _json_error("KERNEL_FAILED", str(exc), 400)
-@@ -3080,6 +3102,13 @@
+@@ -3080,6 +3118,13 @@
              return _json_error(str(exc), str(exc), 403, "ISOLATION")
          except WriterError as exc:
              return _json_error(exc.error, exc.message, exc.status, exc.error, details=getattr(exc, "details", None))

@@ -235,6 +235,8 @@ def _run_read(fn):
             body, status = out
             return jsonify(body), status
         return jsonify(out), 200
+    except NativeBoundaryError as exc:   # Stand 06 / K2: read path of the consent core unavailable -> 503, no state derived
+        return _json_error(exc.code, exc.message, 503, exc.code)
     except IsolationError as exc:
         return _json_error(str(exc), str(exc), 403, "ISOLATION")
     except WriterError as exc:
@@ -1833,6 +1835,13 @@ def create_app(db_path_arg=None) -> Flask:
             return _json_error(str(exc), str(exc), 403, "ISOLATION")
         except WriterError as exc:
             return _json_error(exc.error, exc.message, exc.status, exc.error, details=getattr(exc, "details", None))
+        except NativeBoundaryError as exc:   # Stand 06 / K2: measured 400 KERNEL_FAILED before
+            matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_PREPARE", exc=exc, last_successful_stage=last)
+            try:
+                _get_conn().rollback()
+            except Exception:
+                pass
+            return _json_error(exc.code, exc.message, 503, exc.code)
         except Exception as exc:
             matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_PREPARE", exc=exc, last_successful_stage=last)
             return _json_error("KERNEL_FAILED", str(exc), 400)
@@ -2156,6 +2165,13 @@ def create_app(db_path_arg=None) -> Flask:
             return _json_error(str(exc), str(exc), 403, "ISOLATION")
         except WriterError as exc:
             return _json_error(exc.error, exc.message, exc.status, exc.error, details=getattr(exc, "details", None))
+        except NativeBoundaryError as exc:   # Stand 06 / K2: measured 400 KERNEL_FAILED before
+            matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_COMMIT", exc=exc, last_successful_stage=last)
+            try:
+                _get_conn().rollback()
+            except Exception:
+                pass
+            return _json_error(exc.code, exc.message, 503, exc.code)
         except Exception as exc:
             matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_COMMIT", exc=exc, last_successful_stage=last)
             return _json_error("KERNEL_FAILED", str(exc), 400)

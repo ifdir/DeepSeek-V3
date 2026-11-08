@@ -2,8 +2,9 @@
 """K2 (vom Nutzer freigegeben): overlay/matrix_api/app.py aus P25-app.py, NUR Fehlerabbildung NativeBoundaryError -> 503.
 
 Eingriffe ausschliesslich an den gemessen betroffenen Stellen (evidence/chain_06/D3_vorher_*.json):
-  1. _run_write: Rollback + 503 vor den allgemeinen Zweigen (regie, presence, perception, move, fate).
-  2. Routen /api/kernel/god und /api/kernel/puppet: eigener Zweig vor `except Exception` (dort sonst 400 KERNEL_FAILED).
+  1. _run_write: Rollback + 503 vor den allgemeinen Zweigen (regie, presence, perception, move, fate, reset);
+     _run_read: 503 (autochat-gate).
+  2. Routen /api/kernel/god, /puppet, /prepare, /commit: eigener Zweig vor `except Exception` (dort sonst 400 KERNEL_FAILED).
   3. create_app: errorhandler fuer nicht abgefangene Faelle (GET /api/sessions/<id>), mit Rollback.
 Keine neue Route, keine Aenderung an Einwilligungsregeln oder Zustandsverwaltung.
 Aufruf: python3 -I build_overlay_app_06.py <P25-app.py> <ziel>
@@ -68,6 +69,34 @@ def main():
             return _json_error(exc.code, exc.message, 503, exc.code)
         except Exception as exc:
             matrix_live_log.live_error(trace_id=trace_id, stage="KERNEL_PUPPET", exc=exc, last_successful_stage=last)
+            return _json_error("KERNEL_FAILED", str(exc), 400)''')
+    # _run_read (gemessen: autochat-gate gibt den Fehler sonst an das 400 der Route weiter)
+    rep('''        return jsonify(out), 200
+    except IsolationError as exc:
+        return _json_error(str(exc), str(exc), 403, "ISOLATION")''',
+        '''        return jsonify(out), 200
+    except NativeBoundaryError as exc:   # Stand 06 / K2: read path of the consent core unavailable -> 503, no state derived
+        return _json_error(exc.code, exc.message, 503, exc.code)
+    except IsolationError as exc:
+        return _json_error(str(exc), str(exc), 403, "ISOLATION")''')
+    # Routen prepare / commit (gemessen: 400 KERNEL_FAILED, Kern ausserhalb _run_write erreicht)
+    for stage in ("KERNEL_PREPARE", "KERNEL_COMMIT"):
+        rep(f'''        except WriterError as exc:
+            return _json_error(exc.error, exc.message, exc.status, exc.error, details=getattr(exc, "details", None))
+        except Exception as exc:
+            matrix_live_log.live_error(trace_id=trace_id, stage="{stage}", exc=exc, last_successful_stage=last)
+            return _json_error("KERNEL_FAILED", str(exc), 400)''',
+            f'''        except WriterError as exc:
+            return _json_error(exc.error, exc.message, exc.status, exc.error, details=getattr(exc, "details", None))
+        except NativeBoundaryError as exc:   # Stand 06 / K2: measured 400 KERNEL_FAILED before
+            matrix_live_log.live_error(trace_id=trace_id, stage="{stage}", exc=exc, last_successful_stage=last)
+            try:
+                _get_conn().rollback()
+            except Exception:
+                pass
+            return _json_error(exc.code, exc.message, 503, exc.code)
+        except Exception as exc:
+            matrix_live_log.live_error(trace_id=trace_id, stage="{stage}", exc=exc, last_successful_stage=last)
             return _json_error("KERNEL_FAILED", str(exc), 400)''')
     rep('''    app = Flask(__name__)
     app.config["JSON_SORT_KEYS"] = False
