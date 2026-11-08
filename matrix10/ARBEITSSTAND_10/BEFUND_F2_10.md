@@ -44,3 +44,12 @@ Es gibt keine neue Route, Tabelle oder Schicht. Züge mit Nutzereingabe bleiben 
 - AutoChat stößt nur der Browser an.
 
 Beides ist eigene Arbeit in K-05.
+
+## Eigener Test aus Stand 08 auf Stand 10 zusätzlich rot (dokumentiert, nicht geändert)
+`ARBEITSSTAND_08/tests/test_k02_wissen_08.py::test_3` füllte elf Züge mit `inputKind autochat` und fest vorgegebenen Sprechern (Johann/Gustav im Wechsel). Das ist genau der Pfad, den Stand 10 schließt. Gemessen: 409 `AUTOCHAT_SPRECHER_NICHT_GEWAEHLT`, der Server hatte Mara gewählt.
+
+Das ist keine Produktregression, sondern eine veraltete Testannahme (wie P18/K-01). Der 08-Test bleibt unverändert.
+
+Ins Paket kommt die Portierung `tests/test_k02_wissen_portiert_10.py`, mit allen Prüfaussagen unverändert:
+- Die Füllzüge sind Eingaben der Bedienperson an Johann/Gustav.
+- AutoChat-Züge mit Serverwahl taugen als Füller nicht: Mit der lokalen Synapse stoppt das Gate nach wenigen Zügen korrekt mit `repetition`.

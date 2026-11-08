@@ -26,7 +26,7 @@ LIB = "libmatrix_boundary_core.so"
 PLATTFORM = "linux-x86_64"
 WEG = {"node_modules", "target", "data", "__pycache__", ".pytest_cache"}
 PRUEF = {"tests": [M10 / "ARBEITSSTAND_07/tests/test_k01_turntruth_07.py", M10 / "ARBEITSSTAND_07/tests/test_sec_mcc_07.py",
-                   M10 / "ARBEITSSTAND_07/tests/test_k01_p18_portiert_07.py", M10 / "ARBEITSSTAND_08/tests/test_k02_wissen_08.py",
+                   M10 / "ARBEITSSTAND_07/tests/test_k01_p18_portiert_07.py", M10 / "ARBEITSSTAND_10/tests/test_k02_wissen_portiert_10.py",
                    M10 / "ARBEITSSTAND_09/tests/test_f1_b2_rahmen_09.py",
                    M10 / "ARBEITSSTAND_10/tests/test_f2_sprecher_10.py"],
          "tools": [M10 / "ARBEITSSTAND_07/tools/beleg_kette_07.py"]}
