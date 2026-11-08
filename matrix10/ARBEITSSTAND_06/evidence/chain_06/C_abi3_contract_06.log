@@ -1,0 +1,11 @@
+test_abi2_library_is_rejected (__main__.Abi3Contract.test_abi2_library_is_rejected) ... ok
+test_every_reply_carries_abi_3 (__main__.Abi3Contract.test_every_reply_carries_abi_3) ... ok
+test_library_reports_abi_3 (__main__.Abi3Contract.test_library_reports_abi_3) ... ok
+test_missing_abi3_field_is_contract_invalid_in_rust (__main__.Abi3Contract.test_missing_abi3_field_is_contract_invalid_in_rust) ... ok
+test_missing_abi3_field_is_rejected_in_python_before_transport (__main__.Abi3Contract.test_missing_abi3_field_is_rejected_in_python_before_transport) ... ok
+test_p25_entries_carry_abi3_fields_for_every_kind (__main__.Abi3Contract.test_p25_entries_carry_abi3_fields_for_every_kind) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.013s
+
+OK
