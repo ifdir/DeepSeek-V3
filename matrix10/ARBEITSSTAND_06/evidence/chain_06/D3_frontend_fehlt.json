@@ -1,0 +1,62 @@
+{
+  "variante": "fehlt",
+  "handlungen": [
+    {
+      "handlung": "U0_nutzer_waehlen",
+      "api": [
+        {
+          "status": 503,
+          "method": "GET",
+          "url": "/api/mcc",
+          "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+          "ok": false
+        },
+        {
+          "status": 200,
+          "method": "POST",
+          "url": "/api/ids/allocate",
+          "code": null,
+          "ok": true
+        },
+        {
+          "status": 401,
+          "method": "POST",
+          "url": "/api/logs",
+          "code": "UNAUTHORIZED",
+          "ok": false
+        },
+        {
+          "status": 200,
+          "method": "POST",
+          "url": "/api/llm/ping",
+          "code": "URLError: <urlopen error [Errno 111] Connection refused>",
+          "ok": false
+        }
+      ],
+      "dialoge": [],
+      "sichtbar_alerts": [
+        "Speichern fehlgeschlagen\nTechnische Angabe: GET /api/mcc: GET /api/mcc 503"
+      ],
+      "sichtbar_fehler": true,
+      "text_auszug": "Zum Inhalt ChatHere Start MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103 admin Start Chat Welten Figuren Upload Config Diagnose Löschen / Speicher Mehr Speichern fehlgeschlagen Technische Angabe: GET /api/mcc: GET /api/mcc 503 CHATHERE · MATRIX10 Start Lokales, zustandsbasiertes KI-Universum. Stamm, Spiegel, Session. Systemstatus BUILD MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103 SERVER läuft AKTIVE DATENBANK /tmp/claude-0/-home-user-DeepSeek-V3/fe0b93ac-e3e4-569a-9216-d3a55d143b32/scratchpad/fe06/MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107/data/matrix10.sqlite SPRACHDIENST / PROVIDER openai · t (Schlüssel: Konfiguration) AKTIVER USER admin ZULETZT VERWENDETE WELT — ZULETZT VERWENDETE SESSION — Weiter Gespräch beginnen Direkte Zugänge Welten anlegen, analysieren, verwalten Figuren Stamm, Kompass, Spawn Chat / Sessions Szenen führen Uploads Mode A prägend, Mode B Wissen Konfiguration P"
+    },
+    {
+      "handlung": "U0b_chat_seite",
+      "api": [],
+      "dialoge": [],
+      "sichtbar_alerts": [
+        "Speichern fehlgeschlagen\nTechnische Angabe: GET /api/mcc: GET /api/mcc 503"
+      ],
+      "sichtbar_fehler": true,
+      "text_auszug": "Zum Inhalt ChatHere Chat MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103 admin Start Chat Welten Figuren Upload Config Diagnose Löschen / Speicher Mehr Speichern fehlgeschlagen Technische Angabe: GET /api/mcc: GET /api/mcc 503 MCC Chat Session wählen. Ohne Session kein Turn. Umbenennen, Reset und Snapshot schreiben denselben SQLite-Owner. Sessions dieses Users Keine Session. Unten anlegen — Welt muss ausdrücklich gewählt werden. Welt ausdrücklich wählen Avatar wählen oder unten neu anlegen kein Avatar / neu anlegen Startsituation Standard Anwesend zu Beginn (Vorgabe aus der Startsituation, abwählbar) Neue Session Session-Packung importieren"
+    },
+    {
+      "handlung": "U2_chat_reset",
+      "nicht_bedienbar": "Session-Liste nicht geladen (keine Karte \"Fall 06\" sichtbar)"
+    },
+    {
+      "handlung": "U1_oeffnen",
+      "nicht_bedienbar": "Session-Liste nicht geladen (keine Karte \"Fall 06\" sichtbar)"
+    }
+  ]
+}
