@@ -126,8 +126,13 @@ def main() -> int:
     with zipfile.ZipFile(P25_ZIP) as z:
         z.extractall(p25)
     p25 = p25 / "MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107"
+    # eigene, frisch entpackte Kopie: Schritt 2 (Erststart) hat in `root` bereits data/matrix10.sqlite angelegt, und
+    # test_no_database_in_software_release prueft genau das ausgelieferte Paket ohne Datenbank
+    with zipfile.ZipFile(zp) as z:
+        z.extractall(work / "suite")
+    suite_root = next((work / "suite").iterdir())
     r = {}
-    for lbl, rr in (("p25", p25), ("paket", root)):
+    for lbl, rr in (("p25", p25), ("paket", suite_root)):
         sh([sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--continue-on-collection-errors", "tests",
             f"--junitxml={work / (lbl + '.xml')}"], cwd=rr)
         r[lbl] = junit(work / (lbl + ".xml"))
