@@ -29,6 +29,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import urllib.error
 import urllib.request
 import xml.etree.ElementTree as ET
 import zipfile
@@ -207,7 +208,6 @@ def main() -> int:
                 pass
         sh(["bash", str(T06 / "ui_stop.sh")])
         return {"status": status, "code": code, "geladene_bibliothek": sorted(set(geladen))}
-    import urllib.error  # noqa: E402
     r_ok = lauf(root, "mit_rust")
     ohne_dir = work / "ohne_rust"
     with zipfile.ZipFile(zp) as z:
