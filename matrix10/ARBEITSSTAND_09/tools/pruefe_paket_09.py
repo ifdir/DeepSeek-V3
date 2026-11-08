@@ -202,6 +202,8 @@ def main() -> int:
     def lauf(produkt: Path, tag: str):
         sh(["bash", str(T06 / "ui_stop.sh")])
         (produkt / "data").mkdir(exist_ok=True)
+        for f in ("matrix10.sqlite-wal", "matrix10.sqlite-shm"):   # Reste frueherer Laeufe (F1) gehoeren nicht zur Vorlage
+            (produkt / "data" / f).unlink(missing_ok=True)
         shutil.copy2(vorlage, produkt / "data/matrix10.sqlite")
         lg = open(prot / f"rust_lauf_{tag}.log", "wb")
         subprocess.Popen(["python3", "START.py"], cwd=produkt, env=env, stdout=lg, stderr=lg, stdin=subprocess.DEVNULL, start_new_session=True)
