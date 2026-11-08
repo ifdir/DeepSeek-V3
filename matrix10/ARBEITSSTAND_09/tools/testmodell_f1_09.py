@@ -10,6 +10,8 @@ Drehbuch: {"<LESUNG>": <json-antwort> | [<antwort 1>, ...] | [{"wenn": <text(e) 
 from __future__ import annotations
 
 import json
+import os
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import sys
@@ -37,7 +39,8 @@ def kausal(user: str) -> dict:
     except Exception:
         return {"pruefungen": []}
     fig = p.get("figur") if isinstance(p.get("figur"), dict) else {}
-    ev = next((e for e in (p.get("gerade_geschehen") or fig.get("gerade_geschehen") or []) if "schlägt" in str(e.get("text"))), None)
+    gg = p.get("gerade_geschehen") or fig.get("gerade_geschehen") or []
+    ev = next((e for e in gg if "schlägt" in str(e.get("text"))), None) or (gg[-1] if gg and os.environ.get("F1_KAUSAL_ALLGEMEIN") else None)
     quellen = fig.get("dispositionsquellen") or p.get("dispositionsquellen") or []
     q = next((x for x in quellen if str(x.get("text")) == "Johanns Druck"), None) or \
         next((x for x in quellen if "Bedrohung" in str(x.get("text"))), quellen[0] if quellen else {})
@@ -50,7 +53,8 @@ def kausal(user: str) -> dict:
             out.append({"feld": name, "urteil": "nicht_gestuetzt"})
             continue
         r = next((v for k, v in RICHTUNG.items() if k in name), "steigt")
-        out.append({"feld": name, "urteil": "gestuetzt", "factId": ev.get("id"), "beleg": "schlägt Mara mit der Faust",
+        _bel = "schlägt Mara mit der Faust" if "schlägt" in str(ev.get("text")) else " ".join(str(ev.get("text")).split()[:3])
+        out.append({"feld": name, "urteil": "gestuetzt", "factId": ev.get("id"), "beleg": _bel,
                     "dispositionsQuelle": q.get("id"), "dispositionsBeleg": qb, "richtung": r,
                     "begruendung": f'"{qb}" - der Schlag trifft genau das, was diese Quelle bei ihr beschreibt.'})
     return {"pruefungen": out}
@@ -69,7 +73,38 @@ def rede_bedienperson(user: str) -> dict:
                              "wirkung": None, "bezug": None, "einleitung": None, "geschieht": None}]}
 
 
-DYNAMISCH = {"kausal": kausal, "rede_bedienperson": rede_bedienperson}
+def komponentenart(user: str, param: dict) -> dict:
+    """Lesung Rede/Handlung eines Puppet-Segments nach fester Tabelle (param: {"handlungen": {segment: wirkung}})."""
+    p = json.loads(user)
+    seg = str(p.get("segment") or "")
+    for h, w in (param.get("handlungen") or {}).items():
+        if h in seg or seg in h:
+            return {"art": "handlung", "beleg": seg, "wirkung": w}
+    return {"art": "rede", "beleg": seg, "wirkung": None}
+
+
+def vollzug(user: str, param: dict) -> dict:
+    p = json.loads(user)
+    h = str(p.get("handlung") or "")
+    return {"geschieht": True, "art": "tatsaechlich", "beleg": h, "taeter": "Ich" if h.lower().startswith("ich ") else "figur",
+            "ziel": "dir" if " dir " in f" {h} " else ""}
+
+
+def koerper(user: str, param: dict) -> dict:
+    p = json.loads(user)
+    h = str(p.get("handlung") or "")
+    return {"haltung": None, "schlaf": None, "zeit": "jetzt", "beleg": h or None}
+
+
+def bewegung(user: str, param: dict) -> dict:
+    p = json.loads(user)
+    h = str(p.get("handlung") or "")
+    return {"bestaetigt": True, "zeit": "jetzt", "ziel": str(p.get("ziel") or "") or None, "beleg": " ".join(h.split()[:5]),
+            "versuch": False, "gegen": None, "beruehrung": False, "beruehrungBeleg": None}
+
+
+DYNAMISCH = {"kausal": kausal, "rede_bedienperson": rede_bedienperson, "komponentenart": komponentenart, "vollzug": vollzug,
+             "koerper": koerper, "bewegung": bewegung}
 
 
 def lesung(system: str) -> str:
@@ -91,6 +126,8 @@ class H(BaseHTTPRequestHandler):
         system = next((m.get("content") for m in msgs if m.get("role") == "system"), "") or ""
         user = next((m.get("content") for m in msgs if m.get("role") == "user"), "") or ""
         name = lesung(system)
+        t0 = time.time()
+        time.sleep(float(os.environ.get("F1_VERZOEGERUNG") or 0))   # feste Modell-Latenz je Aufruf (Messung), Standard 0
         drehbuch = json.loads(buch.read_text()) if buch.exists() else {}
         with LOCK:
             i = ZAEHLER.get(name, 0)
@@ -105,10 +142,12 @@ class H(BaseHTTPRequestHandler):
             else:
                 antwort = eintrag if eintrag is not None else {}
             if isinstance(antwort, dict) and "dynamisch" in antwort:
-                antwort = DYNAMISCH[antwort["dynamisch"]](user)
+                _f = DYNAMISCH[antwort["dynamisch"]]
+                antwort = _f(user, antwort.get("param") or {}) if "param" in antwort else _f(user)
             with prot.open("a") as fh:
                 fh.write(json.dumps({"lesung": name, "nr": i + 1, "geskriptet": eintrag is not None, "user": user,
-                                     "system_anfang": system[:160], "antwort": antwort}, ensure_ascii=False) + "\n")
+                                     "system_anfang": system[:160], "antwort": antwort,
+                                     "t_start": t0, "t_ende": time.time()}, ensure_ascii=False) + "\n")
         out = {"id": "f1", "object": "chat.completion", "model": "f1-testmodell",
                "choices": [{"index": 0, "finish_reason": "stop",
                             "message": {"role": "assistant", "content": json.dumps(antwort, ensure_ascii=False)}}],

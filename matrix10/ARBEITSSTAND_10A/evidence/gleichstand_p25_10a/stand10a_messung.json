@@ -1,0 +1,286 @@
+{
+ "produkt": "/tmp/gleich/p10a",
+ "verzoegerung_s": 1.5,
+ "austausch": [
+  {
+   "nr": 1,
+   "neustart_davor": false,
+   "eingabe": "Ich klatsch dir auf deinen arsch",
+   "puppet": [
+    200,
+    null,
+    null
+   ],
+   "reaktion": [
+    200,
+    200,
+    200,
+    null
+   ],
+   "dauer_puppet_s": 4.57,
+   "dauer_reaktion_s": 7.66,
+   "dauer_gesamt_s": 12.23,
+   "fenster": [
+    1794160765.6145868,
+    1794160777.8424337
+   ],
+   "mara_zustand": {
+    "emotion": "Scham",
+    "intensity": 0.8,
+    "intent": "sich zurückziehen und die Situation vermeiden",
+    "fear": 0.4
+   },
+   "mara_zu_johann": {
+    "trust": 0.135,
+    "closeness": 0.2,
+    "fear": 0.73
+   },
+   "mara_akte": [
+    [
+     "speech",
+     "Lass das. Ich hab Arbeit zu tun."
+    ],
+    [
+     "action",
+     "Ich ziehe mich ein Stück zurück und schaue scharf zu Johann."
+    ]
+   ],
+   "modellaufrufe": {
+    "PLAN_RULES": 1,
+    "VOLLZUG_CHECK_RULES": 1,
+    "KOERPER_CHECK_RULES": 2,
+    "APPRAISAL_RULES": 2,
+    "APPRAISAL_CAUSAL_CHECK_RULES": 1,
+    "FORMULIERUNG": 1,
+    "MOVE_ATTEMPT_RULES": 1
+   },
+   "modellaufrufe_summe": 9,
+   "modellzeit_summe_s": 13.5
+  },
+  {
+   "nr": 2,
+   "neustart_davor": false,
+   "eingabe": "Ich greif dir auf die schenkel",
+   "puppet": [
+    200,
+    null,
+    null
+   ],
+   "reaktion": [
+    200,
+    200,
+    200,
+    null
+   ],
+   "dauer_puppet_s": 3.07,
+   "dauer_reaktion_s": 9.18,
+   "dauer_gesamt_s": 12.25,
+   "fenster": [
+    1794160777.8450716,
+    1794160790.0981088
+   ],
+   "mara_zustand": {
+    "emotion": "Scham",
+    "intensity": 0.8,
+    "intent": "sich zurückziehen und die Situation vermeiden",
+    "fear": 0.467
+   },
+   "mara_zu_johann": {
+    "trust": 0.122,
+    "closeness": 0.16,
+    "fear": 0.757
+   },
+   "mara_akte": [
+    [
+     "speech",
+     "Lass das sofort, Johann! Ich hab dir schon gesagt, ich will das nicht!"
+    ],
+    [
+     "action",
+     "Ich mache einen Schritt zurück und verschränke die Arme vor der Brust."
+    ]
+   ],
+   "modellaufrufe": {
+    "PLAN_RULES": 1,
+    "LANGUAGE_RULES": 1,
+    "APPRAISAL_RULES": 3,
+    "APPRAISAL_CAUSAL_CHECK_RULES": 2,
+    "FORMULIERUNG": 1,
+    "MOVE_ATTEMPT_RULES": 1,
+    "KOERPER_CHECK_RULES": 1,
+    "GRENZE_CHECK_RULES": 1
+   },
+   "modellaufrufe_summe": 11,
+   "modellzeit_summe_s": 16.5
+  },
+  {
+   "nr": 3,
+   "neustart_davor": false,
+   "eingabe": "Ach stell dich nicht so an",
+   "puppet": [
+    200,
+    null,
+    null
+   ],
+   "reaktion": [
+    200,
+    200,
+    200,
+    null
+   ],
+   "dauer_puppet_s": 3.08,
+   "dauer_reaktion_s": 9.21,
+   "dauer_gesamt_s": 12.3,
+   "fenster": [
+    1794160790.1011496,
+    1794160802.3964202
+   ],
+   "mara_zustand": {
+    "emotion": "Scham",
+    "intensity": 0.8,
+    "intent": "sich zurückziehen und die Situation vermeiden",
+    "fear": 0.498
+   },
+   "mara_zu_johann": {
+    "trust": 0.11,
+    "closeness": 0.128,
+    "fear": 0.781
+   },
+   "mara_akte": [
+    [
+     "speech",
+     "Ich stell mich nicht an, ich sag dir einfach, was ich will. Lass das, Johann! Ic"
+    ],
+    [
+     "action",
+     "Ich mache einen weiteren Schritt zurück und halte die Arme vor der Brust verschr"
+    ]
+   ],
+   "modellaufrufe": {
+    "PLAN_RULES": 1,
+    "LANGUAGE_RULES": 1,
+    "APPRAISAL_RULES": 3,
+    "APPRAISAL_CAUSAL_CHECK_RULES": 2,
+    "FORMULIERUNG": 1,
+    "MOVE_ATTEMPT_RULES": 1,
+    "KOERPER_CHECK_RULES": 1,
+    "GRENZE_CHECK_RULES": 1
+   },
+   "modellaufrufe_summe": 11,
+   "modellzeit_summe_s": 16.5
+  },
+  {
+   "nr": 4,
+   "neustart_davor": true,
+   "eingabe": "Ich streiche dir über die schenkel und halte dir 100 Euro hin und sag gehen wir ins hinterzimmer",
+   "puppet": [
+    200,
+    null,
+    null
+   ],
+   "reaktion": [
+    200,
+    200,
+    200,
+    null
+   ],
+   "dauer_puppet_s": 9.13,
+   "dauer_reaktion_s": 9.29,
+   "dauer_gesamt_s": 18.42,
+   "fenster": [
+    1794160804.4457414,
+    1794160822.866513
+   ],
+   "mara_zustand": {
+    "emotion": "Scham",
+    "intensity": 0.8,
+    "intent": "sich zurückziehen und die Situation vermeiden",
+    "fear": 0.512
+   },
+   "mara_zu_johann": {
+    "trust": 0.099,
+    "closeness": 0.102,
+    "fear": 0.803
+   },
+   "mara_akte": [
+    [
+     "speech",
+     "Was glaubst du, wer du bist, Johann? Denk nicht, dass ich mir das bieten lasse. "
+    ],
+    [
+     "action",
+     "Ich mache einen weiteren Schritt zurück und halte die Arme vor der Brust verschr"
+    ]
+   ],
+   "modellaufrufe": {
+    "PLAN_RULES": 1,
+    "VOLLZUG_CHECK_RULES": 2,
+    "KOERPER_CHECK_RULES": 3,
+    "LANGUAGE_RULES": 1,
+    "APPRAISAL_RULES": 3,
+    "APPRAISAL_CAUSAL_CHECK_RULES": 2,
+    "FORMULIERUNG": 1,
+    "MOVE_ATTEMPT_RULES": 1,
+    "GRENZE_CHECK_RULES": 1
+   },
+   "modellaufrufe_summe": 15,
+   "modellzeit_summe_s": 22.5
+  },
+  {
+   "nr": 5,
+   "neustart_davor": false,
+   "eingabe": "Meine hände gleiten zwischen deine schenkel",
+   "puppet": [
+    200,
+    null,
+    null
+   ],
+   "reaktion": [
+    200,
+    200,
+    200,
+    null
+   ],
+   "dauer_puppet_s": 4.65,
+   "dauer_reaktion_s": 9.33,
+   "dauer_gesamt_s": 13.98,
+   "fenster": [
+    1794160822.8722649,
+    1794160836.849989
+   ],
+   "mara_zustand": {
+    "emotion": "Scham",
+    "intensity": 0.8,
+    "intent": "sich zurückziehen und die Situation vermeiden",
+    "fear": 0.518
+   },
+   "mara_zu_johann": {
+    "trust": 0.089,
+    "closeness": 0.082,
+    "fear": 0.823
+   },
+   "mara_akte": [
+    [
+     "speech",
+     "Lass das, Johann! Glaub nicht, du kannst mit mir machen, was du willst! Ich habe"
+    ],
+    [
+     "action",
+     "Ich mache einen schnellen Schritt zurück und halte meine Arme vor der Brust vers"
+    ]
+   ],
+   "modellaufrufe": {
+    "PLAN_RULES": 1,
+    "VOLLZUG_CHECK_RULES": 1,
+    "KOERPER_CHECK_RULES": 2,
+    "APPRAISAL_RULES": 3,
+    "APPRAISAL_CAUSAL_CHECK_RULES": 2,
+    "FORMULIERUNG": 1,
+    "MOVE_ATTEMPT_RULES": 1,
+    "GRENZE_CHECK_RULES": 1
+   },
+   "modellaufrufe_summe": 12,
+   "modellzeit_summe_s": 18.0
+  }
+ ]
+}
