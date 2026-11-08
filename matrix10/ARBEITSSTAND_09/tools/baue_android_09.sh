@@ -8,7 +8,7 @@
 set -euo pipefail
 LZIP=$(realpath "$1"); OUT=$(realpath -m "$2"); mkdir -p "$OUT"
 HIER=$(cd "$(dirname "$0")" && pwd)
-W=$(mktemp -d /tmp/android08_XXXXXX)
+W=$(mktemp -d /tmp/android09_XXXXXX)
 trap 'rm -rf "$W"' EXIT
 
 rustup target add aarch64-linux-android >/dev/null
