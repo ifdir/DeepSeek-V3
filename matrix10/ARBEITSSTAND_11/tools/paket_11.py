@@ -26,7 +26,7 @@ LIB = "libmatrix_boundary_core.so"
 PLATTFORM = "linux-x86_64"
 WEG = {"node_modules", "target", "data", "__pycache__", ".pytest_cache"}
 PRUEF = {"tests": [M10 / "ARBEITSSTAND_07/tests/test_k01_turntruth_07.py", M10 / "ARBEITSSTAND_07/tests/test_sec_mcc_07.py",
-                   M10 / "ARBEITSSTAND_11/tests/test_k01_p18_portiert_11.py", M10 / "ARBEITSSTAND_10/tests/test_k02_wissen_portiert_10.py",
+                   M10 / "ARBEITSSTAND_11/tests/test_k01_p18_portiert_11.py", M10 / "ARBEITSSTAND_11/tests/test_erste_antwort_11a.py", M10 / "ARBEITSSTAND_10/tests/test_k02_wissen_portiert_10.py",
                    M10 / "ARBEITSSTAND_09/tests/test_f1_b2_rahmen_09.py",
                    M10 / "ARBEITSSTAND_10/tests/test_f2_sprecher_10.py",
                    M10 / "ARBEITSSTAND_10A/tests/test_rust_diagnose_10a.py",
@@ -68,7 +68,7 @@ def main() -> int:
     sh(["npm", "run", "build:dist"], cwd=root)
     if not (root / "frontend_dist/index.html").is_file():
         raise SystemExit("ABBRUCH: frontend_dist/index.html fehlt nach dem Build")
-    name = f"MATRIX10_STAND11_PRODUKT_{PLATTFORM}_{kurz}"
+    name = f"MATRIX10_STAND11A_PRODUKT_{PLATTFORM}_{kurz}"
     pkg = tmp / name
     shutil.copytree(root, pkg, ignore=lambda d, n: [x for x in n if x in WEG])
     for sub, files in PRUEF.items():
@@ -84,7 +84,7 @@ def main() -> int:
     shutil.copy2(HIER / "tools/README_STAND11.md", pkg / "README.md")
     res = json.loads((M10 / "ARBEITSSTAND_08/evidence/chain_08/result_08.json").read_text())
     status = {
-        "stand": "11", "plattform": PLATTFORM, "nur_getestet_auf": "Linux x86_64 (diese Umgebung); keine Aussage zu Windows/Android",
+        "stand": "11a", "plattform": PLATTFORM, "nur_getestet_auf": "Linux x86_64 (diese Umgebung); keine Aussage zu Windows/Android",
         "commit": commit, "branch": "claude/matrix10-rust-repair-xq9k34", "repository": "https://github.com/ifdir/DeepSeek-V3",
         "p25_zip_sha256": man["basis_sha256"], "ebene_06": man["overlay_sha256"], "ebene_07": man["stand_07"]["overlay_07"],
         "ebene_08": man["stand_08"]["overlay_08"],
@@ -96,6 +96,7 @@ def main() -> int:
         "gesamtstatus": "ROT - keine Produktfreigabe",
         "vorgaenger": "Stand 10C (b0cba3b)",
         "aenderung_11": "SPS V62.7: Planer -> Erleben (je Figur EIN Aufruf mit Kausalnachweis) -> EINE Formulierung; alle Fachlesungen (Vollzug, Wirkung, Beruehrung, Bewegung, Koerper + Bestaetigung, Grenze, Bitte/Erlaubnis, Sprecher, Komponentenart, Sprache, Namen, Aussagen, Offenbarung) kommen aus der ersten Antwort und werden unveraendert vom Kernel geprueft; Brief: aktuelle Lage vor dem Profil",
+        "aenderung_11a": "Geraet 08.11. 20:51: gpt-4o-mini lieferte die angehaengte Liste 'lesungen' nicht - Tat abgewiesen. 11a: Lesungen als PFLICHTFELDER je Komponente bzw. Antwort (PLAN_SCHEMA/FORMULATION_SCHEMA/GOD_SCHEMA/GOD_BODY_SCHEMA, bei OpenAI strikt erzwungen); Regeltext 30 000 -> 13 800 Zeichen",
         "offen_11": "12 P25-Tests sind schon im unveraenderten P25 rot (siehe ARBEITSSTAND_11/BEFUND_STAND11.md); echtes Modell und Android-Geraet UNGEPRUEFT",
         "anlass_10a": "Android 08.11.: 503 'Rust-Schreibgrenze konnte nicht geladen werden' ohne Grund bei der ersten Beruehrungs-Eingabe",
         "aenderung_09": "F1-B2: Beziehungsrahmen der Bewertung nennt Person und Ereignis (kernel.appraisal_payload)",

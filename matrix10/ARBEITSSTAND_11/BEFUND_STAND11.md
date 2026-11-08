@@ -1,4 +1,4 @@
-# Stand 11 – SPS V62.7 wiederhergestellt: Planer → Erleben → Formulierung
+# Stand 11 / 11A – SPS V62.7 wiederhergestellt: Planer → Erleben → Formulierung
 
 **Status: ROT – keine Produktfreigabe.** Echte Modellantworten und das Android-Gerät sind nicht geprüft. 12 P25-Tests sind schon im unveränderten P25 rot (Abschnitt 5).
 
@@ -56,3 +56,39 @@ Im Protokoll gibt es keine ungeskriptete Lesung. `llm_contract.vorab_abrufe()` w
 - **Direkter Commit ohne vorbereitete Eingabe** (`kernel_commit` ohne `pendingInputTurnId`): Dieser Weg hat keine erste Antwort mit Namen. Bei einer unsicheren Namensgrenze wird deshalb nachgefragt. Die Oberfläche nutzt prepare → commit.
 - **Echtes Modell:** Der Planer-Prompt ist um ≈22 000 Zeichen Lesungsregeln länger. Ob ein echtes Modell alle Lesungen vollständig liefert, ist **ungeprüft**. Fehlende Lesungen machen die Handlung unbestätigt; sie werden nicht geraten.
 - **Android-Gerät:** Das Paket ist gebaut, auf dem Gerät aber nicht geprüft.
+
+## 6. Stand 11A – Befund auf dem Gerät und Reparatur
+
+**Gerät (Upload `34769ab5`, Live-Log 08.11. 20:51, Rohantworten in der Tabelle `logs`; Modell gpt-4o-mini):**
+- „Hey süsse“ funktioniert: Erleben mit Kausalnachweis in einer Antwort, Mara reagiert mit Unbehagen.
+- „Ich klatsche auf deinen arsch“ wurde **zweimal nichts gespeichert**.
+  - Die Planer-Antwort hatte **kein** Feld `lesungen`.
+  - Damit wurden Vollzug und Wirkung nicht gelesen (`modell: null`, `keine_pruefung`), und die Tat galt als unbestätigt.
+- Die Formulierung lieferte `"lesungen": []`.
+- Dauer je Austausch: Planer 11 s, Erleben 20 s, Formulierung 11 s.
+- **Messlücke von Stand 11:** Das Testmodell hatte die Lesungen selbst eingesetzt.
+
+**Reparatur 11A** (nur `llm_contract.py`, keine neue Route/Tabelle/Schicht):
+- **Lesungen sind Pflichtfelder der ersten Antwort.**
+  - Planer: je Komponente `pruefung`, dazu `teilstellen` (Sternchen-Teile, Einzelsätze, eigene Tat in der Ankündigung), `sprache`, `namen`, `grenzumfang`.
+  - Formulierung: `pruefung` und `aussagen[].lesung`.
+  - God-Körper: `bestaetigung`. God-Zerlegung: `namen`. Erleben: `vorher_absicht_art`.
+- **Schemas:** `PLAN_SCHEMA`, `FORMULATION_SCHEMA`, `GOD_SCHEMA`, `GOD_BODY_SCHEMA` werden bei OpenAI **strikt erzwungen**. Andere Anbieter bekommen `json_object` mit demselben Regeltext.
+- **Übergabe:** Die Felder gehen über `plan_lesungen` / `antwort_lesungen` in den unveränderten Lesungsspeicher. Lesestellen und Kernel-Validatoren sind unverändert. Fehlt ein Feld, bleibt die Sache unbestätigt.
+- **Regeltext des Planers:** 30 000 (Stand 11) → **13 800 Zeichen**. 10C hatte 8 155 Zeichen (+69 %). Das Ziel „≤ 10C + 20 %“ ist **nicht erreicht**; dafür entfallen 9–15 Einzelaufrufe.
+- **Testmodell:** ergänzt nichts mehr. Die Drehbücher sind einmal mit `tools/drehbuch_11a.py` in das Schema-Format umgewandelt und gegen die Schemas geprüft (22 Antworten, 0 Abweichungen).
+
+**Geprüft (Testmodell, HTTP-Weg mit START.py):**
+- F1: 12/12. Gegenprobe: 8/12, also wie erwartet rot.
+- F2: 7/7.
+- F1-Rest: Grenze im Brief.
+- 5 Geräteeingaben: je 4–5 Aufrufe, 4,7–4,9 s, Mara 0,73 → 0,823 (gleich).
+- K-Tests: 49/49, neu `tests/test_erste_antwort_11a.py`:
+  - strikter Request an api.openai.com;
+  - jede Lesestelle hat ein Pflichtfeld;
+  - **wörtliche Geräteantwort ohne Pflichtfelder → unbestätigt**;
+  - mit Pflichtfeldern → die Lesung kommt an der Lesestelle an.
+
+**Weiter offen:**
+- **Echtes Modell:** Hier nicht prüfbar, das Netzgeheimnis der Umgebung bekommt 401. Abnahme auf dem Gerät.
+- **Erleben mit 20 s auf dem Gerät:** Ob 11A insgesamt schneller ist als 10C, zeigt erst der Gerätelauf.

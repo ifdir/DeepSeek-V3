@@ -292,8 +292,10 @@ def _parse_llm_json(raw: str) -> tuple[str, str | None] | None:
     }
     if isinstance(parsed.get("aussagen"), list):
         proposals["aussagen"] = [a for a in parsed["aussagen"] if isinstance(a, dict)]   # V65Z (A04): no silent cut
-    if isinstance(parsed.get("lesungen"), list):
-        proposals["lesungen"] = [l for l in parsed["lesungen"] if isinstance(l, dict)]   # Stand 11: Fachlesungen der ersten Antwort
+    # Stand 11a: die Pflichtfelder "pruefung" (Antwort) und aussagen[].lesung werden zu den Lesungen der ersten Antwort
+    proposals["lesungen"] = antwort_lesungen(parsed, speech, action_s)
+    if isinstance(proposals.get("aussagen"), list):
+        proposals["aussagen"] = [{k: v for k, v in a.items() if k != "lesung"} for a in proposals["aussagen"]]
     if isinstance(proposals["plan"], dict) and isinstance(parsed.get("grenze"), dict):
         # V65T (§34.1): the boundary component travels with the plan of the same speech (validated in normalize_plan)
         proposals["plan"] = {**proposals["plan"], "grenze": parsed.get("grenze")}
@@ -652,11 +654,14 @@ def extract_turn_plan(conn, actor: str, text: str, *, speaker_name: str, recipie
             payload["puppet_figur_id"] = str(puppet_figur_id or "") or None
     audit = provider_audit(conn, actor, data or {}, "input_analysis") if conn is not None else None
     # V65Z (A04): the answer repeats every component's segment verbatim - its room grows with the input (600 was cut at 7 acts)
+    # Stand 11a: die Fachlesungen sind Pflichtfelder je Komponente (PLAN_SCHEMA, strikt wo der Provider es erzwingt)
     parsed = _llm_json(routing, PLAN_RULES + (PUPPET_PLAN_RULES if puppet else "") + (ANWESENDE_PLAN_RULE if _cast else "")
-                       + PLAN_LESUNGEN_RULES, payload,
-                       temperature=0.0, max_tokens=min(6000, 3 * reading_room(text) + 1200), timeout=60, audit=audit, attempts=1)
+                       + PLAN_PRUEFUNG_RULES, payload,
+                       temperature=0.0, max_tokens=min(8000, 4 * reading_room(text) + 1600), timeout=60, audit=audit, attempts=1,
+                       response_format=_strikt(routing, "eingabelesung", PLAN_SCHEMA))
     if not isinstance(parsed, dict):
         return None
+    parsed["lesungen"] = plan_lesungen(parsed, str(text))
     # V92 (Paket-5-Pruefung E): `vollzugPruefung` is the SERVER's second reading, never a field of the planner - what the model
     # delivers under that name is dropped here, before anything can read it as proof.
     for _c in (parsed.get("komponenten") if isinstance(parsed.get("komponenten"), list) else []):
@@ -1283,10 +1288,13 @@ def god_body_state(conn, actor: str, *, text: str, figure: str, kontext: str | N
         payload["kontext"] = str(kontext)[:800]
     # Stand 11 (SPS V62.7): die Bestaetigung der Koerperaenderung kommt in DERSELBEN Antwort (Lesung 'koerper_bestaetigung' an
     # der Belegstelle) - kein Folgeaufruf je Feld; der Kernel prueft sie unveraendert (body_change_validated).
-    parsed = _llm_json(routing, GOD_BODY_RULES + GOD_KOERPER_LESUNGEN_RULES, payload, temperature=0.0, max_tokens=700, timeout=30,
-                       audit=audit, attempts=1)
+    parsed = _llm_json(routing, GOD_BODY_RULES + GOD_KOERPER_PRUEFUNG_RULES, payload, temperature=0.0, max_tokens=700, timeout=30,
+                       audit=audit, attempts=1, response_format=_strikt(routing, "koerperzustand", GOD_BODY_SCHEMA))
     if isinstance(parsed, dict):
-        vorab_registrieren(parsed.pop("lesungen", None), quelle=quelle)
+        _kb = parsed.pop("bestaetigung", None)
+        parsed.pop("lesungen", None)
+        if isinstance(_kb, dict) and isinstance(parsed.get("beleg"), str) and parsed["beleg"].strip():
+            vorab_registrieren([{"lesung": "koerper_bestaetigung", "zu": parsed["beleg"], "antwort": _kb}], quelle=quelle)
     return parsed if isinstance(parsed, dict) else None
 
 
@@ -1507,9 +1515,9 @@ APPRAISAL_KAUSAL_IN_ERSTER_ANTWORT = (
     "ganze Quelle) aus genau dem Text dieser Quelle>\", \"richtung\": \"steigt|sinkt\" (nur Zahlenfelder), \"begruendung\": \"\\\"<derselbe "
     "dispositionsBeleg>\\\" - <warum diese Quelle die Änderung bei dieser Figur trägt>\"}. Ohne konkreten Beleg im Geschehen und in einer ihrer "
     "Dispositionsquellen ist das Urteil nicht_gestuetzt; nichts erfinden. Das System prüft jede ID und jedes Zitat wörtlich. "
-    "Ist vorher_absicht_erledigt true, zusätzlich \"lesungen\": [{\"lesung\": \"absichtsart\", \"zu\": \"<vorher.absicht wörtlich>\", "
-    "\"antwort\": {\"art\": \"rede|handlung\"}}] - rede = indem sie etwas sagt, fragt, bittet oder mitteilt; handlung = durch ein "
-    "körperliches oder räumliches Tun."
+    "PFLICHT im selben JSON auch das Feld \"vorher_absicht_art\": ist vorher_absicht_erledigt true, \"rede\" oder \"handlung\" - wie "
+    "vorher.absicht ausgeführt wird: rede = indem sie etwas sagt, fragt, bittet oder mitteilt; handlung = durch ein körperliches oder "
+    "räumliches Tun; sonst null."
 )
 
 
@@ -1578,6 +1586,12 @@ def appraise_events(conn, actor: str, payload: dict[str, Any], *, data: dict[str
             fields = appraisal_effect_fields(res)
             _kp = res.pop("kausalpruefung", None)
             res["_kausalpruefung"] = _kp if isinstance(_kp, dict) else {"pruefungen": []}
+            # Stand 11a: die Absichtsart (frueher INTENT_KIND-Aufruf) aus demselben Pflichtfeld
+            _art = res.pop("vorher_absicht_art", None)
+            res.pop("lesungen", None)
+            _vorher = str(((fig.get("vorher") or {}) if isinstance(fig.get("vorher"), dict) else {}).get("absicht") or "").strip()
+            if _art in ("rede", "handlung") and _vorher:
+                res["lesungen"] = [{"lesung": "absichtsart", "zu": _vorher, "antwort": {"art": _art}}]
             _ = fields   # Stand 11: kein zweiter Aufruf; leere Liste = kein Feld belegt (Kernel verwirft nur diese Felder)
         return fig.get("figur"), res, err, rec
 
@@ -1752,10 +1766,11 @@ def extract_god_instructions(conn, actor: str, text: str, *, figures: list[str],
     if not routing.get("allowed") or not str(text or "").strip():
         return None
     # Stand 11: die Namenslesung (Wortgrenzen) kommt in DERSELBEN Antwort (frueher ein eigener Aufruf vor dieser Zerlegung)
-    parsed = _llm_json(routing, GOD_RULES + GOD_NAMEN_LESUNGEN_RULES, {"godText": str(text)[:1200], "figuren": figures[:40]},
-                       temperature=0.0, max_tokens=1100, timeout=45)
+    parsed = _llm_json(routing, GOD_RULES + GOD_NAMEN_PRUEFUNG_RULES, {"godText": str(text)[:1200], "figuren": figures[:40]},
+                       temperature=0.0, max_tokens=1100, timeout=45, response_format=_strikt(routing, "god_zerlegung", GOD_SCHEMA))
     if isinstance(parsed, dict):
-        vorab_registrieren(parsed.pop("lesungen", None), quelle="god")
+        parsed.pop("lesungen", None)
+        vorab_registrieren(namen_lesungen(parsed.pop("namen", None)), quelle="god")
     return parsed if isinstance(parsed, dict) else None
 
 
@@ -2269,6 +2284,83 @@ def _obj(props: dict[str, Any]) -> dict[str, Any]:
 
 _S = {"type": "string"}
 _SN = {"type": ["string", "null"]}
+_B = {"type": "boolean"}
+_BN = {"type": ["boolean", "null"]}
+
+
+def _E(*werte: str, null: bool = False) -> dict[str, Any]:
+    return {"type": ["string", "null"] if null else "string", "enum": list(werte) + ([None] if null else [])}
+
+
+# Stand 11a (Geraet 08.11. 20:51: gpt-4o-mini lieferte die angehaengte freie Liste "lesungen" NICHT - Tat unbestaetigt, nichts
+# gespeichert): die Fachlesungen sind PFLICHTFELDER der ersten Antwort - je Komponente "pruefung", je Antwort "pruefung" - mit
+# genau den Feldern und Werten der bisherigen Einzelregeln (Antwortformate unveraendert). Wo eine Lesung nicht zutrifft: null.
+# Bei OpenAI-Modellen mit strikten Schemata erzwingt der Provider jedes Feld; der Kernel prueft wie bisher.
+_ZEIT = _E("jetzt", "vergangen", "zukunft", "moeglich")
+_VOLLZUG_ARTEN = ("tatsaechlich", "verneint", "wunsch", "frage", "bedingung", "ankuendigung", "erzaehlt", "zitat")
+P_VOLLZUG = _obj({"geschieht": _B, "art": _E(*_VOLLZUG_ARTEN), "beleg": _SN, "taeter": _S, "ziel": _SN})
+P_KOMPONENTENART = _obj({"art": _E("rede", "handlung", "unklar"), "beleg": _SN, "wirkung": _SN})
+P_SPRECHER = _obj({"sprecher": _S, "beleg": _SN, "handlung": _SN, "adressat": _SN,
+                   "ansageRolle": _E("anrede", "sprecheransage", "unklar"), "ansageBeleg": _SN})
+P_KOERPER = _obj({"haltung": _E("liegend", "sitzend", "kniend", "stehend", "kopfstand", null=True),
+                  "schlaf": _E("einschlafen", "aufwachen", null=True), "zeit": _ZEIT, "beleg": _SN})
+P_KOERPER_BESTAETIGUNG = _obj({"art": _E(*_VOLLZUG_ARTEN, "ausdruck"), "inhalt": _E("gleich", "anders"), "beleg": _S})
+P_WIRKUNG = _obj({"bestaetigt": _B, "zeit": _ZEIT, "ziel": _SN, "beleg": _SN, "versuch": _B, "gegen": _SN,
+                  "beruehrung": _B, "beruehrungBeleg": _SN})
+P_BERUEHRUNG = _obj({"beruehrt": _B, "zeit": _ZEIT, "ziel": _SN, "beleg": _SN})
+P_BEWEGUNG = _obj({"bestaetigt": _B, "zeit": _ZEIT, "ziel": _SN, "beleg": _SN, "versuch": _B})
+P_BITTEBEZUG = _obj({"teile": {"type": "array", "items": _obj({"wortlaut": _S, "erbeten": _B})}})
+P_ERLAUBNISBEZUG = _obj({"teile": {"type": "array", "items": _obj({"wortlaut": _S, "innerhalb": _B})}})
+P_GRENZBEZUG = _obj({"betroffen": _B, "beleg": _SN})
+P_SPRACHE = _obj({"stellen": {"type": "array", "items": _obj({
+    "art": _E("name", "bedeutung"), "status": _E("festgelegt", "verneint", "zitiert", "erwogen", "anrede"),
+    "bezeichnung": _S, "person": _SN, "bedeutung": _SN, "beleg": _S})}})
+P_NAMEN = {"type": "array", "items": _obj({
+    "wortfolge": _S, "wortklassen": {"type": "array", "items": _E("name", "gruss", "titel", "praeposition", "anderes", "unklar")},
+    "rolle": _E("anrede", "nennung"), "status": _E("eindeutig", "unklar")})}
+P_GRENZUMFANG = _obj({"gegenstand": _SN, "gegenstand_art": _E("person", "koerperstelle_oder_art", "diese_handlung"),
+                      "richtung": _E("verboten", "erlaubt"), "geltung": _E("offen", "zeitraum", "nicht_genannt"), "geltung_beleg": _SN})
+P_AUSSAGE = _obj({"verneint": _SN, "gegenstand": _E("geschehen", "bewertung", "gefuehl", "anderes"),
+                  "bestritten": {"type": "array", "items": _S}})
+P_AUSSAGE_TAT = _obj({"ereignis": _S, "bestreitet": _B, "verneint": _SN, "tat": _SN})
+P_OFFENBARUNG = _obj({"offenbart": _B, "beleg": _SN})
+
+# je Komponente (Planer) bzw. Teilstelle: alle Schluessel Pflicht, nicht zutreffend = null
+P_KOMPONENTEN_PRUEFUNG = _obj({
+    "vollzug": _nullable(P_VOLLZUG), "komponentenart": _nullable(P_KOMPONENTENART), "sprecher": _nullable(P_SPRECHER),
+    "koerper": _nullable(P_KOERPER), "koerperBestaetigung": _nullable(P_KOERPER_BESTAETIGUNG), "wirkung": _nullable(P_WIRKUNG),
+    "beruehrung": _nullable(P_BERUEHRUNG), "bewegung": _nullable(P_BEWEGUNG), "bittebezug": _nullable(P_BITTEBEZUG),
+    "erlaubnisbezug": _nullable(P_ERLAUBNISBEZUG), "grenzbezug": _nullable(P_GRENZBEZUG)})
+# eigene Antwort einer Figur (Formulierung)
+P_ANTWORT_PRUEFUNG = _obj({
+    "koerper": _nullable(P_KOERPER), "koerperBestaetigung": _nullable(P_KOERPER_BESTAETIGUNG), "wirkung": _nullable(P_WIRKUNG),
+    "beruehrung": _nullable(P_BERUEHRUNG), "bewegung": _nullable(P_BEWEGUNG), "grenzumfang": _nullable(P_GRENZUMFANG),
+    "offenbarung": _nullable(P_OFFENBARUNG)})
+
+_WIRKUNGEN = ("zaertlich", "gewalt", "fesseln", "befreien", "ortswechsel", "annaeherung", "entfernung", "ohne_koerperwirkung")
+PLAN_SCHEMA: dict[str, Any] = _obj({
+    "event_kind": _E("claim", "proposal", "acceptance", "request", "disclosure", "state_change", "revocation", "refusal", "action",
+                     "report", "question", "promise", "smalltalk"),
+    "speech_act": _E("assert", "propose", "accept", "request", "disclose", "refuse", "revoke", "report", "act", "ask", "promise", "chat"),
+    "durability": _E("utterance", "durable_state", "commitment", "knowledge_transition", "action_event"),
+    "summary": _S, "subject": _S, "predicate": _S, "object": _S,
+    "temporal": _nullable(_obj({
+        "text": _SN, "precision": _E("day", "time", "interval", "relative", "unknown"),
+        "wochentag": _E("montag", "dienstag", "mittwoch", "donnerstag", "freitag", "samstag", "sonntag", null=True),
+        "relativ": _E("heute", "morgen", "übermorgen", "gestern", "vorgestern", "in_tagen", null=True),
+        "in_tagen": {"type": ["integer", "null"]}, "datum": _SN, "uhrzeit": _SN})),
+    "refers_to": _SN, "cue_terms": {"type": "array", "items": _S},
+    "grenze": _nullable(_obj({"gilt_fuer": _E("diese_tat", "jede_beruehrung"), "wer": _S, "beleg": _S,
+                              "zeit": _nullable(_obj({"relativ": _E("heute", "morgen", "übermorgen", null=True), "wochentag": _SN,
+                                                      "datum": _SN}))})),
+    "verweis": _nullable(_obj({"pronomen": _S, "genus": _E("m", "f", "n")})),
+    "komponenten": {"type": "array", "items": _obj({
+        "typ": _E("rede", "handlung"), "segment": _S, "akteur": _S, "ziel": _SN, "zeit": _ZEIT,
+        "wirkung": _E(*_WIRKUNGEN, null=True), "bezug": _SN, "einleitung": _SN, "geschieht": _BN,
+        "pruefung": P_KOMPONENTEN_PRUEFUNG})},
+    "teilstellen": {"type": "array", "items": _obj({"stelle": _S, "pruefung": P_KOMPONENTEN_PRUEFUNG})},
+    "sprache": P_SPRACHE, "namen": P_NAMEN, "grenzumfang": _nullable(P_GRENZUMFANG),
+})
 # V65S (AMASTER §50 Z. 2831 "Promptregeln sind Transport", §24.2 strukturierter EffectPlan; route run 30.10.: in
 # 5 of 14 figure replies the provider left out "plan" - V65R runs 7/13 and 2/13 - and with it every refusal,
 # acceptance and goal decision of that reply): the SAME formulation contract as a strict JSON schema, so the
@@ -2316,15 +2408,15 @@ FORMULATION_SCHEMA: dict[str, Any] = _obj({
     # V65T (AMASTER §34.1 Teilaussagen, §36.3/§36.4 Widerspruch als Evidenz, §50; Plan v2 Schritt 3): which part of
     # the speech says what about which remembered event [E#]; proposal only, the kernel checks segment and event.
     "aussagen": {"type": "array", "items": _obj({"segment": _S, "ereignis": {"type": "array", "items": _S},
-                                                  "art": {"type": "string", "enum": list(AUSSAGE_ARTEN)}})},
+                                                  "art": {"type": "string", "enum": list(AUSSAGE_ARTEN)},
+                                                  # Stand 11a: die Aussage-Lesung dieses Teils (nur bei bestreitet_geschehen, sonst null)
+                                                  "lesung": _nullable(_obj({"aussage": P_AUSSAGE,
+                                                                            "taten": {"type": "array", "items": P_AUSSAGE_TAT}}))})},
     "grenze": _nullable(_obj({"gilt_fuer": {"type": "string", "enum": ["diese_tat", "jede_beruehrung"]}, "wer": _S, "beleg": _S,
                               "zeit": _nullable(_obj({"relativ": {"type": ["string", "null"], "enum": ["heute", "morgen", "übermorgen", None]},
                                                       "wochentag": _SN, "datum": _SN}))})),
-    # Stand 11: die Fachlesungen zu IHRER Antwort in derselben Antwort (antwort_json = JSON-Text nach der jeweiligen Regel)
-    "lesungen": {"type": "array", "items": _obj({"lesung": {"type": "string", "enum": ["wirkung", "bewegung", "bewegungsversuch", "beruehrung",
-                                                                                       "koerper", "koerper_bestaetigung", "grenzumfang", "grenzbezug",
-                                                                                       "aussage", "aussage_tat", "offenbarung"]},
-                                                 "zu": _S, "antwort_json": _S})},
+    # Stand 11a: die Fachlesungen zu IHRER Antwort als Pflichtfelder derselben Antwort (nicht zutreffend = null)
+    "pruefung": P_ANTWORT_PRUEFUNG,
 })
 
 
@@ -2419,7 +2511,7 @@ def _try_llm(
         # V62 (AMASTER §15): the spaces of THIS figure's compass (editable
         # lens); the shared inventory only for a figure without a compass.
         "Verfuegbare Bedeutungsraeume: " + ", ".join(_figure_spaces(spiegel)) + "."
-        + FORMULIERUNG_LESUNGEN_RULES
+        + FORMULIERUNG_PRUEFUNG_RULES
     )
     utterance = str(spiegel.get("userUtterance") or spiegel.get("query") or "")
     brief = render_persona_brief(spiegel, utterance, str(spiegel.get("utteredBy") or ""), "")
@@ -5191,60 +5283,196 @@ def analyze_with_llm(conn, actor: str, text: str, title: str, analysis: dict[str
 
 
 # ---------------------------------------------------------------------------
-# Stand 11: die Regeltexte der bisherigen Fachlesungen - WORTGLEICH uebernommen - als Teil der ERSTEN Antwort.
-def _lesung_regel(name: str) -> str:
-    const = ERSTE_ANTWORT_LESUNGEN[name][0]
-    return f"[{name}] " + " ".join(str(globals().get(const) or "").split())
+# Stand 11a (SPS V62.7; Geraet 08.11. 20:51): die Fachlesungen sind PFLICHTFELDER der ersten Antwort (Schemas oben: P_*,
+# PLAN_SCHEMA, FORMULATION_SCHEMA "pruefung", GOD_SCHEMA, GOD_BODY_SCHEMA). Die Regeltexte unten sagen kurz, was jedes Feld
+# bedeutet - mit denselben Werten wie die bisherigen Einzelregeln. Der Server legt die Felder als Lesungen der ersten Antwort ab
+# (vorab_registrieren); jede Lesestelle und jeder Kernel-Validator bleibt unveraendert. Fehlt ein Feld: unbestaetigt.
+
+def _strikt(routing: dict[str, Any], name: str, schema: dict[str, Any]) -> dict[str, Any] | None:
+    """Striktes JSON-Schema, wo der Provider es erzwingt (wie _formulation_format); sonst None = json_object."""
+    if ("openai.com" in str(routing.get("endpoint") or "").lower()
+            and str(routing.get("model") or "").lower().startswith(_STRICT_SCHEMA_MODELS)):
+        return {"type": "json_schema", "json_schema": {"name": name, "strict": True, "schema": schema}}
+    return None
 
 
-_LESUNGEN_FORM = (
-    ' ZUSÄTZLICH Feld "lesungen": eine Liste von {"lesung": "<Name>", "zu": "<die Stelle, WÖRTLICH>", "antwort": {<JSON genau nach der '
-    "Regel dieses Namens>}}. Die Regeln sind die bisherigen Einzelprüfungen; in ihnen bedeutet 'handlung' bzw. 'segment' bzw. 'worte' "
-    "die Stelle 'zu', 'aeusserung' die ganze Äußerung, 'figur'/'akteur' den Sprecher bzw. Täter, 'ziel' die getroffene bzw. angesprochene "
-    "Person, 'vorschlag' die vorgeschlagene wirkung. Antworte jede Lesung so, als würde nur diese eine Regel gestellt; das System prüft "
-    "jeden Beleg wörtlich gegen den Text. Was eine Regel nicht sicher belegen kann, beantwortest du nach ihr verneinend (ohne Beleg). "
+# Feld in "pruefung" -> Lesung(en) der Registry (ERSTE_ANTWORT_LESUNGEN)
+_PRUEFUNG_LESUNG = {"vollzug": ("vollzug",), "komponentenart": ("komponentenart",), "sprecher": ("sprecher",), "koerper": ("koerper",),
+                    "wirkung": ("wirkung",), "beruehrung": ("beruehrung",), "bewegung": ("bewegung", "bewegungsversuch"),
+                    "bittebezug": ("bittebezug",), "erlaubnisbezug": ("erlaubnisbezug",), "grenzbezug": ("grenzbezug",),
+                    "grenzumfang": ("grenzumfang",), "offenbarung": ("offenbarung",)}
+
+
+def pruefung_lesungen(pruefung: Any, zu: str, *, grenze_beleg: str | None = None, rede: str | None = None) -> list[dict]:
+    """Die Pflichtfelder EINER Stelle als Lesungen [{lesung, zu, antwort}] (null = keine Lesung)."""
+    out: list[dict] = []
+    if not isinstance(pruefung, dict) or not str(zu or "").strip():
+        return out
+    for feld, namen in _PRUEFUNG_LESUNG.items():
+        a = pruefung.get(feld)
+        if not isinstance(a, dict):
+            continue
+        stelle = grenze_beleg if feld == "grenzumfang" else (rede if feld == "offenbarung" else zu)
+        if str(stelle or "").strip():
+            out += [{"lesung": n, "zu": stelle, "antwort": dict(a)} for n in namen]
+    kb, kp = pruefung.get("koerperBestaetigung"), pruefung.get("koerper")
+    if isinstance(kb, dict):
+        stelle = kp.get("beleg") if isinstance(kp, dict) and str(kp.get("beleg") or "").strip() else zu
+        out.append({"lesung": "koerper_bestaetigung", "zu": stelle, "antwort": dict(kb)})
+    return out
+
+
+def namen_lesungen(namen: Any) -> list[dict]:
+    return [{"lesung": "namen", "zu": n["wortfolge"], "antwort": {k: v for k, v in n.items() if k != "wortfolge"}}
+            for n in (namen if isinstance(namen, list) else []) if isinstance(n, dict) and str(n.get("wortfolge") or "").strip()]
+
+
+def plan_lesungen(parsed: dict, text: str) -> list[dict]:
+    """Planer-Antwort: Pflichtfelder je Komponente und Teilstelle + Sprache, Namen, Grenzumfang -> Lesungen. Die Felder werden
+    aus dem Plan entfernt - der Kernel sieht die Komponenten wie bisher; eine mitgebrachte freie Liste zaehlt nicht."""
+    out: list[dict] = []
+    g = parsed.get("grenze") if isinstance(parsed.get("grenze"), dict) else None
+    gb = str((g or {}).get("beleg") or "") or None
+    for c in parsed.get("komponenten") if isinstance(parsed.get("komponenten"), list) else []:
+        if isinstance(c, dict):
+            out += pruefung_lesungen(c.pop("pruefung", None), str(c.get("segment") or ""))
+    for t in parsed.pop("teilstellen", None) or []:
+        if isinstance(t, dict):
+            out += pruefung_lesungen(t.get("pruefung"), str(t.get("stelle") or ""))
+    sp = parsed.pop("sprache", None)
+    if isinstance(sp, dict) and str(text or "").strip():
+        out.append({"lesung": "sprache", "zu": str(text), "antwort": sp})
+    out += namen_lesungen(parsed.pop("namen", None))
+    gu = parsed.pop("grenzumfang", None)
+    if isinstance(gu, dict) and gb:
+        out.append({"lesung": "grenzumfang", "zu": gb, "antwort": gu})
+    parsed.pop("lesungen", None)
+    return out
+
+
+def antwort_lesungen(parsed: dict, speech: str, action: str | None) -> list[dict]:
+    """Formulierung: "pruefung" der eigenen Antwort und aussagen[].lesung -> Lesungen."""
+    out: list[dict] = []
+    g = parsed.get("grenze") if isinstance(parsed.get("grenze"), dict) else None
+    pr = parsed.get("pruefung") if isinstance(parsed.get("pruefung"), dict) else {}
+    if action:
+        out += pruefung_lesungen({k: v for k, v in pr.items() if k not in ("grenzumfang", "offenbarung")}, action)
+    if isinstance(pr.get("grenzumfang"), dict) and g and str(g.get("beleg") or "").strip():
+        out.append({"lesung": "grenzumfang", "zu": str(g["beleg"]), "antwort": pr["grenzumfang"]})
+    if isinstance(pr.get("offenbarung"), dict) and str(speech or "").strip():
+        out.append({"lesung": "offenbarung", "zu": str(speech), "antwort": pr["offenbarung"]})
+    for a in parsed.get("aussagen") if isinstance(parsed.get("aussagen"), list) else []:
+        l = a.get("lesung") if isinstance(a, dict) else None
+        seg = str((a or {}).get("segment") or "") if isinstance(a, dict) else ""
+        if not isinstance(l, dict) or not seg.strip():
+            continue
+        if isinstance(l.get("aussage"), dict):
+            out.append({"lesung": "aussage", "zu": seg, "antwort": l["aussage"]})
+        for t in l.get("taten") if isinstance(l.get("taten"), list) else []:
+            if isinstance(t, dict):
+                out.append({"lesung": "aussage_tat", "zu": seg, "antwort": {k: v for k, v in t.items() if k != "ereignis"}})
+    return out
+
+
+GOD_BODY_SCHEMA: dict[str, Any] = _obj({
+    "bereich": _E("koerper", "nicht_koerper", "unklar"), "schmerz": _E("kein", "leicht", "mittel", "stark", null=True),
+    "beweglichkeit": _E("frei", "eingeschraenkt", "stark_eingeschraenkt", "unbeweglich", null=True),
+    "bewusstsein": _E("wach", "benommen", "bewusstlos", null=True), "gefesselt": _BN, "geknebelt": _BN,
+    "haltung": _E("liegend", "sitzend", "kniend", "stehend", "kopfstand", null=True), "schlaf": _E("einschlafen", "aufwachen", null=True),
+    "sehen": _E("verliert", "zurueck", null=True), "sprechen": _E("verliert", "zurueck", null=True),
+    "verletzung": _nullable(_obj({"art": _S, "glied": _SN, "seite": _E("links", "rechts", null=True), "schwer": _B})),
+    "heilung": _BN, "beleg": _SN, "bestaetigung": _nullable(P_KOERPER_BESTAETIGUNG)})
+
+GOD_SCHEMA: dict[str, Any] = _obj({
+    "anweisungen": {"type": "array", "items": _obj({
+        "ziel": _S, "art": _E("koerper", "wissen", "beziehung", "szene", "welt", "zustand", "zeit", "handlung"), "andere": _SN,
+        "text": _S, "beleg": _S})},
+    "unklar": {"type": "array", "items": _S}, "namen": P_NAMEN})
+
+_ART_TEXT = ("art: tatsaechlich = der Text sagt, dass es JETZT wirklich geschieht; verneint = dass es nicht geschieht (auch wenn die "
+             "Verneinung woanders im Satz steht); wunsch = nur gewünscht, gefordert oder erlaubt; frage = erfragt; bedingung = nur unter "
+             "einer Bedingung; ankuendigung = erst später; erzaehlt = vergangen oder nur berichtet; zitat = nur zitiert. ")
+
+_NAMEN_TEXT = ("namen = je zusammenhängender Wortfolge, in der der Name einer Person mit davorstehendem Gruß, Titel oder Präposition "
+               "steht (z. B. 'Hallo Mara', 'Frau Nowak', 'Neben Mara Nowak'): {wortfolge WÖRTLICH, wortklassen = eine Klasse je Wort "
+               "(name = Wort des geschriebenen Namens, gruss, titel, praeposition, anderes, unklar; name-Wörter lückenlos), rolle anrede "
+               "(diese Person wird angesprochen) | nennung, status eindeutig | unklar}; keine solche Wortfolge: []. ")
+
+PLAN_PRUEFUNG_RULES = (
+    " PRÜFUNG (PFLICHT, AMASTER §24.2/§24.7): Jede Komponente hat das Feld \"pruefung\" mit ALLEN Schlüsseln vollzug, komponentenart, "
+    "sprecher, koerper, koerperBestaetigung, wirkung, beruehrung, bewegung, bittebezug, erlaubnisbezug, grenzbezug; was für diese "
+    "Komponente nicht zutrifft, ist null. Jeder beleg ist WÖRTLICH aus der Äußerung kopiert; das System prüft jeden Beleg am Text. Was "
+    "du nicht sicher belegen kannst, beantwortest du verneinend bzw. ohne Beleg - nie raten. zeit überall: jetzt|vergangen|zukunft|moeglich. "
+    "vollzug (jede handlung): {geschieht, art, beleg, taeter, ziel} - wird die Handlung in diesem Moment tatsächlich ausgeführt? "
+    + _ART_TEXT +
+    "geschieht nur bei tatsaechlich true; beleg = die Wörter, die die Art zeigen (bei verneint die Verneinung samt Verb), sonst null; "
+    "taeter = der Name der Person, die es laut Äußerung tut, wörtlich wie geschrieben; Ich-Form, nur ein Pronomen oder kein Subjekt: "
+    "'figur'; ziel = der Eigenname der getroffenen Person wörtlich, bei bloßem Pronomen oder niemand null. "
+    "komponentenart (jede Komponente): {art rede|handlung|unklar, beleg, wirkung} - rede = laut gesprochene eigene Worte des Sprechers "
+    "(auch Anrede oder Befehl an jemanden), handlung = seine als Tat dargestellte gegenwärtige Handlung; wirkung bei handlung wie das "
+    "Komponentenfeld wirkung, sonst null. "
+    "sprecher (jede rede): {sprecher, beleg, handlung, adressat, ansageRolle anrede|sprecheransage|unklar, ansageBeleg} - wer diese Worte "
+    "sagt (Name wörtlich, sonst 'figur'); handlung = eine EIGENE Tat des Sprechers in der einleitung, wörtlich, ohne Bindewort und "
+    "Sprechverb, sonst null; adressat = an wen die Worte gehen (Name wörtlich, sonst null); bei einer Anrede ist der Name Adressat, nicht "
+    "Sprecher. "
+    "koerper (jede handlung): {haltung, schlaf, zeit, beleg} - nur was die Handlung JETZT am EIGENEN Körper des Täters ändert: haltung "
+    "liegend|sitzend|kniend|stehend|kopfstand nur, wenn der ganze Körper die Lage wechselt; schlaf einschlafen|aufwachen nur bei echtem "
+    "Schlaf; sonst null; das bloße Zeigen eines bestehenden Zustands ist keine Änderung. "
+    "koerperBestaetigung: nur wenn koerper eine Änderung nennt, sonst null: {art, inhalt, beleg} - wie sagt der Text an koerper.beleg "
+    "genau diese Änderung (art wie oben, zusätzlich ausdruck = zeigt nur einen bestehenden Zustand); inhalt gleich|anders; beleg wörtlich. "
+    "wirkung: nur bei handlung mit wirkung gewalt|fesseln|befreien, sonst null: {bestaetigt, zeit, ziel, beleg, versuch, gegen, "
+    "beruehrung, beruehrungBeleg} - bestaetigt = die Handlung führt genau diese Wirkung jetzt am Körper von ziel aus (ohne beleg false); "
+    "versuch = jetzt versucht, aber nicht erreicht; gegen = Fläche oder Gegenstand, an die ziel gedrückt wird, wörtlich, sonst null; "
+    "beruehrung = nur wenn nicht bestätigt, der Körper von ziel aber jetzt berührt wird (beruehrungBeleg wörtlich). "
+    "beruehrung: nur bei handlung mit wirkung zaertlich|gewalt, sonst null: {beruehrt, zeit, ziel, beleg} - berührt die Handlung jetzt "
+    "tatsächlich den Körper von ziel (beleg = die Stelle des Kontakts). "
+    "bewegung: nur bei handlung mit wirkung annaeherung|entfernung, sonst null: {bestaetigt, zeit, ziel, beleg, versuch} - ändert die "
+    "Handlung jetzt den Abstand zu ziel; versuch = versucht, nicht erreicht. "
+    "bittebezug / erlaubnisbezug / grenzbezug: nur bei handlung und nur, wenn 'offen' eine angenommene Bitte, eine Erlaubnis bzw. eine "
+    "Grenze nennt, die diese Handlung betreffen kann, sonst null: bittebezug {teile: [{wortlaut, erbeten}]} und erlaubnisbezug {teile: "
+    "[{wortlaut, innerhalb}]} zerlegen die Handlung in ihre Teilhandlungen (wörtlich, zusammen die ganze Handlung) - erbeten bzw. "
+    "innerhalb nur, wenn der Teil genau das Erbetene bzw. Erlaubte tut; grenzbezug {betroffen, beleg} - tut die Handlung genau das "
+    "Verbotene. "
+    "Auf oberster Ebene PFLICHT: \"teilstellen\": [{stelle, pruefung}] - dieselbe pruefung für jeden Teil zwischen Sternchen (*…*) und "
+    "jeden einzelnen Satz eines handlung-Segments, der nicht selbst ein segment ist, und für eine eigene Tat in einer einleitung "
+    "(stelle WÖRTLICH); sonst []. "
+    "\"sprache\": {stellen: [...]} - jede Stelle, an der die Äußerung festlegt, wie eine Person heißt oder genannt wird (art name), oder "
+    "was ein Wort bedeutet (art bedeutung): {art, status festgelegt (ausdrücklich für ab jetzt) | verneint | zitiert | erwogen | anrede "
+    "(nur als Anrede, Kosename oder Beschreibung benutzt), bezeichnung (nur das Wort, WÖRTLICH), person (bei name: ich | du | ein Name, "
+    "sonst null), bedeutung (bei bedeutung wörtlich, sonst null), beleg}; keine: []. "
+    "\"" + _NAMEN_TEXT.replace("namen = ", "namen\": ", 1) +
+    "\"grenzumfang\": nur wenn grenze nicht null, sonst null: {gegenstand (WAS nicht bzw. doch berührt werden darf, wörtlich aus "
+    "grenze.beleg), gegenstand_art person (die Sprecherin als Ganze) | koerperstelle_oder_art | diese_handlung, richtung verboten | "
+    "erlaubt, geltung offen (ausdrücklich dauerhaft) | zeitraum | nicht_genannt, geltung_beleg}."
 )
 
-_NAMEN_LESUNG_TEXT = (
-    "Für jede zusammenhängende Wortfolge, in der der Name einer Person steht, mit davorstehendem Gruß, Titel oder Präposition und "
-    "großgeschriebenem Folgewort (zu = genau diese Wortfolge, z. B. 'Hallo Mara', 'Frau Nowak', 'Neben Mara Nowak'): 'namen' - die "
-    "antwort ist EIN Eintrag {wortklassen, rolle, status} für genau diese Wortfolge, ohne a und b (die Stellen setzt das System). "
+FORMULIERUNG_PRUEFUNG_RULES = (
+    " PRÜFUNG (PFLICHT): Feld \"pruefung\" mit ALLEN Schlüsseln koerper, koerperBestaetigung, wirkung, beruehrung, bewegung, "
+    "grenzumfang, offenbarung - für DEINE EIGENE Antwort; was nicht zutrifft, ist null; jeder beleg WÖRTLICH aus deiner action bzw. speech. "
+    "koerper (wenn action nicht null): {haltung, schlaf, zeit, beleg} - nur was deine action JETZT an deinem eigenen Körper ändert "
+    "(haltung liegend|sitzend|kniend|stehend|kopfstand nur bei Wechsel der Lage des ganzen Körpers; schlaf einschlafen|aufwachen), sonst "
+    "null in haltung und schlaf. koerperBestaetigung (nur wenn koerper eine Änderung nennt): {art, inhalt gleich|anders, beleg}; "
+    + _ART_TEXT +
+    "zusätzlich ausdruck = zeigt nur einen bestehenden Zustand. "
+    "wirkung (nur bei wirkung.art gewalt|fesseln|befreien): {bestaetigt, zeit, ziel, beleg, versuch, gegen, beruehrung, beruehrungBeleg}; "
+    "beruehrung (nur bei zaertlich|gewalt): {beruehrt, zeit, ziel, beleg}; bewegung (nur bei annaeherung|entfernung): {bestaetigt, zeit, "
+    "ziel, beleg, versuch} - jeweils: führt deine action genau das jetzt aus (ohne beleg false). "
+    "grenzumfang (nur wenn grenze nicht null): {gegenstand, gegenstand_art person|koerperstelle_oder_art|diese_handlung, richtung "
+    "verboten|erlaubt, geltung offen|zeitraum|nicht_genannt, geltung_beleg}. "
+    "offenbarung: {offenbart, beleg} - sagt deine speech ausdrücklich etwas, das eines deiner Ziele als noch ungesagt nennt (beleg "
+    "wörtlich), sonst offenbart false. "
+    "In aussagen hat jeder Eintrag das Feld \"lesung\": bei art bestreitet_geschehen {aussage: {verneint (die verneinte Wortgruppe "
+    "samt Verb, wörtlich), gegenstand geschehen|bewertung|gefuehl|anderes, bestritten [die Kennungen E…, deren Stattfinden verneint "
+    "wird]}, taten: [je bestrittenem Ereignis {ereignis E…, bestreitet, verneint, tat (die Wörter der Handlung im Ereignis, wörtlich)}]}, "
+    "sonst null."
 )
 
-GOD_NAMEN_LESUNGEN_RULES = (
-    _LESUNGEN_FORM + "Hier ist die Äußerung der godText. " + _NAMEN_LESUNG_TEXT + "REGELN: " + _lesung_regel("namen")
+GOD_KOERPER_PRUEFUNG_RULES = (
+    " PFLICHT im selben JSON auch das Feld \"bestaetigung\": ist beleg nicht null, {art, inhalt, beleg} - wie sagt der Text an deinem "
+    "beleg genau die Körperänderung, die du angibst: " + _ART_TEXT + "ausdruck = zeigt nur einen bestehenden Zustand; inhalt gleich = "
+    "die Stelle sagt dasselbe | anders; beleg = die Wörter, die die Art zeigen, wörtlich. Ist beleg null: null."
 )
 
-PLAN_LESUNGEN_RULES = (
-    _LESUNGEN_FORM
-    + "Pflicht je handlung-Komponente (zu = ihr segment): 'vollzug' (mit geschieht, art, taeter, ziel, beleg) und 'koerper'; ändert die Handlung "
-    "den Körper des Täters (haltung oder schlaf nicht null), zusätzlich 'koerper_bestaetigung' (zu = der beleg dieser Körperänderung). "
-    "Bei wirkung gewalt|fesseln|befreien zusätzlich 'wirkung'; bei wirkung zaertlich|gewalt zusätzlich 'beruehrung'; bei wirkung "
-    "annaeherung|entfernung zusätzlich 'bewegung' und 'bewegungsversuch'. Steht in 'offen' eine offene Bitte, Erlaubnis oder Grenze, "
-    "die diese Handlung betreffen kann, zusätzlich 'bittebezug' bzw. 'erlaubnisbezug' bzw. 'grenzbezug'. "
-    "Pflicht je rede-Komponente (zu = ihr segment): 'sprecher' und 'komponentenart'. "
-    "Für die ganze Äußerung (zu = die ganze Äußerung): 'sprache'. Ist grenze nicht null: 'grenzumfang' (zu = grenze.beleg). "
-    + _NAMEN_LESUNG_TEXT
-    + "REGELN: " + " ".join(_lesung_regel(n) for n in ("namen", "vollzug", "koerper", "koerper_bestaetigung", "wirkung", "beruehrung", "bewegung",
-                                                    "bewegungsversuch", "bittebezug", "erlaubnisbezug", "grenzbezug", "sprecher",
-                                                    "komponentenart", "sprache", "grenzumfang"))
-)
-
-GOD_KOERPER_LESUNGEN_RULES = (
-    _LESUNGEN_FORM
-    + "Hier gilt: text ist der Text oben, figur ist 'figur'. Ist beleg nicht null: 'koerper_bestaetigung' (zu = dein beleg); "
-    "veraenderung ist dabei die Körperänderung, die du oben angibst. "
-    "REGELN: " + _lesung_regel("koerper_bestaetigung")
-)
-
-FORMULIERUNG_LESUNGEN_RULES = (
-    " " + _LESUNGEN_FORM.replace('"antwort": {<JSON genau nach der Regel dieses Namens>}', '"antwort_json": "<JSON-Text genau nach der Regel dieses Namens>"')
-    + "Hier gilt alles für DEINE EIGENE Antwort (aeusserung = deine speech plus action; akteur/figur = du). "
-    "Ist action nicht null (zu = deine action): 'koerper'; ändert sie deinen Körper zusätzlich 'koerper_bestaetigung' (zu = deren beleg). "
-    "Ist wirkung gewalt|fesseln|befreien zusätzlich 'wirkung'; zaertlich|gewalt zusätzlich 'beruehrung'; annaeherung|entfernung zusätzlich "
-    "'bewegung' und 'bewegungsversuch'. Ist grenze nicht null: 'grenzumfang' (zu = grenze.beleg). Für jede Aussage in aussagen "
-    "(zu = ihr segment): 'aussage' und, wenn sie ein Geschehen bestreitet, 'aussage_tat'. Sagt deine speech ein Ungesagtes eines deiner "
-    "Ziele: 'offenbarung' (zu = deine speech). "
-    "REGELN: " + " ".join(_lesung_regel(n) for n in ("koerper", "koerper_bestaetigung", "wirkung", "beruehrung", "bewegung", "bewegungsversuch",
-                                                    "grenzumfang", "aussage", "aussage_tat", "offenbarung"))
+GOD_NAMEN_PRUEFUNG_RULES = (
+    " PFLICHT im selben JSON auch das Feld \"namen\" (Wortfolgen im godText): " + _NAMEN_TEXT
 )

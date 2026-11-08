@@ -1,4 +1,4 @@
-"""Stand 11: Portierung von test_k01_p18_portiert_07.py - nur respond() liefert die Lesungen in der Formulierungsantwort.
+"""Stand 11/11a: Portierung von test_k01_p18_portiert_07.py - nur respond() liefert die Lesungen in der Formulierungsantwort (11a: Pflichtfeld "pruefung").
 
 Stand 07 / K-01: P25-Test P18AvatarAndFigure::test_avatar_position_and_figure_reply_with_forged_and_real_readings,
 portiert auf den Produktweg nach K-01 - Assertions UNVERAENDERT.
@@ -44,17 +44,17 @@ class P18AvatarAndFigurePortiert(unittest.TestCase):
     def respond(self, provider, action, speech="Au.", extra=None):
         extra = dict(extra or {})
         model = {"speech": speech, "action": action, **(extra.pop("proposals", None) or {})}   # Vorschlaege des MODELLS
-        # Stand 11 (SPS V62.7; nur die Aufrufstruktur angepasst): die Koerperlesung der eigenen Handlung und ihre Bestaetigung
-        # kommen in DERSELBEN Formulierungsantwort (Feld "lesungen", JSON-Text wegen des strikten Schemas) - mit denselben
-        # Antwortfunktionen des Doubles, die frueher den eigenen Folgeaufruf beim Speichern beantworteten.
-        lesungen = []
+        # Stand 11a (SPS V62.7; nur die Aufrufstruktur angepasst): die Koerperlesung der eigenen Handlung und ihre Bestaetigung
+        # sind PFLICHTFELDER derselben Formulierungsantwort ("pruefung") - mit denselben Antwortfunktionen des Doubles, die frueher
+        # den eigenen Folgeaufruf beim Speichern beantworteten.
+        pr = {"koerper": None, "koerperBestaetigung": None, "wirkung": None, "beruehrung": None, "bewegung": None,
+              "grenzumfang": None, "offenbarung": None}
         if action:
             kp = provider.koerper({"handlung": action, "aeusserung": f"{speech} {action}", "figur": self.M["name"]})
-            lesungen.append({"lesung": "koerper", "zu": action, "antwort_json": json.dumps(kp, ensure_ascii=False)})
+            pr["koerper"] = kp
             if isinstance(kp, dict) and kp.get("beleg"):
-                lesungen.append({"lesung": "koerper_bestaetigung", "zu": kp["beleg"], "antwort_json": json.dumps(
-                    provider.bestaetigung({"text": action, "figur": self.M["name"], "stelle": kp["beleg"]}), ensure_ascii=False)})
-        model["lesungen"] = lesungen
+                pr["koerperBestaetigung"] = provider.bestaetigung({"text": action, "figur": self.M["name"], "stelle": kp["beleg"]})
+        model["pruefung"] = pr
         pj = self._pj
         with patch.object(urllib.request, "urlopen", BK.formulier_provider(FakeProvider, model)):
             f = self.client.post("/api/llm/formulate", headers={"X-Matrix-Actor": "admin"}, json={

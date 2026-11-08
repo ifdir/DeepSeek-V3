@@ -85,11 +85,10 @@ class FakeProvider:
         if "Konjunktives Gedächtnis" in system:
             content = json.dumps(self.erste_antwort(self.plans.pop(0), user), ensure_ascii=False)
         elif system.startswith("Körperzustand durch die Spielleitung"):
-            # Stand 11: die Bestaetigung an der Belegstelle kommt in derselben Antwort (frueher ein eigener Aufruf, gleiche Funktion)
+            # Stand 11a: die Bestaetigung an der Belegstelle ist ein Feld derselben Antwort (frueher ein eigener Aufruf, gleiche Funktion)
             u = json.loads(user); ans = dict(self.gott(u))
-            if isinstance(ans.get("beleg"), str) and ans["beleg"].strip():
-                ans["lesungen"] = [{"lesung": "koerper_bestaetigung", "zu": ans["beleg"],
-                                    "antwort": self.bestaetigung(dict(u, stelle=ans["beleg"]))}]
+            ans["bestaetigung"] = (self.bestaetigung(dict(u, stelle=ans["beleg"]))
+                                   if isinstance(ans.get("beleg"), str) and ans["beleg"].strip() else None)
             content = json.dumps(ans, ensure_ascii=False)
         elif "Sprecher prüfen" in system:
             content = json.dumps(self.sprecher(json.loads(user)), ensure_ascii=False)
@@ -109,12 +108,24 @@ class FakeProvider:
             content = "{}"
         return self.R(json.dumps({"choices": [{"message": {"content": content}, "finish_reason": "stop"}]}).encode())
 
-    # Stand 11 (SPS V62.7; nur die Aufrufstruktur ist angepasst): die Fachlesungen, die dieses Double frueher je auf einen EIGENEN
-    # Aufruf beantwortete, liefert es jetzt in der ERSTEN Antwort (Planer, Feld "lesungen") - mit DENSELBEN Antwortfunktionen
-    # dieses Tests, je Stelle der Eingabe. Was es frueher neutral ("{}") beantwortete, beantwortet es auch hier neutral.
-    LESUNG_FUNKTION = {"vollzug": "vollzug", "sprecher": "sprecher", "wirkung": "wirkung", "bewegung": "wirkung",
-                       "bewegungsversuch": "wirkung", "koerper": "koerper", "koerper_bestaetigung": "bestaetigung"}
-    NEUTRAL = ("komponentenart", "beruehrung", "erlaubnisbezug", "bittebezug", "grenzbezug", "grenzumfang", "sprache")
+    # Stand 11a (SPS V62.7; nur die Aufrufstruktur ist angepasst): die Fachlesungen, die dieses Double frueher je auf einen EIGENEN
+    # Aufruf beantwortete, liefert es jetzt in der ERSTEN Antwort als Pflichtfelder (PLAN_SCHEMA: komponenten[].pruefung,
+    # teilstellen, sprache, grenzumfang) - mit DENSELBEN Antwortfunktionen dieses Tests, je Stelle der Eingabe. Was es frueher
+    # neutral ("{}") beantwortete, beantwortet es auch hier neutral.
+    PRUEF_FUNKTION = {"vollzug": "vollzug", "sprecher": "sprecher", "wirkung": "wirkung", "bewegung": "wirkung", "koerper": "koerper"}
+    NEUTRAL = ("komponentenart", "beruehrung", "erlaubnisbezug", "bittebezug", "grenzbezug")
+
+    def _pruefung(self, st, c, u, text):
+        c = c or {}
+        payload = {"handlung": st, "segment": st, "worte": st, "stelle": st, "beleg": st, "aeusserung": text,
+                   "figur": c.get("akteur") or u.get("sprecher"), "akteur": c.get("akteur") or u.get("sprecher"),
+                   "ziel": c.get("ziel"), "ansage": c.get("einleitung"), "typ": c.get("typ"), "kind": c.get("typ")}
+        pr = {feld: getattr(self, fn)(payload) for feld, fn in self.PRUEF_FUNKTION.items()}
+        pr.update({n: {} for n in self.NEUTRAL})
+        kp = pr.get("koerper")
+        pr["koerperBestaetigung"] = (self.bestaetigung(dict(payload, stelle=kp["beleg"]))
+                                     if isinstance(kp, dict) and kp.get("beleg") else None)
+        return pr
 
     def erste_antwort(self, pl, user):
         import re as _re
@@ -125,38 +136,34 @@ class FakeProvider:
         except ValueError:
             u = {}
         text = str(u.get("aeusserung") or "")
-        stellen = []                                         # (Stelle, Komponente oder None)
+        pl = json.loads(json.dumps(pl))
+        gesehen = []
+        for c in pl.get("komponenten") or []:
+            if isinstance(c, dict) and str(c.get("segment") or "").strip():
+                c["pruefung"] = self._pruefung(str(c["segment"]).strip(), c, u, text)
+                gesehen.append(str(c["segment"]).strip().strip("*").strip())
+        teil = []
         def add(t, c=None):
             t = str(t or "").strip().strip("*").strip()
-            if t and t not in [x for x, _ in stellen]:
-                stellen.append((t, c))
+            if t and t not in gesehen:
+                gesehen.append(t)
+                teil.append({"stelle": t, "pruefung": self._pruefung(t, c, u, text)})
         for c in pl.get("komponenten") or []:
+            if isinstance(c, dict) and c.get("einleitung"):
+                add(c.get("einleitung"), c)
             if isinstance(c, dict):
-                add(c.get("segment"), c)
-                if c.get("einleitung"):
-                    add(c.get("einleitung"), c)
+                for t in _re.split(r"(?<=[.!?])\s+", str(c.get("segment") or "").strip()):
+                    if t != str(c.get("segment") or "").strip():
+                        add(t.rstrip(".")); add(t)
         for m in _re.finditer(r"\*([^*]+)\*", text):
             add(m.group(1))
-            for teil in _re.split(r"(?<=[.!?])\s+", m.group(1).strip()):
-                add(teil.rstrip("."))
-                add(teil)
-        add(text)
-        lesungen = []
-        for st, c in stellen:
-            c = c or {}
-            payload = {"handlung": st, "segment": st, "worte": st, "stelle": st, "beleg": st, "aeusserung": text,
-                       "figur": c.get("akteur") or u.get("sprecher"), "akteur": c.get("akteur") or u.get("sprecher"),
-                       "ziel": c.get("ziel"), "ansage": c.get("einleitung"), "typ": c.get("typ"), "kind": c.get("typ")}
-            for name, fn in self.LESUNG_FUNKTION.items():
-                if name == "koerper_bestaetigung":
-                    continue
-                antwort = getattr(self, fn)(payload)
-                lesungen.append({"lesung": name, "zu": st, "antwort": antwort})
-                if name == "koerper" and isinstance(antwort, dict) and antwort.get("beleg"):
-                    bp = dict(payload, stelle=antwort["beleg"])
-                    lesungen.append({"lesung": "koerper_bestaetigung", "zu": antwort["beleg"], "antwort": self.bestaetigung(bp)})
-            lesungen += [{"lesung": n, "zu": st, "antwort": {}} for n in self.NEUTRAL]
-        return dict(pl, lesungen=lesungen)
+            for t in _re.split(r"(?<=[.!?])\s+", m.group(1).strip()):
+                add(t.rstrip(".")); add(t)
+        pl["teilstellen"] = teil
+        pl["sprache"] = {}
+        pl["namen"] = []
+        pl["grenzumfang"] = {} if isinstance(pl.get("grenze"), dict) else None
+        return pl
 
     def abrufe(self, lesung, nur_beantwortet=True):
         """Stand 11: die Nutzlasten, mit denen die Lesestellen die Lesung `lesung` angefragt haben (aus der ersten Antwort)."""
@@ -249,7 +256,7 @@ class PuppetContract(unittest.TestCase):
             llm_contract.extract_turn_plan(None, "admin", "Hallo", speaker_name="Alrik", recipient_name="Mara Nowak")
             # Stand 11 (nur Aufrufstruktur): an jeder Planer-Lesung haengen dieselben Lesungsregeln der ersten Antwort; der
             # Puppet-Zusatz bleibt allein der Puppet-Lesung
-            self.assertEqual(seen["system"], llm_contract.PLAN_RULES + llm_contract.PLAN_LESUNGEN_RULES); self.assertNotIn("eingabeart", seen["payload"])
+            self.assertEqual(seen["system"], llm_contract.PLAN_RULES + llm_contract.PLAN_PRUEFUNG_RULES); self.assertNotIn("eingabeart", seen["payload"])
             self.assertNotIn("ZUSATZ PUPPET", seen["system"])
 
 

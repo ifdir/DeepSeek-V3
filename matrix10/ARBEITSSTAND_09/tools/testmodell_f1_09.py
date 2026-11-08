@@ -70,7 +70,14 @@ def rede_bedienperson(user: str) -> dict:
                          "uhrzeit": None},
             "refers_to": None, "cue_terms": [], "grenze": None, "verweis": None,
             "komponenten": [{"typ": "rede", "segment": t, "akteur": str(p.get("sprecher") or ""), "ziel": "Mara Nowak", "zeit": "jetzt",
-                             "wirkung": None, "bezug": None, "einleitung": None, "geschieht": None}]}
+                             "wirkung": None, "bezug": None, "einleitung": None, "geschieht": None,
+                             # Stand 11a: Pflichtfelder der ersten Antwort (reine Rede der Bedienperson)
+                             "pruefung": {"vollzug": None, "komponentenart": {"art": "rede", "beleg": t, "wirkung": None},
+                                          "sprecher": {"sprecher": "figur", "beleg": None, "handlung": None, "adressat": None,
+                                                       "ansageRolle": "unklar", "ansageBeleg": None},
+                                          "koerper": None, "koerperBestaetigung": None, "wirkung": None, "beruehrung": None,
+                                          "bewegung": None, "bittebezug": None, "erlaubnisbezug": None, "grenzbezug": None}}],
+            "teilstellen": [], "sprache": {"stellen": []}, "namen": [], "grenzumfang": None}
 
 
 def komponentenart(user: str, param: dict) -> dict:
@@ -134,13 +141,33 @@ def erleben_mit_kausal(user: str, param: dict) -> dict:
     return v
 
 
-DYNAMISCH = {"erleben_mit_kausal": erleben_mit_kausal, "kausal": kausal, "rede_bedienperson": rede_bedienperson, "komponentenart": komponentenart, "vollzug": vollzug,
+def mit_kausal(user: str, param: dict) -> dict:
+    """Stand 11a: Erlebensantwort des Drehbuchs (param.vorschlag) mit dem Kausalnachweis in DERSELBEN Antwort - Belege nach
+    kausal() aus DEM Payload; der Kernel prueft sie selbst."""
+    v = dict(param.get("vorschlag") or {})
+    felder = []
+    if str(v.get("gefuehl") or "").strip():
+        felder.append("gefuehl")
+    if str(v.get("absicht") or "").strip():
+        felder.append("absicht")
+    felder += [f"zustand.{k}" for k, x in (v.get("zustand_aenderung") or {}).items() if x]
+    for i, b in enumerate(v.get("beziehung_aenderung") or []):
+        felder += [f"beziehung.{i}.{d}" for d in ("trust", "closeness", "fear") if isinstance(b, dict) and b.get(d)]
+    try:
+        p = json.loads(user)
+    except Exception:
+        p = {}
+    v["kausalpruefung"] = kausal(json.dumps({"figur": p, "zu_pruefen": felder}, ensure_ascii=False))
+    v.setdefault("vorher_absicht_art", None)
+    return v
+
+
+DYNAMISCH = {"mit_kausal": mit_kausal, "erleben_mit_kausal": erleben_mit_kausal, "kausal": kausal, "rede_bedienperson": rede_bedienperson, "komponentenart": komponentenart, "vollzug": vollzug,
              "koerper": koerper, "bewegung": bewegung}
 
 
-# Stand 11 (SPS V62.7): die Fachlesungen stehen in der ERSTEN Antwort. Enthaelt eine Planer-/Formulierungs-/Erlebensantwort des
-# Drehbuchs noch keine "lesungen" bzw. keinen "kausalpruefung", setzt das Testmodell sie aus den bisherigen Einzel-Eintraegen
-# DESSELBEN Drehbuchs zusammen (gleiche Antworten, gleiche dynamischen Funktionen) - je Stelle der Antwort.
+# Stand 11a: das Testmodell ergaenzt KEINE Antwort. Die Lesungen stehen im Drehbuch selbst (Schema-Format; Umwandlung alter
+# Drehbuecher: ARBEITSSTAND_11/tools/drehbuch_11a.py, die dafuer _eintrag_antwort benutzt).
 ERSTE_ANTWORT = {"vollzug": "VOLLZUG_CHECK_RULES", "komponentenart": "KOMPONENTENART_CHECK_RULES", "sprecher": "SPRECHER_CHECK_RULES",
                  "wirkung": "EFFECT_CHECK_RULES", "bewegung": "MOVE_CHECK_RULES", "bewegungsversuch": "MOVE_ATTEMPT_RULES",
                  "beruehrung": "TOUCH_CONFIRM_RULES", "koerper": "KOERPER_CHECK_RULES",
@@ -169,73 +196,6 @@ def _eintrag_antwort(drehbuch: dict, regel: str, user: str):
     if isinstance(antwort, dict) and "dynamisch" in antwort:
         _f = DYNAMISCH[antwort["dynamisch"]]
         antwort = _f(user, antwort.get("param") or {}) if "param" in antwort else _f(user)
-    return antwort
-
-
-def _lesungen_fuer(drehbuch: dict, stellen: list, aeusserung: str, figur: str, als_text: bool) -> list:
-    out = []
-    for st, extra in stellen:
-        payload = {"handlung": st, "segment": st, "worte": st, "aeusserung": aeusserung, "figur": figur, "akteur": figur, **extra}
-        for name, regel in ERSTE_ANTWORT.items():
-            if name in ("koerper_bestaetigung", "grenzumfang"):
-                continue
-            a = _eintrag_antwort(drehbuch, regel, json.dumps(payload, ensure_ascii=False))
-            if not isinstance(a, dict):
-                continue
-            out.append({"lesung": name, "zu": st, **({"antwort_json": json.dumps(a, ensure_ascii=False)} if als_text else {"antwort": a})})
-            if name == "koerper" and a.get("beleg") and (a.get("haltung") or a.get("schlaf")):
-                b = _eintrag_antwort(drehbuch, "KOERPER_BESTAETIGUNG_RULES", json.dumps(dict(payload, stelle=a["beleg"], text=st), ensure_ascii=False))
-                if isinstance(b, dict):
-                    out.append({"lesung": "koerper_bestaetigung", "zu": a["beleg"],
-                                **({"antwort_json": json.dumps(b, ensure_ascii=False)} if als_text else {"antwort": b})})
-    return out
-
-
-def erste_antwort(name: str, system: str, user: str, antwort, drehbuch: dict):
-    if not isinstance(antwort, dict):
-        return antwort
-    try:
-        p = json.loads(user)
-    except Exception:
-        p = {}
-    if name == "PLAN_RULES" and 'Feld "lesungen"' in system and "lesungen" not in antwort:
-        text = str(p.get("aeusserung") or "")
-        stellen = [(str(c.get("segment") or ""), {"ziel": c.get("ziel"), "ansage": c.get("einleitung")})
-                   for c in antwort.get("komponenten") or [] if isinstance(c, dict) and c.get("segment")]
-        les = _lesungen_fuer(drehbuch, stellen, text, str(p.get("sprecher") or ""), False)
-        sp = _eintrag_antwort(drehbuch, "LANGUAGE_RULES", user)
-        if isinstance(sp, dict):
-            les.append({"lesung": "sprache", "zu": text, "antwort": sp})
-        g = antwort.get("grenze") if isinstance(antwort.get("grenze"), dict) else None
-        if g and g.get("beleg"):
-            ga = _eintrag_antwort(drehbuch, "GRENZE_CHECK_RULES", json.dumps({"beleg": g["beleg"], "aeusserung": text}, ensure_ascii=False))
-            if isinstance(ga, dict):
-                les.append({"lesung": "grenzumfang", "zu": g["beleg"], "antwort": ga})
-        return dict(antwort, lesungen=les)
-    if name == "FORMULIERUNG" and "lesungen" not in antwort and 'Feld "lesungen"' in system:
-        act = str(antwort.get("action") or "").strip()
-        stellen = [(act, {})] if act else []
-        aeus = " ".join(x for x in (str(antwort.get("speech") or ""), act) if x)
-        les = _lesungen_fuer(drehbuch, stellen, aeus, str(p.get("figur") or ""), True)
-        g = antwort.get("grenze") if isinstance(antwort.get("grenze"), dict) else None
-        if g and g.get("beleg"):
-            ga = _eintrag_antwort(drehbuch, "GRENZE_CHECK_RULES", json.dumps({"beleg": g["beleg"], "aeusserung": aeus}, ensure_ascii=False))
-            if isinstance(ga, dict):
-                les.append({"lesung": "grenzumfang", "zu": g["beleg"], "antwort_json": json.dumps(ga, ensure_ascii=False)})
-        return dict(antwort, lesungen=les)
-    if name == "APPRAISAL_RULES" and "kausalpruefung" not in antwort and getattr(LC, "APPRAISAL_KAUSAL_IN_ERSTER_ANTWORT", "") \
-            and LC.APPRAISAL_KAUSAL_IN_ERSTER_ANTWORT in system:
-        felder = []
-        if str(antwort.get("gefuehl") or "").strip():
-            felder.append("gefuehl")
-        if str(antwort.get("absicht") or "").strip():
-            felder.append("absicht")
-        felder += [f"zustand.{k}" for k, x in (antwort.get("zustand_aenderung") or {}).items() if x]
-        for i, b in enumerate(antwort.get("beziehung_aenderung") or []):
-            felder += [f"beziehung.{i}.{d}" for d in ("trust", "closeness", "fear") if isinstance(b, dict) and b.get(d)]
-        kp = _eintrag_antwort(drehbuch, "APPRAISAL_CAUSAL_CHECK_RULES",
-                              json.dumps({"figur": p, "personen": p.get("personen"), "zu_pruefen": felder}, ensure_ascii=False))
-        return dict(antwort, kausalpruefung=kp if isinstance(kp, dict) else {"pruefungen": []})
     return antwort
 
 
@@ -276,7 +236,6 @@ class H(BaseHTTPRequestHandler):
             if isinstance(antwort, dict) and "dynamisch" in antwort:
                 _f = DYNAMISCH[antwort["dynamisch"]]
                 antwort = _f(user, antwort.get("param") or {}) if "param" in antwort else _f(user)
-            antwort = erste_antwort(name, system, user, antwort, drehbuch)
             with prot.open("a") as fh:
                 fh.write(json.dumps({"lesung": name, "nr": i + 1, "geskriptet": eintrag is not None, "user": user,
                                      "system_anfang": system[:160], "antwort": antwort,
@@ -293,4 +252,5 @@ class H(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
 
-ThreadingHTTPServer(("127.0.0.1", port), H).serve_forever()
+if __name__ == "__main__":
+    ThreadingHTTPServer(("127.0.0.1", port), H).serve_forever()

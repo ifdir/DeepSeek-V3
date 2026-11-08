@@ -122,8 +122,10 @@ class WordBoundaries(unittest.TestCase):
         with patch.object(llm_contract,"_routing",return_value={"allowed":True}):
             res=llm_contract.name_boundary_check(None,"admin",text,figures=self.n)
         self.assertEqual([(g["a"],g["b"],g["wortfolge"]) for g in res["grenzen"]],[(0,10,"Hallo Mara")])
-        self.assertIn("wortklassen",llm_contract.PLAN_LESUNGEN_RULES); self.assertIn("[namen]",llm_contract.PLAN_LESUNGEN_RULES)
-        self.assertIn("[namen]",llm_contract.GOD_NAMEN_LESUNGEN_RULES)
+        # Stand 11a: die Namenslesung ist ein Pflichtfeld der Planer- und der God-Antwort (Schema), mit den Wortklassen
+        self.assertIn("wortklassen",llm_contract.PLAN_PRUEFUNG_RULES); self.assertIn("wortklassen",llm_contract.GOD_NAMEN_PRUEFUNG_RULES)
+        self.assertIn("namen",llm_contract.PLAN_SCHEMA["required"]); self.assertIn("namen",llm_contract.GOD_SCHEMA["required"])
+        self.assertEqual(llm_contract.P_NAMEN["items"]["required"],["wortfolge","wortklassen","rolle","status"])
 
     def test_original_p20_real_model_response_is_not_mistaken_for_source_proof(self):
         raw="Hallo Mara, wie geht es dir?"
