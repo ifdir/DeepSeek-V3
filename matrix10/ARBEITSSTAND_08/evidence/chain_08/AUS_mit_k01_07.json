@@ -1,0 +1,63 @@
+{
+  "root": "/tmp/matrix06_chain_tiwg_5f_/stage/MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107",
+  "H1_perception": 200,
+  "H1": {
+    "prepare": 200,
+    "commit": 422,
+    "code": "FORMULIERUNG_UNGEBUNDEN",
+    "tt": "tt_1a1bb0ce984_211972ee0031",
+    "hoerer_der_szene": [],
+    "hearsExplicit": true,
+    "fact_witnessedBy": null,
+    "claims": 0,
+    "frames": 0,
+    "claim_frame_zeugen": [],
+    "mara_als_zeugin_trotz_leerer_hoererliste": false
+  },
+  "S1_proposals_synapsen": {
+    "prepare": 200,
+    "commit": 422,
+    "code": "FORMULIERUNG_UNGEBUNDEN",
+    "tt": "tt_1a1bb0ce9b7_e21762a50039",
+    "runtime_vorher": {
+      "emotion": "wach",
+      "intensity": 0.35,
+      "fear": 0.25,
+      "stress": 0.25,
+      "intent": "",
+      "activeCauseText": null
+    },
+    "runtime_nachher": {
+      "emotion": "wach",
+      "intensity": 0.35,
+      "fear": 0.25,
+      "stress": 0.25,
+      "intent": "",
+      "activeCauseText": null
+    },
+    "runtime_geaendert": false
+  },
+  "S2_fired": {
+    "prepare": 200,
+    "commit": 422,
+    "code": "TURN_BELEG_UNGUELTIG",
+    "tt": "tt_1a1bb0ce9e6_5750116a0043",
+    "runtime_vorher": {
+      "emotion": "wach",
+      "intensity": 0.35,
+      "fear": 0.25,
+      "stress": 0.25,
+      "intent": "",
+      "activeCauseText": null
+    },
+    "runtime_nachher": {
+      "emotion": "wach",
+      "intensity": 0.35,
+      "fear": 0.25,
+      "stress": 0.25,
+      "intent": "",
+      "activeCauseText": null
+    },
+    "runtime_geaendert": false
+  }
+}

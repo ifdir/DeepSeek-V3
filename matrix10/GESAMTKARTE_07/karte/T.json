@@ -707,6 +707,18 @@
     "kein Writer fuer 'spaeter informiert' im Turnpfad"
    ],
    "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
+  },
+  "status_vor_08": "ROT",
+  "stand_08": {
+   "status": "ROT",
+   "geschlossen": [
+    "Antwortphase: Wahrnehmung zum Antwortzeitpunkt (gegangene Figur hoert die Antwort nicht, live belegt)",
+    "leere Hoererliste / Positions-/Bewusstseinsfilter (Stand 07)"
+   ],
+   "offen": [
+    "kein Writer fuer 'spaeter informiert' im Turnpfad (nur Regie) - K-03 (braucht Bedeutungslesung, welches Ereignis erzaehlt wird)"
+   ],
+   "beleg": "ARBEITSSTAND_08 (K-02); Abnahme ARBEITSSTAND_08/evidence/chain_08 (frischer Klon)"
   }
  },
  {
@@ -1711,7 +1723,7 @@
   },
   "ui_bedienung": "Memory-/Timeline-Seiten",
   "statischer_befund": "LÜCKE_IM_CODE",
-  "status": "ROT",
+  "status": "TEILGESCHLOSSEN",
   "defekte": [
    "Witness-Quellen inkonsistent (T-20: hears_now vs TurnTruth.hears_ids)",
    "Lifecycle-Actor-Bindung W2 (T-W2)"
@@ -1724,7 +1736,19 @@
   "belege": [
    "kernel.py:8941 (codefluss)",
    "kernel.py:9055–9155 (codefluss)"
-  ]
+  ],
+  "status_vor_08": "ROT",
+  "stand_08": {
+   "status": "TEILGESCHLOSSEN",
+   "geschlossen": [
+    "Witness-Quellen einheitlich: Eingabe (prepare), Antwort (Antwortzeitpunkt), Claims/Frames (_scene_perception)",
+    "W2 (Stand 07)"
+   ],
+   "offen": [
+    "Modell-Live BLOCKIERT"
+   ],
+   "beleg": "ARBEITSSTAND_08 (K-02); Abnahme ARBEITSSTAND_08/evidence/chain_08 (frischer Klon)"
+  }
  },
  {
   "id": "T-S22",

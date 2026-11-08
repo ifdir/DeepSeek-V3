@@ -1,6 +1,6 @@
 # KARTE_GESAMT_07 – alle kartierten AMASTER-Funktionen (generiert, nicht von Hand ändern)
 
-Funktionen: **183** · Status: BLOCKIERT 4, ROT 81, TEILGESCHLOSSEN 87, UNGEPRÜFT 11 · GRÜN: 0 (keine Live-Abnahme)
+Funktionen: **183** · Status: BLOCKIERT 4, ROT 80, TEILGESCHLOSSEN 88, UNGEPRÜFT 11 · GRÜN: 0 (keine Live-Abnahme)
 
 Statischer Codefluss: FEHLT_IM_CODE 10, KETTE_IM_CODE_GESCHLOSSEN 54, LÜCKE_IM_CODE 104, UNKLAR 15
 
@@ -45,7 +45,7 @@ Status: ROT 16, TEILGESCHLOSSEN 12, UNGEPRÜFT 4
 
 ## T – Session, Szene, Turn, TurnTruth, Orchestrierung (§18–§28, KV §9)
 
-Status: ROT 16, TEILGESCHLOSSEN 34, UNGEPRÜFT 3
+Status: ROT 15, TEILGESCHLOSSEN 35, UNGEPRÜFT 3
 
 | ID | AMASTER | Funktion | Owner (IST) | Status | Codefluss | Erster Defekt | abhängig von |
 |---|---|---|---|---|---|---|---|
@@ -97,7 +97,7 @@ Status: ROT 16, TEILGESCHLOSSEN 34, UNGEPRÜFT 3
 | T-S18 | §28 Z. 1034 | §28 Schritt 18: LLM oder Narrator aufrufen | Python llm_contract.formulate_from_config (llm_contract.py:… | TEILGESCHLOSSEN | LÜCKE_IM_CODE | Zwischen Formulierung und Commit keine Bindung: kernel_commit (app.py:1987) übernimmt result.speech/action/proposals aus dem Client-Body, ohne Abgleich mit der gespeiche… | Bereich L (LLM/Provider) |
 | T-S19 | §28 Z. 1035, §51 | §28 Schritt 19: Ausgabe auf Darstellungsgrenzen prüfen | keiner als eigener Schritt; Teilprüfungen in app.kernel_com… | ROT | FEHLT_IM_CODE | llm_contract.py:2276 '_try_llm … return the provider text intact' – keine Prüfung, ob die NPC-Ausgabe Avatar-Rede/-Handlung, Wissen außerhalb des Spiegels oder Rede abwe… | Bereich L/R (Finalizer) |
 | T-S20 | §28 Z. 1036 | §28 Schritt 20: Rede-/Handlungskomponenten getrennt committ… | Python kernel.commit_turn (kernel.py:8074), bind_input_comp… | TEILGESCHLOSSEN | LÜCKE_IM_CODE | Antwort: Turnzeile, 'getan'-Memory und SceneState nutzen nur die ERSTE validierte Handlung (kernel.py:8515–8521 action_comp = next(...)) – weitere Handlungskomponenten b… | T-S19 |
-| T-S21 | §28 Z. 1037 | §28 Schritt 21: Wissen und Folgezustände fortschreiben | Python kernel._record_fact_witnesses (kernel.py:8941), Memo… | ROT | LÜCKE_IM_CODE | Witness-Quellen inkonsistent (T-20: hears_now vs TurnTruth.hears_ids) | T-20, T-W2 |
+| T-S21 | §28 Z. 1037 | §28 Schritt 21: Wissen und Folgezustände fortschreiben | Python kernel._record_fact_witnesses (kernel.py:8941), Memo… | TEILGESCHLOSSEN | LÜCKE_IM_CODE | Witness-Quellen inkonsistent (T-20: hears_now vs TurnTruth.hears_ids) | T-20, T-W2 |
 | T-S22 | §28 Z. 1038 | §28 Schritt 22: Timeline und Logs aktualisieren | Python kernel.annotate_turn_rows (kernel.py:9829), matrix_l… | TEILGESCHLOSSEN | KETTE_IM_CODE_GESCHLOSSEN | s. T-10 | T-10 |
 | T-S23 | §28 Z. 1039 | §28 Schritt 23: sichtbare Antwort ausgeben | Frontend applyKernel/mergeKernelSession (kernel-bridge.ts:2… | TEILGESCHLOSSEN | LÜCKE_IM_CODE | chat.$sessionId.tsx:519 TTS spricht formulated.speech (Client-Formulierung), nicht den committed Fact-Text – bei Knebel/abgewiesener Rede wird Ungeschehenes vorgelesen | – |
 | T-K9 | §18–§28 | Kettenvertrag §9 Pflichtkette Session, Szene, normaler Turn… | Python app.kernel_prepare/kernel_commit + kernel.commit_turn | ROT | LÜCKE_IM_CODE | Glied 'serverseitige TurnTruth' gebrochen: Client-inputActorId/scene/time/upload (T-13, ausgeführt) | alle T-S |

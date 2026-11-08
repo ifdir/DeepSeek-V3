@@ -259,3 +259,37 @@ Offene Glieder:
 - Writer für „später informiert“.
 
 K-03 hängt danach zusätzlich am Provider (BLOCKIERT ohne Schlüssel).
+
+---
+
+## Nachtrag Stand 08: Fortschritt nach K-02
+
+**Abnahme:** frischer Klon von `5b75c59`, `ARBEITSSTAND_08/tools/run_chain_08.py`, Exit 2 = **ROT**. Bericht: `ARBEITSSTAND_08/BERICHT_K02_08.md`. Karte per `tools/karte_fortschritt_08.py` (Vorstatus in `status_vor_08`).
+
+| | 05d8e8a | nach 07 | nach 08 |
+|---|---:|---:|---:|
+| GRÜN | 0 | 0 | 0 |
+| ROT | 85 | 81 | **80** |
+| TEILGESCHLOSSEN | 83 | 87 | **88** |
+| UNGEPRÜFT | 11 | 11 | 11 |
+| BLOCKIERT | 4 | 4 | 4 |
+
+**Geändert:**
+- T-S21 wechselt von ROT auf TEILGESCHLOSSEN. Die Witness-Quellen sind einheitlich, W2 ist erfüllt.
+- Neue Belege ohne Statuswechsel: T-20 (bleibt ROT, „später informiert“ fehlt), Z-13, Z-15, Z-17, Z-19, Z-30 (echter Neustart). Z-14 bleibt ROT und ist K-03 zugeordnet.
+
+**Vollständige Gesamtfunktionsketten:**
+- Keine Kette ist GRÜN.
+- **K-01 und K-02 sind TEILGESCHLOSSEN**: offline deterministisch abgenommen über UI, Neustart, Folgeturn, Isolation, Negativproben und Mutationen. Es fehlt nur der Modellnachweis.
+- K-04 und K-11 sind teilweise geschlossen. K-03, K-05 bis K-10, K-12 und K-13 sind ROT.
+
+### Nächste Kette: Abhängigkeitsprüfung
+
+- **K-03 (Erfahrung → Bedeutung → Gefühl/Ziel/Beziehung)** ist fachlich die nächste Abhängigkeit. Sie braucht die jetzt kanonische Wahrnehmung und den kanonischen Abruf aus K-02.
+- Ihr Kern ist aber modellabhängig: Der Appraisal-Writer läuft nur mit Provider (`llm_contract.py:1522`), ebenso die Writer für epistemische Zustände und „später informiert“. **Ohne Provider-Schlüssel ist die K-03-Abnahme BLOCKIERT.**
+- Offline lassen sich in K-03 nur Teile prüfen und reparieren:
+  - Modell-Vorschläge werden ungeprüft als `validated` übernommen (Z-22, `apply_synapses`);
+  - die Wortlisten-Wirkung `apply_knowledge_effect` und `_KNOWLEDGE_EFFECT`;
+  - die Socialseite überschreibt Beziehungen ohne Ereignis (Z-26).
+- **K-05 (eigenständiges Handeln)** ist offline weitgehend prüfbar: zweiter Sprecher-Owner im Browser, Gate nicht an den Folgeturn gebunden, AutoChat nur browsergetrieben, Wortlisten im Ranking. Fachlich setzt K-05 aber Bedeutung (K-03) voraus.
+- **Empfehlung:** K-03 als nächste Kette, beginnend mit den offline prüfbaren Gliedern, und **parallel den Provider-Schlüssel bereitstellen**, damit der modellabhängige Kern abgenommen werden kann. Ist kein Schlüssel verfügbar, bleibt K-03 nach den Offline-Gliedern BLOCKIERT; dann folgt K-05.

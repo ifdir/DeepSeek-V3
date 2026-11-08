@@ -1,0 +1,1613 @@
+{
+ "anfragen": [
+  {
+   "anfrage": "commit",
+   "kernaufrufe_ohne_ausfall": 5,
+   "status_ohne_ausfall": 200,
+   "geprueft_k": 5,
+   "fail_open": [],
+   "status_verteilung": [
+    "503:NATIVE_BOUNDARY_UNAVAILABLE"
+   ],
+   "punkte": [
+    {
+     "k": 0,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      1703,
+      2074
+     ]
+    },
+    {
+     "k": 1,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      2303
+     ]
+    },
+    {
+     "k": 2,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      2349,
+      2396
+     ]
+    },
+    {
+     "k": 3,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      2349,
+      2396
+     ]
+    },
+    {
+     "k": 4,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      2349,
+      2396
+     ]
+    }
+   ],
+   "teilcommit_vor_ausfall": [],
+   "meldung_falsch": []
+  },
+  {
+   "anfrage": "puppet",
+   "kernaufrufe_ohne_ausfall": 9,
+   "status_ohne_ausfall": 200,
+   "geprueft_k": 9,
+   "fail_open": [],
+   "status_verteilung": [
+    "503:NATIVE_BOUNDARY_UNAVAILABLE"
+   ],
+   "punkte": [
+    {
+     "k": 0,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      1703,
+      3174
+     ]
+    },
+    {
+     "k": 1,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      3241,
+      3579,
+      3638
+     ]
+    },
+    {
+     "k": 2,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      3241,
+      3581,
+      3638
+     ]
+    },
+    {
+     "k": 3,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1703,
+      3256,
+      3365
+     ]
+    },
+    {
+     "k": 4,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      3336,
+      3365
+     ]
+    },
+    {
+     "k": 5,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      3336,
+      3365
+     ]
+    },
+    {
+     "k": 6,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      3361,
+      3365
+     ]
+    },
+    {
+     "k": 7,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      3361,
+      3365
+     ]
+    },
+    {
+     "k": 8,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      3361,
+      3365
+     ]
+    }
+   ],
+   "teilcommit_vor_ausfall": [],
+   "meldung_falsch": []
+  },
+  {
+   "anfrage": "regie",
+   "kernaufrufe_ohne_ausfall": 9,
+   "status_ohne_ausfall": 200,
+   "geprueft_k": 9,
+   "fail_open": [],
+   "status_verteilung": [
+    "503:NATIVE_BOUNDARY_UNAVAILABLE"
+   ],
+   "punkte": [
+    {
+     "k": 0,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      1703,
+      2800
+     ]
+    },
+    {
+     "k": 1,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      2926,
+      3579
+     ]
+    },
+    {
+     "k": 2,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      2926,
+      3581
+     ]
+    },
+    {
+     "k": 3,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1703,
+      3014,
+      3135
+     ]
+    },
+    {
+     "k": 4,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      3046,
+      3135
+     ]
+    },
+    {
+     "k": 5,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      3046,
+      3135
+     ]
+    },
+    {
+     "k": 6,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      3124,
+      3135
+     ]
+    },
+    {
+     "k": 7,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      3124,
+      3135
+     ]
+    },
+    {
+     "k": 8,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      3124,
+      3135
+     ]
+    }
+   ],
+   "teilcommit_vor_ausfall": [],
+   "meldung_falsch": []
+  },
+  {
+   "anfrage": "god",
+   "kernaufrufe_ohne_ausfall": 6,
+   "status_ohne_ausfall": 200,
+   "geprueft_k": 6,
+   "fail_open": [],
+   "status_verteilung": [
+    "503:NATIVE_BOUNDARY_UNAVAILABLE"
+   ],
+   "punkte": [
+    {
+     "k": 0,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      1703,
+      2622
+     ]
+    },
+    {
+     "k": 1,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1703,
+      2628,
+      2765
+     ]
+    },
+    {
+     "k": 2,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      2741,
+      2765
+     ]
+    },
+    {
+     "k": 3,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      2761,
+      2765
+     ]
+    },
+    {
+     "k": 4,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      2761,
+      2765
+     ]
+    },
+    {
+     "k": 5,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      2761,
+      2765
+     ]
+    }
+   ],
+   "teilcommit_vor_ausfall": [],
+   "meldung_falsch": []
+  },
+  {
+   "anfrage": "prepare_nach_commit",
+   "kernaufrufe_ohne_ausfall": 14,
+   "status_ohne_ausfall": 200,
+   "geprueft_k": 14,
+   "fail_open": [],
+   "status_verteilung": [
+    "503:NATIVE_BOUNDARY_UNAVAILABLE"
+   ],
+   "punkte": [
+    {
+     "k": 0,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1703,
+      1719,
+      2010
+     ]
+    },
+    {
+     "k": 1,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1703,
+      1877,
+      2010
+     ]
+    },
+    {
+     "k": 2,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1881,
+      2010
+     ]
+    },
+    {
+     "k": 3,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1888,
+      2010
+     ]
+    },
+    {
+     "k": 4,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1888,
+      2010
+     ]
+    },
+    {
+     "k": 5,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1888,
+      2010
+     ]
+    },
+    {
+     "k": 6,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1703,
+      1940,
+      2010,
+      4047
+     ]
+    },
+    {
+     "k": 7,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1940,
+      2010,
+      4052
+     ]
+    },
+    {
+     "k": 8,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1940,
+      2010,
+      4052
+     ]
+    },
+    {
+     "k": 9,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1940,
+      2010,
+      4052
+     ]
+    },
+    {
+     "k": 10,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1948,
+      2010
+     ]
+    },
+    {
+     "k": 11,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1948,
+      2010
+     ]
+    },
+    {
+     "k": 12,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1948,
+      2010
+     ]
+    },
+    {
+     "k": 13,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1948,
+      2010
+     ]
+    }
+   ],
+   "teilcommit_vor_ausfall": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+   ],
+   "meldung_falsch": []
+  },
+  {
+   "anfrage": "prepare_avatar_tat",
+   "kernaufrufe_ohne_ausfall": 14,
+   "status_ohne_ausfall": 200,
+   "geprueft_k": 14,
+   "fail_open": [],
+   "status_verteilung": [
+    "503:NATIVE_BOUNDARY_UNAVAILABLE"
+   ],
+   "punkte": [
+    {
+     "k": 0,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1703,
+      1719,
+      2010
+     ]
+    },
+    {
+     "k": 1,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1703,
+      1877,
+      2010
+     ]
+    },
+    {
+     "k": 2,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1881,
+      2010
+     ]
+    },
+    {
+     "k": 3,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1888,
+      2010
+     ]
+    },
+    {
+     "k": 4,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1888,
+      2010
+     ]
+    },
+    {
+     "k": 5,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1888,
+      2010
+     ]
+    },
+    {
+     "k": 6,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1703,
+      1940,
+      2010,
+      4047
+     ]
+    },
+    {
+     "k": 7,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1940,
+      2010,
+      4052
+     ]
+    },
+    {
+     "k": 8,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1940,
+      2010,
+      4052
+     ]
+    },
+    {
+     "k": 9,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1940,
+      2010,
+      4052
+     ]
+    },
+    {
+     "k": 10,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1948,
+      2010
+     ]
+    },
+    {
+     "k": 11,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1948,
+      2010
+     ]
+    },
+    {
+     "k": 12,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1948,
+      2010
+     ]
+    },
+    {
+     "k": 13,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1948,
+      2010
+     ]
+    }
+   ],
+   "teilcommit_vor_ausfall": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+   ],
+   "meldung_falsch": []
+  },
+  {
+   "anfrage": "prepare_avatar_tat_mit_wangengrenze",
+   "kernaufrufe_ohne_ausfall": 14,
+   "status_ohne_ausfall": 200,
+   "geprueft_k": 14,
+   "fail_open": [],
+   "status_verteilung": [
+    "503:NATIVE_BOUNDARY_UNAVAILABLE"
+   ],
+   "punkte": [
+    {
+     "k": 0,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1703,
+      1719,
+      2010
+     ]
+    },
+    {
+     "k": 1,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1703,
+      1877,
+      2010
+     ]
+    },
+    {
+     "k": 2,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1881,
+      2010
+     ]
+    },
+    {
+     "k": 3,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1888,
+      2010
+     ]
+    },
+    {
+     "k": 4,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1888,
+      2010
+     ]
+    },
+    {
+     "k": 5,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": false,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1888,
+      2010
+     ]
+    },
+    {
+     "k": 6,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1703,
+      1940,
+      2010,
+      4047
+     ]
+    },
+    {
+     "k": 7,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1940,
+      2010,
+      4052
+     ]
+    },
+    {
+     "k": 8,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1940,
+      2010,
+      4052
+     ]
+    },
+    {
+     "k": 9,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1589,
+      1940,
+      2010,
+      4052
+     ]
+    },
+    {
+     "k": 10,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1948,
+      2010
+     ]
+    },
+    {
+     "k": 11,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1948,
+      2010
+     ]
+    },
+    {
+     "k": 12,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1948,
+      2010
+     ]
+    },
+    {
+     "k": 13,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": false,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": true,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": true,
+     "meldung_stimmt": true,
+     "app_stapel_erster_fehler": [
+      254,
+      1948,
+      2010
+     ]
+    }
+   ],
+   "teilcommit_vor_ausfall": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+   ],
+   "meldung_falsch": []
+  },
+  {
+   "anfrage": "commit_mit_tat_gegen_grenze",
+   "kernaufrufe_ohne_ausfall": 13,
+   "status_ohne_ausfall": 200,
+   "geprueft_k": 13,
+   "fail_open": [],
+   "status_verteilung": [
+    "503:NATIVE_BOUNDARY_UNAVAILABLE"
+   ],
+   "punkte": [
+    {
+     "k": 0,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      1703,
+      2074
+     ]
+    },
+    {
+     "k": 1,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      1703,
+      2074
+     ]
+    },
+    {
+     "k": 2,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      2260,
+      3579
+     ]
+    },
+    {
+     "k": 3,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      2260,
+      3581
+     ]
+    },
+    {
+     "k": 4,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      2303
+     ]
+    },
+    {
+     "k": 5,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      2303
+     ]
+    },
+    {
+     "k": 6,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      2303
+     ]
+    },
+    {
+     "k": 7,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      2349,
+      2396
+     ]
+    },
+    {
+     "k": 8,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      2349,
+      2396
+     ]
+    },
+    {
+     "k": 9,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      2349,
+      2396
+     ]
+    },
+    {
+     "k": 10,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      2349,
+      2396
+     ]
+    },
+    {
+     "k": 11,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      2349,
+      2396
+     ]
+    },
+    {
+     "k": 12,
+     "status": 503,
+     "code": "NATIVE_BOUNDARY_UNAVAILABLE",
+     "sqlite_unveraendert": true,
+     "erfolgsmeldung": false,
+     "geschrieben_nach_ausfall": false,
+     "teilcommit_vor_ausfall": false,
+     "fail_open": false,
+     "eingabe_gespeichert_gemeldet": null,
+     "meldung_stimmt": null,
+     "app_stapel_erster_fehler": [
+      188,
+      1589,
+      2349,
+      2396
+     ]
+    }
+   ],
+   "teilcommit_vor_ausfall": [],
+   "meldung_falsch": []
+  }
+ ]
+}

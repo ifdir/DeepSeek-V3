@@ -1,9 +1,9 @@
 {
  "funktionen": 183,
  "status_gesamt": {
-  "TEILGESCHLOSSEN": 87,
+  "TEILGESCHLOSSEN": 88,
   "UNGEPRÜFT": 11,
-  "ROT": 81,
+  "ROT": 80,
   "BLOCKIERT": 4
  },
  "status_je_bereich": {
@@ -13,9 +13,9 @@
    "ROT": 16
   },
   "T": {
-   "TEILGESCHLOSSEN": 34,
+   "TEILGESCHLOSSEN": 35,
    "UNGEPRÜFT": 3,
-   "ROT": 16
+   "ROT": 15
   },
   "Z": {
    "TEILGESCHLOSSEN": 19,
@@ -3301,6 +3301,18 @@
     ],
     "beleg": "ARBEITSSTAND_07 (Commits 3349958 SEC, 329df34 K-01); Abnahme evidence/chain_07 (frischer Klon)"
    },
+   "status_vor_08": "ROT",
+   "stand_08": {
+    "status": "ROT",
+    "geschlossen": [
+     "Antwortphase: Wahrnehmung zum Antwortzeitpunkt (gegangene Figur hoert die Antwort nicht, live belegt)",
+     "leere Hoererliste / Positions-/Bewusstseinsfilter (Stand 07)"
+    ],
+    "offen": [
+     "kein Writer fuer 'spaeter informiert' im Turnpfad (nur Regie) - K-03 (braucht Bedeutungslesung, welches Ereignis erzaehlt wird)"
+    ],
+    "beleg": "ARBEITSSTAND_08 (K-02); Abnahme ARBEITSSTAND_08/evidence/chain_08 (frischer Klon)"
+   },
    "bereich": "T"
   },
   {
@@ -4333,7 +4345,7 @@
    },
    "ui_bedienung": "Memory-/Timeline-Seiten",
    "statischer_befund": "LÜCKE_IM_CODE",
-   "status": "ROT",
+   "status": "TEILGESCHLOSSEN",
    "defekte": [
     "Witness-Quellen inkonsistent (T-20: hears_now vs TurnTruth.hears_ids)",
     "Lifecycle-Actor-Bindung W2 (T-W2)"
@@ -4347,6 +4359,18 @@
     "kernel.py:8941 (codefluss)",
     "kernel.py:9055–9155 (codefluss)"
    ],
+   "status_vor_08": "ROT",
+   "stand_08": {
+    "status": "TEILGESCHLOSSEN",
+    "geschlossen": [
+     "Witness-Quellen einheitlich: Eingabe (prepare), Antwort (Antwortzeitpunkt), Claims/Frames (_scene_perception)",
+     "W2 (Stand 07)"
+    ],
+    "offen": [
+     "Modell-Live BLOCKIERT"
+    ],
+    "beleg": "ARBEITSSTAND_08 (K-02); Abnahme ARBEITSSTAND_08/evidence/chain_08 (frischer Klon)"
+   },
    "bereich": "T"
   },
   {
@@ -5043,6 +5067,17 @@
     "probe_z.py T1: memories Mara gehoert+gesagt, Johann gehoert in SQLite (ausgeführt)",
     "probe_z.py T2 nach neuer App-Instanz: brainContext.memories enthält T1-Erinnerungen (ausgeführt)"
    ],
+   "status_vor_08": "TEILGESCHLOSSEN",
+   "stand_08": {
+    "status": "TEILGESCHLOSSEN",
+    "geschlossen": [
+     "Zuordnung gehoert/gesagt mit Zuschreibung an Berechtigte geprueft (Tests + live)"
+    ],
+    "offen": [
+     "Vertrauensgrad, Relationen zwischen Erinnerungen fehlen; Memory nach Commit unveraenderlich - K-03"
+    ],
+    "beleg": "ARBEITSSTAND_08 (K-02); Abnahme ARBEITSSTAND_08/evidence/chain_08 (frischer Klon)"
+   },
    "bereich": "Z"
   },
   {
@@ -5078,6 +5113,15 @@
    "belege": [
     "grep kind=\"(gelesen|erfahren|...)\" in kernel/repos/app/pipeline: keine Writer für diese Arten (codefluss)"
    ],
+   "status_vor_08": "ROT",
+   "stand_08": {
+    "status": "ROT",
+    "geschlossen": [],
+    "offen": [
+     "Writer fuer geglaubt/vermutet/bestritten/unsicher/vergessen fehlt - zugeordnet K-03 (Bedeutungslesung)"
+    ],
+    "beleg": "ARBEITSSTAND_08 (K-02); Abnahme ARBEITSSTAND_08/evidence/chain_08 (frischer Klon)"
+   },
    "bereich": "Z"
   },
   {
@@ -5114,6 +5158,17 @@
     "kernel.py:2178-2284 (codefluss)",
     "probe_z.py: witness_knowledge 8 Zeilen, nur heard für anwesende Hörer (ausgeführt)"
    ],
+   "status_vor_08": "TEILGESCHLOSSEN",
+   "stand_08": {
+    "status": "TEILGESCHLOSSEN",
+    "geschlossen": [
+     "Negativ-Nachweis ausgefuehrt: abwesende/gegangene Figur ohne Wissen (Tests + live)"
+    ],
+    "offen": [
+     "'spaeter informiert' fehlt (T-20)"
+    ],
+    "beleg": "ARBEITSSTAND_08 (K-02); Abnahme ARBEITSSTAND_08/evidence/chain_08 (frischer Klon)"
+   },
    "bereich": "Z"
   },
   {
@@ -5184,6 +5239,17 @@
    "belege": [
     "truth.py:37-67 (codefluss)"
    ],
+   "status_vor_08": "TEILGESCHLOSSEN",
+   "stand_08": {
+    "status": "TEILGESCHLOSSEN",
+    "geschlossen": [
+     "gehoerte Rede bleibt Redeereignis mit Zuschreibung, keine Weltwahrheit (geprueft)"
+    ],
+    "offen": [
+     "kein Zustand glaubt/bezweifelt je Hoerer - K-03"
+    ],
+    "beleg": "ARBEITSSTAND_08 (K-02); Abnahme ARBEITSSTAND_08/evidence/chain_08 (frischer Klon)"
+   },
    "bereich": "Z"
   },
   {
@@ -5262,6 +5328,17 @@
     "probe_z.py T2 (neue create_app-Instanz, gleiche SQLite): brainContext.memories = 3 Einträge aus T1/T2 (ausgeführt)",
     "kernel.py:13201-13297 (codefluss)"
    ],
+   "status_vor_08": "TEILGESCHLOSSEN",
+   "stand_08": {
+    "status": "TEILGESCHLOSSEN",
+    "geschlossen": [
+     "Gedaechtnisseite zeigt den kanonischen Abruf der gewaehlten Figur (kernel.recall), live nach Neustart belegt; Cache-Abruf als nicht kanonisch gekennzeichnet"
+    ],
+    "offen": [
+     "Abruf liest gespeicherten statt reduzierten Propositionsstatus (open_texts, nur Relevanz)"
+    ],
+    "beleg": "ARBEITSSTAND_08 (K-02); Abnahme ARBEITSSTAND_08/evidence/chain_08 (frischer Klon)"
+   },
    "bereich": "Z"
   },
   {
@@ -5676,6 +5753,17 @@
    "belege": [
     "probe_z2.py: RESTART mara fear 0.46 über neue Verbindung; brainContext T2 mit T1-Memories nach neuer App-Instanz (ausgeführt)"
    ],
+   "status_vor_08": "TEILGESCHLOSSEN",
+   "stand_08": {
+    "status": "TEILGESCHLOSSEN",
+    "geschlossen": [
+     "echter Prozess-Neustart (START.py) belegt: Wissen/Abruf unveraendert (live)"
+    ],
+    "offen": [
+     "Modell-Live BLOCKIERT"
+    ],
+    "beleg": "ARBEITSSTAND_08 (K-02); Abnahme ARBEITSSTAND_08/evidence/chain_08 (frischer Klon)"
+   },
    "bereich": "Z"
   },
   {

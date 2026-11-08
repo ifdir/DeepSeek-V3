@@ -1,0 +1,141 @@
+{
+  "variante": "ok",
+  "code_erwartet": null,
+  "handlungen": [
+    {
+      "handlung": "U0_nutzer_waehlen",
+      "api": [
+        {
+          "status": 200,
+          "method": "GET",
+          "url": "/api/mcc",
+          "code": null,
+          "ok": true
+        },
+        {
+          "status": 200,
+          "method": "POST",
+          "url": "/api/llm/ping",
+          "code": "URLError: <urlopen error [Errno 111] Connection refused>",
+          "ok": false
+        }
+      ],
+      "sessions_ladefehler": null,
+      "ladefehler_mit_code": false,
+      "keine_session_sichtbar": false,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": false,
+      "alerts": [],
+      "alert_mit_code": false,
+      "sichtbar_fehler": false
+    },
+    {
+      "handlung": "U0b_chat_seite",
+      "api": [],
+      "sessions_ladefehler": null,
+      "ladefehler_mit_code": false,
+      "keine_session_sichtbar": false,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": true,
+      "alerts": [],
+      "alert_mit_code": false,
+      "sichtbar_fehler": false
+    },
+    {
+      "handlung": "U2_chat_reset",
+      "api": [
+        {
+          "status": 200,
+          "method": "POST",
+          "url": "/api/sessions/ses_v92/reset-chat",
+          "code": null,
+          "ok": true
+        },
+        {
+          "status": 200,
+          "method": "POST",
+          "url": "/api/ids/allocate",
+          "code": null,
+          "ok": true
+        },
+        {
+          "status": 200,
+          "method": "POST",
+          "url": "/api/logs",
+          "code": null,
+          "ok": true
+        }
+      ],
+      "sessions_ladefehler": null,
+      "ladefehler_mit_code": false,
+      "keine_session_sichtbar": false,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": true,
+      "alerts": [],
+      "alert_mit_code": false,
+      "sichtbar_fehler": false
+    },
+    {
+      "handlung": "U1_oeffnen",
+      "api": [
+        {
+          "status": 200,
+          "method": "PATCH",
+          "url": "/api/users/admin",
+          "code": null,
+          "ok": true
+        },
+        {
+          "status": 200,
+          "method": "GET",
+          "url": "/api/sessions/ses_v92",
+          "code": null,
+          "ok": true
+        }
+      ],
+      "sessions_ladefehler": null,
+      "ladefehler_mit_code": false,
+      "keine_session_sichtbar": false,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": true,
+      "alerts": [],
+      "alert_mit_code": false,
+      "sichtbar_fehler": false
+    },
+    {
+      "handlung": "U4_nutzer_ohne_session",
+      "api": [
+        {
+          "status": 200,
+          "method": "GET",
+          "url": "/api/mcc",
+          "code": null,
+          "ok": true
+        },
+        {
+          "status": 200,
+          "method": "POST",
+          "url": "/api/llm/ping",
+          "code": "LLM_REQUIRED",
+          "ok": false
+        },
+        {
+          "status": 200,
+          "method": "GET",
+          "url": "/api/mcc",
+          "code": null,
+          "ok": true
+        }
+      ],
+      "sessions_ladefehler": null,
+      "ladefehler_mit_code": false,
+      "keine_session_sichtbar": true,
+      "laedt_sichtbar": false,
+      "fall06_karte_sichtbar": false,
+      "alerts": [],
+      "alert_mit_code": false,
+      "sichtbar_fehler": false,
+      "anlage_status": 200
+    }
+  ]
+}

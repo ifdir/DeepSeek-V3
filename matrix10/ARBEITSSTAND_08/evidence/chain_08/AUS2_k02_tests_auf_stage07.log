@@ -1,0 +1,55 @@
+.FFF                                                                     [100%]
+=================================== FAILURES ===================================
+___________ K02.test_2_antwortphase_wahrnehmung_zum_antwortzeitpunkt ___________
+
+self = <test_k02_wissen_08.K02 testMethod=test_2_antwortphase_wahrnehmung_zum_antwortzeitpunkt>
+
+    def test_2_antwortphase_wahrnehmung_zum_antwortzeitpunkt(self):
+        truth = {"userId": "admin", "sessionId": "ses_a", "speakerId": J, "inputActorId": "user", "speakAs": "operator",
+                 "targetId": J, "inputKind": "speech", "text": EREIGNIS}
+        p = self.client.post("/api/kernel/prepare", headers=self.H, json={"sessionId": "ses_a", "truth": truth, "speaker": {"id": J}})
+        self.assertEqual(p.status_code, 200)
+        pend = self.session()["pendingInputTurnId"]
+        self.presence("ses_a", G)                        # Gustav geht, bevor geantwortet wird
+        self.assertNotIn(G, self.session()["scene"]["presentIds"])
+        self.turn("ses_a", J, EREIGNIS, resume=pend)      # "Antwort erneut erzeugen"
+        s = self.session()
+        ans = next(f for f in s["facts"] if f.get("sourceTurnId") == pend and f.get("actorId") == J and f.get("kind") == "speech")
+>       self.assertFalse(self.mem("ses_a", G, ans["id"]), "Gustav erinnert eine Antwort, die er nicht gehoert hat")
+E       AssertionError: [{'characterId': 'char_g7_gustav', 'commit': 51, 'epistemic': 'gehoert', 'factId': 'fact_1a1bb0ccbb7_8785195d0077', 'id': 'mem_1a1bb0ccbb7_9e3e745d007b', 'kind': 'gehoert', 'layer': 'session', 'salience': 0.5, 'seq': 54, 'sessionId': 'ses_a', 'source': 'commit_turn', 'sourceTurnId': 'tt_1a1bb0ccb65_849ade500060', 'text': 'Johann Bruckner: Hält inne und prüft, was das mit ihr/ihm macht. Ich habe dich gehört.', 'truthStatus': 'canon', 'turn': 1, 'userId': 'admin', 'witnesses': ['char_g7_gustav'], 'worldId': 'world_gasthaus_7kreis'}] is not false : Gustav erinnert eine Antwort, die er nicht gehoert hat
+
+/tmp/claude-0/-home-user-DeepSeek-V3/fe0b93ac-e3e4-569a-9216-d3a55d143b32/scratchpad/verify08/matrix10/ARBEITSSTAND_08/tests/test_k02_wissen_08.py:132: AssertionError
+_______________ K02.test_3_abruf_neustart_trennung_und_verhalten _______________
+
+self = <test_k02_wissen_08.K02 testMethod=test_3_abruf_neustart_trennung_und_verhalten>
+
+    def test_3_abruf_neustart_trennung_und_verhalten(self):
+        self.turn("ses_a", J, EREIGNIS)                   # Mara hoert; Robert ist nicht da
+        self.presence("ses_a", R)                         # Robert kommt spaeter
+        for i in range(11):                               # das Ereignis rueckt aus dem sichtbaren Dialogfenster (10 Turns)
+            self.turn("ses_a", (J, G)[i % 2], "", "autochat")
+        self.client = self.appmod.create_app(self.dbp).test_client()       # Neustart: neue App auf derselben SQLite
+        # Abruf ueber die Gedaechtnisseite (kanonischer Leser der Figur)
+        rm = self.recall("ses_a", M, "Kasse Keller").get_json()
+>       self.assertEqual(rm.get("engine"), "kernel.recall")
+E       AssertionError: 'pattern-overlap-v1' != 'kernel.recall'
+E       - pattern-overlap-v1
+E       + kernel.recall
+
+/tmp/claude-0/-home-user-DeepSeek-V3/fe0b93ac-e3e4-569a-9216-d3a55d143b32/scratchpad/verify08/matrix10/ARBEITSSTAND_08/tests/test_k02_wissen_08.py:151: AssertionError
+_ K02.test_4_recall_nur_fuer_figuren_dieser_welt_und_cache_bleibt_gekennzeichnet _
+
+self = <test_k02_wissen_08.K02 testMethod=test_4_recall_nur_fuer_figuren_dieser_welt_und_cache_bleibt_gekennzeichnet>
+
+    def test_4_recall_nur_fuer_figuren_dieser_welt_und_cache_bleibt_gekennzeichnet(self):
+        self.turn("ses_a", J, EREIGNIS)
+        r = self.recall("ses_a", "char_gibt_es_nicht", "Kasse")
+>       self.assertIn(r.status_code, (404, 422), r.get_data(as_text=True)[:200])
+E       AssertionError: 200 not found in (404, 422) : {"characterId":"char_gibt_es_nicht","cue":"Kasse","derivedFrom":"memories","engine":"pattern-overlap-v1","hits":[],"inventsTruth":false,"ok":true,"owner":"recall-cache"}
+
+/tmp/claude-0/-home-user-DeepSeek-V3/fe0b93ac-e3e4-569a-9216-d3a55d143b32/scratchpad/verify08/matrix10/ARBEITSSTAND_08/tests/test_k02_wissen_08.py:170: AssertionError
+=========================== short test summary info ============================
+FAILED ../../../../claude-0/-home-user-DeepSeek-V3/fe0b93ac-e3e4-569a-9216-d3a55d143b32/scratchpad/verify08/matrix10/ARBEITSSTAND_08/tests/test_k02_wissen_08.py::K02::test_2_antwortphase_wahrnehmung_zum_antwortzeitpunkt
+FAILED ../../../../claude-0/-home-user-DeepSeek-V3/fe0b93ac-e3e4-569a-9216-d3a55d143b32/scratchpad/verify08/matrix10/ARBEITSSTAND_08/tests/test_k02_wissen_08.py::K02::test_3_abruf_neustart_trennung_und_verhalten
+FAILED ../../../../claude-0/-home-user-DeepSeek-V3/fe0b93ac-e3e4-569a-9216-d3a55d143b32/scratchpad/verify08/matrix10/ARBEITSSTAND_08/tests/test_k02_wissen_08.py::K02::test_4_recall_nur_fuer_figuren_dieser_welt_und_cache_bleibt_gekennzeichnet
+3 failed, 1 passed in 1.89s

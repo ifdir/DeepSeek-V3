@@ -1,0 +1,24 @@
+{
+  "mutationen": {
+    "K02_M1_antwortphase_wahrnehmung_der_eingabe": {
+      "datei": "matrix_api/kernel.py",
+      "ersetzungen": 1,
+      "erkannt": true,
+      "rote_tests": [
+        "K02::test_2_antwortphase_wahrnehmung_zum_antwortzeitpunkt"
+      ],
+      "zusammenfassung": "1 failed, 3 passed in 2.52s"
+    },
+    "K02_M2_figurenabruf_nicht_kanonisch": {
+      "datei": "matrix_api/app.py",
+      "ersetzungen": 1,
+      "erkannt": true,
+      "rote_tests": [
+        "K02::test_3_abruf_neustart_trennung_und_verhalten",
+        "K02::test_4_recall_nur_fuer_figuren_dieser_welt_und_cache_bleibt_gekennzeichnet"
+      ],
+      "zusammenfassung": "2 failed, 2 passed in 1.82s"
+    }
+  },
+  "alle_erkannt": true
+}
