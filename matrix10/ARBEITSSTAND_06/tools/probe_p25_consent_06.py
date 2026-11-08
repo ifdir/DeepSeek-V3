@@ -157,13 +157,14 @@ def run_case(repos, sc, connect, init_schema, gid, case, tmp):
                     writes[s["row"]["id"]] = f"REJECT:{getattr(e, 'code', None) or getattr(e, 'error', None) or type(e).__name__}"
                 else:
                     writes[s["id"]] = f"REJECT:{getattr(e, 'code', None) or type(e).__name__}"
+    lesen, fehler, stored, other = {}, None, [], {}
     with closing(connect(db)) as c:
-        s = repos.get_session(c, "admin", "sA")
-        other = repos.get_session(c, "admin", "sB")
-        prop = next(p for p in s.get("propositions") or [] if p.get("id") == "p")
-        stored = sorted(f.get("id") for f in s.get("facts") or [])
-        lesen, fehler = {}, None
         try:
+            # auch die Hydration liest ueber den Kern (reduce_current_state): ein Fehler dort ist ein Befund des Falls
+            s = repos.get_session(c, "admin", "sA")
+            other = repos.get_session(c, "admin", "sB")
+            prop = next(p for p in s.get("propositions") or [] if p.get("id") == "p")
+            stored = sorted(f.get("id") for f in s.get("facts") or [])
             st = sc.body_contact_standing(s, prop, at=AT)
             lesen = {"state": st and st["state"],
                      "perms": [x["einschraenkung"] for x in sc.restricted_permissions_standing(s, prop, at=AT)],
