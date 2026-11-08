@@ -1,0 +1,9 @@
+Gegenprobe am eingefrorenen Altpaket MATRIX10_STAND08_PRODUKT_linux-x86_64_6713376.zip (SHA-256 50155ec2...903c),
+gestartet exakt nach dessen Anleitung (python3 START.py, keine Port-Variablen), 08.11.2026:
+  Anleitung nennt:  http://127.0.0.1:8180 (UI), http://127.0.0.1:5150 (API)
+  http://127.0.0.1:8180/            -> keine Verbindung (000)
+  http://127.0.0.1:5150/api/health  -> keine Verbindung (000)
+  http://127.0.0.1:8080/            -> 200
+  http://127.0.0.1:5050/api/health  -> 200
+Befund des Nutzers bestaetigt: Anleitung widersprach START.py (Standard 8080/5050). Ursache in der Paketpruefung: der
+Erststart-Schritt setzte MATRIX_API_PORT/MATRIX_UI_PORT selbst und pruefte daher nicht "exakt nach Anleitung".

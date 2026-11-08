@@ -1,0 +1,60 @@
+MATRIX10 Stand 08 (korrigierte Lieferung) - Pruefprotokoll des frisch entpackten Produktpakets
+Paket: MATRIX10_STAND08_PRODUKT_linux-x86_64_9b94cb8.zip
+SHA-256: e12fe5630e71518c58d146c6e15629ae1b3c2209d79c207f6d88b6ca6f86d84a
+Quellstand (Commit): 9b94cb84a052890341e31a9c45809fbd1186306e
+Abnahmeverzeichnis (neu, leer, ausserhalb des Scratchpads): /tmp/matrix10_abnahme_stand08_20261108_133436
+Plattform: Linux x86_64 - nur hier gebaut und getestet. Windows/Android: NICHT getestet.
+Ersetzt die Lieferung 6713376 (SHA-256 50155ec2...903c, eingefroren): deren Startanleitung nannte falsche Ports.
+
+PAKETPRUEFUNG: BESTANDEN  (15/15 Kriterien)
+  PASS  1a_zip_crc_ok
+  PASS  1b_zip_sha256
+  PASS  1c_alle_reparaturebenen_06_07_08_im_paket
+  PASS  1d_rust_bibliothek_und_frontend_vorhanden
+  PASS  2_erststart_exakt_nach_anleitung_ui_api_welt
+  PASS  2b_readme_stand08_und_vertragsdateien
+  PASS  3_cargo_test
+  PASS  4_k01_k02_sec_tests
+  PASS  5_einwilligungskette_10_von_10
+  PASS  6_p25_suite_keine_verschlechterung_ausser_k01_dokumentiert
+  PASS  7a_live_k01_sec_14_kriterien
+  PASS  7b_live_k02_10_kriterien
+  PASS  8_abi3_vertrag_und_abi2_gegenprobe
+  PASS  9a_laufendes_produkt_nutzt_paket_rust_bibliothek
+  PASS  9b_ohne_bibliothek_fail_closed_503_keine_ersatzlogik
+
+Erststart exakt nach Anleitung: {'ui': 'http://127.0.0.1:8080', 'api': 'http://127.0.0.1:5050'} -> [{'welten': 1, 'figuren': 5}]
+Rust im laufenden Produkt: mit Bibliothek 200, geladen ['/tmp/matrix10_abnahme_stand08_20261108_133436/entpackt/MATRIX10_STAND08_PRODUKT_linux-x86_64_9b94cb8/matrix_api/native/libmatrix_boundary_core.so']
+                           ohne Bibliothek 503 NATIVE_BOUNDARY_UNAVAILABLE
+P25-Testsuite: P25 {'pass': 422, 'failure': 24, 'error': 1} -> Paket {'pass': 435, 'failure': 13}; rot geworden: ['tests.test_v92_p18_koerper.P18AvatarAndFigure::test_avatar_position_and_figure_reply_with_forged_and_real_readings']
+K-01/K-02/SEC-Tests: ['33 passed in 6.67s']
+
+VERTRAGSSTATUS GESAMT: ROT - keine Produktfreigabe
+  GRUEN            C04_fremder_giver_und_abgelaufene_fenster
+  GRUEN            S05_tat_antwort_hebt_keine_grenze_auf
+  GRUEN            W1_W3_schreibgrenze_giver_und_proposition
+  GRUEN            W2_lifecycle_evidenz_eigene_aeusserung
+  GRUEN            K1_abi3
+  GRUEN            K2_http_503
+  BLOCKIERT        K2a_verschluckte_pfade
+  GRUEN            K2_frontend_fehler_sichtbar
+  ROT              P25_altbefunde_testsuite
+  BLOCKIERT        modell_folgeturn_live
+  BLOCKIERT        pruefmaschine_v12_achsen
+  GRUEN            M1_rust_sprecherbindung_eigene_tests
+  GRUEN            M1_kette_fail_closed_ohne_python_und_rust_schicht
+  ROT              M1_rust_only_mutation_ueber_kette
+  GRUEN            M2_prepare_meldung_teilcommit
+  GRUEN            M3_chatliste_fehler_statt_leer
+  GRUEN            K01_turntruth_und_commit_bindung_offline_deterministisch
+  TEILGESCHLOSSEN  K01_gesamt
+  BLOCKIERT        K01_formulierung_mit_echtem_modell
+  GRUEN            SEC_kein_schluessel_in_antworten_browser_logs
+  ROT              P25_testsuite_zusaetzlich_rot_durch_k01
+  GRUEN            P25_p18_assertions_ueber_produktweg_portiert
+  GRUEN            K02_wahrnehmung_antwortphase_offline_deterministisch
+  GRUEN            K02_figurenabruf_frontend_kanonisch
+  GRUEN            K02_verhalten_aus_erinnerung_offline_synapse
+  BLOCKIERT        K02_verhalten_aus_erinnerung_mit_modell
+  ROT              K02_epistemische_zustaende_und_hoerensagen
+  TEILGESCHLOSSEN  K02_gesamt
