@@ -26,7 +26,7 @@ LIB = "libmatrix_boundary_core.so"
 PLATTFORM = "linux-x86_64"
 WEG = {"node_modules", "target", "data", "__pycache__", ".pytest_cache"}
 PRUEF = {"tests": [M10 / "ARBEITSSTAND_07/tests/test_k01_turntruth_07.py", M10 / "ARBEITSSTAND_07/tests/test_sec_mcc_07.py",
-                   M10 / "ARBEITSSTAND_11/tests/test_k01_p18_portiert_11.py", M10 / "ARBEITSSTAND_11/tests/test_erste_antwort_11a.py", M10 / "ARBEITSSTAND_10/tests/test_k02_wissen_portiert_10.py",
+                   M10 / "ARBEITSSTAND_11/tests/test_k01_p18_portiert_11.py", M10 / "ARBEITSSTAND_11/tests/test_erste_antwort_11a.py", M10 / "ARBEITSSTAND_11/tests/test_brief_auswahl_11f.py", M10 / "ARBEITSSTAND_10/tests/test_k02_wissen_portiert_10.py",
                    M10 / "ARBEITSSTAND_09/tests/test_f1_b2_rahmen_09.py",
                    M10 / "ARBEITSSTAND_10/tests/test_f2_sprecher_10.py",
                    M10 / "ARBEITSSTAND_10A/tests/test_rust_diagnose_10a.py",
@@ -68,7 +68,7 @@ def main() -> int:
     sh(["npm", "run", "build:dist"], cwd=root)
     if not (root / "frontend_dist/index.html").is_file():
         raise SystemExit("ABBRUCH: frontend_dist/index.html fehlt nach dem Build")
-    name = f"MATRIX10_STAND11E_PRODUKT_{PLATTFORM}_{kurz}"
+    name = f"MATRIX10_STAND11F_PRODUKT_{PLATTFORM}_{kurz}"
     pkg = tmp / name
     shutil.copytree(root, pkg, ignore=lambda d, n: [x for x in n if x in WEG])
     for sub, files in PRUEF.items():
@@ -84,7 +84,7 @@ def main() -> int:
     shutil.copy2(HIER / "tools/README_STAND11.md", pkg / "README.md")
     res = json.loads((M10 / "ARBEITSSTAND_08/evidence/chain_08/result_08.json").read_text())
     status = {
-        "stand": "11e", "plattform": PLATTFORM, "nur_getestet_auf": "Linux x86_64 (diese Umgebung); keine Aussage zu Windows/Android",
+        "stand": "11f", "plattform": PLATTFORM, "nur_getestet_auf": "Linux x86_64 (diese Umgebung); keine Aussage zu Windows/Android",
         "commit": commit, "branch": "claude/matrix10-rust-repair-xq9k34", "repository": "https://github.com/ifdir/DeepSeek-V3",
         "p25_zip_sha256": man["basis_sha256"], "ebene_06": man["overlay_sha256"], "ebene_07": man["stand_07"]["overlay_07"],
         "ebene_08": man["stand_08"]["overlay_08"],
@@ -101,6 +101,7 @@ def main() -> int:
         "aenderung_11c": "Nutzer 08.11. 22:22/22:37 (AMASTER §27.4/§34.1): kein Wort geht verloren - ungelesener ungekennzeichneter Text ohne fremden Namen ist Rede der Figur (nie Tat); die reagierende Figur bekommt die ganze Aeusserung woertlich und getrennt, was davon geprueft geschehen ist; interne Lesevermerke nicht mehr in der UI",
         "aenderung_11d": "Geraet 09.11. 11:08: Antwort war zu 80 % Formular und der Brief ein Dossier - Rede bis ~6 Saetze, Handlung 1-4 Saetze (Koerper, Blick, Stimme), Pflichtfelder knapp, Antwortraum 2400; roher JSON-Zustand aus dem Prompt (nur Kennungen), Prompt 11-17k -> 7-8k Zeichen; Absicht als Lage mit Erfolg ('hat nicht gereicht'); keine Kompass-Beispielzeichen, Wendungen nur wenn nicht gerade benutzt; Taten in Textreihenfolge verbunden",
         "aenderung_11e": "Nutzer 09.11.: 'ein Mensch ruft nicht sein ganzes Leben ins Gedaechtnis' (AMASTER §41 Recall nach Relevanz, §49): der Brief enthaelt statt des ganzen Stamms, was das Erlebnis anspricht (die von der geprueften Bewertung belegten Stammstellen), Lebenslauf/Werte/Aengste/Vorlieben/Tabus/Muster nur im offenen Moment, Bindungen und Wissen nur zu Anwesenden bzw. jetzt Genannten, keine Weltbeschreibung/Vorgeschichte je Zug, keine Doppelzeilen; Prompt 5,3-6,6k Zeichen",
+        "aenderung_11f": "Pruefbericht 11E: Auswahl je Profilstelle statt pauschaler Abschaltung (belegt durch noch wirkendes Erleben, Bezug zu anwesender/genannter Person per Identitaet, offener Moment), Wissen ueber jetzt genannte Abwesende bleibt, Ergebnis und Einwilligung getrennt (actionOutcomeState), Geheimnis nur bei Bezug, Android-Anleitung mit echten Namen; intent_kind belegt ohne Netzaufruf",
         "offen_11": "11 P25-Tests sind schon im unveraenderten P25 rot (siehe ARBEITSSTAND_11/BEFUND_STAND11.md); echtes Modell und Android-Geraet UNGEPRUEFT",
         "anlass_10a": "Android 08.11.: 503 'Rust-Schreibgrenze konnte nicht geladen werden' ohne Grund bei der ersten Beruehrungs-Eingabe",
         "aenderung_09": "F1-B2: Beziehungsrahmen der Bewertung nennt Person und Ereignis (kernel.appraisal_payload)",

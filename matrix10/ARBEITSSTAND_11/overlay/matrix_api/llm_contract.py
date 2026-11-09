@@ -1846,7 +1846,10 @@ def render_persona_brief(spiegel: dict[str, Any], utterance: str, uttered_by: st
     # eigenen Handlungen in dieser Szene und ihr festgestelltes Ergebnis (actionOutcome aus den Facts).
     _own_dlg = [d for d in (spiegel.get("dialogue") or []) if isinstance(d, dict) and str(d.get("name") or "") == name]
     _own_acts = [str(d.get("action")).strip() for d in _own_dlg if str(d.get("action") or "").strip()][-3:]
-    _gescheitert = [str(d.get("actionOutcome")) for d in _own_dlg if str(d.get("actionOutcome") or "").strip()][-1:]
+    # Stand 11F (Pruefbericht 11E): nur ein festgestelltes Ergebnis (ueberwunden/blockiert/nur versucht) - ein Einwilligungsvermerk
+    # ist kein Scheitern
+    _gescheitert = [str(d.get("actionOutcome")).split("; ")[0] for d in _own_dlg
+                    if str(d.get("actionOutcomeState") or "") in ("overcome", "blocked", "attempted")][-1:]
     if str(rt.get("intent") or "").strip():
         if _gescheitert:
             _lage.append(f"du wolltest: {str(rt.get('intent'))[:160]} – du hast es versucht ({'; '.join(a[:80] for a in _own_acts)}), "
@@ -1874,9 +1877,14 @@ def render_persona_brief(spiegel: dict[str, Any], utterance: str, uttered_by: st
         lines.append(f"Persönlichkeit: {str(p['personality'])[:300]}")
     # Stand 11E: ist ein Erlebnis angesprochen, steht der Stamm nur mit Persoenlichkeit, Sprache und Geheimnis da - Lebenslauf,
     # Werte, Aengste, Vorlieben, Tabus und Muster erscheinen nur in einem offenen Moment ohne Erlebnis (kurz).
-    _offen_moment = not _angespr
-    if p.get("biography") and _offen_moment:
-        lines.append(f"Hintergrund: {str(p['biography'])[:300]}")
+    # Stand 11F (Pruefbericht 11E): keine pauschale Abschaltung - der Kernel waehlt je Stelle (profilJetzt: belegt durch ein noch
+    # wirkendes Erleben, Bezug zu einer anwesenden/genannten Person, oder offener Moment); ohne profilJetzt wie bisher.
+    _pj = spiegel.get("profilJetzt") if isinstance(spiegel.get("profilJetzt"), dict) else None
+    def _jetzt(feld: str) -> list:
+        return list(_pj.get(feld) or []) if _pj is not None else list(p.get(feld) or [])
+    _bio = (str(_pj.get("biography") or "") if _pj is not None else str(p.get("biography") or "")[:500])
+    if _bio:
+        lines.append(f"Hintergrund: {_bio}")
     style = [f"Sprachregister: {p['speechRegister']}" if p.get("speechRegister") else "", f"Dialekt: {p['dialect']}" if p.get("dialect") else "",
              f"Humor: {p['humor']}" if p.get("humor") else "", f"Konfliktstil: {p['conflictStyle']}" if p.get("conflictStyle") else ""]
     style = [x for x in style if x]
@@ -1893,22 +1901,23 @@ def render_persona_brief(spiegel: dict[str, Any], utterance: str, uttered_by: st
         lines.append(f"Typische Wendungen von dir (Stilbeispiele, nicht in jeder Antwort): {_fmt_list(p.get('typicalPhrases'), len(p.get('typicalPhrases') or []), ' | ')}")
     if p.get("favoriteWords") and not _benutzt(p.get("favoriteWords")):
         lines.append(f"Lieblingswörter: {_fmt_list(p.get('favoriteWords'), 6, ', ')}")
-    if p.get("values") and _offen_moment:
-        lines.append(f"Werte: {_fmt_list(p.get('values'))}")
+    if _jetzt("values"):
+        lines.append(f"Werte: {_fmt_list(_jetzt('values'))}")
     # AMASTER 41/49: goals enter the expressive brief only through the
     # situational Foreground reader, never by dumping the whole profile.
-    if p.get("fears") and _offen_moment:
-        lines.append(f"Was du fürchtest: {_fmt_list(p.get('fears'))}")
-    if p.get("ownSecrets") or p.get("secrets"):
-        lines.append(f"Was nur du weißt (nie offen aussprechen, aber es färbt dich): {_fmt_list(p.get('ownSecrets') or p.get('secrets'), 4)}")
-    if (p.get("likes") or p.get("dislikes")) and _offen_moment:
-        lines.append(f"Du magst: {_fmt_list(p.get('likes'), 4, ', ') or '—'} · Du magst nicht: {_fmt_list(p.get('dislikes'), 4, ', ') or '—'}")
-    if p.get("taboos") and _offen_moment:
+    if _jetzt("fears"):
+        lines.append(f"Was du fürchtest: {_fmt_list(_jetzt('fears'))}")
+    _geheim = _jetzt("ownSecrets") if _pj is not None else list(p.get("ownSecrets") or p.get("secrets") or [])
+    if _geheim:
+        lines.append(f"Was nur du weißt (nie offen aussprechen, aber es färbt dich): {_fmt_list(_geheim, 4)}")
+    if _jetzt("likes") or _jetzt("dislikes"):
+        lines.append(f"Du magst: {_fmt_list(_jetzt('likes'), 4, ', ') or '—'} · Du magst nicht: {_fmt_list(_jetzt('dislikes'), 4, ', ') or '—'}")
+    if p.get("taboos"):   # Stand 11F: eigene harte Grenzen - immer (kurz)
         lines.append(f"Tabus für dich: {_fmt_list(p.get('taboos'), 4)}")
-    if (p.get("reactionRules") or p.get("bindingPatterns")) and _offen_moment:
-        lines.append(f"Reaktionsmuster: {_fmt_list(p.get('reactionRules'), len(p.get('reactionRules') or []))} {('· Bindungsmuster: ' + _fmt_list(p.get('bindingPatterns'), 3)) if p.get('bindingPatterns') else ''}".strip())
-    if p.get("coreFacts") and _offen_moment:
-        lines.append(f"Kernfakten über dich: {_fmt_list(p.get('coreFacts'), 6)}")
+    if _jetzt("reactionRules") or _jetzt("bindingPatterns"):
+        lines.append(f"Reaktionsmuster: {_fmt_list(_jetzt('reactionRules'), len(_jetzt('reactionRules')))} {('· Bindungsmuster: ' + _fmt_list(_jetzt('bindingPatterns'), 3)) if _jetzt('bindingPatterns') else ''}".strip())
+    if _jetzt("coreFacts"):
+        lines.append(f"Kernfakten über dich: {_fmt_list(_jetzt('coreFacts'), 6)}")
     lens = [c for c in (spiegel.get("compassLens") or []) if isinstance(c, dict) and c.get("reaction")]
     if lens:
         # V60b (AMASTER §15): the Chathere-Kompass as behaviour lens (profile).
@@ -1969,9 +1978,8 @@ def render_persona_brief(spiegel: dict[str, Any], utterance: str, uttered_by: st
     # "sich noch weiter zurückziehen" stand nur im JSON-Anhang, Mara setzte sie nie um): the appraised intent with its cause.
     # Stand 11: die Absicht steht in DEINE LAGE JETZT (vor dem Profil)
     # Stand 11E: Bindungen zu Abwesenden nur, wenn die Person im jetzigen Moment genannt wird (Name im Wortlaut)
-    _jetzt_text = " ".join(str(x or "") for x in (spiegel.get("stimulusWortlaut"), utterance, spiegel.get("stimulusAction"))).casefold()
-    srels = [r for r in (spiegel.get("stemRelations") or []) if isinstance(r, dict)
-             and (r.get("present") or (str(r.get("name") or "").split()[:1] and str(r.get("name")).split()[0].casefold() in _jetzt_text))]
+    # Stand 11F: Identitaet statt Namensteile - "jetzt" setzt der Kernel (anwesend oder jetzt genannt, bind_referents)
+    srels = [r for r in (spiegel.get("stemRelations") or []) if isinstance(r, dict) and (r.get("jetzt") if "jetzt" in r else r.get("present"))]
     if srels:
         lines.append("DEINE WICHTIGSTEN BEZIEHUNGEN (Stamm): " + " | ".join(
             f"{r.get('name')}: {r.get('kind') or 'kennt'} — Vertrauen {float(r.get('trust') or 0):.2f}" + (f" ({str(r.get('note'))[:70]})" if r.get("note") else "") + ("" if r.get("present") else " [nicht anwesend]")
@@ -2097,13 +2105,8 @@ def render_persona_brief(spiegel: dict[str, Any], utterance: str, uttered_by: st
     ds = spiegel.get("dialogueSummary") if isinstance(spiegel.get("dialogueSummary"), dict) else {}
     if ds.get("start"):
         lines.append("So begann das Gespräch: " + " / ".join(f"{d.get('name')}: {str(d.get('speech') or '')[:80]}" for d in ds["start"][:2] if isinstance(d, dict)) + f" (insgesamt {ds.get('turnsTotal')} Turns)")
-    _abw = {str(r.get("name") or "").split()[0].casefold() for r in (spiegel.get("stemRelations") or [])
-            if isinstance(r, dict) and not r.get("present") and str(r.get("name") or "").strip()}
-    _anw = {str(x).split()[0].casefold() for x in (scene.get("present") or []) if str(x).strip()}
-    def _nur_abwesende(k: str) -> bool:
-        w = {t.strip(".,;:!?").casefold() for t in str(k).split()}
-        return bool(w & _abw) and not (w & _anw)
-    know = [k for k in (spiegel.get("knowledge") or []) if k and not _nur_abwesende(k)]   # Stand 11E: Recall nach Relevanz
+    # Stand 11F: Wissen nach Kernel-Auswahl (Identitaet; Wissen ueber eine jetzt genannte abwesende Person bleibt)
+    know = [k for k in (spiegel.get("knowledgeJetzt") if "knowledgeJetzt" in spiegel else spiegel.get("knowledge") or []) if k]
     if know:
         lines.append("DU WEISST: " + "; ".join(str(k)[:120] for k in know[:8]))
     unknown = [u for u in (spiegel.get("unknown") or []) if u]

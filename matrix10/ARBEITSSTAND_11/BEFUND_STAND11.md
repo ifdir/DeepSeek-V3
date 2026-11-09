@@ -229,3 +229,32 @@ AMASTER §41 verlangt dagegen „Recall wird nach Relevanz begrenzt“, §49 „
 - P25-Suite: keine neue Abweichung. Ausnahme ist der Build-Vertrag im ungebauten Arbeitsordner; er wird im Paket neu gebaut.
 
 **Offen:** Wie natürlich Mara damit antwortet, zeigt nur das Gerät mit echtem Modell.
+
+## 11. Stand 11F – Prüfbericht 11E: Auswahl nach Bedeutung, nicht nach Länge
+
+**Prüfbericht (unabhängig) und eigene Prüfung am Code:**
+
+| Punkt | Befund | 11F |
+|---|---|---|
+| Ganze Profilbereiche fallen weg, sobald `angesprochen` etwas enthält | bestätigt | Auswahl je Stelle im Kernel (`_brief_auswahl`): (a) belegt durch ein noch wirkendes Erleben (`kausalBelege.dispositionsQuelle` = `appraisal_source_id`), (b) nennt eine anwesende oder jetzt genannte Person (`bind_referents`), (c) offener Moment: Werte und kurzer Lebenslauf. Persönlichkeit, Sprechweise und Tabus bleiben immer |
+| Wissen über einen jetzt erfragten Abwesenden fehlt (Alrik) | bestätigt | Wissen fällt nur weg, wenn es ausschließlich Personen nennt, die weder anwesend noch jetzt genannt sind (Identität) |
+| `_angesprochen` nur die letzten 2 Erlebnisse | bestätigt | alle Belege, deren Ereignis noch wirkt (Ursachen und Verstärkungen aktiver Gefühle, `activeCause`, `intentCause`) |
+| `actionOutcome` mischt Ergebnis und Einwilligung | bestätigt | `actionOutcomeState` und `consentNote` getrennt; „hat nicht gereicht“ nur bei overcome/blocked/attempted |
+| Namensteile („Annette“ → „Ann“) | bestätigt | Stamm-Bindungen und Wissen nach Figuren-ID (`bind_referents`, ganze Namensteile/Aliase) |
+| Geheimnis immer im Brief | bestätigt | nur bei Beleg oder Personenbezug |
+| `intent_kind` macht einen zusätzlichen Modellaufruf | **nicht zutreffend** | Der Abfang in `_llm_json` beantwortet `INTENT_KIND_RULES` aus der Erlebensantwort. Der Test belegt: `urlopen` wird nicht aufgerufen (auch in 11E) |
+| Android-Anleitung mit falschen Namen | bestätigt | echte Paket- und Ordnernamen |
+| Schlüssel im ZIP | so verlangt (Pakete mit deinen Daten) | Hinweisdatei im Paket; Werkzeug `tools/mit_deinen_daten_11.sh`; im Repository nur Testvorlagen ohne Schlüssel (geprüft) |
+| Sprecherwahl mit Wortlisten (K-05) | offen | nicht in diesem Schritt – ROT |
+
+**Geprüft:**
+- `tests/test_brief_auswahl_11f.py`: 7/7. Gegenprobe an 11E: 6 rot, nur der Netzaufruf-Test ist grün.
+- F1: 12/12. Gegenprobe: 8/12, also wie erwartet rot.
+- F2: 7/7.
+- F1-Rest: Grenze in 6/6 Briefen.
+- Gerätefälle 11:08: Brief mit „Was du fürchtest: Johanns Druck“ (belegt und Johann anwesend), ohne unbelegte Ängste und ohne Abwesende.
+- 5 Gerätefälle: 4–5 Aufrufe.
+- K-Tests: 57/57.
+- P25-Suite: keine neue Abweichung (Build-Vertrag nur im ungebauten Arbeitsordner).
+
+**Gesamtstatus ROT:** K-05, 11 P25-Altfehler, Android und echtes Modell sind nicht abgenommen.

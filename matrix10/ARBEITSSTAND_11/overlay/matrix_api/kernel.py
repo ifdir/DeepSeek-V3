@@ -13736,6 +13736,12 @@ def _dialogue_visible_to(session: dict, speaker_id: str | None, turns: list, ava
                     ctx = act_consent_text(session, f, _row_names, viewer=speaker_id)
                     if txt or ctx:
                         d["actionOutcome"] = "; ".join(x for x in (txt, ctx) if x)
+                        # Stand 11F (Pruefbericht 11E): Ergebnis und Einwilligungsvermerk getrennt lesbar
+                        _o = act_outcome(session, f)
+                        if _o and _o.get("state"):
+                            d["actionOutcomeState"] = str(_o["state"])
+                        if ctx:
+                            d["consentNote"] = ctx
                         break
         return d
 
@@ -14371,6 +14377,9 @@ def bind_formulation_spiegel(
     # Kein Volltext-Nachladen aus world.sourceText/world.long — das war
     # ein zweiter Wissensowner und ist hier ersatzlos entfernt.
     knowledge = [k for k in knowledge if k][:12]
+    _auswahl = _brief_auswahl(session, speaker, speaker_id, present, rt, knowledge,
+                              " ".join(str(x or "") for x in (stimulus_wortlaut, stimulus, stimulus_speech, stimulus_action,
+                                                              truth.get("text"))))
     unknown = [
         "kennt keine fremden Gedanken",
         "kennt nur, was sie selbst erlebt, gehört oder gesehen hat",
@@ -14757,6 +14766,10 @@ def bind_formulation_spiegel(
         # ruft nicht sein ganzes Leben ins Gedaechtnis"): was das juengste Erleben in ihr ANGESPROCHEN hat - die woertlichen Stellen
         # ihres Stamms, die die gepruefte Bewertung als Ursache belegt hat (Appraisal-Fact, kausalBelege.dispositionsBeleg).
         "angesprochen": _angesprochen(session, speaker_id),
+        # Stand 11F (Pruefbericht 11E; AMASTER §41/§49): die Auswahl trifft der Kernel - je Profilstelle, je Person (Identitaet)
+        "profilJetzt": _auswahl["profil"],
+        "knowledgeJetzt": _auswahl["wissen"],
+        "genanntJetzt": _auswahl["genannt"],
         "turnMode": ("autochat" if str(truth.get("input_kind") or truth.get("inputKind") or "").lower() == "autochat" else "reply"),
         # V65G (AMASTER §26 / §68 Nr. 6 "Anwesenheit, Hören und Sehen bestimmen
         # Wissen", §44 gerichtet pro Person, §41.2): "present" of a Stamm bond is
@@ -14767,7 +14780,9 @@ def bind_formulation_spiegel(
         # Vertrauen 0.75" without "[nicht anwesend]" while "Spieler" said
         # "Hey schatz".
         "stemRelations": [
-            {"name": r.get("targetName"), "kind": r.get("kind"), "trust": float(r.get("trust") or 0), "closeness": float(r.get("closeness") or 0), "fear": float(r.get("fear") or 0), "note": str(r.get("note") or "")[:100],
+            {"targetId": r.get("targetId"),
+             "jetzt": str(r.get("targetId") or "") in _auswahl["bezugIds"],   # Stand 11F: anwesend oder jetzt genannt (Identitaet)
+             "name": r.get("targetName"), "kind": r.get("kind"), "trust": float(r.get("trust") or 0), "closeness": float(r.get("closeness") or 0), "fear": float(r.get("fear") or 0), "note": str(r.get("note") or "")[:100],
              "present": any(str(p.get("name") or "").lower() == str(r.get("targetName") or "").lower()
                             and str(p.get("id") or "") in set((session.get("scene") or {}).get("presentIds") or [])
                             for p in (present or []) if isinstance(p, dict))}
@@ -15051,16 +15066,81 @@ def autchat_step(
     return out
 
 
+
+def _fortwirkende_ursachen(session: dict, speaker_id: Any) -> set[str]:
+    """Stand 11F: die Ereignisse, die in dieser Figur noch wirken - Ursache (und Verstaerkungen) eines aktiven Gefuehls, die
+    aktive Ursache und die Ursache der Absicht (RuntimeState). Nur Lesen."""
+    rt = (session.get("runtimes") or {}).get(str(speaker_id or "")) or {}
+    out: set[str] = set()
+    for a in rt.get("affects") or []:
+        if isinstance(a, dict):
+            out |= {str(x) for x in [a.get("causeFactId")] + list(a.get("reinforcedBy") or []) if x}
+    out |= {str(rt.get(k)) for k in ("activeCause", "intentCause") if rt.get(k)}
+    return out
+
+
+def _belege_fortwirkend(session: dict, speaker_id: Any) -> list[dict]:
+    """Die gepruefte Bewertungsbelege (kausalBelege) dieser Figur, deren Ereignis noch wirkt - aelter wie neuer."""
+    ursachen = _fortwirkende_ursachen(session, speaker_id)
+    out: list[dict] = []
+    for f in session.get("facts") or []:
+        if not (isinstance(f, dict) and f.get("kind") == "appraisal" and str(f.get("actorId") or "") == str(speaker_id or "")):
+            continue
+        for b in ((f.get("payload") or {}).get("kausalBelege") or {}).values() if isinstance(f.get("payload"), dict) else []:
+            if isinstance(b, dict) and str(b.get("factId") or "") in ursachen:
+                out.append(b)
+    return out
+
+
 def _angesprochen(session: dict, speaker_id: Any) -> list[str]:
-    """Stand 11E: die woertlichen Stammstellen (dispositionsBeleg), die die gepruefte Bewertung der zwei juengsten Erlebnisse dieser
-    Figur als ihre Ursache belegt hat - in der Reihenfolge der Belege, ohne Doppel, hoechstens 4. Nur Lesen."""
+    """Stand 11E/11F: die woertlichen Stammstellen (dispositionsBeleg), die die gepruefte Bewertung als Ursache eines NOCH
+    WIRKENDEN Erlebnisses belegt hat (nicht nur die zwei juengsten) - neueste zuerst, ohne Doppel, hoechstens 4."""
     out: list[str] = []
-    rows = [f for f in (session.get("facts") or []) if isinstance(f, dict) and f.get("kind") == "appraisal"
-            and str(f.get("actorId") or "") == str(speaker_id or "")]
-    for f in reversed(rows[-2:]):
-        belege = (f.get("payload") or {}).get("kausalBelege") if isinstance(f.get("payload"), dict) else None
-        for b in (belege or {}).values():
-            q = " ".join(str((b or {}).get("dispositionsBeleg") or "").split()).strip(" .") if isinstance(b, dict) else ""
-            if q and q.casefold() not in {x.casefold() for x in out}:
-                out.append(q)
+    for b in reversed(_belege_fortwirkend(session, speaker_id)):
+        q = " ".join(str(b.get("dispositionsBeleg") or "").split()).strip(" .")
+        if q and q.casefold() not in {x.casefold() for x in out}:
+            out.append(q)
     return out[:4]
+
+
+def _brief_auswahl(session: dict, speaker: dict, speaker_id: Any, natives: list | None, rt: dict, knowledge: list,
+                   jetzt_text: str) -> dict:
+    """Stand 11F (Pruefbericht 11E; AMASTER §41 "Recall nach Relevanz, ohne lifecycle-relevante Evidenz zu verlieren", §49):
+    welche Profilstellen, welches Wissen und welche Bindungen JETZT gelten - je Stelle, je Person (Identitaet ueber
+    bind_referents, keine Namensteile):
+    (a) eine Stelle, deren Kennung ein geprueftes Bewertungsbeleg eines noch wirkenden Erlebnisses nennt;
+    (b) eine Stelle, die eine anwesende oder jetzt genannte Person nennt;
+    (c) im offenen Moment (kein wirkendes Erleben): Lebenslauf (kurz) und Werte.
+    Wissen faellt nur weg, wenn es ausschliesslich Personen nennt, die weder anwesend noch jetzt genannt sind."""
+    figs = [f for f in (natives or []) if isinstance(f, dict)]
+    present = {str(x) for x in ((session.get("scene") or {}).get("presentIds") or [])}
+    genannt = set(bind_referents(jetzt_text, figs)) if str(jetzt_text or "").strip() else set()
+    bezug = present | genannt
+    zitiert = {str(b.get("dispositionsQuelle") or "") for b in _belege_fortwirkend(session, speaker_id) if b.get("dispositionsQuelle")}
+    zitiert |= {appraisal_source_id(str(b.get("dispositionsBeleg") or "")) for b in _belege_fortwirkend(session, speaker_id)
+                if b.get("dispositionsBeleg")}
+    offen = not _fortwirkende_ursachen(session, speaker_id)
+
+    def gilt(item: Any) -> bool:
+        t = " ".join(str(item or "").split())
+        if not t:
+            return False
+        if appraisal_source_id(t) in zitiert:
+            return True
+        refs = set(bind_referents(t, figs))
+        return bool(refs & bezug - {str(speaker_id or "")})
+
+    profil: dict = {"offenerMoment": offen}
+    for feld in ("fears", "likes", "dislikes", "values", "reactionRules", "coreFacts", "bindingPatterns"):
+        werte = [x for x in (speaker.get(feld) or []) if str(x or "").strip()]
+        profil[feld] = [x for x in werte if gilt(x) or (offen and feld == "values")]
+    geheim = [x for x in (speaker.get("secrets") or speaker.get("ownSecrets") or []) if str(x or "").strip()]
+    profil["ownSecrets"] = [x for x in geheim if gilt(x)]
+    bio = str(speaker.get("biography") or "").strip()
+    profil["biography"] = (bio[:800] if gilt(bio) else bio[:300] if offen else "") if bio else ""
+    wissen = []
+    for k in knowledge:
+        refs = set(bind_referents(str(k), figs)) - {str(speaker_id or "")}
+        if not refs or refs & bezug:
+            wissen.append(k)
+    return {"profil": profil, "wissen": wissen, "genannt": sorted(genannt), "bezugIds": bezug}

@@ -1,7 +1,14 @@
-MATRIX10 - Arbeitsstand 11E - Android (aarch64) - Pydroid 3 oder Termux
+MATRIX10 - Arbeitsstand 11F - Android (aarch64) - Pydroid 3 oder Termux
 =======================================================================
 
 STATUS: ROT - KEINE Produktfreigabe. Auf einem echten Android-Geraet NICHT getestet (kein Geraet verfuegbar).
+
+Was 11F korrigiert (unabhaengige Pruefung von 11E):
+- Die Figur bekommt nicht pauschal weniger, sondern das RICHTIGE: Profilstellen, die ein noch wirkendes Erlebnis
+  beruehrt hat oder die eine anwesende bzw. gerade genannte Person betreffen; im ruhigen Moment Werte und Lebenslauf.
+- Fragst du nach einer abwesenden Person, kennt die Figur weiter, was sie ueber sie weiss.
+- "Hat nicht gereicht" steht nur, wenn ihr Verhalten wirklich ueberwunden oder blockiert wurde.
+- Dein Paket enthaelt deinen Schluessel: siehe ENTHAELT_DEINEN_SCHLUESSEL_NICHT_WEITERGEBEN.txt.
 
 Was 11E aendert ("ein Mensch ruft nicht sein ganzes Leben ins Gedaechtnis"):
 - Die Figur bekommt nicht mehr ihr ganzes Profil, alle Beziehungen und die ganze Welt bei jedem Satz, sondern das, was der
@@ -63,8 +70,10 @@ Termux (Alternative)
 --------------------
    pkg install python unzip && pip install flask
    termux-setup-storage
-   mkdir -p ~/m10 && cd ~/m10 && unzip ~/storage/downloads/MATRIX10_STAND11E_PRODUKT_android-aarch64_<commit>.zip
-   cd MATRIX10_STAND11E_PRODUKT_android-aarch64_<commit> && python START.py
+   Paket MIT DEINEN DATEN (so wird es dir geliefert):
+   mkdir -p ~/m10 && cd ~/m10 && unzip ~/storage/downloads/MATRIX10_STAND11F_ANDROID_MIT_DEINEN_DATEN.zip
+   cd MATRIX10_STAND11F_ANDROID_MIT_DEINEN_DATEN && python START.py
+   (Leeres Paket ohne deine Daten: MATRIX10_STAND11F_PRODUKT_android-aarch64_<commit>.zip, Ordner gleichen Namens.)
    Falls "[RUST-FEHLER] ... cannot locate symbol ...": bash RUST_AUF_DEM_HANDY_BAUEN.sh (baut den Kern auf dem Handy).
 
 Bitte zurueckmelden: die [RUST]- bzw. [RUST-FEHLER]-Zeile aus der Pydroid-Ausgabe.
