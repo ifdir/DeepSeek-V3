@@ -107,6 +107,10 @@ class ErlebenKurz12(unittest.TestCase):
         res = L._nachweise_auffalten({"gefuehl": "Wut", "gefuehl_nachweis": nachweis}, fig, kurz)
         return res["gefuehl_nachweis"]
 
+    def test_andere_verweise_auf_das_ereignis_folgen_der_kennung(self):
+        fig, _ = L._erleben_kennungen({**self.FIG, "beziehung_zum_handelnden": {"person": "Johann", "ereignis": "fact_tat"}})
+        self.assertEqual(fig["beziehung_zum_handelnden"]["ereignis"], "G2")
+
     def test_kurzform_wird_aufgefaltet(self):
         n = self._auf({"urteil": "gestuetzt", "ereignis": "G1", "beleg": "ein Recht auf dich", "quelle": "Q1", "richtung": None,
                        "warum": "Besitzanspruch"})

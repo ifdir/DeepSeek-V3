@@ -1539,6 +1539,17 @@ def _erleben_kennungen(fig: dict) -> tuple[dict, dict[str, str]]:
         else:
             ev.append(e)
     out["gerade_geschehen"] = ev
+    lang = {v: k for k, v in kurz.items()}
+
+    def _ersetze(x: Any) -> Any:   # jeder andere Verweis auf dasselbe Ereignis (z. B. beziehung_zum_handelnden.ereignis)
+        if isinstance(x, str):
+            return lang.get(x, x)
+        if isinstance(x, list):
+            return [_ersetze(y) for y in x]
+        if isinstance(x, dict):
+            return {k: _ersetze(v) for k, v in x.items()}
+        return x
+    out = {k: (v if k == "gerade_geschehen" else _ersetze(v)) for k, v in out.items()}
     return out, kurz
 
 
