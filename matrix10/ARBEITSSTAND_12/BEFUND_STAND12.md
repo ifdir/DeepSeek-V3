@@ -27,7 +27,7 @@ Zwischen V62.7 und P25 kamen die V84–V92-Prüfungen dazu: Kausalnachweis und E
   - `tools/auswertung_12.py` erstellt die Tabelle.
 - **Wichtig:** Die Geschwindigkeit von OpenAI schwankte stark. Derselbe unveränderte Planer brauchte 5–7 s, in einem Lauf 16–27 s. Deshalb liefen die Stände abwechselnd und werden mit Ausgabe-Token verglichen.
 
-## 3. Ergebnis 11F gegen 12 (je 3 Läufe, abwechselnd)
+## 3. Ergebnis 11F gegen 12 (je 3 Läufe abwechselnd, dazu 2 Läufe mit dem endgültigen Code)
 
 | Kennzahl | 11F | 12 |
 |---|---|---|
@@ -38,6 +38,7 @@ Zwischen V62.7 und P25 kamen die V84–V92-Prüfungen dazu: Kausalnachweis und E
 | Zeit Eingabe-Zug (Planer + Erleben + Formulierung) | 22,4–40,0 s | 22,4–25,7 s (ohne den langsamen Lauf 12_1) |
 | Verlorene Züge | 0 | 1 (Lauf 12_3, Ursache und Reparatur siehe 4.4) |
 | Wiederholte 5-Wort-Folgen Mara | 8 / 13 / 2 | 6 / 10 / 9 |
+| **Endgültiger Code, 2 Läufe, OpenAI normal schnell** | | Eingabe-Zug 14,2–20,7 s, AutoChat-Zug 10,3–15,2 s; Planer Ø 5,1–5,5 s, Erleben Ø 5,4–5,6 s, Formulierung Ø 6,1–6,3 s; 19 Erlebensantworten, 11 Felder verworfen; kein Zug verloren; Wiederholung Mara 16 / 10 |
 
 **Nicht verbessert:** Mara wiederholt sich gleich oft. Die Zahlen streuen stark, ein Unterschied ist nicht belegt.
 
@@ -87,6 +88,6 @@ Zwischen V62.7 und P25 kamen die V84–V92-Prüfungen dazu: Kausalnachweis und E
 ## 6. Offen (Status ROT)
 
 - **Wiederholung:** nicht gelöst. Die nächste Stellschraube wäre der Formulierungsauftrag selbst (70 % Pflicht-JSON, Rede bis 6 Sätze). Das ist eine Entscheidung über den Antwortvertrag, kein Prompt-Flick.
-- **Zeit:** Eingabe-Zug 22–26 s bei normaler OpenAI-Geschwindigkeit, AutoChat-Zug 13–19 s. Das Ziel ≤15 s ist für AutoChat erreicht, für Eingabe-Züge nicht. Planer (~6 s) und Formulierung (~8–9 s) sind unverändert.
+- **Zeit:** Mit dem endgültigen Code bei normaler OpenAI-Geschwindigkeit dauert ein Eingabe-Zug 14–21 s, ein AutoChat-Zug 10–15 s. Das liegt im Bereich von V62.7 (7,2–14,8 s am Server) bzw. knapp darüber. Auf dem Handy kommt die Netzstrecke dazu – das zeigt nur dein Gerät.
 - **Unabhängige Kausalprüfung:** seit Stand 11 nicht mehr blind (siehe 4.1).
 - **Weitere offene Punkte:** K-05 (Sprecherwahl mit Wortlisten), 11 P25-Altfehler, Android-Gerät.
