@@ -14753,6 +14753,10 @@ def bind_formulation_spiegel(
         "stimulusSpeech": stimulus_speech if stimulus_split else None,
         "stimulusAction": stimulus_action or None,
         "stimulusWortlaut": stimulus_wortlaut[:600] or None,   # Stand 11C
+        # Stand 11E (AMASTER §41 "Recall wird nach Relevanz begrenzt", §49 "auswaehlen, priorisieren"; Nutzer 09.11.: "ein Mensch
+        # ruft nicht sein ganzes Leben ins Gedaechtnis"): was das juengste Erleben in ihr ANGESPROCHEN hat - die woertlichen Stellen
+        # ihres Stamms, die die gepruefte Bewertung als Ursache belegt hat (Appraisal-Fact, kausalBelege.dispositionsBeleg).
+        "angesprochen": _angesprochen(session, speaker_id),
         "turnMode": ("autochat" if str(truth.get("input_kind") or truth.get("inputKind") or "").lower() == "autochat" else "reply"),
         # V65G (AMASTER §26 / §68 Nr. 6 "Anwesenheit, Hören und Sehen bestimmen
         # Wissen", §44 gerichtet pro Person, §41.2): "present" of a Stamm bond is
@@ -15045,3 +15049,18 @@ def autchat_step(
     out = commit_turn(session, truth=truth, speaker=speaker, present=natives, result=result)
     out["autochatStop"] = None
     return out
+
+
+def _angesprochen(session: dict, speaker_id: Any) -> list[str]:
+    """Stand 11E: die woertlichen Stammstellen (dispositionsBeleg), die die gepruefte Bewertung der zwei juengsten Erlebnisse dieser
+    Figur als ihre Ursache belegt hat - in der Reihenfolge der Belege, ohne Doppel, hoechstens 4. Nur Lesen."""
+    out: list[str] = []
+    rows = [f for f in (session.get("facts") or []) if isinstance(f, dict) and f.get("kind") == "appraisal"
+            and str(f.get("actorId") or "") == str(speaker_id or "")]
+    for f in reversed(rows[-2:]):
+        belege = (f.get("payload") or {}).get("kausalBelege") if isinstance(f.get("payload"), dict) else None
+        for b in (belege or {}).values():
+            q = " ".join(str((b or {}).get("dispositionsBeleg") or "").split()).strip(" .") if isinstance(b, dict) else ""
+            if q and q.casefold() not in {x.casefold() for x in out}:
+                out.append(q)
+    return out[:4]

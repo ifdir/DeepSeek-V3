@@ -76,7 +76,7 @@ def main() -> int:
     finally:
         tm.terminate()
     calls = [json.loads(x) for x in prot.read_text().splitlines()] if prot.exists() else []
-    E["grenze_im_brief"] = [next((x for x in c["user"].splitlines() if x.startswith("GRENZE")), None)
+    E["grenze_im_brief"] = [next((x[x.index("GRENZE"):] for x in c["user"].splitlines() if x.startswith("GRENZE") or "· GRENZE (" in x), None)
                             for c in calls if c["lesung"] == "FORMULIERUNG"]
     E["bewertung_ereignisse_je_aufruf"] = [len((json.loads(c["user"]).get("gerade_geschehen") or []))
                                            for c in calls if c["lesung"] == "APPRAISAL_RULES" and '"figur": "Mara Nowak"' in c["user"]]

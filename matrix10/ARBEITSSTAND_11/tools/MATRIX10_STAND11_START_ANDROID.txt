@@ -1,7 +1,12 @@
-MATRIX10 - Arbeitsstand 11D - Android (aarch64) - Pydroid 3 oder Termux
+MATRIX10 - Arbeitsstand 11E - Android (aarch64) - Pydroid 3 oder Termux
 =======================================================================
 
 STATUS: ROT - KEINE Produktfreigabe. Auf einem echten Android-Geraet NICHT getestet (kein Geraet verfuegbar).
+
+Was 11E aendert ("ein Mensch ruft nicht sein ganzes Leben ins Gedaechtnis"):
+- Die Figur bekommt nicht mehr ihr ganzes Profil, alle Beziehungen und die ganze Welt bei jedem Satz, sondern das, was der
+  Moment in ihr anspricht: ihre Lage, die Stellen ihres Stamms, die das Erlebnis beruehrt hat, die Anwesenden.
+- Lebenslauf, Aengste, Vorlieben usw. erscheinen nur in einem ruhigen Moment ohne Erlebnis.
 
 Was 11D aendert (dein Lauf 09.11., 11:08 - "wirkt mechanisch"):
 - Die Figur darf ausfuehrlicher antworten: Rede bis etwa 6 Saetze, was sie tut in 1-4 Saetzen (Koerper, Blick, Stimme, Zoegern).
@@ -58,8 +63,8 @@ Termux (Alternative)
 --------------------
    pkg install python unzip && pip install flask
    termux-setup-storage
-   mkdir -p ~/m10 && cd ~/m10 && unzip ~/storage/downloads/MATRIX10_STAND11D_PRODUKT_android-aarch64_<commit>.zip
-   cd MATRIX10_STAND11D_PRODUKT_android-aarch64_<commit> && python START.py
+   mkdir -p ~/m10 && cd ~/m10 && unzip ~/storage/downloads/MATRIX10_STAND11E_PRODUKT_android-aarch64_<commit>.zip
+   cd MATRIX10_STAND11E_PRODUKT_android-aarch64_<commit> && python START.py
    Falls "[RUST-FEHLER] ... cannot locate symbol ...": bash RUST_AUF_DEM_HANDY_BAUEN.sh (baut den Kern auf dem Handy).
 
 Bitte zurueckmelden: die [RUST]- bzw. [RUST-FEHLER]-Zeile aus der Pydroid-Ausgabe.

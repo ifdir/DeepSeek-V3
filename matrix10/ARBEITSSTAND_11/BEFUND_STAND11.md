@@ -197,3 +197,35 @@ Im Protokoll gibt es keine ungeskriptete Lesung. `llm_contract.vorab_abrufe()` w
 **Offen:**
 - Ob Mara jetzt menschlicher antwortet, zeigt nur das Gerät mit echtem Modell.
 - gpt-4o-mini begrenzt freie Figurenrede; ein stärkeres Modell ist eine Einstellung unter „Konfiguration“.
+
+## 10. Stand 11E – Recall nach Relevanz („ein Mensch ruft nicht sein ganzes Leben ins Gedächtnis“)
+
+**Befund (Brief 11:08):** In jedem Zug stand der ganze Stamm im Brief:
+- Lebenslauf, Werte, Ängste, Vorlieben, Tabus, Muster;
+- alle Stamm-Bindungen, auch zu Abwesenden;
+- alles Wissen, auch über Abwesende;
+- Weltbeschreibung, Vorgeschichte und doppelte Zeilen.
+
+AMASTER §41 verlangt dagegen „Recall wird nach Relevanz begrenzt“, §49 „auswählen, priorisieren“.
+
+**Reparatur 11E** (`kernel.py`, `llm_contract.py`; Profil unverändert):
+- **„WAS DAS IN DIR ANSPRICHT“:** die wörtlichen Stammstellen, die die geprüfte Bewertung der jüngsten Erlebnisse als Ursache belegt hat (Appraisal-Fact `kausalBelege.dispositionsBeleg`).
+  - Die Auswahl trifft das Erleben (Modellvorschlag, Kernel-geprüft), nicht eine Wortliste.
+- **Mit angesprochenem Erlebnis bleibt vom Stamm nur:** Persönlichkeit, Sprache, Geheimnis und die aktiven Kompassräume. Lebenslauf, Werte, Ängste, Vorlieben, Tabus, Muster und Kernfakten erscheinen nur im offenen Moment ohne Erlebnis (Lebenslauf gekürzt).
+- **Bindungen und Wissen:** Stamm-Bindungen nur zu Anwesenden oder jetzt Genannten. Wissen, das nur Abwesende nennt, fällt weg.
+- **Welt:** keine Weltbeschreibung und Vorgeschichte in jedem Zug; Genre, Ton, Ort und Szene bleiben.
+- **Keine Doppelzeilen:** Grenze und letzte Tat stehen nur in „DEINE LAGE JETZT“.
+- **Werkzeug:** f1_rest_10 findet die Grenze auch in der Lagezeile.
+
+**Geprüft (Testmodell):**
+- Gerätefälle 11:08:
+  - Formulierungs-Prompt 5 340 / 5 416 / 6 579 Zeichen (11D: 6 700–8 000; 11C: 11 450–16 860);
+  - Brief zeigt „WAS DAS IN DIR ANSPRICHT: „Johanns Druck““, keine Abwesenden.
+- F1: 12/12. Gegenprobe: 8/12, also wie erwartet rot.
+- F2: 7/7.
+- F1-Rest: Grenze in 6/6 Briefen.
+- 5 Gerätefälle: 4–5 Aufrufe.
+- K-Tests: 50/50.
+- P25-Suite: keine neue Abweichung. Ausnahme ist der Build-Vertrag im ungebauten Arbeitsordner; er wird im Paket neu gebaut.
+
+**Offen:** Wie natürlich Mara damit antwortet, zeigt nur das Gerät mit echtem Modell.

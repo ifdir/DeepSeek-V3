@@ -63,7 +63,7 @@ nm -D --undefined-only "$SO" | grep -q "__errno_location" && { echo "ABBRUCH: mu
 readelf -lW "$SO" | grep -q " TLS " && { echo "ABBRUCH: TLS-Segment"; exit 3; }
 UNDEF=$(nm -D --undefined-only "$SO" | awk '{print $2}' | tr '\n' ' ')
 
-NAME="MATRIX10_STAND11D_PRODUKT_android-aarch64_$KURZ"
+NAME="MATRIX10_STAND11E_PRODUKT_android-aarch64_$KURZ"
 mv "$ROOT" "$W/pkg/$NAME"; ROOT="$W/pkg/$NAME"
 cp "$SO" "$ROOT/matrix_api/native/libmatrix_boundary_core.so"
 python3 -I - "$ROOT" "$LZIP" "$UNDEF" <<'PY'
