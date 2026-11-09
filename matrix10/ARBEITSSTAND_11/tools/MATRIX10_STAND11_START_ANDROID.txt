@@ -1,7 +1,14 @@
-MATRIX10 - Arbeitsstand 12 - Android (aarch64) - Pydroid 3 oder Termux
+MATRIX10 - Arbeitsstand 12A - Android (aarch64) - Pydroid 3 oder Termux
 ======================================================================
 
 STATUS: ROT - KEINE Produktfreigabe. Auf einem echten Android-Geraet NICHT getestet (kein Geraet verfuegbar).
+
+Was 12A aendert (Kettenkarte, live gemessen):
+- Was eine Figur tut, kommt in der Szene an: zieht sich Mara zurueck, ist danach Abstand; haelt Johann sie fest, kann sie
+  nicht einfach weggehen (blockiert); zwei Taten in einem Satz sind zwei Taten mit eigener Wirkung.
+- Die Szene eskaliert, wenn wirklich Bedrohliches geschieht (Schlag, Festhalten, Beruehrung gegen ihr Nein, Rueckzug
+  ueberwunden), und beruhigt sich in ruhigen Zuegen.
+- "Laufzeit zuruecksetzen" setzt auch Raum und Eskalation zurueck.
 
 Was 12 aendert (gemessen mit echtem Modell gpt-4o-mini auf deiner Sitzung vom 09.11.):
 - Das Erleben antwortet etwa halb so lang (kurzer Nachweis) - die langsamste Stufe wird schneller.
@@ -79,9 +86,9 @@ Termux (Alternative)
    pkg install python unzip && pip install flask
    termux-setup-storage
    Paket MIT DEINEN DATEN (so wird es dir geliefert):
-   mkdir -p ~/m10 && cd ~/m10 && unzip ~/storage/downloads/MATRIX10_STAND12_ANDROID_MIT_DEINEN_DATEN.zip
-   cd MATRIX10_STAND12_ANDROID_MIT_DEINEN_DATEN && python START.py
-   (Leeres Paket ohne deine Daten: MATRIX10_STAND12_PRODUKT_android-aarch64_<commit>.zip, Ordner gleichen Namens.)
+   mkdir -p ~/m10 && cd ~/m10 && unzip ~/storage/downloads/MATRIX10_STAND12A_ANDROID_MIT_DEINEN_DATEN.zip
+   cd MATRIX10_STAND12A_ANDROID_MIT_DEINEN_DATEN && python START.py
+   (Leeres Paket ohne deine Daten: MATRIX10_STAND12A_PRODUKT_android-aarch64_<commit>.zip, Ordner gleichen Namens.)
    Falls "[RUST-FEHLER] ... cannot locate symbol ...": bash RUST_AUF_DEM_HANDY_BAUEN.sh (baut den Kern auf dem Handy).
 
 Bitte zurueckmelden: die [RUST]- bzw. [RUST-FEHLER]-Zeile aus der Pydroid-Ausgabe.

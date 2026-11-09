@@ -68,7 +68,7 @@ def main() -> int:
     sh(["npm", "run", "build:dist"], cwd=root)
     if not (root / "frontend_dist/index.html").is_file():
         raise SystemExit("ABBRUCH: frontend_dist/index.html fehlt nach dem Build")
-    name = f"MATRIX10_STAND12_PRODUKT_{PLATTFORM}_{kurz}"
+    name = f"MATRIX10_STAND12A_PRODUKT_{PLATTFORM}_{kurz}"
     pkg = tmp / name
     shutil.copytree(root, pkg, ignore=lambda d, n: [x for x in n if x in WEG])
     for sub, files in PRUEF.items():
@@ -84,7 +84,7 @@ def main() -> int:
     shutil.copy2(HIER / "tools/README_STAND11.md", pkg / "README.md")
     res = json.loads((M10 / "ARBEITSSTAND_08/evidence/chain_08/result_08.json").read_text())
     status = {
-        "stand": "12", "plattform": PLATTFORM, "nur_getestet_auf": "Linux x86_64 (diese Umgebung); keine Aussage zu Windows/Android",
+        "stand": "12a", "plattform": PLATTFORM, "nur_getestet_auf": "Linux x86_64 (diese Umgebung); keine Aussage zu Windows/Android",
         "commit": commit, "branch": "claude/matrix10-rust-repair-xq9k34", "repository": "https://github.com/ifdir/DeepSeek-V3",
         "p25_zip_sha256": man["basis_sha256"], "ebene_06": man["overlay_sha256"], "ebene_07": man["stand_07"]["overlay_07"],
         "ebene_08": man["stand_08"]["overlay_08"],
@@ -103,6 +103,7 @@ def main() -> int:
         "aenderung_11e": "Nutzer 09.11.: 'ein Mensch ruft nicht sein ganzes Leben ins Gedaechtnis' (AMASTER §41 Recall nach Relevanz, §49): der Brief enthaelt statt des ganzen Stamms, was das Erlebnis anspricht (die von der geprueften Bewertung belegten Stammstellen), Lebenslauf/Werte/Aengste/Vorlieben/Tabus/Muster nur im offenen Moment, Bindungen und Wissen nur zu Anwesenden bzw. jetzt Genannten, keine Weltbeschreibung/Vorgeschichte je Zug, keine Doppelzeilen; Prompt 5,3-6,6k Zeichen",
         "aenderung_11f": "Pruefbericht 11E: Auswahl je Profilstelle statt pauschaler Abschaltung (belegt durch noch wirkendes Erleben, Bezug zu anwesender/genannter Person per Identitaet, offener Moment), Wissen ueber jetzt genannte Abwesende bleibt, Ergebnis und Einwilligung getrennt (actionOutcomeState), Geheimnis nur bei Bezug, Android-Anleitung mit echten Namen; intent_kind belegt ohne Netzaufruf",
         "aenderung_12": "Live-Messung 09.11. mit gpt-4o-mini auf deiner Geraetesitzung (ARBEITSSTAND_12/BEFUND_STAND12.md): Erleben mit KURZEM Nachweis (Kennung, Zitat, Quellen-ID, Richtung, kurzer Grund; der Server faltet ihn fuer die unveraenderte Kernelpruefung auf) - Antwort etwa halb so lang; ein woertliches Zitat aus der Rede an der Kennung der Handlung desselben Zuges zaehlt fuer die Rede (vorher verwarf der Kernel deshalb Gefuehl/Absicht/Beziehung); AutoChat-Zug ohne neuen Reiz = aus eigenem Antrieb mit der eigenen Absicht statt nochmaliger Antwort auf die schon beantwortete Zeile; fruehere eigene Zeilen im Verlauf als schon gesagt markiert",
+        "aenderung_12a": "Kettenkarte 12A (live, P25 gegen 12): eine Tat = ein Eintrag mit eigener Wirkung und Pflicht-Beleg (Planer-Komponente und handlungen[] der Figurenantwort), die Figurenantwort wird je Tat geprueft und als eigene Komponente gespeichert; Eskalation aus geschehenen bedrohlichen Ausgaengen (Beruehrung gegen Ablehnung, ueberwundener Rueckzug); Runtime-Reset leert den Szenenzustand; wiederholte Absicht ohne Nachweis = unveraendert; keine doppelte Erlebenswirkung je Ereignis",
         "offen_11": "11 P25-Tests sind schon im unveraenderten P25 rot (siehe ARBEITSSTAND_11/BEFUND_STAND11.md); echtes Modell und Android-Geraet UNGEPRUEFT",
         "anlass_10a": "Android 08.11.: 503 'Rust-Schreibgrenze konnte nicht geladen werden' ohne Grund bei der ersten Beruehrungs-Eingabe",
         "aenderung_09": "F1-B2: Beziehungsrahmen der Bewertung nennt Person und Ereignis (kernel.appraisal_payload)",

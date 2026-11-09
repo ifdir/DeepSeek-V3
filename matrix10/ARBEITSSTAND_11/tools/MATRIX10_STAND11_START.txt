@@ -21,7 +21,7 @@ Voraussetzungen
 Starten
 -------
 1. ZIP in einen NEUEN, leeren Ordner entpacken.
-2. cd MATRIX10_STAND12_PRODUKT_linux-x86_64_<commit>
+2. cd MATRIX10_STAND12A_PRODUKT_linux-x86_64_<commit>
 3. python3 START.py   (die Zeile "[RUST] Einwilligungskern geladen" muss erscheinen; sonst steht dort der Grund)
 4. Browser selbst oeffnen: http://127.0.0.1:8080   (API: http://127.0.0.1:5050)
    (Unter Linux oeffnet START.py den Browser nicht automatisch.)
