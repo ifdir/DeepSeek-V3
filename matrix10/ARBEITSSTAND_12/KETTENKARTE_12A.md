@@ -115,3 +115,23 @@ Legende: Messung „P25 / 12“ = Ergebnis in den 2 + 2 Läufen. „Erste Abweic
 - **Fremde Figuren:** unverändert.
 - **Tests:** Prüftests, P25-Suite (die 12 bekannten roten bleiben gelistet, nicht verschwiegen), F1 und F2.
 - **Gerät:** Android/Termux ist **nicht** durch Linux ersetzt; das gilt erst mit deinem Gerätelauf.
+
+## 7. Nachher – Stand 12A live gemessen (Paket `327c8a8`, gleiche DB-Kopie `069b7f19…`, gpt-4o-mini, 3 Läufe)
+
+| Glied | P25 (2 Läufe) | Stand 12 (2 Läufe) | **Stand 12A (3 Läufe)** |
+|---|---|---|---|
+| 5a Wirkung eigener Bewegungen (Vorschlag → wirksam) | 3/8, 4/8 | 0/9, 3/8 | **7/7, 3/3, 9/9** – kein `keine_pruefung` mehr |
+| 5b Festhalten | 0/2 | 0/2 | **Lauf 1: festgehalten (Beweglichkeit 0,2), Weggehen blockiert, Losreißen `blocked`**; Lauf 2/3: Modell liest „packe am Handgelenk“ als Berührung bzw. Gewalt (Modellentscheid, sichtbar) |
+| 5c/5d Taten je Abschnitt | eine Wirkung je Antwort | eine Wirkung je Antwort | Figurenantwort in Taten zerlegt, je Tat eigener Fakt und eigene Wirkung (Live-Log `TATEN`) |
+| 7 Raum im Verlauf | folgt nur bei Erfolg | „Berührung seit Zug 1“ bis zum Ende | wechselt mit jeder Tat: Abstand ↔ nah ↔ Berührung |
+| 8 Eskalation | 0,0 | 0,0 | steigt mit dem Geschehen: Lauf 1 bis 0,25, Lauf 2 bis 0,20, Lauf 3 bis 0,65 |
+| 9 Erleben: wiederholte Absicht ohne Nachweis | – | 7× „kausalpruefung_fehlend:absicht“ | 0× (als unverändert gelesen); neue Absicht ohne wörtliches Zitat weiter verworfen |
+| Doppelte Erlebenswirkung je Ereignis | – | 2 Fälle (Johanns Wut zweimal) | Sperre je Ereignis der Bewertung (Code + Test) |
+| 14 Neustart | gleich | gleich | gleich (Lauf 2/3); Lauf 1: Messwerkzeug wählte den Sprecher selbst → 409, im Werkzeug behoben |
+| 16 Fremde Figuren | unverändert | unverändert | unverändert |
+| Zeit 10 Schritte / Aufrufe | 189 s / 67–72 | 122–138 s / 22–24 | 158–181 s / 22–23 (OpenAI-Tempo schwankt; gleiche Aufrufzahl wie 12) |
+
+**Noch offen:**
+- Ein Ortswechsel ohne bekannten Ort („zur Tür“) bleibt mehrdeutig, sichtbar.
+- Ob das Modell eine Tat als `fesseln` liest, ist eine Modellentscheidung.
+- Wiederholung, K-05, die 12 bekannten roten Tests und dein Gerätelauf.
