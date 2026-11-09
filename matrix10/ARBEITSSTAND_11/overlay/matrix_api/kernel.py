@@ -14454,6 +14454,13 @@ def bind_formulation_spiegel(
         _utterance = stimulus_speech
     elif directive_raw and not str(stimulus).strip():
         _utterance = ""
+    elif (str(truth.get("input_kind") or truth.get("inputKind") or "").lower() == "autochat"
+          and not str(truth.get("directive") or "").strip() and not str(stimulus).strip()):
+        # Stand 12 (AMASTER §41.1/§48, V65E "aus eigenem Antrieb nur ohne Reiz"): AutoChat-Zug ohne Regieauftrag, und seit ihrer
+        # eigenen letzten Zeile hat sie nichts Neues wahrgenommen (latest_foreign_line = None). Der Leser darunter nahm dann die
+        # letzte fremde Dialogzeile, auf die sie schon geantwortet hat - sie antwortete ein zweites Mal darauf, statt aus eigener
+        # Absicht zu handeln. Jetzt: kein Reiz.
+        _utterance = ""
     else:
         _utterance = None  # legacy reader below
     # V65E: who said/did the stimulus and where it comes from — one origin for

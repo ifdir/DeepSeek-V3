@@ -1,5 +1,5 @@
 #!/bin/bash
-# Stand 11F: Android-Paket MIT DEINEN DATEN zusammenstellen (nur fuer die Uebergabe an dich, NIE ins Repository).
+# Stand 12: Android-Paket MIT DEINEN DATEN zusammenstellen (nur fuer die Uebergabe an dich, NIE ins Repository).
 # Nimmt das gepruefte Android-Paket und data/matrix10.sqlite + .matrix10_db_initialized aus deinem letzten Upload
 # (ohne Lock-Dateien) und legt einen deutlichen Hinweis bei: die Datenbank enthaelt deinen API-Schluessel unverschluesselt.
 # Aufruf: mit_deinen_daten_11.sh <android-paket.zip> <ordner-mit-deinen-daten> <ausgabe.zip>

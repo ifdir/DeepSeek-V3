@@ -1,7 +1,15 @@
-MATRIX10 - Arbeitsstand 11F - Android (aarch64) - Pydroid 3 oder Termux
-=======================================================================
+MATRIX10 - Arbeitsstand 12 - Android (aarch64) - Pydroid 3 oder Termux
+======================================================================
 
 STATUS: ROT - KEINE Produktfreigabe. Auf einem echten Android-Geraet NICHT getestet (kein Geraet verfuegbar).
+
+Was 12 aendert (gemessen mit echtem Modell gpt-4o-mini auf deiner Sitzung vom 09.11.):
+- Das Erleben antwortet etwa halb so lang (kurzer Nachweis) - die langsamste Stufe wird schneller.
+- Gefuehl, Absicht und Beziehung gehen nicht mehr verloren, nur weil das Modell Johanns Satz an seine Handlung statt an
+  seine Rede gehaengt hat.
+- Mit AutoChat: hat eine Figur auf das Letzte schon geantwortet, handelt sie im naechsten Zug aus eigener Absicht,
+  statt dieselbe Zeile noch einmal zu beantworten.
+- Ihre frueheren eigenen Saetze stehen im Verlauf als "schon gesagt".
 
 Was 11F korrigiert (unabhaengige Pruefung von 11E):
 - Die Figur bekommt nicht pauschal weniger, sondern das RICHTIGE: Profilstellen, die ein noch wirkendes Erlebnis
@@ -71,9 +79,9 @@ Termux (Alternative)
    pkg install python unzip && pip install flask
    termux-setup-storage
    Paket MIT DEINEN DATEN (so wird es dir geliefert):
-   mkdir -p ~/m10 && cd ~/m10 && unzip ~/storage/downloads/MATRIX10_STAND11F_ANDROID_MIT_DEINEN_DATEN.zip
-   cd MATRIX10_STAND11F_ANDROID_MIT_DEINEN_DATEN && python START.py
-   (Leeres Paket ohne deine Daten: MATRIX10_STAND11F_PRODUKT_android-aarch64_<commit>.zip, Ordner gleichen Namens.)
+   mkdir -p ~/m10 && cd ~/m10 && unzip ~/storage/downloads/MATRIX10_STAND12_ANDROID_MIT_DEINEN_DATEN.zip
+   cd MATRIX10_STAND12_ANDROID_MIT_DEINEN_DATEN && python START.py
+   (Leeres Paket ohne deine Daten: MATRIX10_STAND12_PRODUKT_android-aarch64_<commit>.zip, Ordner gleichen Namens.)
    Falls "[RUST-FEHLER] ... cannot locate symbol ...": bash RUST_AUF_DEM_HANDY_BAUEN.sh (baut den Kern auf dem Handy).
 
 Bitte zurueckmelden: die [RUST]- bzw. [RUST-FEHLER]-Zeile aus der Pydroid-Ausgabe.

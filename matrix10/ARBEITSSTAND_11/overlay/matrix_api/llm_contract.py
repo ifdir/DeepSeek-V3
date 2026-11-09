@@ -1505,20 +1505,85 @@ APPRAISAL_CAUSAL_CHECK_RULES = (
     "\"begruendung\": \"\\\"<derselbe Ausschnitt>\\\" - <warum diese Quelle die Änderung bei dieser Figur trägt>\"}]}"
 )
 # Stand 11: derselbe Kausalnachweis als Teil der EINEN Erlebensantwort (SPS V62.7 + V84-Belege, ohne zweiten Aufruf).
+# Stand 12 (Live-Messung 09.11., gpt-4o-mini, deine Geraetesitzung: Erleben 600-990 Antwort-Token = 7-14 s, die langsamste Stufe;
+# 9 von 13 Erlebensantworten mit verworfenen Werten "ursache_nicht_woertlich", weil das Zitat aus Johanns REDE an der Kennung seiner
+# HANDLUNG desselben Zuges hing): der Nachweis ist KURZ - Ereignis-Kennung, kurzes woertliches Zitat, Quellen-ID, Richtung, kurzer
+# Grund. Den Quelltext und die Begruendungsform baut der Server aus der genannten Quellen-ID (_nachweise_auffalten); der Kernel
+# (_appraisal_cause_proofs) prueft unveraendert Kennung, woertliches Zitat, Quelle des Feldes und Richtung.
 APPRAISAL_KAUSAL_IN_ERSTER_ANTWORT = (
     " FORMAT (ersetzt die Objektform von zustand_aenderung oben): zustand_aenderung ist eine Liste [{\"name\": angst|wut|scham|stress|lust, "
     "\"wert\": -0.3..0.3, \"nachweis\"}] nur mit den Werten ungleich 0. PFLICHT: JEDE vorgeschlagene Änderung trägt DIREKT daneben "
-    "ihren Kausalnachweis - gefuehl_nachweis (wenn gefuehl nicht leer, sonst null), absicht_nachweis (wenn absicht nicht leer, sonst "
+    "ihren Nachweis - gefuehl_nachweis (wenn gefuehl nicht leer, sonst null), absicht_nachweis (wenn absicht nicht leer, sonst "
     "null), nachweis je zustand_aenderung-Eintrag, trust_nachweis / closeness_nachweis / fear_nachweis je beziehung_aenderung-Eintrag "
-    "(wenn der Wert ungleich 0, sonst null). Ein nachweis: {\"urteil\": \"gestuetzt|nicht_gestuetzt\", \"factId\": \"<ID aus "
-    "gerade_geschehen>\", \"beleg\": \"<wörtlicher Ausschnitt aus gerade_geschehen.text>\", \"dispositionsQuelle\": \"<ID aus "
-    "dispositionsquellen>\", \"dispositionsBeleg\": \"<wörtlicher Ausschnitt (mindestens zwei Wörter oder die ganze Quelle) aus genau "
-    "dem Text dieser Quelle>\", \"richtung\": \"steigt|sinkt\" (nur bei Zahlen, sonst null), \"begruendung\": \"\\\"<derselbe "
-    "dispositionsBeleg>\\\" - <warum diese Quelle die Änderung bei dieser Figur trägt>\"}. Ohne konkreten Beleg im Geschehen und in einer "
-    "ihrer Dispositionsquellen ist das urteil nicht_gestuetzt; nichts erfinden. Das System prüft jede ID und jedes Zitat wörtlich. "
+    "(wenn der Wert ungleich 0, sonst null). Ein nachweis ist KURZ: {\"urteil\": \"gestuetzt|nicht_gestuetzt\", \"ereignis\": \"<Kennung "
+    "G… aus gerade_geschehen>\", \"beleg\": \"<2 bis 8 Wörter WÖRTLICH aus dem text GENAU dieses Ereignisses>\", \"quelle\": \"<ID aus "
+    "dispositionsquellen, deren Text diese Änderung bei IHR trägt>\", \"richtung\": \"steigt|sinkt\" (nur bei Zahlen, sonst null), "
+    "\"warum\": \"<höchstens 8 Wörter>\"}. Eine Quelle, die nur zum Thema passt oder die Gegenrichtung trägt, trägt die Änderung "
+    "NICHT: nicht_gestuetzt. Ohne konkreten Beleg im Geschehen und in einer ihrer Dispositionsquellen ist das urteil nicht_gestuetzt; "
+    "nichts erfinden. Das System prüft jede Kennung, jedes Zitat wörtlich und jede Quelle. "
     "PFLICHT auch \"vorher_absicht_art\": ist vorher_absicht_erledigt true, \"rede\" oder \"handlung\" - wie vorher.absicht ausgeführt "
     "wird: rede = indem sie etwas sagt, fragt, bittet oder mitteilt; handlung = durch ein körperliches oder räumliches Tun; sonst null."
 )
+
+
+def _erleben_kennungen(fig: dict) -> tuple[dict, dict[str, str]]:
+    """Stand 12: kurze Kennungen G1, G2 ... statt der langen Fakt-IDs in gerade_geschehen (das Modell schreibt sie je Nachweis).
+    Rueckgabe: Payload-Kopie und Kennung -> echte Fakt-ID. Nur die Kennung aendert sich, nicht das Geschehen."""
+    out = dict(fig)
+    kurz: dict[str, str] = {}
+    ev = []
+    for i, e in enumerate(fig.get("gerade_geschehen") or [], 1):
+        if isinstance(e, dict) and e.get("id"):
+            kurz[f"G{i}"] = str(e["id"])
+            ev.append({**e, "id": f"G{i}"})
+        else:
+            ev.append(e)
+    out["gerade_geschehen"] = ev
+    return out, kurz
+
+
+def _nachweise_auffalten(res: dict, fig: dict, kurz: dict[str, str]) -> dict:
+    """Stand 12: kurzer Nachweis -> die bisherige Prueffelder-Form des Kernels (factId, beleg, dispositionsQuelle, dispositionsBeleg,
+    richtung, begruendung). dispositionsBeleg = der Text der genannten Quelle (gibt es die ID nicht, bleibt er leer -> der Kernel
+    verwirft das Feld). Steht das woertliche Zitat nicht im genannten Ereignis, aber in GENAU EINEM anderen Ereignis dieses
+    Erlebens, gilt dieses (Rede und Handlung desselben Zuges sind zwei Ereignisse); sonst bleibt die Kennung - der Kernel verwirft.
+    Ein Nachweis in der bisherigen Form bleibt unveraendert (nur seine Kennung wird auf die Fakt-ID zurueckgefuehrt)."""
+    if not isinstance(res, dict):
+        return res
+    from matrix_api.scene_state import literal_in as _lit
+    texte = {str(e.get("id")): str(e.get("text") or "") for e in fig.get("gerade_geschehen") or [] if isinstance(e, dict)}
+    quellen = {str(q.get("id")): str(q.get("text") or "") for q in fig.get("dispositionsquellen") or [] if isinstance(q, dict)}
+
+    def _auf(n: Any) -> Any:
+        if not isinstance(n, dict):
+            return n
+        if not ({"ereignis", "quelle"} & set(n)):   # bisherige Form: nur die Kennung zurueck auf die Fakt-ID
+            return {**n, "factId": kurz.get(str(n.get("factId") or ""), n.get("factId"))} if "factId" in n else n
+        ev = str(n.get("ereignis") or "").strip()
+        zitat = str(n.get("beleg") or "").strip()
+        if zitat and not _lit(zitat, texte.get(ev, "")):
+            treffer = [k for k, t in texte.items() if _lit(zitat, t)]
+            if len(treffer) == 1:
+                ev = treffer[0]
+        q = str(n.get("quelle") or "").strip()
+        qtext = " ".join(quellen.get(q, "").split())
+        warum = str(n.get("warum") or "").strip()
+        return {"urteil": n.get("urteil"), "factId": kurz.get(ev, ev), "beleg": zitat, "dispositionsQuelle": q,
+                "dispositionsBeleg": qtext, "richtung": n.get("richtung"),
+                "begruendung": (f'"{qtext}" - {warum}' if qtext else warum)}
+
+    out = dict(res)
+    for k in ("gefuehl_nachweis", "absicht_nachweis"):
+        if k in out:
+            out[k] = _auf(out[k])
+    if isinstance(out.get("zustand_aenderung"), list):
+        out["zustand_aenderung"] = [{**e, "nachweis": _auf(e.get("nachweis"))} if isinstance(e, dict) else e
+                                    for e in out["zustand_aenderung"]]
+    if isinstance(out.get("beziehung_aenderung"), list):
+        out["beziehung_aenderung"] = [{**b, **{d + "_nachweis": _auf(b.get(d + "_nachweis")) for d in ("trust", "closeness", "fear")
+                                               if d + "_nachweis" in b}} if isinstance(b, dict) else b
+                                      for b in out["beziehung_aenderung"]]
+    return out
 
 
 # V65P (AMASTER §15, §36.5, §42; Pruefung v2.7): the two 171 evaluator clauses
@@ -1570,7 +1635,8 @@ def appraise_events(conn, actor: str, payload: dict[str, Any], *, data: dict[str
         try:
             # Stand 11 (SPS V62.7): EIN Aufruf je Figur; der Kausalnachweis (frueher zweiter Aufruf V84) kommt in derselben Antwort
             # Antwortraum = bisheriges Erleben (320) + bisheriger Hoechstwert des Kausalnachweises (3200, je Wirkungsfeld ein Eintrag)
-            res = _llm_json(routing, _system + APPRAISAL_KAUSAL_IN_ERSTER_ANTWORT, {"personen": persons, **fig}, temperature=0.0,
+            _fig_k, _kurz = _erleben_kennungen(fig)   # Stand 12: kurze Ereignis-Kennungen
+            res = _llm_json(routing, _system + APPRAISAL_KAUSAL_IN_ERSTER_ANTWORT, {"personen": persons, **_fig_k}, temperature=0.0,
                             max_tokens=APPRAISAL_ANTWORTRAUM, timeout=60,
                             response_format=_strikt(routing, "erleben", APPRAISAL_SCHEMA), max_input_chars=30000, audit=lambda ph, d: rec.append((ph, d)), attempts=1)
             err = _last_llm_error()
@@ -1585,9 +1651,13 @@ def appraise_events(conn, actor: str, payload: dict[str, Any], *, data: dict[str
             # (_appraisal_cause_proofs) prueft jede Fakt-ID, jedes woertliche Zitat und jede Dispositionsquelle selbst.
             from matrix_api.kernel import appraisal_effect_fields
             fields = appraisal_effect_fields(res)
+            res = _nachweise_auffalten(res, _fig_k, _kurz)   # Stand 12: kurzer Nachweis -> Prueffelder des Kernels
             res = erleben_aus_antwort(res)   # Stand 11B: Nachweise neben den Werten -> bisherige Struktur
             _kp = res.pop("kausalpruefung", None)
             res["_kausalpruefung"] = _kp if isinstance(_kp, dict) else {"pruefungen": []}
+            for _p in res["_kausalpruefung"].get("pruefungen") or []:   # Stand 12: Kennung G… -> Fakt-ID (auch bisherige Form)
+                if isinstance(_p, dict) and str(_p.get("factId") or "") in _kurz:
+                    _p["factId"] = _kurz[str(_p["factId"])]
             # Stand 11a: die Absichtsart (frueher INTENT_KIND-Aufruf) aus demselben Pflichtfeld
             _art = res.pop("vorher_absicht_art", None)
             res.pop("lesungen", None)
@@ -2187,7 +2257,9 @@ def render_persona_brief(spiegel: dict[str, Any], utterance: str, uttered_by: st
             lines.append(f"- {d.get('name')}: {str(d.get('speech') or '')[:160]}" + (f" *{str(d.get('action'))[:60]}*" if d.get("action") else "")
                          + (f" ({d.get('actionOutcome')})" if d.get("action") and d.get("actionOutcome") else "")
                          + (f" ({d.get('speechNote')})" if d.get("speechNote") else "")   # V65T: eigene Aussage gegen eigenes Erleben
-                         + ("  ← dein letzter Beitrag: nur Anschluss, nicht wiederholen (weder Worte noch Handlung)" if i == _own_i else ""))
+                         + ("  ← dein letzter Beitrag: nur Anschluss, nicht wiederholen (weder Worte noch Handlung)" if i == _own_i
+                            # Stand 12 (Live 09.11.: Mara wiederholte Saetze aus FRUEHEREN eigenen Zeilen, markiert war nur die letzte)
+                            else "  ← von dir schon gesagt/getan" if str(d.get("name") or "") == name else ""))
         # V65P: the V65G 171-Fix4 line ("WICHTIG zum letzten Beitrag ... gilt die
         # ACTION-PERMISSION oben") is removed with the ACTION-PERMISSION lines; it
         # was a behaviour order keyed to the permission from the relationship type.
@@ -2367,8 +2439,9 @@ P_OFFENBARUNG = _obj({"offenbart": _B, "beleg": _SN})
 # Stand 11B (Geraet 08.11. 21:58: der Nachweis als freie Liste mit Feldnamen fehlte fuer gefuehl/absicht - beides verworfen): der
 # Kausalnachweis steht als Pflichtfeld DIREKT neben jedem vorgeschlagenen Wert. Der Server baut daraus die bisherige Struktur
 # (zustand_aenderung-Dict, _kausalpruefung.pruefungen mit exakten Feldnamen); _appraisal_cause_proofs prueft unveraendert.
-P_NACHWEIS = _obj({"urteil": _E("gestuetzt", "nicht_gestuetzt"), "factId": _S, "beleg": _S, "dispositionsQuelle": _S,
-                   "dispositionsBeleg": _S, "richtung": _E("steigt", "sinkt", null=True), "begruendung": _S})
+# Stand 12: kurzer Nachweis (Kennung, Zitat, Quellen-ID, Richtung, kurzer Grund); der Server faltet ihn auf (_nachweise_auffalten)
+P_NACHWEIS = _obj({"urteil": _E("gestuetzt", "nicht_gestuetzt"), "ereignis": _S, "beleg": _S, "quelle": _S,
+                   "richtung": _E("steigt", "sinkt", null=True), "warum": _S})
 _ZAHL = {"type": "number"}
 APPRAISAL_SCHEMA: dict[str, Any] = _obj({
     "raum": _SN, "aktivierung": _ZAHL, "gefuehl": _S, "gefuehl_nachweis": _nullable(P_NACHWEIS), "gegenueber": _S,
