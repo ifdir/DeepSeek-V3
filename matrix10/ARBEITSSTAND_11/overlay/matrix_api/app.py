@@ -3724,12 +3724,12 @@ def create_app(db_path_arg=None) -> Flask:
             comps.append({"kind": "speech", "event_kind": "speech", "text": str(result.get("speech"))})
         cur = 0
         for a, b, wk in stellen:
-            gap = _norm[cur:a].strip(" ,;:-–—")
+            gap = _norm[cur:a].strip(" ,;:.!?-–—")
             if sum(ch.isalpha() for ch in gap) >= 4:
                 comps.append({"kind": "action", "event_kind": "action", "text": gap, "wirkung": {"art": "ohne_koerperwirkung", "ziel": None}})
             comps.append({"kind": "action", "event_kind": "action", "text": _norm[a:b], "wirkung": wk})
             cur = b
-        rest = _norm[cur:].strip(" ,;:-–—")
+        rest = _norm[cur:].strip(" ,;:.!?-–—")
         if sum(ch.isalpha() for ch in rest) >= 4:
             comps.append({"kind": "action", "event_kind": "action", "text": rest, "wirkung": {"art": "ohne_koerperwirkung", "ziel": None}})
         matrix_live_log.live_log("TATEN", trace_id=trace_id, figure=names.get(sid, sid), taten=len(stellen), verworfen=verworfen,
