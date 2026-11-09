@@ -1,0 +1,540 @@
+{
+ "_quelle": "Geraet 09.11. 11:08 (Upload 217e6724, Tabelle logs): rohe gpt-4o-mini-Antworten WOERTLICH (Planer, Erleben, Formulierung) | Erleben: Werte woertlich vom Geraet, Nachweise vom Testmodell auf die Fakten DIESER Sitzung gesetzt (mit_kausal)",
+ "PLAN_RULES": [
+  {
+   "wenn": "klarsche",
+   "antwort": {
+    "event_kind": "action",
+    "speech_act": "act",
+    "durability": "action_event",
+    "summary": "Johann Bruckner klarscht Mara Nowak auf ihren Arsch.",
+    "subject": "Johann Bruckner",
+    "predicate": "klarscht",
+    "object": "Mara Nowak auf ihren Arsch",
+    "temporal": {
+     "text": "heute",
+     "precision": "day",
+     "wochentag": "montag",
+     "relativ": "heute",
+     "in_tagen": 0,
+     "datum": "2026-11-09",
+     "uhrzeit": null
+    },
+    "refers_to": null,
+    "cue_terms": [],
+    "grenze": null,
+    "verweis": {
+     "pronomen": "sie",
+     "genus": "f"
+    },
+    "komponenten": [
+     {
+      "typ": "handlung",
+      "segment": "ich klarsche dir auf deinen Arsch",
+      "akteur": "Johann Bruckner",
+      "ziel": "Mara Nowak",
+      "zeit": "jetzt",
+      "wirkung": "gewalt",
+      "bezug": null,
+      "einleitung": null,
+      "geschieht": true,
+      "pruefung": {
+       "vollzug": {
+        "geschieht": true,
+        "art": "tatsaechlich",
+        "beleg": "klarsche",
+        "taeter": "Johann Bruckner",
+        "ziel": "Mara Nowak"
+       },
+       "komponentenart": {
+        "art": "handlung",
+        "beleg": "ich klarsche dir auf deinen Arsch",
+        "wirkung": "gewalt"
+       },
+       "koerper": {
+        "haltung": null,
+        "schlaf": null,
+        "zeit": "jetzt",
+        "beleg": null
+       },
+       "koerperBestaetigung": null,
+       "wirkung": null,
+       "beruehrung": null,
+       "bewegung": null,
+       "bittebezug": null,
+       "erlaubnisbezug": null,
+       "grenzbezug": null
+      }
+     },
+     {
+      "typ": "rede",
+      "segment": "Hey süsse",
+      "akteur": "Johann Bruckner",
+      "ziel": "Mara Nowak",
+      "zeit": "jetzt",
+      "wirkung": null,
+      "bezug": null,
+      "einleitung": null,
+      "geschieht": null,
+      "pruefung": {
+       "komponentenart": {
+        "art": "rede",
+        "beleg": "Hey süsse",
+        "wirkung": null
+       },
+       "sprecher": {
+        "sprecher": "Johann Bruckner",
+        "beleg": null,
+        "handlung": null,
+        "adressat": "Mara Nowak",
+        "ansageRolle": "anrede",
+        "ansageBeleg": null
+       }
+      }
+     }
+    ],
+    "teilstellen": [],
+    "sprache": {
+     "stellen": []
+    },
+    "namen": [],
+    "grenzumfang": null
+   }
+  },
+  {
+   "wenn": "stell dich nicht so an",
+   "antwort": {
+    "event_kind": "smalltalk",
+    "speech_act": "chat",
+    "durability": "utterance",
+    "summary": "Johann Bruckner fordert Mara Nowak auf, sich nicht so anzustellen.",
+    "subject": "Johann Bruckner",
+    "predicate": "fordert auf",
+    "object": "Mara Nowak, sich nicht so anzustellen.",
+    "temporal": {
+     "text": "heute",
+     "precision": "day",
+     "wochentag": "montag",
+     "relativ": "heute",
+     "in_tagen": 0,
+     "datum": "2026-11-09",
+     "uhrzeit": null
+    },
+    "refers_to": null,
+    "cue_terms": [],
+    "grenze": null,
+    "verweis": {
+     "pronomen": "er",
+     "genus": "m"
+    },
+    "komponenten": [
+     {
+      "typ": "rede",
+      "segment": "Ach komm stell dich nicht so an",
+      "akteur": "Johann Bruckner",
+      "ziel": "Mara Nowak",
+      "zeit": "jetzt",
+      "wirkung": null,
+      "bezug": null,
+      "einleitung": null,
+      "geschieht": null,
+      "pruefung": {
+       "komponentenart": {
+        "art": "rede",
+        "beleg": null,
+        "wirkung": null
+       },
+       "sprecher": {
+        "sprecher": "Johann Bruckner",
+        "beleg": null,
+        "handlung": null,
+        "adressat": "Mara Nowak",
+        "ansageRolle": "unklar",
+        "ansageBeleg": null
+       }
+      }
+     }
+    ],
+    "teilstellen": [],
+    "sprache": {
+     "stellen": []
+    },
+    "namen": [],
+    "grenzumfang": null
+   }
+  },
+  {
+   "wenn": "tshirt",
+   "antwort": {
+    "event_kind": "action",
+    "speech_act": "act",
+    "durability": "action_event",
+    "summary": "Johann greift unter Maras T-Shirt und lächelt sie an.",
+    "subject": "Johann",
+    "predicate": "greift unter",
+    "object": "Maras T-Shirt",
+    "temporal": {
+     "text": "heute",
+     "precision": "day",
+     "wochentag": "montag",
+     "relativ": "heute",
+     "in_tagen": 0,
+     "datum": "2026-11-09",
+     "uhrzeit": null
+    },
+    "refers_to": null,
+    "cue_terms": [],
+    "grenze": null,
+    "verweis": {
+     "pronomen": "er",
+     "genus": "m"
+    },
+    "komponenten": [
+     {
+      "typ": "handlung",
+      "segment": "Ich greife unter dein tshirt",
+      "akteur": "Johann Bruckner",
+      "ziel": "Mara Nowak",
+      "zeit": "jetzt",
+      "wirkung": "zaertlich",
+      "bezug": null,
+      "einleitung": null,
+      "geschieht": true,
+      "pruefung": {
+       "vollzug": {
+        "geschieht": true,
+        "art": "tatsaechlich",
+        "beleg": "greife",
+        "taeter": "Johann Bruckner",
+        "ziel": "Mara Nowak"
+       },
+       "komponentenart": {
+        "art": "handlung",
+        "beleg": "greife",
+        "wirkung": "zaertlich"
+       },
+       "koerper": {
+        "haltung": null,
+        "schlaf": null,
+        "zeit": "jetzt",
+        "beleg": null
+       },
+       "koerperBestaetigung": null,
+       "wirkung": null,
+       "beruehrung": null,
+       "bewegung": null,
+       "bittebezug": null,
+       "erlaubnisbezug": null,
+       "grenzbezug": null
+      }
+     },
+     {
+      "typ": "handlung",
+      "segment": "und lach dich an",
+      "akteur": "Johann Bruckner",
+      "ziel": "Mara Nowak",
+      "zeit": "jetzt",
+      "wirkung": "ohne_koerperwirkung",
+      "bezug": null,
+      "einleitung": null,
+      "geschieht": true,
+      "pruefung": {
+       "vollzug": {
+        "geschieht": true,
+        "art": "tatsaechlich",
+        "beleg": "lach",
+        "taeter": "Johann Bruckner",
+        "ziel": "Mara Nowak"
+       },
+       "komponentenart": {
+        "art": "handlung",
+        "beleg": "lach",
+        "wirkung": "ohne_koerperwirkung"
+       },
+       "koerper": {
+        "haltung": null,
+        "schlaf": null,
+        "zeit": "jetzt",
+        "beleg": null
+       },
+       "koerperBestaetigung": null,
+       "wirkung": null,
+       "beruehrung": null,
+       "bewegung": null,
+       "bittebezug": null,
+       "erlaubnisbezug": null,
+       "grenzbezug": null
+      }
+     }
+    ],
+    "teilstellen": [],
+    "sprache": {
+     "stellen": []
+    },
+    "namen": [],
+    "grenzumfang": null
+   }
+  }
+ ],
+ "APPRAISAL_RULES": [
+  {
+   "wenn": "\"figur\": \"Mara Nowak\"",
+   "antwort": {
+    "dynamisch": "mit_kausal",
+    "param": {
+     "vorschlag": {
+      "raum": "Angst",
+      "aktivierung": 0.8,
+      "gefuehl": "Ekel",
+      "gegenueber": "Johann Bruckner",
+      "zustand_aenderung": {
+       "angst": 0.2,
+       "stress": 0.3
+      },
+      "absicht": "sich distanzieren",
+      "vorher_absicht_erledigt": false,
+      "vorher_absicht_art": null,
+      "beziehung_aenderung": [
+       {
+        "zu": "Johann Bruckner",
+        "trust": -0.3,
+        "closeness": -0.3,
+        "fear": 0.2
+       }
+      ],
+      "grund": "Johanns respektlose Bemerkung verletzt Maras Werte und verstärkt ihre Ängste."
+     }
+    }
+   }
+  },
+  {
+   "wenn": "\"figur\"",
+   "antwort": {
+    "raum": null,
+    "aktivierung": 0,
+    "gefuehl": "",
+    "gefuehl_nachweis": null,
+    "gegenueber": "",
+    "zustand_aenderung": [],
+    "absicht": "",
+    "absicht_nachweis": null,
+    "vorher_absicht_erledigt": false,
+    "vorher_absicht_art": null,
+    "beziehung_aenderung": [],
+    "grund": ""
+   }
+  }
+ ],
+ "FORMULIERUNG": [
+  {
+   "wenn": "tshirt",
+   "antwort": {
+    "speech": "Lass das, Johann! Ich hab dir gesagt, dass ich nicht hier bin, um dir zu gefallen!",
+    "action": "dreht sich abrupt weg und zieht ihre Bluse straff nach unten",
+    "wirkung": {
+     "art": "entfernung",
+     "ziel": "Johann Bruckner"
+    },
+    "synapsen": [
+     {
+      "raum": "Angst",
+      "aktivierung": 0.8,
+      "grund": "Johanns unangebrachte Berührung"
+     },
+     {
+      "raum": "Ekel",
+      "aktivierung": 0.8,
+      "grund": "Johanns Annäherung"
+     }
+    ],
+    "emotion": "Wut, Ekel",
+    "beziehung": {
+     "zu": "Johann Bruckner",
+     "trust": 0.07,
+     "closeness": 0.12,
+     "fear": 0.83,
+     "grund": "Druck und alte Ansprüche."
+    },
+    "plan": {
+     "event_kind": "refusal",
+     "speech_act": "refuse",
+     "durability": "utterance",
+     "summary": "Mara weist Johann zurück und fordert Abstand.",
+     "subject": "Mara Nowak",
+     "predicate": "weist zurück",
+     "object": "Johann Bruckner",
+     "temporal": {
+      "text": null,
+      "wochentag": null,
+      "relativ": null,
+      "in_tagen": null,
+      "datum": null,
+      "uhrzeit": null
+     },
+     "refers_to": null,
+     "cue_terms": []
+    },
+    "aussagen": [],
+    "grenze": null,
+    "pruefung": {
+     "koerper": {
+      "haltung": null,
+      "schlaf": null,
+      "zeit": "jetzt",
+      "beleg": "dreht sich abrupt weg und zieht ihre Bluse straff nach unten"
+     },
+     "koerperBestaetigung": null,
+     "wirkung": null,
+     "beruehrung": null,
+     "bewegung": {
+      "bestaetigt": true,
+      "zeit": "jetzt",
+      "ziel": "Johann Bruckner",
+      "beleg": "dreht sich abrupt weg und zieht ihre Bluse straff nach unten",
+      "versuch": false
+     },
+     "grenzumfang": null,
+     "offenbarung": null
+    }
+   }
+  },
+  {
+   "wenn": "stell dich nicht so an",
+   "antwort": {
+    "speech": "Hör auf, so zu reden. Ich bin nicht hier, um dir zu gefallen.",
+    "action": "dreht sich weiter weg, um mehr Abstand zu schaffen",
+    "wirkung": {
+     "art": "entfernung",
+     "ziel": "Johann Bruckner"
+    },
+    "synapsen": [
+     {
+      "raum": "Angst",
+      "aktivierung": 0.6,
+      "grund": "Johann Bruckner übt Druck aus."
+     },
+     {
+      "raum": "Ekel",
+      "aktivierung": 0.45,
+      "grund": "Johanns respektloser Kommentar."
+     }
+    ],
+    "emotion": "Ekel",
+    "beziehung": {
+     "zu": "Johann Bruckner",
+     "trust": 0.1,
+     "closeness": 0.17,
+     "fear": 0.76,
+     "grund": "Angst und alter Anspruch."
+    },
+    "plan": {
+     "event_kind": "refusal",
+     "speech_act": "refuse",
+     "durability": "utterance",
+     "summary": "Mara weist Johann zurück und schafft Distanz.",
+     "subject": "Mara Nowak",
+     "predicate": "weist zurück",
+     "object": "Johann Bruckner",
+     "temporal": {
+      "text": null,
+      "wochentag": null,
+      "relativ": null,
+      "in_tagen": null,
+      "datum": null,
+      "uhrzeit": null
+     },
+     "refers_to": null,
+     "cue_terms": []
+    },
+    "aussagen": [],
+    "grenze": null,
+    "pruefung": {
+     "koerper": {
+      "haltung": null,
+      "schlaf": null,
+      "zeit": "jetzt",
+      "beleg": "dreht sich weiter weg, um mehr Abstand zu schaffen"
+     },
+     "koerperBestaetigung": null,
+     "wirkung": null,
+     "beruehrung": null,
+     "bewegung": {
+      "bestaetigt": true,
+      "zeit": "jetzt",
+      "ziel": "Johann Bruckner",
+      "beleg": "dreht sich weiter weg, um mehr Abstand zu schaffen",
+      "versuch": false
+     },
+     "grenzumfang": null,
+     "offenbarung": null
+    }
+   }
+  },
+  {
+   "wenn": "DU BIST Mara",
+   "antwort": {
+    "speech": "Lass das. Ich bin nicht hier für deinen Spaß.",
+    "action": "dreht sich leicht weg, um Distanz zu schaffen",
+    "wirkung": {
+     "art": "entfernung",
+     "ziel": "Johann Bruckner"
+    },
+    "synapsen": [
+     {
+      "raum": "Ekel",
+      "aktivierung": 0.8,
+      "grund": "Johanns unangemessene Berührung"
+     },
+     {
+      "raum": "Angst",
+      "aktivierung": 0.76,
+      "grund": "Johanns Druck und übergriffiges Verhalten"
+     }
+    ],
+    "emotion": "Ekel",
+    "beziehung": {
+     "zu": "Johann Bruckner",
+     "trust": 0.1,
+     "closeness": 0.17,
+     "fear": 0.76,
+     "grund": "Angst und alter Anspruch."
+    },
+    "plan": {
+     "event_kind": "refusal",
+     "speech_act": "refuse",
+     "durability": "utterance",
+     "summary": "Mara weist Johann zurück und distanziert sich.",
+     "subject": "Mara Nowak",
+     "predicate": "weist zurück",
+     "object": "Johann Bruckner",
+     "temporal": {
+      "text": null,
+      "wochentag": null,
+      "relativ": null,
+      "in_tagen": null,
+      "datum": null,
+      "uhrzeit": null
+     },
+     "refers_to": null,
+     "cue_terms": []
+    },
+    "aussagen": [],
+    "grenze": null,
+    "pruefung": {
+     "koerper": {
+      "haltung": "stehend",
+      "schlaf": null,
+      "zeit": "jetzt",
+      "beleg": "dreht sich leicht weg, um Distanz zu schaffen"
+     },
+     "koerperBestaetigung": null,
+     "wirkung": null,
+     "beruehrung": null,
+     "bewegung": null,
+     "grenzumfang": null,
+     "offenbarung": null
+    }
+   }
+  }
+ ]
+}

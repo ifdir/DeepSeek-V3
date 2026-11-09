@@ -1842,8 +1842,17 @@ def render_persona_brief(spiegel: dict[str, Any], utterance: str, uttered_by: st
                      + f", Stärke {float(rt.get('intensity') or 0):.2f}")
     if str(rt.get("activeCauseText") or "").strip():
         _lage.append(f"Ursache: {str(rt.get('activeCauseText'))[:160]}")
+    # Stand 11D: die eigene Absicht als LAGE (was du wolltest und ob es gewirkt hat), nicht als Auftrag - aus dem Verlauf: deine
+    # eigenen Handlungen in dieser Szene und ihr festgestelltes Ergebnis (actionOutcome aus den Facts).
+    _own_dlg = [d for d in (spiegel.get("dialogue") or []) if isinstance(d, dict) and str(d.get("name") or "") == name]
+    _own_acts = [str(d.get("action")).strip() for d in _own_dlg if str(d.get("action") or "").strip()][-3:]
+    _gescheitert = [str(d.get("actionOutcome")) for d in _own_dlg if str(d.get("actionOutcome") or "").strip()][-1:]
     if str(rt.get("intent") or "").strip():
-        _lage.append(f"was du dir vorgenommen hast: {str(rt.get('intent'))[:160]}")
+        if _gescheitert:
+            _lage.append(f"du wolltest: {str(rt.get('intent'))[:160]} – du hast es versucht ({'; '.join(a[:80] for a in _own_acts)}), "
+                         f"aber es hat nicht gereicht: {_gescheitert[0][:160]}")
+        else:
+            _lage.append(f"du willst gerade: {str(rt.get('intent'))[:160]}")
     _bd = spiegel.get("body") if isinstance(spiegel.get("body"), dict) else {}
     if _bd.get("pain") or rt.get("pain"):
         _lage.append(f"Schmerz {(_bd.get('pain') or rt.get('pain'))}")
@@ -1865,11 +1874,16 @@ def render_persona_brief(spiegel: dict[str, Any], utterance: str, uttered_by: st
     style = [x for x in style if x]
     if style:
         lines.append("So sprichst und streitest du — " + " · ".join(style))
-    if p.get("typicalPhrases"):
+    # Stand 11D (Geraet 09.11.: "Ich hab Arbeit"/"Lass das" in 3 von 3 Antworten): authored phrases and words are a style sample -
+    # shown only while the figure has not used one of them in her last three own lines (no copy template every turn).
+    _own_said = " ".join(str(d.get("speech") or "") for d in (spiegel.get("dialogue") or [])[-12:]
+                         if isinstance(d, dict) and str(d.get("name") or "") == name).casefold()
+    _benutzt = lambda xs: any(str(x).strip().casefold() and str(x).strip().casefold() in _own_said for x in (xs or []))  # noqa: E731
+    if p.get("typicalPhrases") and not _benutzt(p.get("typicalPhrases")):
         # V65 (AMASTER §51.3 "geringe Wiederholung"; 171: "Keine Wiederhol-Schleifen"):
         # authored phrases are style samples, not a line to say every turn.
         lines.append(f"Typische Wendungen von dir (Stilbeispiele, nicht in jeder Antwort): {_fmt_list(p.get('typicalPhrases'), len(p.get('typicalPhrases') or []), ' | ')}")
-    if p.get("favoriteWords"):
+    if p.get("favoriteWords") and not _benutzt(p.get("favoriteWords")):
         lines.append(f"Lieblingswörter: {_fmt_list(p.get('favoriteWords'), 6, ', ')}")
     if p.get("values"):
         lines.append(f"Werte: {_fmt_list(p.get('values'))}")
@@ -1892,13 +1906,12 @@ def render_persona_brief(spiegel: dict[str, Any], utterance: str, uttered_by: st
         # V60b (AMASTER §15): the Chathere-Kompass as behaviour lens (profile).
         # Stand 10C (AMASTER §15 "stabile Tendenzen, keine erzwungenen Einzelreaktionen"; Geraet 08.11.: Mara wiederholte in
         # 5 von 5 Antworten die Kompass-Geste "tritt zurück"): the lens is a tendency, its visible cue one possible form.
+        # Stand 11D (Geraet 09.11.: "dreht sich weg" in 3 von 3 Antworten): Haltung und Antrieb, ohne festes Beispielzeichen -
+        # wie es sich zeigt, entscheidet die Figur aus der Lage.
         lines.append("DEIN KOMPASS (stabile Tendenzen, keine festen Reaktionen: wie du eher reagierst und was dich antreibt; "
-                     "die sichtbaren Zeichen sind Beispiele, nicht was du jedes Mal tust; "
                      "Hemmschwelle = ab welcher Stärke es dich erfasst, Haltung + zieht an / − stößt ab):")
         for c in lens:
             extra = []
-            if c.get("bodyCue"):
-                extra.append(f"zeigt sich z. B. so: {c['bodyCue']}")
             if c.get("drive"):
                 extra.append(f"Antrieb: {c['drive']}")
             meta = []
@@ -2225,7 +2238,7 @@ def render_persona_brief(spiegel: dict[str, Any], utterance: str, uttered_by: st
     # the contract below 46 of 46, each committed as a validated action fact.
     # V65: + "reagiere auf den JETZIGEN Moment, gefärbt von dem, was du bist"
     # (171 DEINE AUFGABE; AMASTER §41.1 Immediate Stimulus, §41.2 Foreground).
-    lines.append(f"ANTWORTE ALS {name}: reagiere auf den JETZIGEN Moment, gefärbt von dem, was du bist — was du jetzt sagst und was du dabei sichtbar tust, in deinem Register, {_first}; speech = deine Worte (0–4 Sätze), action = deine eigene Handlung in diesem Moment oder null; dann synapsen/emotion/beziehung als JSON.")
+    lines.append(f"ANTWORTE ALS {name}: reagiere auf den JETZIGEN Moment, gefärbt von dem, was du bist — was du jetzt sagst und was du dabei sichtbar tust, in deinem Register, {_first}; speech = deine Worte (so viel, wie du in diesem Moment sagen würdest, bis etwa 6 Sätze), action = was du dabei sichtbar tust und wie – Körper, Blick, Stimme, Zögern – in 1–4 Sätzen, oder null; dann knapp synapsen/emotion/beziehung als JSON.")
     return "\n".join(lines)
 
 
@@ -2529,7 +2542,7 @@ def _try_llm(
         "refers_to = die ID [prop_…] einer OFFENEN ANGELEGENHEIT aus dem Zustand, wenn deine Rede sie wiederholt, beantwortet, annimmt oder ablehnt; "
         "oder die ID [goal_…] eines deiner aktuell bedeutsamen Ziele, wenn du mit acceptance erklaerst, dass es fuer dich erreicht ist; sonst null. "
         + GRENZE_RULE + AUSSAGEN_RULE +
-        "speech ist die eigene direkte Rede (keine Beschreibung eigener Handlungen); action ist die eigene sichtbare Handlung in diesem Moment, als kurze Beschreibung. "
+        "speech ist die eigene direkte Rede (keine Beschreibung eigener Handlungen); action ist, was du in diesem Moment sichtbar tust und wie (Körper, Blick, Stimme, Zögern), in 1–4 Sätzen. Die übrigen Felder knapp: synapsen höchstens 2, jeder grund wenige Worte. "
         # V59C (AMASTER §28 Schritt 29, §24.6): the semantic class of the
         # action is a proposal; the kernel validates it before any writer.
         "wirkung beschreibt nur die koerperliche Wirkung deiner action (null ohne action): zaertlich = Beruehrung ohne Verletzung (liebevoll, sexuell oder aufdringlich; ob erwuenscht, entscheidet die Einwilligung der beruehrten Person, nicht diese Klasse); "
@@ -2595,12 +2608,24 @@ def _try_llm(
     if isinstance(state.get("hauptsache"), list):
         state["hauptsache"] = [_by_text.get(str(x), x) for x in state["hauptsache"]]
     _TL.last_brief = brief
-    brief += "\n\nKANONISCHER LESEZUSTAND (IDs und Quellen):\n" + json.dumps(state, ensure_ascii=False)
+    # Stand 11D (Geraet 09.11.: 5 000-9 400 Zeichen roher Zustand je Zug, wachsend): alle Werte stehen im Brief; die Antwort braucht
+    # nur die Kennungen, auf die sie sich beziehen darf (offene Angelegenheiten, Ziele; Erinnerungen [E…] stehen im Brief).
+    _ids = {k: state.get(k) for k in ("sessionId", "sourceTurnId", "speakerId") if state.get(k)}
+    _offen = [{"id": p.get("id"), "text": str(p.get("text") or p.get("matter") or "")[:120]}
+              for p in ((cs or {}).get("openPropositions") or []) + (state.get("propositions") or []) if isinstance(p, dict) and p.get("id")]
+    _ziele = [{"id": g.get("id"), "text": str(g.get("text") or "")[:120]}
+              for src in ((spiegel.get("characterForeground") or {}).get("goals") or [], spiegel.get("goalState") or [])
+              for g in (src if isinstance(src, list) else []) if isinstance(g, dict) and g.get("id")]
+    if _offen:
+        _ids["offeneAngelegenheiten"] = _offen[:8]
+    if _ziele:
+        _ids["ziele"] = _ziele[:8]
+    brief += "\n\nKENNUNGEN (nur für refers_to und aussagen):\n" + json.dumps(_ids, ensure_ascii=False)
     _TL.last_prompt_chars = len(brief)
     _TL.last_prompt_full = brief
     use_model, url, _ = _route_provider(api_key, model, endpoint, provider)
     # Stand 11: die Antwort traegt zusaetzlich die Fachlesungen (frueher eigene Aufrufe) - Platz dafuer, sonst waere sie abgeschnitten
-    payload = {"model": use_model, **_model_params(use_model, url, temperature, max(int(max_tokens), 1600)),
+    payload = {"model": use_model, **_model_params(use_model, url, temperature, max(int(max_tokens), 2400)),
                "response_format": _formulation_format(use_model, url),
                "messages": [{"role": "system", "content": system},
                             {"role": "user", "content": brief}]}

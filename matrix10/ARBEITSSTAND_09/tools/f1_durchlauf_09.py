@@ -137,6 +137,12 @@ def kriterien(db, E, calls):
             rt = json.loads(st).get("runtime") or {}
         except Exception:
             rt = {}
+        if not st:
+            # Stand 11D: kein roher Zustand mehr im Prompt - Gefuehl (gegen Johann) und Absicht stehen im Brief ("DEINE LAGE JETZT")
+            b = u.partition("KENNUNGEN (nur für refers_to und aussagen):")[0]
+            lage = next((x for x in b.splitlines() if x.startswith("DEINE LAGE JETZT")), "")
+            rt = {"intent": rm(a1).get("intent") if str(rm(a1).get("intent") or "") and str(rm(a1).get("intent")) in lage else None,
+                  "emotionToward": "Johann Bruckner" if "gegenüber Johann Bruckner" in lage else None}
         rel = rj(a1)
         zeile = next((x for x in b.splitlines() if x.startswith("DEINE BEZIEHUNGEN ZU DEN ANWESENDEN")), "")
         jo = zeile.split("Johann Bruckner:", 1)[-1].split("|")[0] if "Johann Bruckner:" in zeile else ""

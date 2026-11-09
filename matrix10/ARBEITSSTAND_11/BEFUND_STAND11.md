@@ -160,3 +160,40 @@ Im Protokoll gibt es keine ungeskriptete Lesung. `llm_contract.vorab_abrufe()` w
 - 5 Gerätefälle: 4–5 Aufrufe.
 - K-Tests: 50/50.
 - P25-Suite: keine neue Abweichung außer dem bewusst angepassten C6-Test.
+
+## 9. Stand 11D – Antwort statt Formular (dein Lauf 09.11. 11:08, Upload `217e6724`)
+
+**Befund:**
+- Die Kette läuft: 3/3 Eingaben gespeichert, Mara Ekel 0,80, ≈ 20 s je Austausch.
+- Die Antworten wirken trotzdem mechanisch:
+  1. **80 % Formular:** Maras Antwort hatte 330–385 Tokens, die meisten davon Pflichtfelder. Für Rede und Tun blieben ein Satz und ein Halbsatz; die Vorgabe lautete „action = kurze Beschreibung“.
+  2. **Dossier:** 9 500 Zeichen Regeln + 11 400–16 900 Zeichen Zustand, davon 5 100–9 400 Zeichen roher JSON-Auszug, wachsend.
+  3. **Wiederholung aus dem Brief:**
+     - Absicht „sich distanzieren“ stand als Auftrag da, das Kompass-Zeichen „tritt zurück“ und die Wendungen „Ich hab Arbeit | Lass mich“ in jedem Zug.
+     - Dass ihr Wegdrehen nichts gebracht hat, stand nur versteckt.
+     - Ergebnis dreimal: „Lass das …“ / „dreht sich weg“.
+  4. **Anzeige:** „Ich greife unter dein tshirt / und lach dich an“.
+
+**Reparatur 11D** (`llm_contract.py`, `kernel.py`):
+- **Antwort:** Rede bis etwa 6 Sätze, Handlung 1–4 Sätze (Körper, Blick, Stimme, Zögern), Pflichtfelder knapp (synapsen ≤ 2), Antwortraum 2 400.
+- **Kein roher Zustand mehr im Prompt,** nur die Kennungen für refers_to/aussagen. Alle Werte stehen im Brief.
+- **Absicht als Lage:**
+  - „du willst gerade: …“;
+  - nach einem gescheiterten Versuch „du wolltest: … – du hast es versucht (…), aber es hat nicht gereicht: …“, aus `actionOutcome` der Facts.
+- **Keine Kopiervorlagen:** Kompass ohne festes Beispielzeichen. Typische Wendungen und Lieblingswörter nur, solange sie in ihren letzten Beiträgen nicht vorkamen. Das Profil ist unverändert.
+- **Taten derselben Eingabe** stehen in Textreihenfolge mit Leerzeichen verbunden, ohne „ / “.
+- **F1-Werkzeug:** liest Gefühl und Absicht jetzt aus dem Brieftext statt aus dem entfernten JSON.
+
+**Geprüft (Testmodell, rohe Geräteantworten 11:08):**
+- Prompt der Formulierung: 6 700 / 6 700 / 8 000 statt 11 450 / 13 577 / 16 859 Zeichen.
+- Im 3. Zug steht „hat nicht gereicht“.
+- Johanns Tat steht als ein Satz da.
+- F1: 12/12. Gegenprobe: 8/12, also wie erwartet rot.
+- F2: 7/7.
+- 5 Gerätefälle: 4–5 Aufrufe.
+- K-Tests: 50/50.
+- P25-Suite: keine neue Abweichung. Ausnahme ist der Build-Vertrag im ungebauten Arbeitsordner; er wird im Paket neu gebaut und geprüft.
+
+**Offen:**
+- Ob Mara jetzt menschlicher antwortet, zeigt nur das Gerät mit echtem Modell.
+- gpt-4o-mini begrenzt freie Figurenrede; ein stärkeres Modell ist eine Einstellung unter „Konfiguration“.

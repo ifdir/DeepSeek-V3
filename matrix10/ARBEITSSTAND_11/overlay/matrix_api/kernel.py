@@ -8305,7 +8305,7 @@ def commit_turn(
         if input_speech and _res.get("speechTargetSet"):
             # V92 Paket 14 (Entscheidung 1): the addressee the speech names in its own words outranks the selected recipient
             _speech_target = _res.get("speechTarget") or None
-        input_action = " / ".join(str(a["text"]) for a in input_actions) or None
+        input_action = " ".join(str(a["text"]) for a in input_actions) or None   # Stand 11D: Textreihenfolge, wie geschrieben
         if input_actions and not input_speech:
             input_plan = {**input_plan, "event_kind": "action", "speech_act": "act"}
         elif not input_actions and input_plan.get("event_kind") == "action":
@@ -12584,7 +12584,7 @@ def commit_puppet(
                 sessionId=s.get("id"), worldId=s.get("worldId")))
         _done.append(a_text)
     if _acts and s.get("turns"):
-        s["turns"][-1]["action"] = " / ".join(_done) or None
+        s["turns"][-1]["action"] = " ".join(_done) or None   # Stand 11D
     if spoken and spoken != "—":
         s.setdefault("memories", []).append(
             make_memory(
@@ -12675,7 +12675,7 @@ def commit_puppet(
                  else next((str(f.get("targetId")) for f in _pacts if f.get("targetId") and str(f.get("targetId")) in _pids), None))
         _sch = _scene.update_from_commit(
             s, speaker_id=str(figure["id"]), target_id=_ptid, speech=str(spoken or "") if spoken != "—" else "",
-            action=(" / ".join(_done) or None), fired=[], runtime=(s.get("runtimes") or {}).get(str(figure["id"])),
+            action=(" ".join(_done) or None), fired=[], runtime=(s.get("runtimes") or {}).get(str(figure["id"])),
             plan=(sf.get("plan") if isinstance(sf, dict) and isinstance(sf.get("plan"), dict) else None),
             physical_changed=any(isinstance(f, dict) and f.get("event_kind") in ("body_state", "physical")
                                  and str(f.get("actorId")) == str(figure["id"]) for f in new_facts),
@@ -14178,7 +14178,7 @@ def bind_formulation_spiegel(
             if not _in_facts:
                 _react = None
     stimulus_speech = " ".join(str(f.get("text") or "") for f in _in_facts if f.get("kind") == "speech").strip()
-    stimulus_action = " / ".join(str(f.get("text") or "") for f in _in_facts
+    stimulus_action = " ".join(str(f.get("text") or "") for f in _in_facts
                                  if f.get("kind") == "action" and _scene.validiert(f)).strip()
     _fact_stimulus = " ".join(x for x in (stimulus_speech, stimulus_action) if x).strip()
     # Stand 11C (AMASTER §27.4, §34.1; Nutzer 08.11. 22:22/22:37): die Figur hoert die GANZE Aeusserung der anderen Person -
