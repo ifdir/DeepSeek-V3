@@ -1,0 +1,39 @@
+{
+ "fall": "GO2_verneinter_zustand",
+ "schritte": [
+  "Profil gewählt, Chat ses_kp_fall_08 geöffnet",
+  "Modus-Reiter: Gott",
+  "Senden: Mara ist nicht bewusstlos.",
+  "Seite neu geladen"
+ ],
+ "anfragen": [
+  {
+   "pfad": "/api/kernel/god",
+   "sessionId": "ses_kp_fall_08",
+   "figur": null,
+   "ziel": null,
+   "rolle": null,
+   "autoritaet": null,
+   "sprichtAls": null,
+   "scope": "auto",
+   "text": "Mara ist nicht bewusstlos.",
+   "wiederaufnahme": false
+  }
+ ],
+ "antworten": [
+  {
+   "pfad": "/api/kernel/god",
+   "status": 200,
+   "code": null,
+   "meldung": ""
+  }
+ ],
+ "hauptstatus": 200,
+ "folgezug_commit": false,
+ "folgezug_hinweis": "kein Folgezug-Aufruf binnen 20 s nach der Hauptantwort",
+ "meldungen": [
+  "Gott: 0 tatsächlich angewendet, 2 nicht angewendet · ABGELEHNT: Mara ist nicht bewusstlos. · UNKLAR: „Mara ist nicht bewusstlos.“ (Körperzustand nicht sicher lesbar oder nicht bestätigt - nicht angewendet)"
+ ],
+ "verlauf_vor_reload": "SZENE Der Schankraum ist voller nasser Mäntel und halber Sätze. Clara steht an der Theke. Mara trägt Gläser. Johann ist zurück. Gustav lächelt zu lange. Robert trinkt zu schnell. Draußen prasselt Regen auf die Bank.",
+ "verlauf_nach_reload": "SZENE Der Schankraum ist voller nasser Mäntel und halber Sätze. Clara steht an der Theke. Mara trägt Gläser. Johann ist zurück. Gustav lächelt zu lange. Robert trinkt zu schnell. Draußen prasselt Regen auf die Bank."
+}

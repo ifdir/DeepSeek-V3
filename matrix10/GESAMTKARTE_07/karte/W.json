@@ -1,0 +1,1125 @@
+[
+ {
+  "id": "W-01",
+  "funktion": "Menschliche Figurenlinie: zusammenhängender Figurenzustand -> LLM -> Vollzug schreibt zurück",
+  "amaster": "§7 (Z. 208-251)",
+  "soll": "Stamm, Biografie, Ziele, Absichten, Wissen, Erinnerung, Runtime, Körper, Beziehung, Social, SceneState, Commitments und Authority bilden einen Figurenzustand; LLM formuliert, Vollzug schreibt Folgen zurück (Z. 212-232).",
+  "kettenvertrag": "§1 oberste Prüfregel; §8 letzte Glieder",
+  "sps_loesung": "V62.7 (MATRIX10_SPS_MASTER.md:5141) Erleben-Schritt; V56 canonical_stem (SPS:6129, 6236)",
+  "owner": "Python kernel.prepare_turn/bind_formulation_spiegel (Lesespiegel) + kernel.apply_appraisals (Writer) + llm_contract.canonical_formulation_context",
+  "owner_soll_nach_architektur": "Je Schicht eigener Owner (§6); BrainContext reiner Spiegel; LLM nur Formulierung",
+  "kette": {
+   "eingang": "POST /api/kernel/prepare app.py:1563; POST /api/llm/formulate app.py:2299",
+   "verarbeitung": "Stamm aus SQL: llm_contract.py:2755 get_character -> kernel.prepare_turn kernel.py:14793 -> bind_formulation_spiegel kernel.py:13945 (profile kernel.py:14566-14596); Session-Zustand via recall kernel.py:13201",
+   "speicherung": "Rückschreiben über apply_appraisals kernel.py:4138 (Runtime/Relationship) und Commit-Pfad (anderer Bereich)",
+   "wiederlesen": "Folgeturn liest Session über get_session repos.py:1380 und Stamm erneut über list_characters repos.py:2856",
+   "entscheidung": "Stamm wirkt nur (a) als Prompttext render_persona_brief llm_contract.py:1732ff, (b) als LLM-Erleben-Payload kernel.py:3889 mit Kernel-Validierung (Dispositionsbeleg kernel.py:4220, Kompass-Schwelle kernel.py:4292-4307), (c) lexikalisch in rank_speakers kernel.py:11665-11672",
+   "folgewirkung": "Ohne Provider kein Erleben-Ergebnis: app.py:3823 -> nur Abklingen; Stamm wirkt dann auf keinen Zustand",
+   "frontend": "chat.$sessionId.tsx (anderer Bereich)"
+  },
+  "ui_bedienung": "Chat (anderer Bereich); Stamm über charakter.$charId.tsx",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Stammdispositionen erreichen eine Kernel-Entscheidung nur über den LLM-Erleben-Vorschlag (app.py:3805 appraise_events); ohne Provider-Ergebnis kehrt _appraise_perceived bei app.py:3823 ohne Zustandswirkung zurück",
+   "BrainContext (kernel.brain_context kernel.py:14781 = recall kernel.py:13201) enthält keine Stammfelder; Stamm kommt nur über den Formulierungsspiegel"
+  ],
+  "abhaengig_von": [
+   "TurnTruth",
+   "Appraisal/RuntimeState",
+   "Commit-Pfad",
+   "LLM-Grenze/Provider-Konfiguration"
+  ],
+  "auswirkung_bestehender_fehler": "Figurenreaktion hängt vollständig am Providerpfad; lokale Abnahme kann Stammwirkung nicht belegen (W-19, W-31).",
+  "belege": [
+   "kernel.py:14781 brain_context = recall + currentState + fate, keine Stammfelder (codefluss)",
+   "llm_contract.py:2755 canonical_formulation_context liest Stamm frisch aus SQL (codefluss)",
+   "app.py:3823 ohne result nur refresh_affects (codefluss)",
+   "Probe tmp_W (Flask-Testclient, frische SQLite, Provider ohne Key; probe_W_scripts/probe.py): Spiegel-profile.personality nach PATCH = neuer Wert P_DRITT (ausgeführt)"
+  ]
+ },
+ {
+  "id": "W-02",
+  "funktion": "Bruch/Lüge/Widerruf als neue Evidenz, frühere Evidenz bleibt",
+  "amaster": "§7 (Z. 237-251)",
+  "soll": "Lügen, Irren, Bruch einer Zusage, Widerruf erzeugen neue Evidenz, frühere bleibt erhalten; technisches Vergessen ist kein Bruch (Z. 237-251).",
+  "kettenvertrag": "§10/§11 (anderer Bereich)",
+  "sps_loesung": "truth.register_denial/register_claim (Verweis in kernel.py:7131, 8691)",
+  "owner": "Python truth.register_claim / truth.register_denial",
+  "owner_soll_nach_architektur": "SceneFact/Proposition-Lifecycle (§6)",
+  "kette": {
+   "eingang": "Commit-Pfad kernel.py:8691, 7230",
+   "verarbeitung": "truth.py",
+   "speicherung": "scene_facts/propositions (anderer Bereich)",
+   "wiederlesen": "UNKLAR",
+   "entscheidung": "UNKLAR",
+   "folgewirkung": "UNKLAR",
+   "frontend": "UNKLAR"
+  },
+  "ui_bedienung": "keine eigene",
+  "statischer_befund": "UNKLAR",
+  "status": "UNGEPRÜFT",
+  "defekte": [],
+  "abhaengig_von": [
+   "SceneFact/Commit",
+   "Proposition/Lifecycle"
+  ],
+  "auswirkung_bestehender_fehler": "Gehört fachlich zu Proposition/Truth; hier nur verortet.",
+  "belege": [
+   "kernel.py:7230 _truth.register_denial(...) (codefluss)",
+   "kernel.py:8691 _truth.register_claim(...) (codefluss)"
+  ]
+ },
+ {
+  "id": "W-03",
+  "funktion": "Userprofil anlegen/ändern/lesen mit Isolation",
+  "amaster": "§8 (Z. 253-274)",
+  "soll": "Lokales Userprofil mit stabiler ID, getrennt vom Charakterstamm (Z. 255-272).",
+  "kettenvertrag": "§4 (Userprofil-Owner)",
+  "sps_loesung": "SPS:1680 I04 'Userprofil und Avatarfigur getrennt' TEIL",
+  "owner": "Python repos.create_user/patch_user/get_user",
+  "owner_soll_nach_architektur": "Userprofil-Owner (§6)",
+  "kette": {
+   "eingang": "POST/PATCH/GET /api/users app.py:724-763",
+   "verarbeitung": "repos.py:2165 create_user, repos.py:2183 patch_user (Self-only)",
+   "speicherung": "users.json repos.py:2179 / 2196",
+   "wiederlesen": "get_user repos.py:2218 (nur self), list_user_directory repos.py:2234 (id+name)",
+   "entscheidung": "Actor-Header bindet Scope (isolation.py:37)",
+   "folgewirkung": "Sessions user_id = actor repos.py:2928",
+   "frontend": "user.tsx:73 upsertUser, user.tsx:99ff patchUser -> store.ts:621 upsertUser -> apiPatchUser"
+  },
+  "ui_bedienung": "Seite /user (user.tsx), /config (config.tsx:324-326)",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "POST /api/users übernimmt bei fehlendem Actor die ID aus dem Body als Actor (app.py:727-731) - jeder kann ein neues Profil unter beliebiger freier ID anlegen (lokal ggf. gewollt, nicht SOLL-geklärt)"
+  ],
+  "abhaengig_von": [
+   "Isolation/get_actor"
+  ],
+  "auswirkung_bestehender_fehler": "gering",
+  "belege": [
+   "repos.py:2183-2197 patch_user merge + Self-Prüfung (codefluss)",
+   "Probe tmp_W (Flask-Testclient, frische SQLite, Provider ohne Key; probe_W_scripts/probe.py): POST /api/users 200 (ausgeführt)"
+  ]
+ },
+ {
+  "id": "W-04",
+  "funktion": "Userprofil-Felder mit realem Reader (Sprache, Accessibility, STT/TTS, Standardrolle, letzte Welt/Session, Provider)",
+  "amaster": "§8 (Z. 259-270)",
+  "soll": "Bevorzugte Sprache, Bedienpräferenzen, Accessibility, Stimmeinstellungen, Standardrolle, zuletzt verwendete Welt/Session, Providerzuordnung (Z. 259-270).",
+  "kettenvertrag": "§5 (jedes Frontendfeld braucht realen Reader)",
+  "sps_loesung": "keine gefunden",
+  "owner": "Python repos.patch_user (Writer); Reader nur im Client",
+  "owner_soll_nach_architektur": "Userprofil-Owner, Reader im Backend für sprach-/providerrelevante Felder",
+  "kette": {
+   "eingang": "user.tsx:100 language, :104 defaultRole, :111 lastWorldId, :119 lastSessionId, :181/185 largeType/highContrast, :189 tts, :168/175 providerConfig",
+   "verarbeitung": "PATCH /api/users app.py:735",
+   "speicherung": "users.json repos.py:2196",
+   "wiederlesen": "largeType/highContrast shell.tsx:58-59; sttMode chat.$sessionId.tsx:1060; tts chat.$sessionId.tsx:508; defaultRole store.ts:898; providerConfig chat.$sessionId.tsx:429 und store.ts:661; language: KEIN Reader",
+   "entscheidung": "language beeinflusst weder LLM-Sprache noch UI (kein Treffer außer Default-Werten)",
+   "folgewirkung": "-",
+   "frontend": "user.tsx:100 Select Sprache"
+  },
+  "ui_bedienung": "Select Sprache, Rolle, Welt, Session; Checkboxen Schrift/Kontrast/TTS",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Userfeld 'language' hat Writer (user.tsx:100) aber keinen Reader in src/ oder matrix_api/ (grep '\\.language\\b' trifft nur world.language normalize.ts:127ff) - Kettenvertrag §1 'gespeicherter Wert ohne realen Folgereader ist ROT'",
+   "providerConfig im Userprofil wird nur clientseitig in den Formulierungsrequest gemischt (chat.$sessionId.tsx:429-430) statt serverseitig gelesen - Owner unklar neben config-Tabelle"
+  ],
+  "abhaengig_von": [
+   "Konfiguration/Provider (anderer Bereich)"
+  ],
+  "auswirkung_bestehender_fehler": "Sprachwahl wirkungslos.",
+  "belege": [
+   "src/routes/user.tsx:100 patchUser language (codefluss)",
+   "grep language in src/matrix_api: nur Welt-Sprache (codefluss)"
+  ]
+ },
+ {
+  "id": "W-05",
+  "funktion": "User ≠ Avatarfigur; Avatarzuordnung je Welt/Session; Avatarfähigkeit",
+  "amaster": "§8 (Z. 268, 272-274), §13 (Z. 459), §17 (Z. 592)",
+  "soll": "Avatar bleibt Weltfigur mit eigener Charakter-ID; Avatarzuordnung je Welt oder Session; Avatarfähigkeit wird beim Spawn festgelegt (Z. 268, 272-274, 459).",
+  "kettenvertrag": "§4 'Vermischung von User-ID, Avatar-ID und Charakter-ID' verboten",
+  "sps_loesung": "SPS:1680 I04 TEIL",
+  "owner": "Python repos.create_session (avatarId-Bindung), repos.put_session; Client store.startSession",
+  "owner_soll_nach_architektur": "Userprofil (Zuordnung) + Session-Envelope (avatarId), Stamm (Avatarfähigkeit)",
+  "kette": {
+   "eingang": "user.tsx:132-154 avatarsByWorld/avatarsBySession; charakter.$charId.tsx:204-215 'Als Avatar der Session'; Checkbox canBeAvatar charakter.$charId.tsx:368-374",
+   "verarbeitung": "store.ts:860-912 liest avatarsByWorld beim Sessionstart; create_session prüft nur Weltzugehörigkeit repos.py:2985-2987; put_session übernimmt avatarId repos.py:3141-3146, Prüfung nur _assert_figures_in_world repos.py:3170",
+   "speicherung": "users.json, sessions.json avatarId, characters.json canBeAvatar",
+   "wiederlesen": "avatarsBySession: nur Löschbereinigung repos.py:2793; canBeAvatar: kein Backend-Reader",
+   "entscheidung": "canBeAvatar entscheidet nichts: Session mit Avatar canBeAvatar=false wird angelegt",
+   "folgewirkung": "UNKLAR ob put_session-Avatarwechsel Runtime/Anwesenheit nachzieht",
+   "frontend": "Select Avatar je Welt/Session user.tsx:130-160"
+  },
+  "ui_bedienung": "user.tsx Avatar-Selects; Charakterseite Button 'Als Avatar der Session'; Checkbox 'Stamm als Avatar verwendbar'",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "canBeAvatar ohne Backend-Reader; POST /api/sessions mit avatarId einer Figur canBeAvatar=false liefert 200 (Probe, ausgeführt)",
+   "avatarsBySession hat Writer (user.tsx:154) aber keinen Reader außer Bereinigung repos.py:2793",
+   "'Als Avatar der Session' setzt bei fremdem Kanon still canBeAvatar und schreibt avatarId per PUT in laufende Session (charakter.$charId.tsx:213-214) - Runtime-Nachzug UNKLAR"
+  ],
+  "abhaengig_von": [
+   "Sessions/SceneState (Bereich Sessions)",
+   "Rollen und Modi §27"
+  ],
+  "auswirkung_bestehender_fehler": "Avatarvertrag (§27.3) kann eine nicht freigegebene Figur treffen.",
+  "belege": [
+   "repos.py:2985-2987 Avatar nur auf Weltzugehörigkeit geprüft (codefluss)",
+   "Probe tmp_W (Flask-Testclient, frische SQLite, Provider ohne Key; probe_W_scripts/probe.py): session_with_nonavatar=200 (ausgeführt)"
+  ]
+ },
+ {
+  "id": "W-06",
+  "funktion": "Weltmodell: Pflichtfelder gespeichert und im Turn gelesen",
+  "amaster": "§9 (Z. 276-318)",
+  "soll": "Welt enthält u. a. Genre/Ton, Epoche, Geografie, Orte, Geschichte, Kanon, Welt-/physische/gesellschaftliche/kulturelle/rechtliche Regeln, Magie/Technik, Fraktionen, Konflikte, Gegenstände, Wesen, Wissensgrenzen, Startlagen, Storyachsen, Timeline, Spawn-Vorlagen, Assets, Fate, Inhaltseinstellungen (Z. 283-312).",
+  "kettenvertrag": "§1, §5 (Frontendfeld ohne Reader ROT); §7 Nr. 15, 25",
+  "sps_loesung": "V60b world_frame (kernel.py:14525 Kommentar); V25 SES-01 build_new_session",
+  "owner": "Python repos.create_world/patch_world; Reader kernel.bind_formulation_spiegel, kernel.build_new_session, kernel._derive_fate",
+  "owner_soll_nach_architektur": "Welt-Owner (§6); Reader: Spiegel, Fate, Sessionstart",
+  "kette": {
+   "eingang": "welt.$worldId.tsx:725-1060 Felder -> store.patchWorld store.ts:721 -> PATCH /api/worlds app.py:808",
+   "verarbeitung": "repos.py:2347 patch_world (merge)",
+   "speicherung": "worlds.json repos.py:2364",
+   "wiederlesen": "Gelesen im Turn: name/genre/tone/epoch/short/long/history kernel.py:14530-14538; places kernel.py:14540; rules kernel.py:14281-14288; conflicts/fateSeeds/fateBeats/storyGoals/worldGoals/secretKnowledge/knowledgeLimits kernel.py:10845-10866; startSituations/places/items/knowledgeLimits/conflicts beim Start kernel.py:12733-12783",
+   "entscheidung": "Startort/Startlage/Anwesenheit (kernel.py:12733-12752), Fate-Beat (kernel.py:10815)",
+   "folgewirkung": "Prompt world_frame/worldRules",
+   "frontend": "Weltseite Tabs basis/orte/struktur/fate/wissen"
+  },
+  "ui_bedienung": "Weltseite Felder Geografie, Atmosphäre, Zweck, Fraktionen, Timeline, Typische Szenen, Story-Beats, Weltkanon, Referenzen, Kultur, Sprache, Weltwissen, Wesen, Figurenbeziehungen, Assets, Spawn-Vorlagen",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Ohne Turn-Reader (grep .get(\"<feld>\") in kernel/app/scene_state/conjunctive/truth/system_loop/god_extract): geography, atmosphere, purpose, factions, timeline (Welt), beings, culture, language, worldKnowledge, physicalRules, socialRules, typicalScenes, storyBeats, assets, spawnTemplates, sourceRefs, figureRelations, visibility",
+   "Weltkanon world.canon: Writer Weltseite (welt.$worldId.tsx:967) und God-Weltscope (app.py:1420-1429), aber kein Reader (einziger Treffer app.py:1426 ist der Writer selbst); Probe: 'K0' nicht im Brief",
+   "Keine eigenen Felder für rechtliche/politische Ordnung, Magie-/Technikregeln, Inhaltseinstellungen im World-Typ (types.ts:249-313)"
+  ],
+  "abhaengig_von": [
+   "BrainContext/Spiegel",
+   "Fate",
+   "Sessions"
+  ],
+  "auswirkung_bestehender_fehler": "EPUB-Kette §7 Nr. 25/26 kann für diese Felder nie geschlossen sein; Weltseite zeigt wirkungslose Felder.",
+  "belege": [
+   "kernel.py:14530-14538 world_frame nur name/genre/tone/epoch/short/long/history (codefluss)",
+   "app.py:1426 einziger world.get('canon') ist Writer (codefluss)",
+   "Probe tmp_W (Flask-Testclient, frische SQLite, Provider ohne Key; probe_W_scripts/probe.py): brief_has_K0_worldcanon=false, faction F fehlt (ausgeführt)"
+  ]
+ },
+ {
+  "id": "W-07",
+  "funktion": "Weltwissen ist nicht automatisch Figurenwissen",
+  "amaster": "§9 (Z. 314-318)",
+  "soll": "Eine Figur kennt nur, was aus Stamm, Herkunft, Rolle, Erleben oder späterem Informationsweg plausibel und gespeichert ist (Z. 314-318).",
+  "kettenvertrag": "§7 Nr. 23",
+  "sps_loesung": "V60b Kommentar kernel.py:14527-14528",
+  "owner": "Python kernel.bind_formulation_spiegel / kernel.recall",
+  "owner_soll_nach_architektur": "Memory/WitnessKnowledge (§6)",
+  "kette": {
+   "eingang": "Weltfelder secrets/secretKnowledge",
+   "verarbeitung": "world_frame ohne Geheimnisse kernel.py:14531-14539; Fate-Bits lesen secretKnowledge kernel.py:10861",
+   "speicherung": "worlds.json",
+   "wiederlesen": "recall nur witnessKnowledge/eigene Facts kernel.py:13209-13229",
+   "entscheidung": "Fate-Beat kann Weltgeheimnis tragen (kernel.py:10861); Fate-Objekt im Brief ungenutzt (llm_contract.py:1774 'fate' gelesen, Z. ~2050 '_ = fate')",
+   "folgewirkung": "UNKLAR ob Fate-Beat an anderer Stelle in den Figurenprompt gelangt",
+   "frontend": "Weltseite Wissen-Tab"
+  },
+  "ui_bedienung": "Felder Geheimnisse/Geheimes Wissen/Wissensgrenzen",
+  "statischer_befund": "UNKLAR",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Weltgeheimnisse fließen in Fate-Druck-Bits (kernel.py:10861-10863); Leckfreiheit bis Figurenrede nicht E2E belegt"
+  ],
+  "abhaengig_von": [
+   "Fate",
+   "WitnessKnowledge",
+   "Recall"
+  ],
+  "auswirkung_bestehender_fehler": "Potentielles Wissensleck über Fate.",
+  "belege": [
+   "kernel.py:10861 secretKnowledge in Fate-Bits (codefluss)",
+   "kernel.py:14527 'not a list of secrets' (codefluss)"
+  ]
+ },
+ {
+  "id": "W-08",
+  "funktion": "Welterstellungswege: manuell, Beschreibung, Upload, Weltpaket, Erweiterung",
+  "amaster": "§10 (Z. 320-330)",
+  "soll": "Welt entsteht manuell, aus Kurzbeschreibung, aus Uploads, aus Weltpaket oder durch Erweiterung (Z. 322-328).",
+  "kettenvertrag": "§7 Nr. 17-19",
+  "sps_loesung": "keine gefunden (import_world_pack repos.py:2265 'ONE owner transaction')",
+  "owner": "Client store.upsertWorld (Orchestrierung) -> Python repos.create_world/patch_world/create_character; Weltpaket repos.import_world_pack",
+  "owner_soll_nach_architektur": "Welt-Owner serverseitig, ein Commit (§4 Server-/Kernelwahrheit serverseitig)",
+  "kette": {
+   "eingang": "welt.index.tsx:61 createManual, :186 runGenerate (/api/llm/world app.py:2344), :78 analyzeSource (/api/analyze app.py:2221), :291 commitNew, :319 commitExtend; Weltpaket store.ts:818 apiImportWorldPack",
+   "verarbeitung": "store.ts:695-720 upsertWorld: nacheinander POST/PATCH world, persistJoinDocument, je Figur POST/PATCH (mehrere Requests)",
+   "speicherung": "worlds/characters/documents",
+   "wiederlesen": "GET /api/worlds/<id> repos.py:2399",
+   "entscheidung": "-",
+   "folgewirkung": "Sessionstart liest Welt",
+   "frontend": "welt.index.tsx Buttons 'Anlegen und öffnen', 'Als neue Welt speichern', 'Erweitern'"
+  },
+  "ui_bedienung": "Welt-Index: manuell, KI-Idee, Datei/EPUB, Einfügen, Erweitern-Select",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Neuer Welt-Commit und Erweiterung sind clientseitig orchestrierte Mehrfach-Requests (store.ts:695-720) ohne gemeinsame Transaktion; Fehler mitten drin hinterlässt Teilwelt. Atomarer Server-Writer import_world_pack (repos.py:2265) wird dafür nicht genutzt",
+   "commitDraft erfindet ohne Kandidaten eine Figur 'Stimme des Ortes' (normalize.ts:510-516, placeHost normalize.ts:520) - keine Quell- oder Nutzerentscheidung"
+  ],
+  "abhaengig_von": [
+   "Uploadsystem (Bereich Upload)",
+   "Dokumentschicht"
+  ],
+  "auswirkung_bestehender_fehler": "Halbe Welten/Charaktere nach Netzfehler; erfundene Figur im Kanon.",
+  "belege": [
+   "src/lib/matrix/store.ts:695-720 sequentielle apiCreateWorld/apiCreateCharacter (codefluss)",
+   "src/lib/matrix/normalize.ts:510-516 placeHost (codefluss)"
+  ]
+ },
+ {
+  "id": "W-09",
+  "funktion": "Zielwelt vor Commit; keine zweite Welt; keine unkontrollierten Dubletten",
+  "amaster": "§10 (Z. 332-343)",
+  "soll": "Nutzer wählt neue/bestehende Zielwelt; Analyse legt bei gesetzter Zielwelt keine zweite Welt an; erneuter Aufruf dupliziert Welt/Ort/Stamm nicht unkontrolliert (Z. 332-343).",
+  "kettenvertrag": "§7 Nr. 10, 18, 19",
+  "sps_loesung": "keine gefunden",
+  "owner": "Client welt.index.tsx commitNew/commitExtend + normalize.commitDraft/extendWorldFromDraft",
+  "owner_soll_nach_architektur": "Welt-Owner serverseitig mit Idempotenz",
+  "kette": {
+   "eingang": "welt.index.tsx:621 'Als neue Welt speichern', :623-631 Select Zielwelt + Erweitern",
+   "verarbeitung": "commitDraft normalize.ts:446 vergibt stets neue uid('world') (normalize.ts:447); extendWorldFromDraft (normalize.ts) mischt clientseitig",
+   "speicherung": "upsertWorld store.ts:695",
+   "wiederlesen": "-",
+   "entscheidung": "Server-Dublettenschutz nur über ID (create_world 409 USE_PATCH repos.py:2253-2258)",
+   "folgewirkung": "-",
+   "frontend": "welt.index.tsx:566/623 Select extendId"
+  },
+  "ui_bedienung": "Zwei Buttons + Zielwelt-Select",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Zweimaliges 'Als neue Welt speichern' desselben Entwurfs erzeugt zwei Welten mit neuen IDs (normalize.ts:447) - kein inhaltlicher Dublettenschutz serverseitig",
+   "Dublettenvermeidung bei Erweiterung nur clientseitig (extendWorldFromDraft), Server prüft nichts"
+  ],
+  "abhaengig_von": [
+   "W-08"
+  ],
+  "auswirkung_bestehender_fehler": "Doppelte Welten/Stämme verwirren Identität im Spawn (W-16).",
+  "belege": [
+   "src/lib/matrix/normalize.ts:447 const worldId = uid('world') (codefluss)",
+   "repos.py:2253-2258 nur ID-Konflikt (codefluss)"
+  ]
+ },
+ {
+  "id": "W-10",
+  "funktion": "Analyseoptionen vor Commit: Uploadmodus, Analysebereiche, Kandidatenbehandlung, Übernahme Regeln/Orte/Timeline/Kanon",
+  "amaster": "§10 (Z. 332-339)",
+  "soll": "Vor dem Commit wählt der Nutzer Modus, Analysebereiche, Behandlung der Figuren und ob Regeln/Orte/Timeline/Kanon übernommen werden (Z. 332-339).",
+  "kettenvertrag": "§7 Nr. 10, 16",
+  "sps_loesung": "keine gefunden",
+  "owner": "Client welt.index.tsx (ModeBar, groupPick, figureFate)",
+  "owner_soll_nach_architektur": "Bedienabsicht im Client, Validierung serverseitig",
+  "kette": {
+   "eingang": "ModeBar welt.index.tsx:491/594; groupPick via draftFieldGroups/applyDraftGroupPick welt.index.tsx:296; figureFate welt.index.tsx:51",
+   "verarbeitung": "applyDraftGroupPick (normalize.ts ~1459 'pick.language === false' Muster)",
+   "speicherung": "nur gewählte Gruppen in upsertWorld",
+   "wiederlesen": "-",
+   "entscheidung": "Mode B blockiert Weltcommit (welt.index.tsx:285-288, 321-324)",
+   "folgewirkung": "-",
+   "frontend": "Gruppen-Checkboxen im Entwurf-Tab"
+  },
+  "ui_bedienung": "Modus A/B, Gruppenauswahl, Kandidaten/Spawn-Auswahl",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "'Analysebereiche' werden erst NACH der Analyse als Übernahme-Gruppen gewählt; /api/analyze nimmt keine Bereichsauswahl (app.py:2228-2240)",
+   "figureFate 'candidates' vs 'spawn-select' ändert nur die Navigation (welt.index.tsx:310, 341), nicht den Commit"
+  ],
+  "abhaengig_von": [
+   "W-11"
+  ],
+  "auswirkung_bestehender_fehler": "gering",
+  "belege": [
+   "src/routes/welt.index.tsx:285-288 Mode-B-Sperre (codefluss)",
+   "app.py:2228-2240 analyze ohne Bereichsparameter (codefluss)"
+  ]
+ },
+ {
+  "id": "W-11",
+  "funktion": "Weltanalyse: strukturierte Extraktion, Fehler sichtbar, kein falscher Erfolg",
+  "amaster": "§11 (Z. 345-391)",
+  "soll": "Analyse extrahiert Orte, Figuren, Rollen, Beziehungen, Fraktionen, Regeln, Timeline, Geheimwissen, Startszenen, Storyziele, Fate-Beats, Spawn-Material; gescheiterter Parse erscheint nicht als Erfolg (Z. 349-391).",
+  "kettenvertrag": "§7 Nr. 9, 11-15; 'lokaler Fallback darf nicht als vollständige SOLL-Erfüllung ausgegeben werden'",
+  "sps_loesung": "V25.1 (app.py:2236 Kommentar), V49 universeller Extraktor (types.ts:256)",
+  "owner": "Python analyze.analyze_text + analyze.enrich_analysis + llm_contract.analyze_with_llm",
+  "owner_soll_nach_architektur": "Analyse erzeugt nicht-kanonischen Entwurf (kein Owner-Write)",
+  "kette": {
+   "eingang": "POST /api/analyze app.py:2221",
+   "verarbeitung": "analyze.py:1794 analyze_text, enrich_analysis, analyze_with_llm",
+   "speicherung": "keine (Entwurf im Client-State setDraft welt.index.tsx:98)",
+   "wiederlesen": "-",
+   "entscheidung": "analysisSource/coverage -> sichtbare Warnung welt.index.tsx:86-95",
+   "folgewirkung": "Entwurf",
+   "frontend": "welt.index.tsx:72-118 analyzeSource; Fehlertexte setErr"
+  },
+  "ui_bedienung": "Datei/EPUB wählen, Analyse starten, Entwurf-Tab",
+  "statischer_befund": "UNKLAR",
+  "status": "UNGEPRÜFT",
+  "defekte": [
+   "Entwurf liegt nur im React-State (welt.index.tsx:98) - Reload verliert unbestätigten Entwurf (keine Persistenz des Entwurfs; ob SOLL das verlangt: UNKLAR)",
+   "Qualität der Extraktion (Werbeanhang, Ich-Erzähler) nicht ausgeführt geprüft"
+  ],
+  "abhaengig_von": [
+   "EPUB-Parser (W-29)",
+   "LLM-Provider"
+  ],
+  "auswirkung_bestehender_fehler": "Leere/kontaminierte Kandidaten tragen sich in Stämme fort.",
+  "belege": [
+   "app.py:2233-2243 analyze-Route (codefluss)",
+   "src/routes/welt.index.tsx:86-95 sichtbare Fallback-Meldungen (codefluss)"
+  ]
+ },
+ {
+  "id": "W-12",
+  "funktion": "Analyseentwurf prüfen, Felder bearbeiten, ablehnen, zusammenführen, Kandidaten wählen",
+  "amaster": "§11 (Z. 377-389)",
+  "soll": "Nutzer kann Ergebnisse annehmen, Felder bearbeiten, Einträge ablehnen, Dubletten zusammenführen, Kandidaten wählen, erst dann committen (Z. 379-389).",
+  "kettenvertrag": "§7 Nr. 16",
+  "sps_loesung": "keine gefunden",
+  "owner": "Client welt.index.tsx Entwurf-Tab (draftFieldGroups/applyDraftGroupPick)",
+  "owner_soll_nach_architektur": "Client-Entwurf, nicht kanonisch",
+  "kette": {
+   "eingang": "Entwurf-Tab welt.index.tsx:589-640",
+   "verarbeitung": "Gruppenweise An/Abwahl",
+   "speicherung": "erst bei Commit",
+   "wiederlesen": "-",
+   "entscheidung": "-",
+   "folgewirkung": "-",
+   "frontend": "Gruppen-Checkboxen"
+  },
+  "ui_bedienung": "Gruppen-Auswahl; Feldbearbeitung im Entwurf UNKLAR",
+  "statischer_befund": "UNKLAR",
+  "status": "UNGEPRÜFT",
+  "defekte": [
+   "Einzelfeldbearbeitung und Zusammenführen im Weltentwurf vor Commit nicht belegt gefunden (nur Gruppenwahl welt.index.tsx:296); Einzelbearbeitung erst nach Commit auf der Weltseite"
+  ],
+  "abhaengig_von": [
+   "W-11"
+  ],
+  "auswirkung_bestehender_fehler": "Kontaminierte Einträge werden erst nach Commit korrigierbar (verstößt gegen 'erst danach committen').",
+  "belege": [
+   "src/routes/welt.index.tsx:296 applyDraftGroupPick (codefluss)"
+  ]
+ },
+ {
+  "id": "W-13",
+  "funktion": "Weltseite: Verwaltung (umbenennen, Felder, Orte, Regeln, Fraktionen, Timeline, Assets, Analyse, Sessions, Fate, Export, Sichern)",
+  "amaster": "§12 (Z. 393-419)",
+  "soll": "Weltseite erlaubt Erstellen, Auswählen, Umbenennen, Felder ändern, Orte/Regeln/Fraktionen verwalten, Timeline öffnen, Assets, Analyse, Spawn, Sessions öffnen, Fate konfigurieren, Export, Sichern, gezielt Löschen (Z. 395-417).",
+  "kettenvertrag": "§5",
+  "sps_loesung": "keine gefunden",
+  "owner": "Client welt.$worldId.tsx -> Python repos.patch_world/backup_world/restore_world_backup",
+  "owner_soll_nach_architektur": "Welt-Owner",
+  "kette": {
+   "eingang": "welt.$worldId.tsx:123 p()=patchWorld; Export :601 packWorldWithSources; Sichern :610 apiBackupWorld; Session :590 startSession",
+   "verarbeitung": "PATCH /api/worlds app.py:808; backup app.py:836",
+   "speicherung": "worlds.json / Backup",
+   "wiederlesen": "GET /api/worlds/<id>; Turn-Reader nur für Teilmenge (siehe W-06)",
+   "entscheidung": "siehe W-06",
+   "folgewirkung": "siehe W-06",
+   "frontend": "Tabs live/basis/orte/struktur/fate/wissen/chars/ki/audit welt.$worldId.tsx:641-649"
+  },
+  "ui_bedienung": "Tabs der Weltseite",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Zahlreiche Weltseiten-Felder ohne Reader (W-06)",
+   "Jede Tastatureingabe ist ein PATCH (p() an onChange, welt.$worldId.tsx:725ff) - keine bewusste Speicherung; Revisionskonflikte UNKLAR"
+  ],
+  "abhaengig_von": [
+   "W-06",
+   "Timeline (Bereich Timeline)",
+   "Fate"
+  ],
+  "auswirkung_bestehender_fehler": "Sichtbare, aber wirkungslose Bedienung.",
+  "belege": [
+   "src/routes/welt.$worldId.tsx:123 patchWorld bei jeder Änderung (codefluss)"
+  ]
+ },
+ {
+  "id": "W-14",
+  "funktion": "Welt gezielt löschen ohne Fremdwirkung",
+  "amaster": "§12 (Z. 419)",
+  "soll": "Löschen eindeutig, betrifft keine andere Welt oder fremde Nutzerdaten (Z. 419).",
+  "kettenvertrag": "§15 Isolation",
+  "sps_loesung": "keine gefunden",
+  "owner": "Python repos.delete_world",
+  "owner_soll_nach_architektur": "Welt-Owner",
+  "kette": {
+   "eingang": "welt.$worldId.tsx:626 deleteWorld -> store.ts:735 -> DELETE /api/worlds app.py:815",
+   "verarbeitung": "repos.py:2367-2396: Fremdbelegung -> 409 WORLD_FOREIGN_DATA, Löschung Sessions/Kinder/Charaktere, Prüfungen _check_deleted_ids_absent",
+   "speicherung": "DELETE in einer Transaktion",
+   "wiederlesen": "verifiedRowsRemaining 0",
+   "entscheidung": "Fremddaten blockieren",
+   "folgewirkung": "-",
+   "frontend": "Button Löschen + confirm"
+  },
+  "ui_bedienung": "Button Löschen",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Client entfernt optimistisch auch Sessions/Charaktere (store.ts:739-743) ohne Server-Readback"
+  ],
+  "abhaengig_von": [
+   "Isolation"
+  ],
+  "auswirkung_bestehender_fehler": "gering",
+  "belege": [
+   "repos.py:2374-2377 Fremdbelegung 409 (codefluss)"
+  ]
+ },
+ {
+  "id": "W-15",
+  "funktion": "Spawn-Kandidat: Pflichtinhalt inkl. Quellbezug, Unsicherheit, belegt/abgeleitet",
+  "amaster": "§13 (Z. 432-451)",
+  "soll": "Kandidat enthält Name, Rolle, Herkunft, Weltbezug, Hintergrund, Ziele, Konflikte, Beziehungen, Wissen, Sprachprofil, körperliche Grundlage, Eigenschaften, Quellbezug, Unsicherheiten und belegt/abgeleitet je Feld (Z. 434-451).",
+  "kettenvertrag": "§8 Felder; §7 Nr. 12, 21",
+  "sps_loesung": "V25.1 CHAR-01 (normalize.ts:1182 Kommentar)",
+  "owner": "Client normalize.draftToSpawnCandidates/emptySpawnCandidate; gespeichert in world.spawnCandidates",
+  "owner_soll_nach_architektur": "Welt-Owner (Kandidaten als Weltdaten)",
+  "kette": {
+   "eingang": "Analyse/LLM welt.$worldId.tsx:353 spawnChars (/api/llm/characters app.py:2352)",
+   "verarbeitung": "welt.$worldId.tsx:366-405 Mapping inkl. fieldProvenance/derivedFields/directFields",
+   "speicherung": "worlds.json spawnCandidates (welt.$worldId.tsx:412)",
+   "wiederlesen": "Weltseite Spawn-Vorschau welt.$worldId.tsx:1164-1245",
+   "entscheidung": "-",
+   "folgewirkung": "Stamm (W-16)",
+   "frontend": "Spawn-Liste"
+  },
+  "ui_bedienung": "Spawn-Vorschau",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "SpawnCandidate-Typ (types.ts:178-223) hat keine Felder species, aliases/Anreden, canon, Körpergrunddaten (nur bodyNotes) - diese Stammfelder können aus Analyse nie in den Stamm gelangen",
+   "Kandidaten liegen im Welt-JSON (welt.$worldId.tsx:412 p({spawnCandidates})) - Kandidaten bleiben Kandidaten (ok), aber kein eigener Owner/Idempotenz"
+  ],
+  "abhaengig_von": [
+   "W-11"
+  ],
+  "auswirkung_bestehender_fehler": "Alias-/Erzähler-Identität (§7 Nr. 14) und Spezies fehlen im Stamm.",
+  "belege": [
+   "src/lib/matrix/types.ts:178-223 SpawnCandidate (codefluss)"
+  ]
+ },
+ {
+  "id": "W-16",
+  "funktion": "Spawn-Vorschau, Auswahl, Feldbearbeitung, Dubletten, Avatarfähigkeit -> Stamm anlegen",
+  "amaster": "§13 (Z. 453-465)",
+  "soll": "Vorschau vor dauerhaftem Spawn; Kandidaten auswählen, Felder bearbeiten, Dubletten verwerfen, Weltzuordnung bestätigen, Avatarfähigkeit festlegen; gleiche Namen führen Identitäten nicht zusammen (Z. 453-465).",
+  "kettenvertrag": "§8 'sichtbarer editierbarer Spawn-Entwurf -> bewusste Kandidatenauswahl -> Charakterstamm-Writer'",
+  "sps_loesung": "V25.1 CHAR-01",
+  "owner": "Client welt.$worldId.tsx commitSpawn -> store.addCharacter/patchCharacter -> Python repos.create_character/patch_character",
+  "owner_soll_nach_architektur": "Charakterstamm-Writer",
+  "kette": {
+   "eingang": "welt.$worldId.tsx:1164-1232 editSpawn, Namenskonflikt-Select :1150-1160, commitSpawn :509",
+   "verarbeitung": "resolveSpawnAction normalize.ts:1137; applyCandidateToStamm normalize.ts:1162; neuer Stamm welt.$worldId.tsx:545-566",
+   "speicherung": "POST /api/characters app.py:858 -> repos.py:2568 create_character (characters + world.characterIds)",
+   "wiederlesen": "GET /api/characters/<id> repos.py:2843 canonical_stem",
+   "entscheidung": "need-decision bei gleichem Namen (normalize.ts:1157)",
+   "folgewirkung": "Sessionstart build_new_session kernel.py:12696",
+   "frontend": "Charakterseite"
+  },
+  "ui_bedienung": "Spawn-Vorschau mit Inputs, Checkbox Avatar, Konflikt-Select, Button Spawn",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "In der Vorschau bearbeitete 'relations' (Strings, welt.$worldId.tsx:1212) gehen nur in worldNotes (welt.$worldId.tsx:567), Stammbeziehungen kommen aus stammRelations (welt.$worldId.tsx:542) - Bearbeitung wirkt nicht auf Ausgangsbeziehungen",
+   "Bearbeitete 'conflicts' gehen nur als Fallback in conflictStyle (normalize.ts:1188)",
+   "Avatarfähigkeit wird gespeichert, aber nicht gelesen (W-05)",
+   "Mehrere sequentielle Requests je Kandidat ohne Transaktion (welt.$worldId.tsx:526-573)"
+  ],
+  "abhaengig_von": [
+   "W-15",
+   "W-18"
+  ],
+  "auswirkung_bestehender_fehler": "Nutzerbearbeitung im Spawn geht teilweise verloren.",
+  "belege": [
+   "src/routes/welt.$worldId.tsx:542-567 stammRel vs worldNotes (codefluss)"
+  ]
+ },
+ {
+  "id": "W-17",
+  "funktion": "Charaktererstellung manuell, Charakterupload, Paketimport, Kanonableitung",
+  "amaster": "§13 (Z. 421-430)",
+  "soll": "Charaktere entstehen manuell, durch Analyse, Upload, Spawn aus Vorlage, Paketimport, Kanonableitung (Z. 423-430).",
+  "kettenvertrag": "§8",
+  "sps_loesung": "keine gefunden",
+  "owner": "Client charakter.index.tsx -> Python repos.create_character",
+  "owner_soll_nach_architektur": "Charakterstamm-Writer",
+  "kette": {
+   "eingang": "charakter.index.tsx:111 Stamm anlegen, :114 Avatar, :130 Paketimport",
+   "verarbeitung": "store.addCharacter store.ts:777",
+   "speicherung": "characters repos.py:2589",
+   "wiederlesen": "list_characters repos.py:2856",
+   "entscheidung": "-",
+   "folgewirkung": "-",
+   "frontend": "charakter.index.tsx"
+  },
+  "ui_bedienung": "Buttons Stamm/Avatar anlegen, Import",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Spawn aus Weltvorlage: spawnTemplates (welt.$worldId.tsx:1049-1053) ohne Reader im Spawnpfad"
+  ],
+  "abhaengig_von": [
+   "W-18",
+   "Upload Mode A (Bereich Upload)"
+  ],
+  "auswirkung_bestehender_fehler": "gering",
+  "belege": [
+   "src/routes/charakter.index.tsx:111-130 (codefluss)",
+   "grep spawnTemplates: nur Weltseite/types (codefluss)"
+  ]
+ },
+ {
+  "id": "W-18",
+  "funktion": "Charakterstamm: Writer -> SQLite -> Reload (PATCH)",
+  "amaster": "§14 (Z. 467-507)",
+  "soll": "Stamm enthält dauerhafte Grundwahrheit (stabile ID, Name/Anreden, ..., Quellen und Freigabestatus) (Z. 469-503).",
+  "kettenvertrag": "§8 'Charakterstamm-Writer -> SQLite -> Charakterseite nach Reload'",
+  "sps_loesung": "V56 canonical_stem (SPS:6129)",
+  "owner": "Python repos.patch_character / repos.get_character (learning.canonical_stem)",
+  "owner_soll_nach_architektur": "Charakterstamm-Owner",
+  "kette": {
+   "eingang": "charakter.$charId.tsx:83-89 p() -> store.ts:747 patchCharacter -> writeEditedFields -> apiPatchCharacter",
+   "verarbeitung": "repos.py:2601 patch_character: Owner-Prüfung :2606, canonical_stem :2616, Weltwechsel verboten :2640-2643",
+   "speicherung": "characters.json repos.py:2645",
+   "wiederlesen": "repos.py:2843 get_character -> canonical_stem",
+   "entscheidung": "pending Lernwerte gefiltert (learning.py canonical_stem)",
+   "folgewirkung": "Formulierung llm_contract.py:2755",
+   "frontend": "Rückanzeige über Store-Hydration"
+  },
+  "ui_bedienung": "Alle Stammfelder der Charakterseite (onChange)",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Jede Tastatureingabe ist ein PATCH (charakter.$charId.tsx:332ff) - keine bewusste Speicherung (für Kompass verlangt §15 Vorschau+bewusste Speicherung, W-24)"
+  ],
+  "abhaengig_von": [
+   "Isolation"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "Probe tmp_W (Flask-Testclient, frische SQLite, Provider ohne Key; probe_W_scripts/probe.py): PATCH personality=P_NEU, GET liefert P_NEU (ausgeführt)",
+   "repos.py:2640-2643 kein Weltwechsel (codefluss)"
+  ]
+ },
+ {
+  "id": "W-19",
+  "funktion": "Stammfelder (Persönlichkeit, Ziele, Ängste, Werte, Tabus ...) -> Reader im Turn -> Entscheidung",
+  "amaster": "§14 (Z. 478-500), §7",
+  "soll": "Stammwerte bilden die Grundlage des Figurenzustands und wirken auf Reaktion (Matrix10 Nr. 6, 16, 19); Kettenvertrag §8 verlangt Wirkung auf Kompass/Memory/Goal/Relationship/BrainContext und Verhalten.",
+  "kettenvertrag": "§8 'Kompass/Memory/Goal/Relationship/BrainContext lesen zuständige Werte -> Figurenrede und Verhalten zeigen charakterbezogene Wirkung'",
+  "sps_loesung": "V63 _appraisal_profile (kernel.py:3853), V92 appraisal_disposition_sources (kernel.py:3368)",
+  "owner": "Python kernel.bind_formulation_spiegel (Prompt), kernel.appraisal_payload/apply_appraisals (Entscheidung), kernel.rank_speakers (Sprecherwahl), kernel.reset_runtime_only (Startwert)",
+  "owner_soll_nach_architektur": "Stamm-Reader im BrainContext/Spiegel; Entscheidungen in Runtime/Relationship-Ownern",
+  "kette": {
+   "eingang": "PATCH /api/characters",
+   "verarbeitung": "Formulierung liest Stamm frisch llm_contract.py:2755",
+   "speicherung": "characters.json",
+   "wiederlesen": "personality/values/fears/taboos/likes/dislikes/secrets/coreFacts/humor/conflictStyle -> profile kernel.py:14566-14596 -> render_persona_brief llm_contract.py:1778-1808; Erleben-Payload profil kernel.py:3853-3867; Dispositionsquellen kernel.py:3368-3409",
+   "entscheidung": "(1) Persönlichkeit/Werte/Ängste/Tabus/Ziele: nur als vom Validator verlangte Dispositionsquelle für LLM-vorgeschlagene Runtime-/Beziehungsdeltas (kernel.py:4220-4221 _appraisal_cause_proofs) - ohne Provider keine Wirkung (app.py:3823). (2) fears: deterministisch nur 'vorhanden?' -> Start-fear 0.25 statt 0.1 (kernel.py:12876). (3) goals: beim Sessionstart in Session-Goals kopiert (kernel.py:12826-12843); lexikalisch in rank_speakers (kernel.py:11665). (4) knowledge: lexikalisch rank_speakers (kernel.py:11665), lokaler Renderer (llm_contract.py:136)",
+   "folgewirkung": "Stammänderung von personality wirkt sofort in laufende Sessions (Probe), goals nicht (Session-Kopie)",
+   "frontend": "charakter.$charId.tsx:422-468"
+  },
+  "ui_bedienung": "Persönlichkeit-Tab der Charakterseite",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Persönlichkeit, Werte, Tabus, Vorlieben, Konfliktstil, Humor beeinflussen keine deterministische Kernel-Entscheidung; ihr einziger Entscheidungsweg ist der LLM-Erleben-Vorschlag mit Zitatpflicht (kernel.py:4220); im lokalen/providerlosen Betrieb reine Promptzeilen",
+   "Ängste wirken deterministisch nur als Existenzprüfung (kernel.py:12876 'fear': 0.25 if c.get('fears') else 0.1) - Inhalt irrelevant",
+   "Stammziele erscheinen nicht im Brief (Probe: Ziel_C fehlt; llm_contract.py:1795-1796 'goals enter ... only through Foreground'); Stammziel-Edit nach Sessionstart erreicht laufende Session nicht, Persönlichkeits-Edit schon - uneinheitliche Stamm/Session-Semantik",
+   "rank_speakers liest Stammwissen/Stammziele per Wort-Treffer (kernel.py:11665-11669) - Keyword-Entscheidung (siehe W-25)"
+  ],
+  "abhaengig_von": [
+   "Appraisal/RuntimeState",
+   "RelationshipState",
+   "LLM-Provider",
+   "Foreground-Reader"
+  ],
+  "auswirkung_bestehender_fehler": "EPUB-Kette §7 Nr. 26 und KV §8 'Figurenrede und Verhalten zeigen charakterbezogene Wirkung' lokal nicht nachweisbar; Abnahme hängt am Provider.",
+  "belege": [
+   "kernel.py:12876 fear-Startwert nur aus Existenz (codefluss)",
+   "kernel.py:4220-4221 Dispositionsquellen-Validator (codefluss)",
+   "Probe tmp_W (Flask-Testclient, frische SQLite, Provider ohne Key; probe_W_scripts/probe.py): brief_has_P_DRITT=true, brief_Ziel_C=false, runtime_fear_c1=0.25, running_session_goals_after_stem_edit=[Ziel_B] (ausgeführt)"
+  ]
+ },
+ {
+  "id": "W-20",
+  "funktion": "Stamm ≠ Session: keine automatische Stammschreibung aus Sessionerleben",
+  "amaster": "§14 (Z. 505-507), §52",
+  "soll": "Aktuelle Verletzungen, Gefühle, Zusagen, Streitlagen, Beziehungsdrifts, Szenenziele dürfen nicht automatisch in den Stamm (Z. 505-507).",
+  "kettenvertrag": "§4 'Vermischung von Stamm- und Sessionzustand' verboten",
+  "sps_loesung": "V56 canonical_stem + approve_learned (SPS:6129, 6236); SPS:3934 Lernfunktionen ohne Aufrufer",
+  "owner": "Python learning.canonical_stem / repos.patch_character(approveLearned); God-Owner-Write app.kernel_session_response",
+  "owner_soll_nach_architektur": "Stamm nur über bewusstes Review (§52)",
+  "kette": {
+   "eingang": "Lernpfad learn_into_character repos.py:2649 (kein Aufrufer); God Scope 'character' kernel.py:10613-10615",
+   "verarbeitung": "God: _godOwnerWrites.characterKnowledge -> app.py:1430-1438 patch_character(knowledge)",
+   "speicherung": "characters.json knowledge",
+   "wiederlesen": "canonical_stem filtert nur learnedItems mit sessionId (learning.py canonical_stem)",
+   "entscheidung": "God-Charakterfakt wird ohne Review dauerhaftes Stammwissen für alle künftigen Sessions",
+   "folgewirkung": "Neue Session derselben Welt kennt God-Wissen aus anderer Session",
+   "frontend": "Tab 'Gelernt' charakter.$charId.tsx:618-660 (Übernehmen/Entfernen)"
+  },
+  "ui_bedienung": "Gelernt-Tab mit 'Dauerhaft übernehmen'",
+  "statischer_befund": "UNKLAR",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "God mit Scope 'character' schreibt direkt in characters.knowledge (app.py:1430-1438) ohne Review/Ledger; ob Scope 'character' = dauerhafter Stamm laut §46 gemeint ist: UNKLAR - wenn nicht, Stammverfälschung aus Session",
+   "learn_into_character (repos.py:2649) ist toter direkter Stamm-Writer ('kein Review') - Risiko bei Wiederanbindung"
+  ],
+  "abhaengig_von": [
+   "God (Bereich God/Regie)",
+   "Review §52"
+  ],
+  "auswirkung_bestehender_fehler": "Sessionisolation (KV §8 'Sessionkopie ohne Stammverfälschung', §7 Nr. 24) kann über God gebrochen werden.",
+  "belege": [
+   "app.py:1430-1438 patch_character knowledge aus God-Session (codefluss)",
+   "kernel.py:10613-10615 characterKnowledge (codefluss)"
+  ]
+ },
+ {
+  "id": "W-21",
+  "funktion": "Sessionkopie aus Welt + Stamm ohne Stammverfälschung, ohne fremde Sessionerlebnisse",
+  "amaster": "§14 (Z. 503-507); §18 (Verweis)",
+  "soll": "Neue Session übernimmt Welt und unveränderte Stämme, nicht Erlebnisse anderer Sessions (Matrix10 Nr. 8, 22).",
+  "kettenvertrag": "§8 'Sessionkopie ohne Stammverfälschung'; §7 Nr. 24",
+  "sps_loesung": "V25 SES-01/SES-02 (kernel.py:12715 Docstring)",
+  "owner": "Python kernel.build_new_session + kernel.reset_runtime_only + kernel.seed_relations; repos.create_session",
+  "owner_soll_nach_architektur": "Session-Owner serverseitig",
+  "kette": {
+   "eingang": "POST /api/sessions app.py:915 (Client: store.startSession)",
+   "verarbeitung": "repos.py:2971-3046: Kernel-Felder ignoriert :3009-3011, build_new_session kernel.py:12696 (canonical_stem :12723, natives nur isWorldNative :12729, Runtimes aus Stamm :12804, Ziele deep-copy :12826-12843, memories/facts leer :12844-12847)",
+   "speicherung": "_insert_built_session repos.py:3088",
+   "wiederlesen": "get_session",
+   "entscheidung": "Stamm nicht mutiert (deepcopy)",
+   "folgewirkung": "Erster Turn",
+   "frontend": "welt.$worldId.tsx:590 startSession"
+  },
+  "ui_bedienung": "Button Session starten (Weltseite/Chat)",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Stammwissen (knowledge) wird nicht als Memory/Wissen in die Session übernommen (memories=[] kernel.py:12844); es wirkt nur über Spiegel/Prompt",
+   "Figuren ohne isWorldNative=true werden still aus der Session ausgeschlossen (kernel.py:12729)",
+   "Session liest Stamm danach live (Persönlichkeit) aber Ziele als Kopie - keine definierte Snapshot-Semantik (W-19)"
+  ],
+  "abhaengig_von": [
+   "Sessions (Bereich Sessions)",
+   "W-20"
+  ],
+  "auswirkung_bestehender_fehler": "Stammänderung während laufender Session verändert diese Session teilweise.",
+  "belege": [
+   "Probe tmp_W (Flask-Testclient, frische SQLite, Provider ohne Key; probe_W_scripts/probe.py): stem_unchanged_after_session=true, session_goals=[Ziel_B] (ausgeführt)",
+   "kernel.py:12844-12847 leere Memories/Facts (codefluss)"
+  ]
+ },
+ {
+  "id": "W-22",
+  "funktion": "Chathere-Kompass als Verhaltenslinse: gelesen und entscheidungswirksam (Hemmschwelle)",
+  "amaster": "§15 (Z. 509-562)",
+  "soll": "Kompass ist editierbare Linse über Profilbestandteile; darf Ton, Ausdruck, Hemmschwelle, Annäherung/Rückzug, Eskalations-/Beruhigungsneigung beeinflussen (Z. 534-545).",
+  "kettenvertrag": "§8 'Kompass ... lesen zuständige Werte'",
+  "sps_loesung": "V63.1 authored_compass (SPS:5044, 5062); V62 compass_cell; V65G.6 Fix3b (SPS:4309)",
+  "owner": "Python kernel.authored_compass / compass_cell / apply_appraisals / fire_from_proposals; Spiegel compassLens",
+  "owner_soll_nach_architektur": "Charakterstamm (Kompass) als Reader-Linse; Runtime-Owner entscheidet",
+  "kette": {
+   "eingang": "charakter.$charId.tsx:541-600 'Kompass speichern' (:556) -> PATCH compass",
+   "verarbeitung": "authored_compass kernel.py:3117 (Platzhalter raus), compass_cell kernel.py:3125",
+   "speicherung": "characters.json compass",
+   "wiederlesen": "Spiegel compassLens kernel.py:14500-14524 -> Brief 'DEIN KOMPASS' llm_contract.py:1809-1825; Erleben-Payload kernel.py:4013-4015",
+   "entscheidung": "Schwelle der Zelle entscheidet, ob vorgeschlagener Affekt übernommen wird (kernel.py:4292-4307 taken = act >= threshold); fire_from_proposals kernel.py:3178-3230 (Schwelle + stance); rank_speakers lexikalisch kernel.py:11670",
+   "folgewirkung": "Runtime-Affekt (apply_appraisals), Sprecherrang",
+   "frontend": "Kompass-Tab"
+  },
+  "ui_bedienung": "Kompass-Tab: ableiten, Schwellen-Slider, speichern, löschen",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Schwellenentscheidung greift nur auf LLM-Erleben-Vorschläge; ohne Provider wirkt der Kompass deterministisch nur über die Wortlinse (W-25)"
+  ],
+  "abhaengig_von": [
+   "Appraisal/RuntimeState",
+   "LLM-Provider"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "kernel.py:4292-4307 Kompass-Schwelle im Writer (codefluss)",
+   "Probe tmp_W (Flask-Testclient, frische SQLite, Provider ohne Key; probe_W_scripts/probe.py): brief_has_R_ANGST=true, spiegel_compassLens=[Angst] (ausgeführt)"
+  ]
+ },
+ {
+  "id": "W-23",
+  "funktion": "Kompass-Verbote: keine Ereignisse, Fakten, Wissen, Zeugen, Beziehungsänderung ohne Ereignis, kein Ersatz für Runtime/SceneState",
+  "amaster": "§15 (Z. 547-558)",
+  "soll": "Kompass darf niemals Ereignisse/SceneFacts/Wissen erzeugen, Beziehungen ohne Ereignis verändern, God/Regie überschreiben, RuntimeState/SceneState ersetzen oder zweite Faktenmaschine sein (Z. 547-558).",
+  "kettenvertrag": "§4 verbotene Abkürzungen (Keyword-Automat)",
+  "sps_loesung": "V60.7 Wortlinse im Chatpfad entfernt (SPS:5272); offen laut SPS:5206 ('apply_knowledge_effect nutzt weiter lexikalische Linse und feste Tabelle')",
+  "owner": "Python kernel.apply_knowledge_effect + kernel._KNOWLEDGE_EFFECT",
+  "owner_soll_nach_architektur": "Runtime/Relationship-Owner aus validierter Interpretation, nicht aus Kompass-Wortliste",
+  "kette": {
+   "eingang": "God Scope knowledge kernel.py:10724-10727",
+   "verarbeitung": "apply_knowledge_effect kernel.py:2432: fire_compass_lens (Wortliste _COMPASS_TRIGGERS kernel.py:13300) -> feste Delta-Tabelle _KNOWLEDGE_EFFECT kernel.py:2296-2312",
+   "speicherung": "Runtime-Deltas und gerichtete Beziehungsdeltas (rel trust/hostility/closeness) + Ziel/Absicht aus Kompass-Drive (Docstring kernel.py:2447-2454)",
+   "wiederlesen": "Folgeturn Runtime/Relations",
+   "entscheidung": "Wort im God-Wissenstext -> Bedeutungsraum -> fixe Beziehungs-/Runtime-Änderung gegenüber namentlich genannten Figuren (_named_participants kernel.py:2321)",
+   "folgewirkung": "Beziehung/Runtime im Folgeturn",
+   "frontend": "God-Eingabe im Chat"
+  },
+  "ui_bedienung": "God-Wissenseingabe",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "apply_knowledge_effect (kernel.py:2432-2481, aufgerufen kernel.py:10727) leitet aus Wortliste + Kompass feste Beziehungsdeltas gegenüber im Text bloß genannten Figuren ab - Kompass als zweite Zustandsmaschine; Namensnennung als Beziehungsziel (§4 verboten)",
+   "Ohne autorisierten Kompass wird eine neutrale Linse über alle Räume synthetisiert (kernel.py:2464-2466) - Wortliste wirkt auch ohne Profil"
+  ],
+  "abhaengig_von": [
+   "God (Bereich God/Regie)",
+   "RelationshipState"
+  ],
+  "auswirkung_bestehender_fehler": "God-Wissen erzeugt nicht ereignisbegründete Beziehungsdrifts; Relationship-Bereich erbt falschen Writer.",
+  "belege": [
+   "kernel.py:2296-2312 _KNOWLEDGE_EFFECT Tabelle (codefluss)",
+   "kernel.py:2481 fire_compass_lens auf Wissenstext (codefluss)",
+   "kernel.py:10727 Aufruf aus God (codefluss)"
+  ]
+ },
+ {
+  "id": "W-24",
+  "funktion": "Kompass bearbeiten: sichtbar, mit Vorschau, bewusste Speicherung",
+  "amaster": "§15 (Z. 560-562)",
+  "soll": "Änderungen am Kompass erfolgen sichtbar über das Frontend, mit Vorschau und bewusster Speicherung (Z. 560-562).",
+  "kettenvertrag": "§5",
+  "sps_loesung": "V25 LLM-02 (charakter.$charId.tsx:110 Kommentar)",
+  "owner": "Client charakter.$charId.tsx Kompass-Tab; Python /api/llm/compass (app.py:2376) nur Vorschlag",
+  "owner_soll_nach_architektur": "Charakterstamm-Writer",
+  "kette": {
+   "eingang": "Ableiten charakter.$charId.tsx:96-124 (apiDeriveCompass, Button :546), Slider :575-590 (setCompassDraft), Speichern :550-558, Löschen :559-561",
+   "verarbeitung": "PATCH compass",
+   "speicherung": "characters.json",
+   "wiederlesen": "W-22",
+   "entscheidung": "W-22",
+   "folgewirkung": "W-22",
+   "frontend": "Anzeige stance/Schwelle/reaction/bodyCue :566-575"
+  },
+  "ui_bedienung": "Kompass-Tab",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Nur die Schwelle ist editierbar (Range-Slider charakter.$charId.tsx:576-588); reaction, drive, bodyCue, stance sind nicht bearbeitbar - 'editierbare Verhaltenslinse' nur teilweise",
+   "'Kompass löschen' schreibt sofort ohne Vorschau (charakter.$charId.tsx:559-561)",
+   "Ableitung sendet nur name/role/biography/personality/values/fears/speech/rules (charakter.$charId.tsx:100-109) - Profilbestandteile aus §15 (Bindungsstil, Konfliktstil, Humor, Tabus) fehlen"
+  ],
+  "abhaengig_von": [
+   "LLM-Provider"
+  ],
+  "auswirkung_bestehender_fehler": "Nutzer kann Kompassinhalt nicht korrigieren.",
+  "belege": [
+   "src/routes/charakter.$charId.tsx:576-588 nur threshold-Slider (codefluss)"
+  ]
+ },
+ {
+  "id": "W-25",
+  "funktion": "SceneBehaviorEngine-Verbot / kein Keyword-zu-Verhalten-Automat / kein zweiter Verhaltenspfad",
+  "amaster": "§16 (Z. 564-578)",
+  "soll": "Keine statischen Szenenreaktionslisten, keine Keyword-zu-Verhalten-Automaten, kein zweiter Verhaltenspfad neben Profil, Memory, Runtime, Beziehung, Körper, SceneState, Authority (Z. 568-576).",
+  "kettenvertrag": "§4 'SceneBehaviorEngine oder Keyword-Automat als zweite Verhaltensmaschine' verboten",
+  "sps_loesung": "SPS:1697 I21 TEIL ('Negativinventar nicht vollständig'); V60.7 (SPS:5272)",
+  "owner": "Python kernel.fire_compass_lens (_COMPASS_TRIGGERS), kernel.rank_speakers, kernel.apply_knowledge_effect, kernel._emotion_for_trigger",
+  "owner_soll_nach_architektur": "keiner (verboten)",
+  "kette": {
+   "eingang": "Eingabetext/Stimulus",
+   "verarbeitung": "fire_compass_lens kernel.py:13378 mit Wortliste _COMPASS_TRIGGERS kernel.py:13300-13316 (auch an Frontend ausgeliefert /api/compass/triggers app.py:4216)",
+   "speicherung": "via apply_knowledge_effect Runtime/Relations (W-23)",
+   "wiederlesen": "-",
+   "entscheidung": "rank_speakers kernel.py:11670-11673 addiert Aktivierung 'Synapse <Raum>' zum Sprecherscore (aufgerufen app.py:1640, kernel.py:11589/11853) -> pick_speaker; bind_formulation_spiegel kernel.py:14293 spiegelt lexikalisch gefeuerte Räume in den Brief",
+   "folgewirkung": "Sprecherwahl und Prompt-'fired'",
+   "frontend": "src/lib/matrix/compass.ts fireSynapses (Spiegel)"
+  },
+  "ui_bedienung": "keine (implizit)",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Wortliste _COMPASS_TRIGGERS (kernel.py:13300) entscheidet über rank_speakers (kernel.py:11670) mit, welche Figur spricht - Keyword-zu-Verhalten",
+   "Wortliste -> feste Runtime/Beziehungsdeltas im God-Wissenspfad (W-23)",
+   "Lexikalisch gefeuerte Räume werden als 'fired' in den Formulierungsspiegel gelegt (kernel.py:14293-14294) - zweiter Verhaltenshinweis neben Runtime",
+   "_emotion_for_trigger/_TRIGGER_FALLBACK_EMOTION (kernel.py:13321-13360) ohne Aufrufer (toter Keyword-Emotionspfad)"
+  ],
+  "abhaengig_von": [
+   "Sprecherwahl §28 (Bereich Orchestrierung)"
+  ],
+  "auswirkung_bestehender_fehler": "Sprecherwahl und God-Wissenswirkung hängen an Wortlisten statt Zustand.",
+  "belege": [
+   "kernel.py:11670-11673 fired -> parts['emotion'] (codefluss)",
+   "Probe tmp_W (Flask-Testclient, frische SQLite, Provider ohne Key; probe_W_scripts/probe.py): rank_speakers('Dunkel Angst') reasons=['Synapse Angst'] Score 0.56 (ausgeführt)"
+  ]
+ },
+ {
+  "id": "W-26",
+  "funktion": "Charakterseite: Felder ohne Writer oder ohne Reader",
+  "amaster": "§17 (Z. 580-604), §14",
+  "soll": "Profilfelder anzeigen und bearbeiten; jedes Feld braucht Writer und realen Reader (KV §5, §8).",
+  "kettenvertrag": "§8 'Ein Frontendfeld ohne persistierenden Writer und realen Reader ist nicht GRÜN'",
+  "sps_loesung": "keine gefunden",
+  "owner": "Client charakter.$charId.tsx -> repos.patch_character; Reader kernel.bind_formulation_spiegel/llm_contract.render_persona_brief",
+  "owner_soll_nach_architektur": "Charakterstamm + Spiegel-Reader",
+  "kette": {
+   "eingang": "charakter.$charId.tsx:331-671",
+   "verarbeitung": "patch_character",
+   "speicherung": "characters.json",
+   "wiederlesen": "Spiegel profile kernel.py:14566-14596; Brief llm_contract.py:1776-1808",
+   "entscheidung": "siehe W-19",
+   "folgewirkung": "-",
+   "frontend": "Tabs Basisdaten/Persönlichkeit/Körper/Beziehungen/Kompass/Memory/Wortschatz/Gelernt/KI"
+  },
+  "ui_bedienung": "alle Felder der Charakterseite",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Writer ohne Reader (kein Backendtreffer): sourceReleaseStatus 'Quellen-Freigabe' (:352), status (:377), visibility (:384), canBeAvatar (:368), typicalPlace (:366), worldNotes (:402), body.strength und body.notes (:476-490), sourceRefs (:713)",
+   "Nur bis Spiegel, nicht in den Brief (render_persona_brief llm_contract.py:1732ff): canon 'Kanon' (:405, Spiegel relevantCanon kernel.py:14573), species (:349), origin (:346), appearance (:396), lastingAbilities (:414), aliases nur Namensbindung (kein Brief) - Probe: CANON_X und 'Elf' fehlen im Brief",
+   "Ziele (:445) nur über Session-Goal-Kopie/Foreground, nicht direkt (W-19)",
+   "fieldProvenance (belegt/abgeleitet) wird gespeichert (normalize.ts:1198) aber auf der Charakterseite nicht angezeigt (kein Treffer in charakter.$charId.tsx)",
+   "Stammwissen (:466) erscheint nur im lokalen Renderer/Planner (llm_contract.py:136, 1630) und rank_speakers, nicht als Memory"
+  ],
+  "abhaengig_von": [
+   "W-19",
+   "W-05"
+  ],
+  "auswirkung_bestehender_fehler": "KV §8 Feldkette für diese Felder ROT; EPUB-befüllte Felder wirkungslos.",
+  "belege": [
+   "Probe tmp_W (Flask-Testclient, frische SQLite, Provider ohne Key; probe_W_scripts/probe.py): brief_has_CANON_X=false, brief_has_Elf=false (ausgeführt)",
+   "grep sourceReleaseStatus/canBeAvatar/typicalPlace in matrix_api Turnpfad: 0 Reader (codefluss)"
+  ]
+ },
+ {
+  "id": "W-27",
+  "funktion": "Charakterseite: Stamm vs. Sessionzustand getrennt; Sessionzustände, Grundbeziehungen, Stammwissen, Reviewvorschläge",
+  "amaster": "§17 (Z. 582-604)",
+  "soll": "Sessionzustände getrennt aufrufen, Grundbeziehungen ansehen, Stammwissen verwalten, Reviewvorschläge prüfen; klare Trennung Stamm/Session (Z. 594-604).",
+  "kettenvertrag": "§8, §15 (Review)",
+  "sps_loesung": "V56 Gelernt-Tab; SPS:3939",
+  "owner": "Client charakter.$charId.tsx; Python repos.create_review",
+  "owner_soll_nach_architektur": "Stamm-Owner / Session-Owner / Review §52",
+  "kette": {
+   "eingang": "Session-Select charakter.$charId.tsx:283-312; Profiler-Review :167-182 addReview",
+   "verarbeitung": "Session-Sicht liest Store-Session runtimes; Review POST /api/reviews app.py:1148",
+   "speicherung": "reviews",
+   "wiederlesen": "Review-Zähler :723",
+   "entscheidung": "-",
+   "folgewirkung": "Review-Übernahme (Bereich Review)",
+   "frontend": "Panel 'Session-Sicht (ändert den Stamm nicht)'"
+  },
+  "ui_bedienung": "Session-Select, Gelernt-Tab, KI-Tab Review",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Session-Sicht zeigt nur 8 Runtime-Werte (:298-306); Sessionbeziehungen/-ziele der Figur nicht",
+   "Reviewvorschläge werden nur gezählt (:723), nicht auf der Charakterseite geprüft"
+  ],
+  "abhaengig_von": [
+   "Review §52",
+   "Sessions"
+  ],
+  "auswirkung_bestehender_fehler": "gering",
+  "belege": [
+   "src/routes/charakter.$charId.tsx:285-312 (codefluss)"
+  ]
+ },
+ {
+  "id": "W-28",
+  "funktion": "Charakter exportieren, sichern, gezielt löschen",
+  "amaster": "§17 (Z. 598-602)",
+  "soll": "Charakter exportieren, sichern, gezielt löschen (Z. 598-602).",
+  "kettenvertrag": "§15",
+  "sps_loesung": "V52 delete readback (store.ts:793 Kommentar)",
+  "owner": "Python repos.backup_character/restore_character_backup/delete_character; Client packCharacter",
+  "owner_soll_nach_architektur": "Charakterstamm-Owner",
+  "kette": {
+   "eingang": "charakter.$charId.tsx:218 Export, :221-232 Sichern, :236-252 Löschen, :262-279 Wiederherstellen",
+   "verarbeitung": "repos.py:2501, 2540, 2669",
+   "speicherung": "Backup/Delete",
+   "wiederlesen": "list_character_backups repos.py:2526; delete readback store.ts:796-808",
+   "entscheidung": "-",
+   "folgewirkung": "Sessionbindungen bereinigt (repos.py:2788-2797)",
+   "frontend": "Buttons"
+  },
+  "ui_bedienung": "Export/Sichern/Löschen/Wiederherstellen",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Wiederherstellen aktualisiert den Client-Store nicht (charakter.$charId.tsx:268-271 nur Meldung)"
+  ],
+  "abhaengig_von": [
+   "Snapshot/Backup (Bereich Reset)"
+  ],
+  "auswirkung_bestehender_fehler": "Anzeige nach Restore veraltet bis Reload.",
+  "belege": [
+   "src/routes/charakter.$charId.tsx:268-271 (codefluss)"
+  ]
+ },
+ {
+  "id": "W-29",
+  "funktion": "EPUB-Kette Nr. 1-9: Auswahl, sichere Prüfung, container/OPF, Spine/NCX/Landmarks, Teile, Vorauswahl, Leer/Scan, Limits sichtbar",
+  "amaster": "§10/§11 + Matrix10 Nr. 2",
+  "soll": "EPUB ohne Pfadeingabe wählen, sicher entpacken, echte Buchreihenfolge, Vorspann/Werbung unterscheidbar, Teile an-/abwählbar, Limits/Auslassungen sichtbar (KV §7 Nr. 1-9).",
+  "kettenvertrag": "§7 Nr. 1-9",
+  "sps_loesung": "SPS:681 'Source World G18-G23' (offener Block)",
+  "owner": "Client src/lib/matrix/epub.ts extractTextFromFile/inferSpineZones/joinSelectedParts",
+  "owner_soll_nach_architektur": "UNKLAR (Client-Parser zulässig, solange Ergebnis serverseitig validiert)",
+  "kette": {
+   "eingang": "welt.index.tsx:120 runAnalyze(file)",
+   "verarbeitung": "epub.ts:309 extractTextFromFile; Limits epub.ts:16-21; Zip-Bomb epub.ts:572-582; Spine epub.ts:672-678; Landmarks/NCX epub.ts:682-693; Zonen epub.ts:863; Vorauswahl epub.ts:135",
+   "speicherung": "Teile als Dokumente persistPartDocuments (welt.index.tsx:301)",
+   "wiederlesen": "-",
+   "entscheidung": "defaultPartSelected epub.ts:135",
+   "folgewirkung": "Analyse",
+   "frontend": "Teileliste welt.index.tsx:510-555; omittedParts sichtbar"
+  },
+  "ui_bedienung": "Dateiwahl, Teile-Liste mit Haken, 'Analysieren'",
+  "statischer_befund": "UNKLAR",
+  "status": "UNGEPRÜFT",
+  "defekte": [
+   "Spine wird bei MAX_HTML_CHAPTERS=200 still abgeschnitten (epub.ts:697 spine.slice) - Sichtbarkeit der Auslassung UNKLAR",
+   "MAX_JOIN_CHARS 400000 (epub.ts:20) - Benennung über omitted (welt.index.tsx:150) vorhanden; Analysegrenze serverseitig nicht geprüft"
+  ],
+  "abhaengig_von": [
+   "Upload/Dokumentschicht (Bereich Upload)"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "src/lib/matrix/epub.ts:16-21, 572-582, 672-697 (codefluss)"
+  ]
+ },
+ {
+  "id": "W-30",
+  "funktion": "EPUB-Kette Nr. 10-20: Zielwahl, Entwurf, Provenienz, Werbe-Ausschluss, Identität, Commit, keine Dubletten, Reload",
+  "amaster": "§10, §11",
+  "soll": "Entwurf nicht-kanonisch und editierbar; Quelle/Kapitel/Unsicherheit erhalten; bewusster Commit in gewählten Owner; keine Dubletten; Reload lädt committed Werte (KV §7 Nr. 10-20).",
+  "kettenvertrag": "§7 Nr. 10-20",
+  "sps_loesung": "keine gefunden",
+  "owner": "Client welt.index.tsx commitNew/commitExtend; Python repos.create_world/patch_world/create_document",
+  "owner_soll_nach_architektur": "Welt-Owner, ein Commit",
+  "kette": {
+   "eingang": "welt.index.tsx:291/319",
+   "verarbeitung": "commitDraft normalize.ts:446; extendWorldFromDraft",
+   "speicherung": "upsertWorld store.ts:695 (mehrere Requests)",
+   "wiederlesen": "GET /api/worlds (Reload)",
+   "entscheidung": "-",
+   "folgewirkung": "Spawn",
+   "frontend": "Weltseite"
+  },
+  "ui_bedienung": "Entwurf-Tab, Commit-Buttons",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Nr. 17/19: nicht-atomarer Commit (W-08)",
+   "Nr. 18: neue Welt bei jedem Commit (W-09)",
+   "Nr. 16: Einzelfeldbearbeitung im Entwurf nicht belegt (W-12)",
+   "Nr. 15: Weltfelder ohne Reader (W-06)"
+  ],
+  "abhaengig_von": [
+   "W-06",
+   "W-08",
+   "W-09",
+   "W-11",
+   "W-12"
+  ],
+  "auswirkung_bestehender_fehler": "Gesamte EPUB-Achse ROT.",
+  "belege": [
+   "siehe W-08/W-09 (codefluss)"
+  ]
+ },
+ {
+  "id": "W-31",
+  "funktion": "EPUB-Kette Nr. 21-26: Kandidat -> Stamm -> Session -> Chat/Fate/Recall lesen Importwerte -> Folgeturn-Wirkung",
+  "amaster": "§13, §14, §15",
+  "soll": "Kandidaten bleiben Kandidaten; Figuren mit stabiler ID und vollständigem Stamm; Session übernimmt Stämme; Chat/Fate/Recall/Reaktion lesen importierte Werte; Folgeturn zeigt Verhaltenwirkung (KV §7 Nr. 21-26).",
+  "kettenvertrag": "§7 Nr. 21-26",
+  "sps_loesung": "keine gefunden",
+  "owner": "siehe W-15/W-16/W-21/W-19",
+  "owner_soll_nach_architektur": "Stamm-, Session-, Spiegel-Owner",
+  "kette": {
+   "eingang": "Spawn",
+   "verarbeitung": "W-16",
+   "speicherung": "characters",
+   "wiederlesen": "W-19/W-26",
+   "entscheidung": "W-19",
+   "folgewirkung": "UNGEPRÜFT (kein Live-Folgeturn)",
+   "frontend": "Chat"
+  },
+  "ui_bedienung": "Spawn, Session starten, Chat",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "Nr. 22 'vollständiger Stamm': species/aliases/canon nicht aus Kandidat (W-15)",
+   "Nr. 25: viele importierte Welt-/Stammfelder ohne Turn-Reader (W-06, W-26)",
+   "Nr. 26: Wirkung lokal ohne Provider nicht nachweisbar (W-19)"
+  ],
+  "abhaengig_von": [
+   "W-15",
+   "W-16",
+   "W-19",
+   "W-21",
+   "W-26",
+   "Fate",
+   "Recall"
+  ],
+  "auswirkung_bestehender_fehler": "EPUB-Welt nur angezeigt, teilweise nicht wirksam.",
+  "belege": [
+   "siehe verknüpfte Funktionen"
+  ]
+ },
+ {
+  "id": "W-32",
+  "funktion": "KV §8 Charakterprofil-Kette: belegt/abgeleitet/unsicher bis Charakterseite, LLM-Ergänzung fehlender Felder",
+  "amaster": "§13 (Z. 449-451), §14 (Z. 502)",
+  "soll": "Jedes Frontend-Charakterfeld nach Spawn nicht unbegründet leer; Kennzeichnung belegt/abgeleitet/unsicher bleibt erhalten und sichtbar; Ergänzung nicht als Buchbeleg (KV §8).",
+  "kettenvertrag": "§8 vollständig",
+  "sps_loesung": "V49 Feldprovenienz (types.ts:260); llm_contract.py:3592-3596, 3702-3738, 3984-3989 (Provenienz-Setzung)",
+  "owner": "Python llm_contract complete_profiles_from_config/generate_characters_from_config (Vorschlag); Client applyCandidateToStamm",
+  "owner_soll_nach_architektur": "Charakterstamm mit Feldprovenienz",
+  "kette": {
+   "eingang": "/api/llm/complete-profiles app.py:2368; /api/llm/characters app.py:2352",
+   "verarbeitung": "fieldProvenance gesetzt llm_contract.py:3702-3738/3984-3989; Spawn übernimmt fieldProvenance normalize.ts:1198",
+   "speicherung": "characters.json fieldProvenance",
+   "wiederlesen": "Charakterseite: keine Anzeige; Spawn-Vorschau: direkt/abgeleitet welt.$worldId.tsx:1245",
+   "entscheidung": "-",
+   "folgewirkung": "-",
+   "frontend": "nur Spawn-Vorschau"
+  },
+  "ui_bedienung": "Spawn-Vorschau 'direkt/abgeleitet'",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "fieldProvenance nach Spawn auf der Charakterseite unsichtbar (KV §8 'Kennzeichnung ... Charakterseite nach Reload')",
+   "Lokaler Fallback füllt Felder mit Platzhaltern (llm_contract.py:3175-3182 z. B. personality '<Name> spricht knapp und prüft die Lage.', humor 'trocken', llm_contract.py:3950-3957 typicalPlace=origin, worldNotes=erster Biografiesatz) - Kennzeichnung als abgeleitet je Feld UNKLAR"
+  ],
+  "abhaengig_von": [
+   "W-15",
+   "W-26",
+   "LLM-Provider"
+  ],
+  "auswirkung_bestehender_fehler": "Platzhalter erscheinen als Profil, ohne dass der Nutzer Ableitung erkennt.",
+  "belege": [
+   "llm_contract.py:3175-3182 lokaler Profil-Platzhalter (codefluss)",
+   "grep fieldProvenance in charakter.$charId.tsx: 0 (codefluss)"
+  ]
+ }
+]

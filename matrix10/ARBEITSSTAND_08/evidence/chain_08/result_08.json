@@ -1,0 +1,472 @@
+{
+  "stand": "08",
+  "einordnung": "K-02 Wahrnehmung/Wissen/Gedaechtnis/Abruf auf P25 + 06a + 07; Gesamtprodukt ROT, keine Produktfreigabe",
+  "product_release": false,
+  "teilpruefungen": {
+    "0_integritaet": {
+      "status": "PASS",
+      "overlay_08": {
+        "matrix_api/kernel.py": "82c9892bb74deae85ee81eee62a4ae12d95f2f3be432f3d0b599af45853c3559",
+        "matrix_api/app.py": "a7272cb93049ae0c010e23fcbd687b1e749decc938c308dc34dcc996f5454965",
+        "src/routes/memory.tsx": "6c377589ac96cde7ca29e54aafc9967299d0a4b302af0e474b74014e5675d462",
+        "src/lib/matrix/api.ts": "5d77063e2dd7e9d4b58f5dd0caf08c1592fafa952f34bb394676871c96c3dfe6"
+      },
+      "basis_sha256": "33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1",
+      "ersetzt_06": {
+        "matrix_api/scene_state.py": "34c70dbd12281e2b2656171b25fc6bd517f6288533b67a6f02ec92c66c4ffee6",
+        "matrix_api/app.py": "a17b6f47012df1751c9551402e8b195549348e58906a949bd6e108c0375519a3",
+        "src/lib/matrix/api.ts": "e6d31f9fd46615df354bb5f614ae6a0ed06ae62004814a2e6d0124b5853d4fc5",
+        "src/routes/chat.index.tsx": "446627abfaa51f6d0f9e13fb17cc80c7f5a7a38e36294859386edecdbf6c1952"
+      },
+      "overlay_06_dateien": 12,
+      "overlay_07": {
+        "matrix_api/app.py": {
+          "massnahme": "K-01",
+          "sha256": "4535fbebec7ce0b7a7ace1e5a6e1f850377b3c2f69ea517e2e5b3013c31368c1"
+        },
+        "matrix_api/scene_state.py": {
+          "massnahme": "K-01",
+          "sha256": "ec5408fc645d8ca909ea0816c087f4860a7322e16e1308b420e373f93be9eded"
+        },
+        "matrix_api/kernel.py": {
+          "massnahme": "K-01",
+          "sha256": "ae4cb81389f5f6b2c5bed25138c0a1a3aa0a5388d229f7c11547234888026179"
+        },
+        "src/lib/matrix/kernel-bridge.ts": {
+          "massnahme": "K-01",
+          "sha256": "ec66e22d66c679f010b7e4f17812e78d85c5bb51f09089268438ec5ce3e5c3fa"
+        },
+        "src/routes/chat.$sessionId.tsx": {
+          "massnahme": "K-01",
+          "sha256": "f0731d4fd9b5f877da6ee3ba159769462f5cc3b37d40e846731ccadbecb7e960"
+        },
+        "matrix_api/repos.py": {
+          "massnahme": "SEC",
+          "sha256": "75f1b1eba70ea88975bfa444962671563b1a5e74abea552c82396eb453e68de1"
+        }
+      }
+    },
+    "A_fail_closed_ohne_bibliothek": {
+      "status": "PASS",
+      "ausgabe": [
+        "FAILCLOSED body_contact_standing NATIVE_BOUNDARY_UNAVAILABLE 503",
+        "FAILCLOSED restricted_refusals_standing NATIVE_BOUNDARY_UNAVAILABLE 503",
+        "FAILCLOSED restricted_permissions_standing NATIVE_BOUNDARY_UNAVAILABLE 503"
+      ]
+    },
+    "B_cargo_test": {
+      "status": "PASS",
+      "passed": 86,
+      "failed": 0
+    },
+    "C_build_und_K1_abi3": {
+      "status": "PASS",
+      "abi3_tests": 6
+    },
+    "D_einwilligungskette_stage08": {
+      "status": "PASS",
+      "soll_erfuellt": "10/10",
+      "rot": []
+    },
+    "D2_differenz_p25": {
+      "status": "PASS",
+      "p25_rot": [
+        "C04_FREMDER_GIVER",
+        "C04_ABGELAUFENE_BREITE_ZUSTIMMUNG",
+        "C04_ABGELAUFENE_EINZELABLEHNUNG",
+        "C04_ABGELAUFENE_EINZELZUSTIMMUNG",
+        "S05_WIDERRUF_DER_AUSNAHME",
+        "W2_ACTOR_NICHT_SPRECHER",
+        "W3_OHNE_PROPOSITION"
+      ],
+      "repariert": [
+        "C04_ABGELAUFENE_BREITE_ZUSTIMMUNG",
+        "C04_ABGELAUFENE_EINZELABLEHNUNG",
+        "C04_ABGELAUFENE_EINZELZUSTIMMUNG",
+        "C04_FREMDER_GIVER",
+        "S05_WIDERRUF_DER_AUSNAHME",
+        "W2_ACTOR_NICHT_SPRECHER",
+        "W3_OHNE_PROPOSITION"
+      ],
+      "verschlechtert": []
+    },
+    "D3_http_503": {
+      "status": "PASS",
+      "anfragen_je_variante": 12,
+      "ok_alle_200": true,
+      "abweichungen": []
+    },
+    "D3_K2a_verschluckte_pfade": {
+      "status": "PASS",
+      "m2_prepare_meldung_falsch": [],
+      "ausfallpunkte": 84,
+      "fail_open": 0,
+      "stellen": [
+        {
+          "stelle": "kernel_regie:3008",
+          "status": "BELEGT_FAIL_CLOSED",
+          "ausfallpunkte": 3
+        },
+        {
+          "stelle": "_extract_user_plan:4210",
+          "status": "BLOCKIERT_NICHT_ERREICHT",
+          "ausfallpunkte": 0
+        },
+        {
+          "stelle": "kernel_regie:2932",
+          "status": "BELEGT_FAIL_CLOSED",
+          "ausfallpunkte": 2
+        },
+        {
+          "stelle": "kernel_puppet:3250",
+          "status": "BELEGT_FAIL_CLOSED",
+          "ausfallpunkte": 2
+        },
+        {
+          "stelle": "_read:1943",
+          "status": "BELEGT_FAIL_CLOSED",
+          "ausfallpunkte": 12
+        },
+        {
+          "stelle": "kernel_commit:2266",
+          "status": "BELEGT_FAIL_CLOSED",
+          "ausfallpunkte": 2
+        },
+        {
+          "stelle": "_read:1931",
+          "status": "BLOCKIERT_NICHT_ERREICHT",
+          "ausfallpunkte": 0
+        }
+      ],
+      "teilcommit_vor_ausfall": 24
+    },
+    "LIVE_k01_sec": {
+      "status": "PASS",
+      "kriterien": {
+        "L1_ui_commit_200_turn_und_weiterreden": true,
+        "L2_eingabe_actor_bedienperson_user": true,
+        "L3_figurenrede_ist_servertext": true,
+        "L4_ui_zeigt_figurenrede": true,
+        "L5_verlauf_nach_neustart_sichtbar": true,
+        "L6_folgeturn_nach_neustart_commit_200": true,
+        "L7_folgeturn_liest_erste_figurenrede": true,
+        "N1_fremder_eingabe_actor_422": true,
+        "N2_erfundene_figurenrede_abgewiesen": true,
+        "N3_sqlite_unveraendert_nach_faelschung": true,
+        "N4_fremde_session_unveraendert": true,
+        "S1_kein_schluessel_in_mcc": true,
+        "S2_kein_schluessel_im_browserzustand": true,
+        "S3_kein_schluessel_in_logs": true
+      }
+    },
+    "LIVE2_k02": {
+      "status": "PASS",
+      "kriterien": {
+        "W1_anwesende_hoeren_das_ereignis_mara_gustav": true,
+        "W2_abwesender_robert_ohne_wissen": true,
+        "W3_wissensart_gehoert_mit_zuschreibung": true,
+        "U1_gedaechtnisseite_kanonischer_abruf_mara_nach_neustart": true,
+        "U2_gedaechtnisseite_robert_keine_erinnerung": true,
+        "U3_abruf_ueber_kernel_recall": true,
+        "A1_antwort_committet": true,
+        "A2_gegangener_gustav_hoert_antwort_nicht": true,
+        "A3_anwesende_mara_hoert_antwort": true,
+        "I1_fremde_session_unveraendert": true
+      }
+    },
+    "D3F_frontend": {
+      "status": "PASS",
+      "m3_kriterien": {
+        "ok_liste_sichtbar_ohne_fehler": true,
+        "ok_leere_liste_zeigt_keine_session": true,
+        "fehlt_U0b_chat_seite_fehler_mit_code_keine_leer_kein_laedt": true,
+        "fehlt_U3_neuladen_gespeicherter_nutzer_fehler_mit_code_keine_leer_kein_laedt": true,
+        "abi2_U0b_chat_seite_fehler_mit_code_keine_leer_kein_laedt": true,
+        "abi2_U3_neuladen_gespeicherter_nutzer_fehler_mit_code_keine_leer_kein_laedt": true
+      },
+      "kurz": {
+        "ok": [
+          [
+            "U0_nutzer_waehlen",
+            false,
+            null
+          ],
+          [
+            "U0b_chat_seite",
+            false,
+            null
+          ],
+          [
+            "U2_chat_reset",
+            false,
+            null
+          ],
+          [
+            "U1_oeffnen",
+            false,
+            null
+          ],
+          [
+            "U4_nutzer_ohne_session",
+            false,
+            null
+          ]
+        ],
+        "fehlt": [
+          [
+            "U0_nutzer_waehlen",
+            true,
+            null
+          ],
+          [
+            "U0b_chat_seite",
+            true,
+            null
+          ],
+          [
+            "U2_chat_reset",
+            null,
+            "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
+          ],
+          [
+            "U1_oeffnen",
+            null,
+            "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
+          ],
+          [
+            "U3_neuladen_gespeicherter_nutzer",
+            true,
+            null
+          ]
+        ],
+        "abi2": [
+          [
+            "U0_nutzer_waehlen",
+            true,
+            null
+          ],
+          [
+            "U0b_chat_seite",
+            true,
+            null
+          ],
+          [
+            "U2_chat_reset",
+            null,
+            "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
+          ],
+          [
+            "U1_oeffnen",
+            null,
+            "Session-Liste nicht geladen (keine Karte \"Fall 06\")"
+          ],
+          [
+            "U3_neuladen_gespeicherter_nutzer",
+            true,
+            null
+          ]
+        ]
+      }
+    },
+    "E_gegenprobe": {
+      "status": "ROT",
+      "mutationen": {
+        "rust_ohne_sprecherbindung": {
+          "erkannt": false,
+          "soll_erfuellt": "10/10",
+          "neu_rot": []
+        },
+        "rust_ohne_gueltigkeitsfenster": {
+          "erkannt": true,
+          "soll_erfuellt": "7/10",
+          "neu_rot": [
+            "C04_ABGELAUFENE_BREITE_ZUSTIMMUNG",
+            "C04_ABGELAUFENE_EINZELABLEHNUNG",
+            "C04_ABGELAUFENE_EINZELZUSTIMMUNG"
+          ]
+        },
+        "rust_taetantwort_hebt_grenze_auf": {
+          "erkannt": true,
+          "soll_erfuellt": "9/10",
+          "neu_rot": [
+            "S05_WIDERRUF_DER_AUSNAHME"
+          ]
+        },
+        "rust_taetantwort_ohne_bindung": {
+          "erkannt": true,
+          "soll_erfuellt": "9/10",
+          "neu_rot": [
+            "S05_ANDERE_STELLE"
+          ]
+        },
+        "python_lifecycle_bound_ohne_giverregel": {
+          "erkannt": true,
+          "soll_erfuellt": "9/10",
+          "neu_rot": [
+            "C04_FREMDER_GIVER"
+          ]
+        }
+      },
+      "hinweis": "Rust-only-Sprecherbindung ueber die P25-Kette nicht beobachtbar (verdeckt durch lifecycle_bound + _checked_index); Redundanz vom Nutzer als verbindlich entschieden",
+      "rust_unit_sprecherbindung": {
+        "cargo_test_rot": true,
+        "rote_tests": [
+          "consent::tests::different_speaker_cannot_undo_broad_refusal",
+          "consent::tests::different_speaker_cannot_undo_narrow_refusal",
+          "consent::tests::empty_actor_cannot_undo_narrow_refusal",
+          "consent::tests::narrow_permission_is_scoped_to_the_giver",
+          "consent::tests::s05_foreign_or_expired_answer_ends_nothing"
+        ],
+        "status": "PASS"
+      },
+      "kombiniert_fail_closed": {
+        "status": "PASS",
+        "c04_fremder_giver": [
+          "write f2: SOLL REJECT, IST OK",
+          "state: SOLL declined, IST None",
+          "act_consent a3: SOLL declined, IST None",
+          "Lesen gescheitert: NativeBoundaryError:NATIVE_REPLY_INVALID:Native consent result has an unbound evidence index"
+        ]
+      }
+    },
+    "F_p25_testsuite": {
+      "status": "PASS",
+      "p25": {
+        "failure": 24,
+        "pass": 422,
+        "error": 1
+      },
+      "stage08": {
+        "failure": 25,
+        "pass": 421,
+        "error": 1
+      },
+      "abweichungen": [
+        "tests.test_v92_p18_koerper.P18AvatarAndFigure::test_avatar_position_and_figure_reply_with_forged_and_real_readings"
+      ],
+      "vertragsbedingt_k01": [
+        "tests.test_v92_p18_koerper.P18AvatarAndFigure::test_avatar_position_and_figure_reply_with_forged_and_real_readings"
+      ],
+      "unerklaert": [],
+      "p25_altbefunde_rot": [
+        "::tests.test_v92_launcher_delivers_ui",
+        "tests.test_v83_overlay.V85OverlayRegression::test_floating_button_not_in_served_frontend_html",
+        "tests.test_v83_overlay.V85OverlayRegression::test_new_assets_exist_and_are_referenced",
+        "tests.test_v83_overlay.V85OverlayRegression::test_storage_link_still_in_normal_navigation_and_working_page",
+        "tests.test_v83_projekt_db.ProjectDatabaseContract::test_delivered_ui_has_delete_button_for_all_worlds",
+        "tests.test_v83_projekt_db.ProjectDatabaseContract::test_static_app_assets_match_version",
+        "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_browser_api_shell_routes_send_and_check_server_current_build",
+        "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_build_is_from_source_and_checksums_match_delivered_files",
+        "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_checksum_contract_detects_a_tampered_or_old_bundle",
+        "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_delivered_ui_contains_new_controls_and_backend_shares_build_identity",
+        "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_entrypoints_share_v88_and_sqlite_is_not_bundled",
+        "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_html_metadata_source_and_server_are_consistent",
+        "tests.test_v88_build_kette.ShippedBrowserBuildContract::test_versioned_asset_graph_resolves_and_not_old_build",
+        "tests.test_v90_regie_bound_real_fixture.V90LiveFixtureBinding::test_existing_frontend_reaches_same_ids_and_mixed_order_followup",
+        "tests.test_v92_p13_identitaet.P13AvatarRoute::test_avatar_unknown_full_name_target_and_referents",
+        "tests.test_v92_p13_identitaet.P13PuppetRoute::test_n1_n2_live_shape_planner_maps_to_mara_nowak_server_locks",
+        "tests.test_v92_p13_identitaet.P13PuppetRoute::test_two_maras_present_reversed_order_and_absent_schmidt",
+        "tests.test_v92_p16_identitaet.P16AvatarRoute::test_avatar_question_nothing_stored_then_answer",
+        "tests.test_v92_p16_identitaet.P16PuppetRoute::test_question_then_answer_over_http_sqlite_and_follow_up",
+        "tests.test_v92_p22_component_art_and_name_gate.P22NameGate::test_puppet_route_passes_authenticated_actor_id_not_name_lookup",
+        "tests.test_v92_puppet_kette.BerührungStattVerletzung::test_denied_injury_with_touch_reading_keeps_the_touch_class_with_audit",
+        "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_denied_act_with_real_speech_stores_only_the_speech",
+        "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_p10_partial_and_multiple_markers_over_the_route",
+        "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_p12_two_figures_called_mara_target_and_body_chain",
+        "tests.test_v92_puppet_vertrag.PuppetRouteChain::test_p8_pure_foreign_speech_stores_nothing"
+      ]
+    },
+    "K_k01_sec_tests": {
+      "status": "PASS",
+      "zusammenfassung": [
+        "29 passed in 4.78s"
+      ]
+    },
+    "K2T_k02_tests": {
+      "status": "PASS",
+      "zusammenfassung": [
+        "4 passed in 2.00s"
+      ]
+    },
+    "AUS2_ausgangsnachweis_stage07": {
+      "status": "PASS",
+      "stage07_gegangener_gustav_hoert_antwort": true,
+      "stage08_gegangener_gustav_hoert_antwort": false,
+      "k02_tests_auf_stage07": [
+        "3 failed, 1 passed in 1.89s"
+      ]
+    },
+    "MUT2_mutationsgegenprobe_k02": {
+      "status": "PASS",
+      "mutationen": {
+        "K02_M1_antwortphase_wahrnehmung_der_eingabe": true,
+        "K02_M2_figurenabruf_nicht_kanonisch": true
+      }
+    },
+    "AUS_ausgangsnachweis_06a": {
+      "status": "PASS",
+      "hoerer_rueckfall_06a": true,
+      "client_proposals_synapsen_aendern_runtime_06a": true,
+      "client_fired_aendert_runtime_06a": false,
+      "k01_tests_auf_06a": [
+        "22 failed, 5 passed in 3.61s"
+      ]
+    },
+    "MUT_mutationsgegenprobe": {
+      "status": "PASS",
+      "mutationen": {
+        "M1_beleg_ohne_signaturpruefung": true,
+        "M2_eingabe_actor_vom_client": true,
+        "M3_formulierung_ohne_beleg": true,
+        "M4_fired_vom_client": true,
+        "M5_sprecher_ohne_faehigkeit": true,
+        "M6_hoerer_rueckfall": true,
+        "M7_w2_fremde_evidenz_kernel": true,
+        "M8_w2_status_ohne_evidenz": true,
+        "M9_w2_leseseite": true,
+        "M9b_w2_quellturn_regel": true,
+        "M10_sec_schluessel_im_mcc": true
+      }
+    },
+    "G_pruefmaschine_v12": {
+      "status": "BLOCKIERT",
+      "grund": [
+        "Original-DB e03dc445... fehlt",
+        "Modell-/Providerschluessel fuer --modell live fehlt",
+        "P23/P24/P25-Selbstabnahme-ZIPs nicht vorhanden"
+      ]
+    }
+  },
+  "vertragsstatus": {
+    "C04_fremder_giver_und_abgelaufene_fenster": "GRUEN",
+    "S05_tat_antwort_hebt_keine_grenze_auf": "GRUEN",
+    "W1_W3_schreibgrenze_giver_und_proposition": "GRUEN",
+    "W2_lifecycle_evidenz_eigene_aeusserung": "GRUEN",
+    "K1_abi3": "GRUEN",
+    "K2_http_503": "GRUEN",
+    "K2a_verschluckte_pfade": "BLOCKIERT",
+    "K2_frontend_fehler_sichtbar": "GRUEN",
+    "P25_altbefunde_testsuite": "ROT",
+    "modell_folgeturn_live": "BLOCKIERT",
+    "pruefmaschine_v12_achsen": "BLOCKIERT",
+    "M1_rust_sprecherbindung_eigene_tests": "GRUEN",
+    "M1_kette_fail_closed_ohne_python_und_rust_schicht": "GRUEN",
+    "M1_rust_only_mutation_ueber_kette": "ROT",
+    "M2_prepare_meldung_teilcommit": "GRUEN",
+    "M3_chatliste_fehler_statt_leer": "GRUEN",
+    "K01_turntruth_und_commit_bindung_offline_deterministisch": "GRUEN",
+    "K01_gesamt": "TEILGESCHLOSSEN",
+    "K01_formulierung_mit_echtem_modell": "BLOCKIERT",
+    "SEC_kein_schluessel_in_antworten_browser_logs": "GRUEN",
+    "P25_testsuite_zusaetzlich_rot_durch_k01": "ROT",
+    "P25_p18_assertions_ueber_produktweg_portiert": "GRUEN",
+    "K02_wahrnehmung_antwortphase_offline_deterministisch": "GRUEN",
+    "K02_figurenabruf_frontend_kanonisch": "GRUEN",
+    "K02_verhalten_aus_erinnerung_offline_synapse": "GRUEN",
+    "K02_verhalten_aus_erinnerung_mit_modell": "BLOCKIERT",
+    "K02_epistemische_zustaende_und_hoerensagen": "ROT",
+    "K02_gesamt": "TEILGESCHLOSSEN"
+  },
+  "vertragsstatus_gesamt": "ROT",
+  "exitcode": 2
+}

@@ -1,0 +1,143 @@
+{
+  "phase": "2",
+  "schritte": [
+    {
+      "name": "P2_recall_mara",
+      "fehler": null
+    },
+    {
+      "name": "P2_recall_robert",
+      "fehler": null
+    }
+  ],
+  "mara_zeile": "Abruf von Mara Nowak (kanonisch, 3 Erinnerungen, 4 bekannte Ereignisse): gehoert: Spieler (Bedienperson, außerhalb der Welt) sagte: Johann, die Kasse im Keller ist leer. · gehoert: Johann Bruckner: Hält inne und prüft, was das mit ihr/ihm macht. Ich habe dich gehört. · gesehen: Johann Bruckner: Atem wird kürzer Stammwissen ist Charakterwissen. Sessionmemory ist die Session. Weltwissen ist die Welt",
+  "robert_zeile": "Abruf von Robert Färber (kanonisch): keine Erinnerung zu diesem Stichwort. Stammwissen ist Charakterwissen. Sessionmemory ist die Session. Weltwissen ist die Welt. Cache ist abgeleiteter Recall, kein Kanon. Index ist der Dokumentindex, nicht das Dokument. Review sind Vorschläge. Vergessen löscht keine SceneFacts. Fall 06 Avatar Fall 06 alle Figuren Clara Mertens Johann Bruckner Mara Nowak Gustav P",
+  "api": [
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "/api/mcc",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/sessions/ses_v92/recall",
+      "code": null
+    },
+    {
+      "status": 200,
+      "method": "POST",
+      "url": "/api/sessions/ses_v92/recall",
+      "code": null
+    }
+  ],
+  "recalls": [
+    {
+      "status": 200,
+      "req": {
+        "cue": "Kasse Keller",
+        "characterId": "char_g7_mara"
+      },
+      "res": {
+        "characterId": "char_g7_mara",
+        "characterName": "Mara Nowak",
+        "cue": "Kasse Keller",
+        "engine": "kernel.recall",
+        "facts": [
+          {
+            "actorId": "char_g7_mara",
+            "id": "f0_ses_v92",
+            "kind": "lifecycle",
+            "text": "Fass mich nicht an",
+            "turn": 0
+          },
+          {
+            "actorId": "user",
+            "id": "fact_1a1bb0ba217_c135b0670003",
+            "kind": "speech",
+            "text": "Johann, die Kasse im Keller ist leer.",
+            "turn": 1
+          },
+          {
+            "actorId": "char_g7_johann",
+            "id": "fact_1a1bb0ba25f_71a3c0ef0011",
+            "kind": "speech",
+            "text": "Hält inne und prüft, was das mit ihr/ihm macht. Ich habe dich gehört.",
+            "turn": 1
+          },
+          {
+            "actorId": "char_g7_johann",
+            "id": "fact_1a1bb0ba261_2a79730e0012",
+            "kind": "action",
+            "text": "Atem wird kürzer",
+            "turn": 1
+          }
+        ],
+        "hits": [
+          {
+            "id": "mem_1a1bb0ba217_d98d7d0b0006",
+            "sourceMemoryId": "mem_1a1bb0ba217_d98d7d0b0006",
+            "text": "gehoert: Spieler (Bedienperson, außerhalb der Welt) sagte: Johann, die Kasse im Keller ist leer."
+          },
+          {
+            "id": "mem_1a1bb0ba261_9cfbf1fe0016",
+            "sourceMemoryId": "mem_1a1bb0ba261_9cfbf1fe0016",
+            "text": "gehoert: Johann Bruckner: Hält inne und prüft, was das mit ihr/ihm macht. Ich habe dich gehört."
+          },
+          {
+            "id": "mem_1a1bb0ba261_38e373f80019",
+            "sourceMemoryId": "mem_1a1bb0ba261_38e373f80019",
+            "text": "gesehen: Johann Bruckner: Atem wird kürzer"
+          }
+        ],
+        "kanonisch": true,
+        "memories": [
+          {
+            "factId": "fact_1a1bb0ba217_c135b0670003",
+            "id": "mem_1a1bb0ba217_d98d7d0b0006",
+            "kind": "gehoert",
+            "sourceTurnId": "tt_1a1bb0ba214_fabfd7d90001",
+            "text": "Spieler (Bedienperson, außerhalb der Welt) sagte: Johann, die Kasse im Keller ist leer.",
+            "turn": 1
+          },
+          {
+            "factId": "fact_1a1bb0ba25f_71a3c0ef0011",
+            "id": "mem_1a1bb0ba261_9cfbf1fe0016",
+            "kind": "gehoert",
+            "sourceTurnId": "tt_1a1bb0ba214_fabfd7d90001",
+            "text": "Johann Bruckner: Hält inne und prüft, was das mit ihr/ihm macht. Ich habe dich gehört.",
+            "turn": 1
+          },
+          {
+            "factId": "fact_1a1bb0ba261_2a79730e0012",
+            "id": "mem_1a1bb0ba261_38e373f80019",
+            "kind": "gesehen",
+            "sourceTurnId": "tt_1a1bb0ba214_fabfd7d90001",
+            "text": "Johann Bruckner: Atem wird kürzer",
+            "turn": 1
+          }
+        ],
+        "ok": true
+      }
+    },
+    {
+      "status": 200,
+      "req": {
+        "cue": "Kasse Keller",
+        "characterId": "char_g7_robert"
+      },
+      "res": {
+        "characterId": "char_g7_robert",
+        "characterName": "Robert Färber",
+        "cue": "Kasse Keller",
+        "engine": "kernel.recall",
+        "facts": [],
+        "hits": [],
+        "kanonisch": true,
+        "memories": [],
+        "ok": true
+      }
+    }
+  ]
+}

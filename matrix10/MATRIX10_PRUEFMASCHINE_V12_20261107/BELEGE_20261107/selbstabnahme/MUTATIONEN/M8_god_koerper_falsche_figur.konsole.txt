@@ -1,0 +1,2 @@
+[vor Neustart] GO1_bewusstlos: 10 ROT Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'Mara Nowak: Körperzustand — po'; char; 11 ROT M.canSpeak = True statt False; 15 ROT M spricht im Folgezug, obwohl ausgeschlossen
+GESAMT: ROT -> /home/claude/kp/V12/frisch/MATRIX10_PRUEFMASCHINE_V12/SELBSTABNAHME_LAUF_20261107_183415/MUTATIONEN/M8_god_koerper_falsche_figur/ERGEBNIS_LESEN.txt

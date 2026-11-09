@@ -1,0 +1,54 @@
+{
+  "vorlage_sha256": "f751a20c70a780f0e5f45f25bdbcf82367c7c04c59e7ca2091217a48e2732a15",
+  "kriterien": {
+    "W1_anwesende_hoeren_das_ereignis_mara_gustav": true,
+    "W2_abwesender_robert_ohne_wissen": true,
+    "W3_wissensart_gehoert_mit_zuschreibung": true,
+    "U1_gedaechtnisseite_kanonischer_abruf_mara_nach_neustart": true,
+    "U2_gedaechtnisseite_robert_keine_erinnerung": true,
+    "U3_abruf_ueber_kernel_recall": true,
+    "A1_antwort_committet": true,
+    "A2_gegangener_gustav_hoert_antwort_nicht": true,
+    "A3_anwesende_mara_hoert_antwort": true,
+    "I1_fremde_session_unveraendert": true
+  },
+  "phase1": [
+    {
+      "name": "P1_nutzer",
+      "fehler": null
+    },
+    {
+      "name": "P1_config_synapse",
+      "fehler": null
+    },
+    {
+      "name": "P1_senden",
+      "fehler": null
+    }
+  ],
+  "phase2": {
+    "schritte": [
+      {
+        "name": "P2_recall_mara",
+        "fehler": null
+      },
+      {
+        "name": "P2_recall_robert",
+        "fehler": null
+      }
+    ],
+    "mara": "Abruf von Mara Nowak (kanonisch, 3 Erinnerungen, 4 bekannte Ereignisse): gehoert: Spieler (Bedienperson, außerhalb der Welt) sagte: Johann, die Kasse im Keller ist leer. · gehoert: Johann Bruckner: Hält inne und prüft, was das mit ihr/ihm macht. Ich habe dich gehört. · gesehen: Johann Bruckner: Atem wird kürzer Stammwissen ist Charakterwissen. Sessionmemory ist die Session. Weltwissen ist die Welt",
+    "robert": "Abruf von Robert Färber (kanonisch): keine Erinnerung zu diesem Stichwort. Stammwissen ist Charakterwissen. Sessionmemory ist die Session. Weltwissen ist die Welt. Cache ist abgeleiteter Recall, kein Kanon. Index ist der Dokumentindex, nicht das Dokument. Review sind Vorschläge. Vergessen löscht keine SceneFacts. Fall 06 Avatar Fall 06 alle Figuren Clara Mertens Johann Bruckner Mara Nowak Gustav P"
+  },
+  "antwortphase": {
+    "prepare": 200,
+    "presence": 200,
+    "wiederaufnahme": 200,
+    "formulate": 200,
+    "commit": [
+      200,
+      null
+    ]
+  },
+  "gesamt": "ERFUELLT"
+}

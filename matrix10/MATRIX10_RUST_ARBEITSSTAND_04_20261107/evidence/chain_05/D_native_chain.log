@@ -1,0 +1,41 @@
+test_11_entries_are_never_silently_truncated (test_consent_transport_03.ConsentEnvelopeTests.test_11_entries_are_never_silently_truncated) ... ok
+test_fail_closed_without_native_library (test_consent_transport_03.ConsentEnvelopeTests.test_fail_closed_without_native_library) ... skipped 'Real Rust native boundary available in this environment'
+test_invalid_giver_or_non_event_never_becomes_empty_permission (test_consent_transport_03.ConsentEnvelopeTests.test_invalid_giver_or_non_event_never_becomes_empty_permission) ... ok
+test_legacy_nullable_fields_are_normalized_without_new_effect (test_consent_transport_03.ConsentEnvelopeTests.test_legacy_nullable_fields_are_normalized_without_new_effect) ... ok
+test_native_indices_are_validated_no_silent_drop (test_consent_transport_03.ConsentEnvelopeTests.test_native_indices_are_validated_no_silent_drop) ... ok
+test_preserves_canonical_indices_not_new_rows (test_consent_transport_03.ConsentEnvelopeTests.test_preserves_canonical_indices_not_new_rows) ... ok
+test_reader_op_is_not_a_write_authorization (test_consent_transport_03.ConsentEnvelopeTests.test_reader_op_is_not_a_write_authorization) ... ok
+test_zero_event_input_remains_valid_when_native_says_empty (test_consent_transport_03.ConsentEnvelopeTests.test_zero_event_input_remains_valid_when_native_says_empty) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.002s
+
+OK (skipped=1)
+
+test_compound_word_is_not_same_part (test_consent_native_chain_05.ConsentChainNativeTests.test_compound_word_is_not_same_part) ... ok
+test_native_library_is_abi_3_and_really_loaded (test_consent_native_chain_05.ConsentChainNativeTests.test_native_library_is_abi_3_and_really_loaded) ... ok
+test_other_side_is_distinct_across_all_readers (test_consent_native_chain_05.ConsentChainNativeTests.test_other_side_is_distinct_across_all_readers) ... ok
+test_scene_window_other_place_inactive (test_consent_native_chain_05.ConsentChainNativeTests.test_scene_window_other_place_inactive) ... ok
+test_sps_v65x_revoke_of_same_part_ends_only_that_part (test_consent_native_chain_05.ConsentChainNativeTests.test_sps_v65x_revoke_of_same_part_ends_only_that_part)
+SPS V65X E01: "Widerruf nur der einen Stelle". ... ok
+test_sps_v65x_revoke_without_part_ends_broad_permission (test_consent_native_chain_05.ConsentChainNativeTests.test_sps_v65x_revoke_without_part_ends_broad_permission)
+SPS V65X Z. 1414: "ein Widerruf ohne Stelle beendet eine Erlaubnis ... ok
+test_timeline_all_readers_after_every_event (test_consent_native_chain_05.ConsentChainNativeTests.test_timeline_all_readers_after_every_event) ... ok
+test_timeline_is_order_stable_for_shuffled_storage (test_consent_native_chain_05.ConsentChainNativeTests.test_timeline_is_order_stable_for_shuffled_storage)
+Reader ordnet nach (turn, index); Speicherreihenfolge darf Ergebnis nicht aendern. ... ok
+test_unconfirmed_part_never_becomes_permission (test_consent_native_chain_05.ConsentChainNativeTests.test_unconfirmed_part_never_becomes_permission) ... ok
+test_window_boundaries_inclusive_and_missing_time (test_consent_native_chain_05.ConsentChainNativeTests.test_window_boundaries_inclusive_and_missing_time) ... ok
+test_c04_candidate_green_original_red (test_consent_native_chain_05.OriginalV67DifferentialTests.test_c04_candidate_green_original_red) ... ok
+test_timeline_divergence_only_on_known_defect_classes (test_consent_native_chain_05.OriginalV67DifferentialTests.test_timeline_divergence_only_on_known_defect_classes)
+Pro Zeitschritt: Wo Original und Kandidat abweichen, muss das ... ok
+test_c04_wrong_giver_reaches_act_consent (test_consent_native_chain_05.WholeSystemActConsentTests.test_c04_wrong_giver_reaches_act_consent) ... ok
+test_s05_act_refusal_ends_only_permission_it_is_bound_to (test_consent_native_chain_05.WholeSystemActConsentTests.test_s05_act_refusal_ends_only_permission_it_is_bound_to) ... ok
+test_s05_answer_bound_to_other_part_keeps_permission (test_consent_native_chain_05.WholeSystemActConsentTests.test_s05_answer_bound_to_other_part_keeps_permission) ... ok
+test_s05_foreign_speaker_answer_changes_nothing (test_consent_native_chain_05.WholeSystemActConsentTests.test_s05_foreign_speaker_answer_changes_nothing) ... ok
+test_s05_revoke_of_exception_keeps_refusal_for_every_touch (test_consent_native_chain_05.WholeSystemActConsentTests.test_s05_revoke_of_exception_keeps_refusal_for_every_touch) ... ok
+test_sps_broad_acceptance_revoked_by_act_answer (test_consent_native_chain_05.WholeSystemActConsentTests.test_sps_broad_acceptance_revoked_by_act_answer) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.018s
+
+OK

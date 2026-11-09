@@ -1,0 +1,6 @@
+1 P1_nutzer:ok
+P1_config_synapse:ok
+P1_chat_oeffnen:ok
+P1_senden:ok
+P1_weiterreden:ok
+api 200 GET /api/config?scope=user  ; 200 PUT /api/config  ; 200 POST /api/kernel/prepare  ; 200 POST /api/llm/formulate  ; 200 POST /api/kernel/commit  ; 200 POST /api/kernel/prepare  ; 200 POST /api/llm/formulate  ; 200 POST /api/kernel/commit  ; 200 POST /api/kernel/prepare  ; 200 POST /api/llm/formulate  ; 200 POST /api/kernel/commit 

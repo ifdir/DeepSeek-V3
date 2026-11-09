@@ -1,0 +1,284 @@
+{
+ "PLAN_RULES": [
+  {
+   "wenn": "schlägt Mara",
+   "antwort": {
+    "event_kind": "action",
+    "speech_act": "act",
+    "durability": "action_event",
+    "summary": "Johann schlägt Mara mit der Faust ins Gesicht.",
+    "subject": "Johann",
+    "predicate": "schlägt",
+    "object": "Mara",
+    "temporal": {
+     "text": null,
+     "precision": "unknown",
+     "wochentag": null,
+     "relativ": null,
+     "in_tagen": null,
+     "datum": null,
+     "uhrzeit": null
+    },
+    "refers_to": null,
+    "cue_terms": [],
+    "grenze": null,
+    "verweis": null,
+    "komponenten": [
+     {
+      "typ": "handlung",
+      "segment": "Johann schlägt Mara mit der Faust ins Gesicht.",
+      "akteur": "Johann Bruckner",
+      "ziel": "Mara Nowak",
+      "zeit": "jetzt",
+      "wirkung": "gewalt",
+      "bezug": null,
+      "einleitung": null,
+      "geschieht": true,
+      "pruefung": {
+       "vollzug": {
+        "geschieht": true,
+        "art": "tatsaechlich",
+        "beleg": "Johann schlägt Mara",
+        "taeter": "Johann",
+        "ziel": "Mara"
+       },
+       "komponentenart": {
+        "art": "handlung",
+        "beleg": "Johann schlägt Mara mit der Faust ins Gesicht",
+        "wirkung": "gewalt"
+       },
+       "koerper": {
+        "haltung": null,
+        "schlaf": null,
+        "zeit": "jetzt",
+        "beleg": null
+       },
+       "koerperBestaetigung": null,
+       "wirkung": {
+        "bestaetigt": true,
+        "zeit": "jetzt",
+        "ziel": "Mara Nowak",
+        "beleg": "schlägt Mara mit der Faust ins Gesicht",
+        "versuch": false,
+        "gegen": null,
+        "beruehrung": false,
+        "beruehrungBeleg": null
+       },
+       "beruehrung": null,
+       "bewegung": null,
+       "bittebezug": null,
+       "erlaubnisbezug": null,
+       "grenzbezug": null
+      }
+     }
+    ],
+    "teilstellen": [],
+    "sprache": {
+     "stellen": []
+    },
+    "namen": [],
+    "grenzumfang": null
+   }
+  },
+  {
+   "wenn": "\"sprecher\": \"Bedienperson",
+   "antwort": {
+    "dynamisch": "rede_bedienperson"
+   }
+  }
+ ],
+ "LANGUAGE_RULES": {
+  "stellen": []
+ },
+ "RULEKIND_RULES": {
+  "regeln": [
+   {
+    "nr": 1,
+    "art": "sonstiges",
+    "max": null,
+    "ziel": null,
+    "bestimmt": true
+   },
+   {
+    "nr": 2,
+    "art": "keine",
+    "max": null,
+    "ziel": null,
+    "bestimmt": false
+   }
+  ]
+ },
+ "VOLLZUG_CHECK_RULES": {
+  "geschieht": true,
+  "art": "tatsaechlich",
+  "beleg": "Johann schlägt Mara",
+  "taeter": "Johann",
+  "ziel": "Mara"
+ },
+ "KOMPONENTENART_CHECK_RULES": {
+  "art": "handlung",
+  "beleg": "Johann schlägt Mara mit der Faust ins Gesicht",
+  "wirkung": "gewalt"
+ },
+ "KOERPER_CHECK_RULES": {
+  "haltung": null,
+  "schlaf": null,
+  "zeit": "jetzt",
+  "beleg": null
+ },
+ "EFFECT_CHECK_RULES": {
+  "bestaetigt": true,
+  "zeit": "jetzt",
+  "ziel": "Mara Nowak",
+  "beleg": "schlägt Mara mit der Faust ins Gesicht",
+  "versuch": false,
+  "gegen": null,
+  "beruehrung": false,
+  "beruehrungBeleg": null
+ },
+ "GOAL_FRAME_RULES": {
+  "rahmen": []
+ },
+ "APPRAISAL_RULES": [
+  {
+   "wenn": [
+    "\"figur\": \"Mara Nowak\"",
+    "Johann schlägt Mara"
+   ],
+   "antwort": {
+    "dynamisch": "mit_kausal",
+    "param": {
+     "vorschlag": {
+      "raum": "Gewalt",
+      "aktivierung": 0.85,
+      "gefuehl": "Angst",
+      "gegenueber": "Johann Bruckner",
+      "zustand_aenderung": {
+       "angst": 0.3,
+       "wut": 0.2,
+       "stress": 0.3
+      },
+      "absicht": "Abstand zu Johann halten",
+      "vorher_absicht_erledigt": false,
+      "beziehung_aenderung": [
+       {
+        "zu": "Johann Bruckner",
+        "trust": -0.3,
+        "closeness": -0.2,
+        "fear": 0.3
+       }
+      ],
+      "grund": "Johann schlägt sie ins Gesicht; ihre Angst vor Johanns Druck wird zur körperlichen Bedrohung."
+     }
+    }
+   }
+  },
+  {
+   "wenn": "\"figur\"",
+   "antwort": {
+    "dynamisch": "mit_kausal",
+    "param": {
+     "vorschlag": {
+      "raum": null,
+      "aktivierung": 0,
+      "gefuehl": "",
+      "gegenueber": "",
+      "zustand_aenderung": {},
+      "absicht": "",
+      "vorher_absicht_erledigt": false,
+      "beziehung_aenderung": [],
+      "grund": "betrifft sie nicht"
+     }
+    }
+   }
+  }
+ ],
+ "APPRAISAL_CAUSAL_CHECK_RULES": {
+  "dynamisch": "kausal"
+ },
+ "FORMULIERUNG": [
+  {
+   "wenn": "Was willst du jetzt von ihm?",
+   "antwort": {
+    "speech": "Nichts. Bleib weg von mir, Johann.",
+    "action": null,
+    "wirkung": null,
+    "synapsen": [],
+    "emotion": "Angst",
+    "beziehung": null,
+    "plan": {
+     "event_kind": "refusal",
+     "speech_act": "refuse",
+     "durability": "utterance",
+     "summary": "Mara will Johann nicht bei sich haben.",
+     "subject": "Mara",
+     "predicate": "weist zurück",
+     "object": "Johann",
+     "temporal": {
+      "text": null,
+      "wochentag": null,
+      "relativ": null,
+      "in_tagen": null,
+      "datum": null,
+      "uhrzeit": null
+     },
+     "refers_to": null,
+     "cue_terms": []
+    },
+    "pruefung": {
+     "koerper": null,
+     "koerperBestaetigung": null,
+     "wirkung": null,
+     "beruehrung": null,
+     "bewegung": null,
+     "grenzumfang": null,
+     "offenbarung": null
+    },
+    "aussagen": [],
+    "grenze": null
+   }
+  },
+  {
+   "wenn": "Was sagst du zu ihm?",
+   "antwort": {
+    "speech": "Fass mich nie wieder an, Johann.",
+    "action": null,
+    "wirkung": null,
+    "synapsen": [],
+    "emotion": "Angst",
+    "beziehung": null,
+    "plan": {
+     "event_kind": "refusal",
+     "speech_act": "refuse",
+     "durability": "utterance",
+     "summary": "Mara verbietet Johann, sie anzufassen.",
+     "subject": "Mara",
+     "predicate": "weist zurück",
+     "object": "Johann",
+     "temporal": {
+      "text": null,
+      "wochentag": null,
+      "relativ": null,
+      "in_tagen": null,
+      "datum": null,
+      "uhrzeit": null
+     },
+     "refers_to": null,
+     "cue_terms": []
+    },
+    "pruefung": {
+     "koerper": null,
+     "koerperBestaetigung": null,
+     "wirkung": null,
+     "beruehrung": null,
+     "bewegung": null,
+     "grenzumfang": null,
+     "offenbarung": null
+    },
+    "aussagen": [],
+    "grenze": null
+   }
+  }
+ ],
+ "_stand": "11a: Lesungen als Pflichtfelder der ersten Antwort (umgewandelt mit drehbuch_11a.py aus drehbuch_f1_09.json)"
+}

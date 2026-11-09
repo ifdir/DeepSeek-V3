@@ -1,0 +1,110 @@
+{
+ "fall": "PU4_verneinung_mit_rede",
+ "schritte": [
+  "Profil gewählt, Chat ses_kp_fall_04 geöffnet",
+  "Spreche als: Puppet char_g7_johann",
+  "Senden: Johann küsst Mara nicht und sagt: Hallo.",
+  "Seite neu geladen"
+ ],
+ "anfragen": [
+  {
+   "pfad": "/api/kernel/puppet",
+   "sessionId": "ses_kp_fall_04",
+   "figur": "char_g7_johann",
+   "ziel": null,
+   "rolle": null,
+   "autoritaet": null,
+   "sprichtAls": null,
+   "scope": null,
+   "text": "Johann küsst Mara nicht und sagt: Hallo.",
+   "wiederaufnahme": false
+  },
+  {
+   "pfad": "/api/kernel/autochat-gate",
+   "sessionId": "ses_kp_fall_04",
+   "figur": null,
+   "ziel": null,
+   "rolle": null,
+   "autoritaet": null,
+   "sprichtAls": null,
+   "scope": null,
+   "text": null,
+   "wiederaufnahme": false
+  },
+  {
+   "pfad": "/api/kernel/prepare",
+   "sessionId": "ses_kp_fall_04",
+   "figur": "char_g7_mara",
+   "ziel": "char_g7_johann",
+   "rolle": "teilnehmer",
+   "autoritaet": "teilnehmer",
+   "sprichtAls": "operator",
+   "scope": null,
+   "text": null,
+   "wiederaufnahme": false
+  },
+  {
+   "pfad": "/api/llm/formulate",
+   "sessionId": "ses_kp_fall_04",
+   "figur": null,
+   "ziel": null,
+   "rolle": null,
+   "autoritaet": null,
+   "sprichtAls": null,
+   "scope": "user",
+   "text": null,
+   "wiederaufnahme": false
+  },
+  {
+   "pfad": "/api/kernel/commit",
+   "sessionId": "ses_kp_fall_04",
+   "figur": "char_g7_mara",
+   "ziel": "char_g7_johann",
+   "rolle": "character",
+   "autoritaet": "character",
+   "sprichtAls": null,
+   "scope": null,
+   "text": null,
+   "wiederaufnahme": false
+  }
+ ],
+ "antworten": [
+  {
+   "pfad": "/api/kernel/puppet",
+   "status": 200,
+   "code": null,
+   "meldung": ""
+  },
+  {
+   "pfad": "/api/kernel/autochat-gate",
+   "status": 200,
+   "code": null,
+   "meldung": ""
+  },
+  {
+   "pfad": "/api/kernel/prepare",
+   "status": 200,
+   "code": null,
+   "meldung": ""
+  },
+  {
+   "pfad": "/api/llm/formulate",
+   "status": 200,
+   "code": null,
+   "meldung": ""
+  },
+  {
+   "pfad": "/api/kernel/commit",
+   "status": 200,
+   "code": null,
+   "meldung": ""
+  }
+ ],
+ "hauptstatus": 200,
+ "folgezug_commit": true,
+ "meldungen": [
+  "Nicht alles aus deiner Eingabe wurde als Ereignis gespeichert: „Johann küsst Mara nicht“ – Die Handlung geschieht nach deinem Wortlaut nicht (verneint, gewünscht, gefragt, bedingt oder angekündigt) und wurde nicht ausgeführt."
+ ],
+ "verlauf_vor_reload": "SZENE Der Schankraum ist voller nasser Mäntel und halber Sätze. Clara steht an der Theke. Mara trägt Gläser. Johann ist zurück. Gustav lächelt zu lange. Robert trinkt zu schnell. Draußen prasselt Regen auf die Bank. JOHANN BRUCKNER Hallo. MARA NOWAK Hallo, Johann. Was kann ich für dich tun? stellt das Tablett auf die Theke und schaut ihn an Synapsen: Abhaengigkeit 0.56·llm, Angst 0.47·llm",
+ "verlauf_nach_reload": "SZENE Der Schankraum ist voller nasser Mäntel und halber Sätze. Clara steht an der Theke. Mara trägt Gläser. Johann ist zurück. Gustav lächelt zu lange. Robert trinkt zu schnell. Draußen prasselt Regen auf die Bank. JOHANN BRUCKNER Hallo. MARA NOWAK Hallo, Johann. Was kann ich für dich tun? stellt das Tablett auf die Theke und schaut ihn an Synapsen: Abhaengigkeit 0.56·llm, Angst 0.47·llm"
+}

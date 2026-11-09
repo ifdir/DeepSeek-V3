@@ -1,0 +1,17 @@
+{
+ "hinweis": "Eingefrorene Sollwerte der Selbstabnahme V1.2, festgelegt aus den Prüfberichten vom 07.11.2026 (P23/P24/P25) VOR dem ersten V1.2-Lauf. muss_rot = bekannte Fehler (Fall, Glied), die die Maschine finden MUSS; muss_gruen = Vergleichsfälle, die bei richtigem Verhalten bestehen MÜSSEN.",
+ "kandidaten": {
+  "P25": {"zip_sha": "33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1", "aufnahme": "modellaufnahmen/P25", "faelle": [],
+          "muss_rot": [["PU2_anrede_gegen_ui_auswahl", 4], ["GO1_bewusstlos", 10], ["RE1_figur_verlaesst_raum", 11]],
+          "muss_gruen": ["PU1_handlung_eigenes_subjekt", "PU3_fremde_rede_abgelehnt", "PU4_verneinung_mit_rede", "AV1_frage_und_antwort",
+                         "AV2_fremde_rede_im_avatar", "GO2_verneinter_zustand", "RE2_unbekannte_figur"],
+          "quelle": "V92_PRUEFMASCHINE_V1_BERICHT_20261107 (B1, B2, B3)"},
+  "P24": {"zip_sha": "8a232c4bed8a7cdd80a19a6318d9393766a4397e1874088cb56e8919488ff8ae", "aufnahme": "modellaufnahmen/P24", "faelle": ["PU1", "PU2", "PU4"],
+          "muss_rot": [["PU4_verneinung_mit_rede", 5], ["PU4_verneinung_mit_rede", 6], ["PU4_verneinung_mit_rede", 9], ["PU2_anrede_gegen_ui_auswahl", 4]],
+          "muss_gruen": ["PU1_handlung_eigenes_subjekt"],
+          "quelle": "V92_PRUEFUNG_P24 (R1) und V92_PRUEFMASCHINE_V1_BERICHT (B1)"},
+  "P23": {"zip_sha": "4d7113084eb74fa5f13e0b371f174c23d84048d06c1a40a2dce61fdf827e32eb", "aufnahme": null, "faelle": ["PU1", "PU2", "PU4"],
+          "kandidat_rot": true, "muss_rot": [], "muss_gruen": [],
+          "quelle": "V92_PRUEFUNG_P23 (Kandidat nicht baubar)"}
+ }
+}

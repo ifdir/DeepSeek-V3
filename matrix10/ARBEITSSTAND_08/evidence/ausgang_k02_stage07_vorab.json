@@ -1,0 +1,41 @@
+{
+  "root": "/tmp/claude-0/-home-user-DeepSeek-V3/fe0b93ac-e3e4-569a-9216-d3a55d143b32/scratchpad/k01/st07/MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107",
+  "1_prepare": 200,
+  "2_gustav_verlaesst": [
+    200,
+    null
+  ],
+  "2_anwesend_danach": [
+    "char_g7_johann",
+    "char_g7_mara"
+  ],
+  "3_prepare_wiederaufnahme": [
+    200,
+    null
+  ],
+  "4_formulate": 200,
+  "5_commit": [
+    200,
+    null
+  ],
+  "antwort": {
+    "text": "Hält inne und prüft, was das mit ihr/ihm macht. Ich habe dich gehört.",
+    "witnessedBy": [
+      "char_g7_gustav",
+      "char_g7_johann",
+      "char_g7_mara"
+    ]
+  },
+  "gustav_witness_rows_zur_antwort": [
+    "heard"
+  ],
+  "gustav_erinnerungen_zur_antwort": [
+    "Johann Bruckner: Hält inne und prüft, was das mit ihr/ihm macht. Ich habe dich gehört."
+  ],
+  "mara_erinnerungen_zur_antwort": [
+    "Johann Bruckner: Hält inne und prüft, was das mit ihr/ihm macht. Ich habe dich gehört."
+  ],
+  "gustav_dialog_sieht_antwort": true,
+  "defekt_gustav_als_zeuge_der_antwort": true,
+  "kontrolle_mara_hoert_antwort": true
+}

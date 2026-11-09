@@ -1,0 +1,2 @@
+[vor Neustart] AV1_frage_und_antwort: 09 ROT speech an ['char_g7_clara'] statt char_g7_mara | Haupt-Facts: speech/char_g7_johann/Mara, 
+GESAMT: ROT -> /home/claude/kp/V12/frisch/MATRIX10_PRUEFMASCHINE_V12/SELBSTABNAHME_LAUF_20261107_183415/MUTATIONEN/M7_avatar_falsches_ziel/ERGEBNIS_LESEN.txt

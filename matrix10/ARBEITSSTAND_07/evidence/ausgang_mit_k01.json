@@ -1,0 +1,63 @@
+{
+  "root": "/tmp/claude-0/-home-user-DeepSeek-V3/fe0b93ac-e3e4-569a-9216-d3a55d143b32/scratchpad/k01/st07/MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107",
+  "H1_perception": 200,
+  "H1": {
+    "prepare": 200,
+    "commit": 422,
+    "code": "FORMULIERUNG_UNGEBUNDEN",
+    "tt": "tt_1a1baeb695f_a10906660031",
+    "hoerer_der_szene": [],
+    "hearsExplicit": true,
+    "fact_witnessedBy": null,
+    "claims": 0,
+    "frames": 0,
+    "claim_frame_zeugen": [],
+    "mara_als_zeugin_trotz_leerer_hoererliste": false
+  },
+  "S1_proposals_synapsen": {
+    "prepare": 200,
+    "commit": 422,
+    "code": "FORMULIERUNG_UNGEBUNDEN",
+    "tt": "tt_1a1baeb699a_835c1a620039",
+    "runtime_vorher": {
+      "emotion": "wach",
+      "intensity": 0.35,
+      "fear": 0.25,
+      "stress": 0.25,
+      "intent": "",
+      "activeCauseText": null
+    },
+    "runtime_nachher": {
+      "emotion": "wach",
+      "intensity": 0.35,
+      "fear": 0.25,
+      "stress": 0.25,
+      "intent": "",
+      "activeCauseText": null
+    },
+    "runtime_geaendert": false
+  },
+  "S2_fired": {
+    "prepare": 200,
+    "commit": 422,
+    "code": "TURN_BELEG_UNGUELTIG",
+    "tt": "tt_1a1baeb69d7_46673c4d0043",
+    "runtime_vorher": {
+      "emotion": "wach",
+      "intensity": 0.35,
+      "fear": 0.25,
+      "stress": 0.25,
+      "intent": "",
+      "activeCauseText": null
+    },
+    "runtime_nachher": {
+      "emotion": "wach",
+      "intensity": 0.35,
+      "fear": 0.25,
+      "stress": 0.25,
+      "intent": "",
+      "activeCauseText": null
+    },
+    "runtime_geaendert": false
+  }
+}

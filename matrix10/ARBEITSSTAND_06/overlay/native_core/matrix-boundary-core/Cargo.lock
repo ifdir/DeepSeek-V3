@@ -1,0 +1,6 @@
+# Dependency-free lockfile prepared with the source. Cargo has not been run.
+version = 3
+
+[[package]]
+name = "matrix-boundary-core"
+version = "0.1.0"

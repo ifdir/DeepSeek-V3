@@ -1,0 +1,2456 @@
+AMASTER — MATRIX10 / CHATHERE / KI-UNIVERSUM
+
+Vollständige verbindliche SOLL-Gesamtsystembeschreibung
+
+Stand: 3. August 2026
+Status: verbindlicher Architektur- und Produktmaster
+Geltungsbereich: gesamtes lokale Matrix10-/ChatHere-/KI-Universum-System
+
+Diese Datei beschreibt vollständig, was das System ist, welche Produktfunktionen es besitzt, welche Schicht wofür zuständig ist und welche Grenzen verbindlich gelten.
+
+Sie ist eine SOLL-Beschreibung.
+
+Sie enthält deshalb keine konkrete Codeinventur, keine Dateizeilen, keine Buildnamen, keine offenen Einzeldefekte, keine Logbewertung, keine Patchanweisung und keine momentane Testfreigabe. Diese Nachweise gehören in die Dokumente des jeweiligen Builds.
+
+Für das Verständnis des Gesamtsystems darf keine zusätzliche alte AMASTER-Sammlung und keine Kette aus mehreren Readmes erforderlich sein.
+
+---
+
+1. Systemidentität
+
+Matrix10 / ChatHere ist kein reaktiver Chatbot und kein bloßer Antwortgenerator.
+
+Es ist ein lokales, zustandsbasiertes KI-Universum, in dem Nutzer eigene Welten und Figuren erschaffen, importieren, verwalten und in fortlaufenden Szenen leben lassen.
+
+Figuren:
+
+- besitzen eine stabile Identität,
+- leben in einer konkreten Welt,
+- kennen nicht automatisch alles,
+- erinnern sich an Erlebtes,
+- bilden Beziehungen,
+- haben aktuelle Gefühle und Absichten,
+- verfügen über einen körperlichen Zustand,
+- können sprechen und handeln,
+- können lügen, irren, verdrängen, bereuen und Verpflichtungen brechen,
+- tragen Folgen früherer Ereignisse weiter,
+- entwickeln sich innerhalb einer Session,
+- bleiben zwischen getrennten Sessions voneinander isoliert,
+- und reagieren nicht nur auf den letzten Satz, sondern auf den gesamten für sie relevanten Zustand.
+
+Das sichtbare Chatfenster ist die Bedien- und Darstellungsebene dieses Systems. Der Antworttext ist nicht die eigentliche Wahrheit. Die Wahrheit liegt in den zuständigen kanonischen Zuständen und Ereignissen.
+
+---
+
+2. Produktziel
+
+Das System ermöglicht insbesondere:
+
+- lokale Benutzerprofile ohne verpflichtenden Cloud-Login,
+- eigene Welten anzulegen,
+- Welten aus Texten, Dokumenten, Bildern und strukturierten Dateien zu erzeugen oder zu erweitern,
+- Weltmaterial semantisch und strukturiert zu analysieren,
+- Orte, Regeln, Fraktionen, Ereignisse, Beziehungen und Figurenkandidaten aus Weltmaterial abzuleiten,
+- Charaktere manuell zu erstellen,
+- Charaktere aus Weltmaterial oder Uploads zu spawnen,
+- Charakterstämme und Sessionzustände sauber zu trennen,
+- mehrere unabhängige Sessions in derselben Welt zu führen,
+- den Nutzer als Beobachter, Teilnehmer, Avatar, Puppet, Regisseur oder God agieren zu lassen,
+- Fate als unsichtbare Story- und Druckschicht zu verwenden,
+- Szenen manuell oder über AutoChat fortzuführen,
+- Wissen nach Anwesenheit, Wahrnehmung und Informationsweg zu verteilen,
+- langfristige Erinnerungen und aktuelle Zustände zusammenzuführen,
+- Beziehungen und soziale Folgen gerichtet fortzuschreiben,
+- körperliche Möglichkeiten und Grenzen wirksam zu machen,
+- Dokumente und Medien als prägende Quelle oder als bloßes Wissen zu verwenden,
+- Spracheingabe und Sprachausgabe zu unterstützen,
+- Konfiguration, Diagnose, Timeline, Review und Reset über die Oberfläche bedienbar zu machen,
+- und das gesamte System lokal, nachvollziehbar und prüfbar zu betreiben.
+
+---
+
+3. Lokale Produktgrenze
+
+Das System bleibt offline-first und lokal kontrollierbar.
+
+Die technische Grundlinie besteht aus:
+
+- Python,
+- Flask-Backend,
+- SQLite als lokalem persistentem Master,
+- Web-Frontend,
+- lokalem Dateisystem,
+- API- und Socket-Kommunikation innerhalb derselben Anwendung,
+- optional angebundenem externem oder lokalem LLM-Service,
+- optionaler OCR-, Bild-, Dokument-, Semantik- und Vektorsuche.
+
+Verbindlich ist:
+
+- kein Cloud-Login als Grundvoraussetzung,
+- keine Supabase- oder vergleichbare Cloud-Datenbank als notwendiger Systemkern,
+- kein Stack-Wechsel ohne ausdrückliche Entscheidung,
+- keine parallele Ersatzanwendung,
+- kein versteckter zweiter Backend- oder Datenbankpfad,
+- keine Demo als Ersatz für das echte Produkt,
+- kein Produktfeature, das nur im Terminal oder über einen geheimen API-Aufruf bedienbar ist,
+- keine Frontendanzeige ohne reale Backendwirkung,
+- keine Backendwirkung ohne Frontendbedienbarkeit oder sichtbare Prüfbarkeit.
+
+Ein externer LLM-Provider darf verwendet werden. Welt-, Figuren-, Session- und Gedächtnisdaten bleiben trotzdem lokal verwaltet.
+
+---
+
+4. Gesamtsystemfluss
+
+Der vollständige Produktfluss lautet:
+
+Start
+→ lokales Userprofil laden
+→ Welt auswählen oder erstellen
+→ Weltmaterial importieren oder manuell pflegen
+→ Weltanalyse und Review
+→ Charaktere erstellen oder spawnen
+→ Session in einer Welt starten
+→ Rollen, Avatar, anwesende Figuren und Szene festlegen
+→ Nutzereingang oder AutoChat-Turn
+→ Identität, Modus, Sprecher, Ziel, Anwesenheit und Authority bestimmen
+→ Ereignis, Rede, Handlung, Upload oder Steuerbefehl semantisch binden
+→ kanonische Fakten und Zustände schreiben
+→ Wissen und Erinnerung an berechtigte Figuren verteilen
+→ Runtime, Körper, Beziehung, Social und SceneState fortschreiben
+→ relevante Fakten und Zustände für den nächsten Sprecher recallen
+→ BrainContext als Spiegel bilden
+→ LLM formuliert die Figur oder der Narrator stellt die Szene dar
+→ tatsächlich ausgeführte Rede oder Handlung committen
+→ Timeline, Logs und UI aktualisieren
+→ Folgeturn liest den fortgeschriebenen Zustand
+
+Gespeicherte Daten ohne wirksamen nächsten Leser sind kein vollständiges Systemverhalten.
+
+Ein überzeugender Satz ohne korrekten Zustand ist ebenfalls kein vollständiges Systemverhalten.
+
+---
+
+5. Dokumentenrollen
+
+5.1 AMASTER
+
+AMASTER beschreibt ausschließlich:
+
+- Produktziel,
+- Systemumfang,
+- Architektur,
+- Wahrheitseigentümer,
+- Rollen,
+- Datenflüsse,
+- Bedienfunktionen,
+- verbindliche Grenzen,
+- und das gewünschte Endverhalten.
+
+5.2 Agent-Systemprompt
+
+Der Agent-Systemprompt beschreibt:
+
+- wie Code geprüft wird,
+- wie IST und SOLL verglichen werden,
+- wie ein Patch begrenzt wird,
+- wie Tests und Live-Läufe unterschieden werden,
+- wann gestoppt wird,
+- und wie Ergebnisse dokumentiert und paketiert werden.
+
+Er ist keine zweite Architekturquelle.
+
+5.3 Build-Dokumente
+
+Readme, Deckblatt, Bericht, Log, Diff und Testvertrag dokumentieren:
+
+- den konkreten Build,
+- den konkreten Defekt,
+- konkrete Dateien und Zeilen,
+- konkrete Messwerte,
+- konkrete Tests,
+- konkrete Live-Läufe,
+- und den aktuellen Umsetzungsstand.
+
+Sie ersetzen AMASTER nicht.
+
+---
+
+6. Wahrheitshierarchie und Zuständigkeiten
+
+Die Systemwahrheit liegt nicht an einer einzigen Stelle. Jede Wahrheitsart besitzt genau den dafür zuständigen Owner.
+
+Schicht| Zuständigkeit
+Userprofil| reale Bedienperson, Einstellungen, Rollen- und Avatarzuordnung
+Welt| dauerhafte Weltregeln, Orte, Geschichte, Fraktionen, Kanon und physische Möglichkeiten
+Charakterstamm| stabile Identität und Grundprofil einer Figur
+SceneFact / Commit| maschinenlesbare Evidenz darüber, was gesagt, getan, gesetzt oder beobachtet wurde
+Proposition| dieselbe Sache über mehrere Ereignisse hinweg
+Goal / Intent| langfristige Ziele, Sessionziele, Szenenziele und aktuelle Absichten
+Current State / Lifecycle| aktueller Stand einer Proposition oder eines Goals
+SceneState| aktuelle Szene, Anwesenheit, Konflikte, offene Vorgänge und unmittelbare Lage
+Memory| was eine Figur erinnert oder als Wissen gespeichert hat
+WitnessKnowledge| wer aufgrund von Wahrnehmung oder Informationsweg wissen kann
+RuntimeState| aktueller innerer und äußerer Zustand einer Figur in einer Session
+PhysicalState / Capability| körperliche Lage und aktuell mögliche Handlungen
+RelationshipState| gerichtete aktuelle Beziehung zwischen zwei Figuren in einer Session
+Social / Synapsen| aus kanonischen Ereignissen abgeleitete Aktivierungen und Beziehungsdynamiken
+God / Regie / Authority| bindende Welt- oder Szenenwirkung im festgelegten Scope
+Fate| Storydruck, Möglichkeiten und nächste Beats, aber keine eigene Masterwahrheit
+BrainContext| Lesespiegel der relevanten Zustände
+LLM| Interpretation und Formulierung
+Renderer / Narrator / Finalizer| Darstellung, Lesbarkeit und Form, keine neue Masterwahrheit
+
+Eine Schicht darf keine andere heimlich ersetzen.
+
+---
+
+7. Menschliche Figurenlinie
+
+Eine Figur wird als zusammenhängender Mensch modelliert.
+
+Stammprofil
++ Biografie
++ Weltzugehörigkeit
++ Sprache und Gewohnheiten
++ langfristige Ziele
++ aktuelle Absichten
++ eigenes Erleben
++ gehörtes und beobachtetes Wissen
++ Erinnerungen
++ RuntimeState
++ Emotionen
++ PhysicalState und Capability
++ RelationshipState
++ Social-/Synapsenzustand
++ SceneState
++ offene Commitments und deren Lifecycle
++ God / Regie / Authority
+→ zusammenhängender Figurenzustand
+→ LLM formuliert
+→ Vollzug schreibt Folgen zurück
+
+Eine Figur darf:
+
+- lügen,
+- irren,
+- etwas verdrängen,
+- widersprüchlich sein,
+- eine Zusage brechen,
+- eine Behauptung widerrufen,
+- einen Deal verraten,
+- bereuen,
+- oder bewusst schweigen.
+
+Dann entsteht neue Evidenz für diesen Bruch.
+
+Die frühere Evidenz bleibt erhalten.
+
+Technisches Vergessen ist kein menschlicher Bruch.
+
+---
+
+8. Userprofil
+
+Der reale Nutzer ist nicht automatisch eine Figur.
+
+Das lokale Userprofil enthält mindestens:
+
+- stabile User-ID,
+- Anzeigename,
+- bevorzugte Sprache,
+- Bedienpräferenzen,
+- Accessibility-Einstellungen,
+- Stimmeingabe- und Sprachausgabeeinstellungen,
+- Standardrolle,
+- Avatarzuordnungen je Welt oder Session,
+- zuletzt verwendete Welt und Session,
+- lokale Konfiguration und Providerzuordnung.
+
+Das Userprofil ist vom Charakterstamm getrennt.
+
+Eine Avatarfigur bleibt eine Weltfigur mit eigener Charakter-ID. Der Nutzer steuert sie, wird aber nicht selbst als dieselbe Datenentität gespeichert.
+
+---
+
+9. Weltmodell
+
+Eine Welt ist ein eigenständiger, dauerhafter Kontext.
+
+Eine Welt kann mehrere unabhängige Sessions besitzen.
+
+Eine Welt enthält mindestens:
+
+- stabile Welt-ID,
+- Name,
+- Kurzbeschreibung,
+- ausführliche Weltbeschreibung,
+- Genre und Tonalität,
+- zeitliche Epoche,
+- geografische oder räumliche Struktur,
+- Orte und Teilorte,
+- Geschichte und Vorgeschichte,
+- Weltkanon,
+- Weltregeln,
+- physische Regeln,
+- gesellschaftliche Regeln,
+- kulturelle Regeln,
+- rechtliche oder politische Ordnung,
+- Magie-, Technik- oder Übernatürlichkeitsregeln,
+- Fraktionen und Gruppen,
+- zentrale Konflikte,
+- bekannte Ereignisse,
+- wichtige Gegenstände,
+- Wesen und Spezies,
+- Wissensgrenzen,
+- mögliche Startlagen,
+- Weltziele und Storyachsen,
+- Timeline,
+- Spawn-Vorlagen und Figurenkandidaten,
+- Weltassets und Referenzen,
+- Fate-Grundeinstellungen,
+- Inhalts- und Genreeinstellungen.
+
+Weltwissen ist nicht automatisch Figurenwissen.
+
+Eine Figur kennt nur, was aufgrund ihres Stamms, ihrer Herkunft, ihrer Rolle, eigener Erlebnisse oder eines späteren Informationswegs plausibel und gespeichert ist.
+
+---
+
+10. Welterstellung
+
+Eine Welt kann auf mehreren Wegen entstehen:
+
+1. vollständig manuell,
+2. aus einer kurzen Beschreibung,
+3. aus einem oder mehreren Uploads,
+4. aus einem vorhandenen Weltpaket,
+5. durch Erweiterung einer bestehenden Welt.
+
+Der Nutzer wählt vor dem Commit:
+
+- neue Welt erstellen oder bestehende Welt erweitern,
+- Zielwelt,
+- Uploadmodus,
+- gewünschte Analysebereiche,
+- ob erkannte Figuren nur Kandidaten bleiben oder zur Auswahl angeboten werden,
+- ob Weltregeln, Orte, Timeline oder Kanon übernommen werden dürfen.
+
+Eine Analyse darf nicht automatisch eine zweite Welt anlegen, wenn bereits eine Zielwelt festgelegt wurde.
+
+Ein erneuter Analyseaufruf darf keine identische Welt, keinen identischen Ort und keinen identischen Figurenstamm unkontrolliert duplizieren.
+
+---
+
+11. Weltanalyse
+
+Die Weltanalyse verarbeitet Text, PDF, Bild, Screenshot, Präsentation, JSON oder andere unterstützte Quellen.
+
+Sie extrahiert strukturiert:
+
+- Weltname und mögliche Alternativen,
+- Orte,
+- Unterorte,
+- geografische Beziehungen,
+- Figuren und Figurenkandidaten,
+- Rollen,
+- Beziehungen,
+- Fraktionen,
+- Konflikte,
+- Regeln,
+- Verbote,
+- Möglichkeiten,
+- Geschichte,
+- Timeline-Ereignisse,
+- zentrale Gegenstände,
+- Kultur und Sprache,
+- Tonalität,
+- Genre,
+- Weltwissen,
+- geheimes Wissen,
+- Wissensgrenzen,
+- mögliche Startszenen,
+- mögliche Storyziele,
+- mögliche Fate-Beats,
+- Spawn-Material.
+
+Die Analyse erzeugt zunächst einen prüfbaren Entwurf.
+
+Der Nutzer kann:
+
+- Ergebnisse annehmen,
+- einzelne Felder bearbeiten,
+- Einträge ablehnen,
+- Dubletten zusammenführen,
+- Figurenkandidaten auswählen,
+- Zielbereiche ändern,
+- und erst danach dauerhaft committen.
+
+Fehler werden sichtbar gemeldet. Ein gescheiterter Parse darf nicht als erfolgreiche Weltanalyse erscheinen.
+
+---
+
+12. Weltseite
+
+Die Weltseite ermöglicht mindestens:
+
+- Welt erstellen,
+- Welt auswählen,
+- Welt umbenennen,
+- Weltbeschreibung bearbeiten,
+- Weltfelder einsehen und ändern,
+- Orte verwalten,
+- Regeln verwalten,
+- Fraktionen verwalten,
+- Timeline öffnen,
+- Weltassets und Uploads verwalten,
+- Weltanalyse starten,
+- Analyseentwurf prüfen,
+- Spawn-Kandidaten anzeigen,
+- Charaktere spawnen,
+- Sessions der Welt öffnen,
+- Fate für die Welt konfigurieren,
+- Welt exportieren,
+- Welt sichern,
+- Welt gezielt löschen.
+
+Löschen muss eindeutig sein und darf keine andere Welt oder fremde Nutzerdaten betreffen.
+
+---
+
+13. Charaktererstellung und Spawning
+
+Charaktere können entstehen durch:
+
+- manuelle Erstellung,
+- Weltanalyse,
+- Charakterupload,
+- Spawn aus einer Weltvorlage,
+- Import eines vorhandenen Charakterpakets,
+- bewusste Ableitung aus einem vorhandenen Kanon.
+
+Spawning ist kein bloßes Namensgenerieren.
+
+Ein Spawn-Kandidat enthält mindestens:
+
+- vorgeschlagenen Namen,
+- Rolle in der Welt,
+- Herkunft,
+- Weltbezug,
+- Hintergrund,
+- Ziele,
+- Konflikte,
+- Beziehungen,
+- Wissen,
+- Sprachprofil,
+- körperliche Grundlage,
+- erkennbare Eigenschaften,
+- Quellenbezug,
+- Unsicherheiten,
+- und die Information, welche Felder direkt belegt oder nur abgeleitet sind.
+
+Vor dem dauerhaften Spawn erhält der Nutzer eine Vorschau.
+
+Der Nutzer kann:
+
+- einzelne Kandidaten auswählen,
+- Felder bearbeiten,
+- Dubletten verwerfen,
+- Weltzuordnung bestätigen,
+- Avatarfähigkeit festlegen,
+- und erst danach den Charakterstamm anlegen.
+
+Gleiche oder ähnliche Namen allein dürfen keine Identitäten zusammenführen.
+
+---
+
+14. Charakterstamm
+
+Der Charakterstamm enthält dauerhafte Grundwahrheit einer Figur.
+
+Mindestens:
+
+- stabile Charakter-ID,
+- Name und mögliche Anreden,
+- Alter oder Alterswirkung,
+- Geschlecht und Selbstverständnis, soweit definiert,
+- Spezies oder Wesenstyp,
+- Herkunft,
+- Weltzuordnung,
+- Biografie,
+- Kanon,
+- Kernfakten,
+- Persönlichkeit,
+- Grundwerte,
+- langfristige Ziele,
+- langfristige Ängste,
+- Geheimnisse,
+- Vorlieben,
+- Abneigungen,
+- Bindungsmuster,
+- Konfliktverhalten,
+- Humor,
+- Sprachregister,
+- typische Wortwahl,
+- Lieblingswörter,
+- Tabus,
+- körperliche Grunddaten,
+- Fähigkeiten und dauerhafte Einschränkungen,
+- Grundwissen,
+- Ausgangsbeziehungen,
+- Quellen und Freigabestatus.
+
+Der Stamm ist nicht die laufende Session.
+
+Aktuelle Verletzungen, Gefühle, Zusagen, Streitlagen, Beziehungsdrifts und Szenenziele dürfen nicht automatisch in den Stamm geschrieben werden.
+
+---
+
+15. Charakterprofil und Chathere-Kompass
+
+Das Charakterprofil beschreibt stabile Tendenzen, keine erzwungenen Einzelreaktionen.
+
+Dazu gehören beispielsweise:
+
+- Gefühl gegenüber Logik,
+- Nähe gegenüber Distanz,
+- Vertrauen gegenüber Misstrauen,
+- Mut gegenüber Angst,
+- Härte gegenüber Sanftheit,
+- Impulsivität,
+- Aggression,
+- Scham,
+- Schutzverhalten,
+- Dominanz,
+- Respekt,
+- Loyalität,
+- Neugier,
+- Bindungsstil,
+- Konfliktstil,
+- Sprachstil,
+- Humor,
+- Tabus und Grenzen.
+
+Der Chathere-Kompass / character_compass ist eine editierbare Verhaltenslinse über diese Profilbestandteile.
+
+Er darf beeinflussen:
+
+- Ton,
+- Ausdruck,
+- Hemmschwelle,
+- Annäherung,
+- Rückzug,
+- Ausweichen,
+- Eskalationsneigung,
+- Beruhigungsneigung,
+- persönliche Art der Reaktion.
+
+Er darf niemals:
+
+- Ereignisse erzeugen,
+- SceneFacts erzeugen,
+- Wissen erzeugen,
+- Zeugen erfinden,
+- Beziehungen ohne Ereignis verändern,
+- God oder Regie überschreiben,
+- RuntimeState ersetzen,
+- SceneState ersetzen,
+- oder als zweite Faktenmaschine arbeiten.
+
+Änderungen am Kompass erfolgen sichtbar über das Frontend, mit Vorschau und bewusster Speicherung.
+
+---
+
+16. SceneBehaviorEngine
+
+Eine separate SceneBehaviorEngine gehört nicht zur Zielarchitektur.
+
+Nicht zulässig sind:
+
+- statische Szenenreaktionslisten,
+- Keyword-zu-Verhalten-Automaten,
+- Szenentypen als Ersatz für menschlichen Zustand,
+- versteckte LLM-Auswahl alter Szenenverhaltensmuster,
+- oder ein zweiter Verhaltenspfad neben Profil, Memory, Runtime, Beziehung, Körper, SceneState und Authority.
+
+Verhalten entsteht aus dem zusammenhängenden Figurenzustand.
+
+---
+
+17. Charakterseite
+
+Die Charakterseite ermöglicht mindestens:
+
+- Charaktere nach Welt filtern,
+- Charakter erstellen,
+- Spawn-Kandidaten prüfen,
+- Profilfelder anzeigen und bearbeiten,
+- Kanon und Hintergrund verwalten,
+- Sprache und Lieblingswörter verwalten,
+- Chathere-Kompass bearbeiten,
+- Weltzuordnung prüfen,
+- Avatarzuordnung verwalten,
+- Grundbeziehungen ansehen,
+- Stammwissen verwalten,
+- Quellen und Uploads sehen,
+- Sessionzustände getrennt aufrufen,
+- Reviewvorschläge prüfen,
+- Charakter exportieren,
+- Charakter sichern,
+- Charakter gezielt löschen.
+
+Die Seite muss klar zwischen Stamm und Sessionzustand unterscheiden.
+
+---
+
+18. Sessions
+
+Eine Session ist ein eigenständiger Verlauf innerhalb einer Welt.
+
+Eine neue Session übernimmt:
+
+- Weltkanon,
+- Charakterstämme,
+- bewusst globale oder dauerhafte Weltfakten,
+- bewusst freigegebene Stammänderungen.
+
+Eine neue Session übernimmt nicht automatisch:
+
+- frühere Verletzungen,
+- aktuelle Emotionen,
+- Sessionbeziehungen,
+- offene Commitments,
+- frühere Szenen,
+- temporäre Uploads,
+- frühere God- oder Regieereignisse,
+- AutoChat-Fortsetzungen,
+- oder andere Sessiondrifts.
+
+Eine Session enthält mindestens:
+
+- stabile Session-ID,
+- User-ID,
+- Welt-ID,
+- Sessionname,
+- Erstellungs- und Änderungszeit,
+- aktive Szene,
+- aktive Figuren,
+- Anwesenheit,
+- Avatarzuordnung,
+- Rollenmodus,
+- Turnverlauf,
+- SceneState,
+- RuntimeStates,
+- Relationships,
+- Memories,
+- Timeline,
+- offene Propositionen und Goals,
+- Uploadbezüge,
+- Fate-Zustand,
+- Konfiguration und Snapshots.
+
+---
+
+19. Sessionverwaltung
+
+Die Sessionseite oder Sessionauswahl ermöglicht:
+
+- neue Session in einer Welt erstellen,
+- bestehende Session laden,
+- Session umbenennen,
+- aktive Figuren festlegen,
+- Avatar auswählen,
+- Startsituation definieren,
+- Session duplizieren, sofern bewusst gewünscht,
+- Snapshot erstellen,
+- zu Snapshot zurückkehren,
+- Session exportieren,
+- Session gezielt zurücksetzen,
+- Session gezielt löschen.
+
+Resetarten müssen getrennt sein:
+
+- nur Chat zurücksetzen,
+- nur Runtime zurücksetzen,
+- nur Memory zurücksetzen,
+- nur Uploadkontext zurücksetzen,
+- Session vollständig zurücksetzen,
+- User-Hard-Reset,
+- gezielte Welt- oder Charakterbereinigung.
+
+Ein Reset darf den gewählten Avatar nicht unbeabsichtigt entfernen und keine fremden Userdaten verändern.
+
+---
+
+20. Szene und SceneState
+
+Eine Szene ist der aktuelle kausale Raum einer Session.
+
+SceneState enthält mindestens:
+
+- Ort,
+- Zeit,
+- anwesende Figuren,
+- sichtbare und hörbare Reichweite,
+- aktive Akteure,
+- Ziele,
+- Zeugen,
+- laufende Handlungen,
+- Körperpositionen,
+- offene Fragen,
+- offene Forderungen,
+- offene Zusagen,
+- Konflikte,
+- Grenzen,
+- Gefahr,
+- Gegenstände,
+- Nachwirkungen,
+- Vordergrundereignisse,
+- und den Übergang zur nächsten Szene.
+
+Eine relevante offene Angelegenheit darf nicht verschwinden, nur weil ein neuer Satz gesprochen wurde.
+
+Eine Szene kann durch Nutzer, Regie, God, Fate oder den tatsächlichen Verlauf wechseln.
+
+---
+
+21. Timeline
+
+Die Timeline ist die geordnete, auditierbare Geschichte einer Welt oder Session.
+
+Sie zeigt mindestens:
+
+- Zeitpunkt,
+- Session,
+- Szene,
+- Turn,
+- Ereignistyp,
+- Actor,
+- Target,
+- Beteiligte,
+- Zeugen,
+- Quelle,
+- Fact-ID,
+- Proposition oder Goal,
+- Lifecycleänderung,
+- Wissensverteilung,
+- Runtimefolge,
+- Beziehungsfolge,
+- Status.
+
+Die Timeline darf historische Evidenz nicht mit aktuellem Zustand verwechseln.
+
+Sie muss Filter nach Welt, Session, Figur, Dyade, Fact-Typ, Proposition und Zeitraum ermöglichen.
+
+---
+
+22. Chat und Turn
+
+Der Chat ist die zentrale sichtbare Interaktion.
+
+Er verarbeitet:
+
+- Text,
+- Spracheingabe,
+- Uploads,
+- direkte Figurenrede,
+- Handlungen,
+- Beobachterkommentare,
+- Avatar- und Puppet-Eingaben,
+- Regieanweisungen,
+- God-Anweisungen,
+- AutoChat,
+- Narration,
+- Szenenwechsel,
+- Rückfragen,
+- Zielbindungen,
+- Wissensübertragungen.
+
+Vor jeder Antwort wird bestimmt:
+
+- Wer bedient das System?
+- In welchem Modus erfolgt die Eingabe?
+- Wer spricht in der Welt?
+- Wer ist Ziel?
+- Welche Figuren sind aktiv?
+- Wer ist anwesend?
+- Wer hört oder sieht etwas?
+- Handelt es sich um Rede, Handlung, Beschreibung, Upload, Regie oder God?
+- Welche Authority gilt?
+- Welche Fakten und Zustände werden gelesen?
+- Welche Wirkung darf geschrieben werden?
+
+Rohtext darf nicht ungeprüft als vollständige Turnwahrheit direkt an das LLM weitergereicht werden.
+
+---
+
+23. TurnTruth und Eingangsbindung
+
+Alle produktiven Eingangswege erzeugen eine gemeinsame kanonische TurnTruth.
+
+Sie trennt mindestens:
+
+- Bedienperson,
+- User-ID,
+- Rolle,
+- Avatarprofil,
+- Avatar-Charakter-ID,
+- Puppet-Sprecher,
+- tatsächlichen Sprecher,
+- Zielcharakter oder Zielobjekt,
+- Session,
+- Welt,
+- Szene,
+- anwesende Figuren,
+- hörende Figuren,
+- sehende Figuren,
+- Eingangsmodus,
+- Authority,
+- Turn-ID,
+- Zeitbezug,
+- Uploadbezug.
+
+Eine ID darf nicht in einer Phase Userprofil, in einer anderen Phase Avatarprofil und später Charakter-ID bedeuten.
+
+---
+
+24. Eingabenormalisierung
+
+Die Eingabenormalisierung darf Fehler korrigieren, aber keine Bedeutung zerstören.
+
+Sie berücksichtigt:
+
+- Namen,
+- Figurenaliases,
+- Projektsprache,
+- Slang,
+- Dialekt,
+- absichtliche Schreibweisen,
+- Rollenmarker,
+- God-, Regie-, Avatar- und Puppet-Modus,
+- Tippfehler,
+- alternative Schreibweisen,
+- Ähnlichkeit,
+- Kontext.
+
+Namen, Projektbegriffe, direkte Zitate und absichtliche Figurenrede dürfen nicht blind glattgebügelt werden.
+
+Unklare Korrekturen dürfen keine neue Weltwahrheit erzeugen.
+
+---
+
+25. Sprecher- und Zielbindung
+
+Sprecher und Ziel sind getrennte Identitäten.
+
+Mögliche Sprecher:
+
+- realer Nutzer als Bedienperson,
+- Nutzer als Teilnehmer,
+- Avatar,
+- Puppet-Figur,
+- Regie,
+- God,
+- Charakter,
+- AutoChat-Charakter,
+- Narrator,
+- Fate intern ohne sichtbare Figurenrede.
+
+Mögliche Ziele:
+
+- eine Figur,
+- mehrere Figuren,
+- der Nutzer,
+- die Szene,
+- die Welt,
+- ein Ort,
+- ein Gegenstand,
+- eine Beziehung,
+- ein Körperzustand,
+- eine Proposition,
+- ein Goal,
+- ein Upload,
+- eine Session.
+
+Bei mehreren anwesenden Figuren darf „du“ nicht allein anhand des letzten Namens geraten werden.
+
+Zielbindung berücksichtigt:
+
+- explizite Namensnennung,
+- UI-Auswahl,
+- letzten Sprecher,
+- adressierte Frage,
+- aktiven Avatar,
+- Szene,
+- Blickrichtung oder Handlungskontext,
+- gespeicherte Proposition,
+- und bestehende Turnbindung.
+
+---
+
+26. Anwesenheit, Hören und Sehen
+
+Anwesenheit ist ein kanonischer Szenenzustand.
+
+Nur anwesende oder technisch/magisch verbundenen Figuren können unmittelbar wahrnehmen.
+
+Es wird getrennt bestimmt:
+
+- anwesend,
+- beteiligt,
+- handelnd,
+- betroffen,
+- sieht,
+- hört,
+- wird später informiert,
+- ist abwesend.
+
+Eine Figur erhält Wissen nur über einen gültigen Weg:
+
+- selbst erlebt,
+- selbst getan,
+- gesehen,
+- gehört,
+- direkt betroffen,
+- später erzählt bekommen,
+- Dokument gelesen,
+- Upload betrachtet,
+- God setzt Wissen,
+- Regie bringt Information,
+- oder eine Weltregel erlaubt eine besondere Wahrnehmung.
+
+Namensnennung allein erzeugt keine Zeugenschaft.
+
+---
+
+27. Rollen und Modi
+
+27.1 Beobachter
+
+Der Beobachter kann die Szene verfolgen, beschreiben oder steuern, ohne automatisch eine Figur sprechen oder handeln zu lassen.
+
+27.2 Teilnehmer
+
+Der Nutzer nimmt als Bedienperson am Dialog teil. Ob er über einen Avatar spricht oder außerhalb der Welt bleibt, wird ausdrücklich gebunden.
+
+27.3 Avatar
+
+Ein Avatar ist eine vom Nutzer direkt geführte Weltfigur.
+
+Das System erzeugt für den Avatar nicht selbstständig:
+
+- Rede,
+- Entscheidung,
+- Einwilligung,
+- Ablehnung,
+- Absicht,
+- Emotion,
+- Beziehungserklärung,
+- körperliche Handlung.
+
+Zulässig bleiben:
+
+- Anwesenheit,
+- Zeugenschaft,
+- empfangenes Wissen,
+- objektiv erlittene äußere Wirkung,
+- und vom Nutzer ausdrücklich gesetzte Handlung.
+
+27.4 Puppet
+
+Puppet ist eine turngebundene direkte Steuerung einer ausgewählten Figur.
+
+Die Puppet-Eingabe ist die tatsächliche Rede oder Handlung dieser Figur. Sie darf nicht als bloßer Vorschlag oder hypothetischer Satz umgedeutet werden.
+
+Puppet erzeugt keinen dauerhaften Rollenwechsel.
+
+27.5 Regie
+
+Regie setzt eine bindend zu vollziehende Szenenwirkung.
+
+Regie ist keine Figurenrede.
+
+Regie darf keine zusätzliche nicht angeordnete Figurenentscheidung oder Körperhandlung erfinden.
+
+27.6 God
+
+God setzt bindende Welt-, Figuren-, Wissens-, Szenen- oder Zustandsfakten im ausdrücklich gewählten Scope.
+
+God-Fakten werden kanonisch gespeichert und dürfen nicht durch spätere LLM-Formulierungen verschwinden.
+
+27.7 Fate
+
+Fate ist eine unsichtbare Story-, Druck- und Beat-Schicht.
+
+Fate:
+
+- liest Welt, Szene, Figuren, Ziele, Beziehungen, Wissen und offene Konflikte,
+- erzeugt Möglichkeiten und nächste Ereignisdruckpunkte,
+- darf selbstständig Storybewegung anstoßen, wenn es aktiviert ist,
+- wiederholt nicht bloß denselben Konflikt,
+- spricht nicht als normale Figur,
+- steuert den User-Avatar nicht,
+- und ist kein eigener Wahrheitsmaster.
+
+27.8 AutoChat
+
+AutoChat lässt anwesende Nicht-Avatar-Figuren selbstständig weitersprechen und handeln.
+
+AutoChat verwendet dieselben kanonischen Pfade wie ein manueller Turn.
+
+Es darf:
+
+- keine verkürzte Parallelpipeline verwenden,
+- keine Avatarhandlung erfinden,
+- keine Körpergrenzen ignorieren,
+- keine God- oder Regiefakten verlieren,
+- und keine nicht anwesende Figur automatisch sprechen lassen.
+
+---
+
+28. Sprecherwahl und Orchestrierung
+
+Der Orchestrator koordiniert den gesamten Turn.
+
+Er muss:
+
+1. Eingang und Modus lesen,
+2. User, Welt und Session binden,
+3. Sprecher bestimmen,
+4. Ziel bestimmen,
+5. Anwesenheit und Wahrnehmung bestimmen,
+6. Uploadkontext prüfen,
+7. Authority bestimmen,
+8. TurnTruth bilden,
+9. SceneState laden,
+10. Runtime, Emotion, Körper und Capability laden,
+11. Memory und WitnessKnowledge laden,
+12. Relationships und Social lesen,
+13. offene Propositionen und Goals laden,
+14. relevante Weltregeln laden,
+15. Fate vorbereiten,
+16. nächsten Sprecher bestimmen,
+17. BrainContext bilden,
+18. LLM oder Narrator aufrufen,
+19. Ausgabe auf Darstellungsgrenzen prüfen,
+20. die tatsächlich ausgedrückten Rede- und Zustandskomponenten sowie die tatsächlich vollzogenen oder versuchten Handlungskomponenten committen; enthält ein Figurenoutput mehrere semantisch eigenständige Komponenten, werden diese getrennt typisiert, validiert und unter demselben Quellturn gebunden,
+21. Wissen und Folgezustände fortschreiben,
+22. Timeline und Logs aktualisieren,
+23. sichtbare Antwort ausgeben.
+
+Die Sprecherwahl berücksichtigt mindestens:
+
+- ausdrückliche Adressierung,
+- anwesende Figuren,
+- letzten Sprecher,
+- Ziel der Frage,
+- aktuelle Emotion,
+- Wissen,
+- Expertise,
+- Ziele,
+- offene Verpflichtungen,
+- SceneState,
+- mögliche Unterbrechung,
+- und kontrollierte Variation.
+
+Ein Avatar wird nicht automatisch als Sprecher ausgewählt.
+
+---
+
+29. Uploadsystem
+
+Uploads können sein:
+
+- Textdateien,
+- PDF,
+- Bücher,
+- Bilder,
+- Screenshots,
+- PowerPoint oder andere Präsentationen,
+- JSON,
+- Charakterbeschreibungen,
+- Weltbeschreibungen,
+- Tabellen,
+- Referenzmaterial,
+- Artikellisten,
+- technische Dokumentation,
+- Szenenmaterial,
+- Audio oder daraus erzeugte Transkripte.
+
+Jeder Upload besitzt:
+
+- stabile Upload-ID,
+- Datei und Dateityp,
+- User-ID,
+- Welt-, Charakter-, Session- oder Szenenbezug,
+- Uploadmodus,
+- Ziel,
+- Quelle,
+- Verarbeitungsstatus,
+- Extraktionsstatus,
+- Fehlerstatus,
+- Vorschau,
+- Commitstatus,
+- und nachvollziehbare Ableitungen.
+
+Uploads dürfen nicht blind alle aktiven Figuren prägen.
+
+---
+
+30. Upload Mode A — prägend und bindend
+
+Mode A darf einen ausdrücklich ausgewählten Zielbereich dauerhaft prägen.
+
+Mögliche Ziele:
+
+- Welt,
+- Charakterstamm,
+- Kanon,
+- Weltregel,
+- Biografie,
+- körperliche Grundlage,
+- Grundbeziehung,
+- dauerhafte Erinnerung,
+- Wissensbestand,
+- feste Dokumentstruktur.
+
+Mode A kann beispielsweise setzen oder ableiten:
+
+- Vergangenheit,
+- Trauma,
+- Vorlieben,
+- Abneigungen,
+- Identitätsbestandteile,
+- Körpermerkmale,
+- Beziehungen,
+- Weltfakten,
+- Kanon,
+- tiefe Erinnerungen,
+- feste Regeln,
+- Stammwissen.
+
+Voraussetzungen:
+
+- klares Ziel,
+- klarer Scope,
+- Quelle,
+- Vorschau,
+- Review,
+- bewusster Commit.
+
+Mode A ohne Ziel darf nichts dauerhaft prägen.
+
+---
+
+31. Upload Mode B — Wissen, Beobachtung und Referenz
+
+Mode B macht den Inhalt zu Wissen oder Referenz, verändert aber nicht automatisch die Identität.
+
+Beispiele:
+
+- Eine Figur liest ein Buch.
+- Eine Figur betrachtet ein Bild.
+- Eine Figur erhält eine Information.
+- Eine Figur sieht einen Screenshot.
+- Eine Session verwendet ein Referenzdokument.
+- Ein Nutzer stellt eine Datei für eine Frage bereit.
+
+Ein Krimi macht eine Figur nicht kriminell.
+
+Ein Bild erzeugt nicht automatisch eine Vergangenheit.
+
+Mode B ist Wissen, Wahrnehmung oder Referenz, nicht Stammprägung.
+
+Im Chat bleibt ein Upload standardmäßig sessionbezogen, solange der Nutzer nicht bewusst eine Welt-, Stamm- oder Charakterprägung auswählt.
+
+---
+
+32. Dokument-, OCR- und Knowledge-Base-Schicht
+
+Die Dokumentenschicht speichert und durchsucht Quellen strukturiert.
+
+Mögliche Felder:
+
+- Dateiname,
+- Uploadgruppe,
+- Dokumentgruppe,
+- erkannte Nummer,
+- erkannter Titel,
+- OCR-Inhalt,
+- Volltext,
+- Keywords,
+- Seiten,
+- Folien,
+- Bildvorschau,
+- Quellpfad,
+- Zielbezug,
+- Modus A oder B,
+- Welt,
+- Charakter,
+- Session,
+- Szene,
+- Extraktionsstatus,
+- Fehlerstatus,
+- Quelle und Vertrauensgrad.
+
+Bei strukturierten Fragen wird zuerst strukturiert gesucht.
+
+Beispiel:
+
+Wo ist die Folie mit Artikelnummer 123?
+
+Dann prüft das System zuerst:
+
+- Artikelnummer,
+- Titel,
+- OCR,
+- Keywords,
+- Dokumentgruppe,
+- Uploadgruppe,
+- Datei- und Seitenmetadaten.
+
+Erst danach ergänzt semantische Suche oder das LLM.
+
+---
+
+33. Semantik-, Graph- und Vektorsuche
+
+Semantische Suche dient dem Finden, nicht dem Erzeugen von Wahrheit.
+
+Sie unterstützt:
+
+- ähnliche Begriffe,
+- alternative Formulierungen,
+- ungenaue Fragen,
+- OCR-Varianten,
+- Schreibfehler,
+- Bedeutungsnähe,
+- assoziative Aktivierung,
+- Pattern Completion.
+
+Der Wissensgraph bindet:
+
+- Entitäten,
+- Orte,
+- Figuren,
+- Beziehungen,
+- Ereignisse,
+- Timeline,
+- Propositionen,
+- Goals,
+- Quellen.
+
+Semantik und Graph ersetzen nicht:
+
+- stabile IDs,
+- exakte Nummernsuche,
+- Quellenbindung,
+- Uploadmodus,
+- WitnessKnowledge,
+- Commitentscheidung,
+- oder Current State.
+
+---
+
+34. SceneFact und Commit
+
+SceneFact ist maschinenlesbare Ereignisevidenz.
+
+Es ist kein bloßer Textsatz.
+
+Ein SceneFact oder gleichwertiger kanonischer Eintrag bindet mindestens:
+
+- Fact-ID,
+- User,
+- Welt,
+- Session,
+- Szene,
+- Quellturn,
+- Quelltyp,
+- Authority,
+- Fact-Typ,
+- Actor,
+- Target,
+- Betroffene,
+- Zeugen,
+- Zusammenfassung,
+- strukturierten Payload,
+- Status,
+- Zeit,
+- Duplicate-Key,
+- Proposition,
+- Goal,
+- Antwortbezug,
+- zeitlichen Scope,
+- Validierung,
+- Relationen.
+
+Nicht jedes Feld muss eine eigene SQLite-Spalte sein. Es muss jedoch im kanonischen Bestand stabil identifizierbar und für zuständige Leser erreichbar sein.
+
+34.1 Zusammengesetzte Turn- und Figurenoutputs
+
+Ein sichtbarer Turn oder Figurenoutput kann mehrere semantisch eigenständige Ereigniskomponenten enthalten.
+
+Beispiele:
+
+- eine körperliche Handlung und gleichzeitig gesprochene Rede,
+- eine Ablehnung und ein Rückzug,
+- eine Offenbarung und ein damit verbundener Widerruf,
+- eine Handlung und eine ausdrücklich gesetzte Grenze.
+
+Der kanonische Turn-/Output-Commitpfad muss solche Komponenten vor dem Commit trennen.
+
+Bereits kanonisch gebundener Current State ist dabei die Ausgangslage der Komponentenbewertung. Ein neuer Turn oder Figurenoutput wird als Fortsetzung, Wiederaufnahme, Verstärkung, Abbruch, Widerruf, Widerspruch oder sonstige neue Evidenz zu diesem Zustand bewertet. Ein lexikalischer, semantischer oder anderer Fallback darf einen vorhandenen kanonischen Zustand nicht aufheben, zurückstufen oder als nicht vorhanden behandeln. Eine Änderung des Current State benötigt neue gültige Evidenz über den zuständigen kanonischen Pfad.
+
+Für jede tatsächlich ausgedrückte, versuchte oder vollzogene Komponente gilt:
+
+- Sie besitzt eine eigene semantische Ereignisklasse.
+- Sie besitzt eine eigene Validierung.
+- Sie besitzt eine eigene Effect-Authorization.
+- Sie erzeugt bei erfolgreicher Validierung einen eigenen SceneFact oder gleichwertigen kanonischen Eintrag.
+- Alle Komponenten desselben Outputs tragen dieselbe "source_turn_id".
+- Alle Komponenten verwenden dieselbe User-, Welt-, Session-, Szenen- und Turn-Bindung.
+- Actor, Target, Betroffene, Zeugen und Authority werden pro Komponente aus derselben TurnTruth gebunden.
+- "responds_to_fact_id", Proposition, Goal, zeitlicher Scope und Relationen werden pro Komponente gesetzt, soweit sie fachlich gelten.
+- Derselbe Quelltext darf nicht durch eine unvereinbare Kombination aus "event_kind" und "speech_act" in einem einzigen Planobjekt überladen werden.
+
+Die gemeinsame "source_turn_id" und das bestehende Turn-Binding bilden die kanonische Zusammengehörigkeit. Dafür wird kein Parallelstore und keine zweite Turnwahrheit eingeführt.
+
+Das LLM darf Komponenten vorschlagen, aber weder ihre Identität noch ihren Commit besitzen. Der Server validiert und committet jede Komponente über die vorhandenen kanonischen Writer.
+
+Das Scheitern einer Komponente darf eine unabhängig gültige andere Komponente desselben Outputs nicht automatisch vernichten. Eine gemeinsame Ablehnung ist nur zulässig, wenn die Komponenten semantisch untrennbar voneinander abhängen und der Vollzug deshalb nicht sicher bestimmt werden kann.
+
+Eine nicht validierte Komponente darf:
+
+- als sichtbare oder unbestätigte Redeprovenienz erhalten bleiben,
+- aber keine körperliche Ausführung,
+- keine Weltwirkung,
+- keinen Current-State-Fortschritt,
+- keine Goal-Erfüllung,
+- keine Beziehungsauswirkung,
+- und kein Lernen als vollzogene Wahrheit erzeugen.
+
+Der zuständige Reader muss alle zum Quellturn gehörenden validierten Komponenten erreichen können. Der Folgeturn muss deren getrennte Wirkungen weitertragen.
+
+---
+
+35. Proposition, Goal und Lifecycle
+
+Eine Proposition ist dieselbe Angelegenheit über mehrere Ereignisse hinweg.
+
+Beispiel:
+
+Clara bittet Mara, am Samstag zu arbeiten.
+
+Request, Annahme, Ablehnung, Widerruf, Erfüllung oder Bruch gehören zur selben Proposition, wenn sie dieselbe Sache betreffen.
+
+Ein Goal bindet:
+
+- Owner,
+- Ziel,
+- gegebenenfalls Empfänger,
+- Proposition,
+- Priorität,
+- zeitlichen Scope,
+- Lifecycle.
+
+Zu unterscheiden sind:
+
+- Stammziel,
+- Weltziel,
+- Sessionziel,
+- Szenenziel,
+- aktuelle Absicht,
+- Commitmentziel,
+- erfülltes,
+- aufgegebenes oder gescheitertes Ziel.
+
+Historische Evidenz bleibt append-only erhalten.
+
+Der aktuelle Zustand wird aus der neuesten gültigen Evidenz reduziert.
+
+Mögliche Current-State-Werte sind abhängig vom realen Inventar beispielsweise:
+
+- open,
+- active,
+- accepted,
+- declined,
+- fulfilled,
+- completed,
+- closed,
+- revoked,
+- contradicted,
+- superseded,
+- failed.
+
+Reader müssen Current State lesen und dürfen nicht allein auf ein historisches "open"-Fact vertrauen.
+
+---
+
+36. Request, Refusal, Acceptance und Commitment
+
+36.1 Request
+
+Ein Request bindet:
+
+- Steller,
+- Empfänger,
+- angefragte Handlung oder Leistung,
+- Proposition,
+- Zeit,
+- Lifecycle.
+
+36.2 Refusal
+
+Eine Refusal gilt nur, wenn:
+
+- die antwortende Figur der berechtigte Empfänger ist,
+- der referenzierte Request existiert,
+- dieselbe Proposition betroffen ist,
+- Session und Zeitbezug stimmen,
+- und die Angelegenheit noch offen ist.
+
+Danach ist der Current State "declined" oder der gleichwertige vorhandene Zustand.
+
+Die historische Request-Evidenz bleibt erhalten.
+
+36.3 Acceptance
+
+Eine Acceptance gilt nur, wenn:
+
+- sie an eine konkrete offene Frage oder ein Angebot gebunden ist,
+- Sprecher und Empfänger stimmen,
+- Proposition und Zeitfenster stimmen,
+- die Zustimmung semantisch den angefragten Inhalt annimmt,
+- und keine spätere Evidenz die Angelegenheit bereits geschlossen hat.
+
+Eine bloße Figurenbehauptung „wir hatten das vereinbart“ erzeugt ohne gültige Acceptance keinen neuen aktiven Deal.
+
+Sie kann als Self-Claim, Irrtum oder Lüge gespeichert werden.
+
+36.4 Bruch, Widerruf und Widerspruch
+
+Bruch, Widerruf und Widerspruch erzeugen neue Evidenz.
+
+Sie löschen das frühere Commitment nicht aus der Geschichte.
+
+---
+
+37. Zeit und Termine
+
+Zeit besitzt mindestens folgende Ebenen:
+
+- Weltzeit,
+- Sessionzeit,
+- Szenenzeit,
+- Turnzeit,
+- reale Zeit,
+- relative Zeitangaben,
+- Zeitfenster von Propositionen und Goals.
+
+Relative Begriffe wie:
+
+- heute,
+- morgen,
+- gestern,
+- diesen Samstag,
+- nächsten Monat,
+- später,
+- damals
+
+werden nur bei ausreichendem Kontext in ein konkretes Zeitfenster überführt.
+
+Vergangenheit darf nicht als neue Zukunftszusage interpretiert werden.
+
+Mehrere mögliche Wochentage oder widersprüchliche Zeitangaben bleiben ungeklärt, bis sie eindeutig gebunden sind.
+
+Doppelbuchungen werden nicht durch Vergessen gelöst. Sie erzeugen Konflikt, Widerruf, Bruch oder bewusste Neuentscheidung.
+
+---
+
+38. Memory
+
+Memory speichert figurenbezogenes Wissen und Erleben.
+
+Mindestens zu unterscheiden:
+
+- selbst getan,
+- selbst gesagt,
+- selbst erlebt,
+- direkt betroffen,
+- gesehen,
+- gehört,
+- später erzählt bekommen,
+- gelesen,
+- aus einem Upload gelernt,
+- erschlossen,
+- geglaubt,
+- vermutet,
+- behauptet,
+- bestritten,
+- unsicher,
+- vergessen oder verdrängt.
+
+Memory besitzt:
+
+- stabile Identität,
+- Figurenbezug,
+- Welt- und Sessionbezug,
+- Quelle,
+- Zeit,
+- Beteiligte,
+- Wissensart,
+- Vertrauensgrad,
+- Relevanz,
+- Beziehungen zu anderen Memories,
+- und gegebenenfalls Proposition oder Fact-ID.
+
+Vergessen oder Verdrängen bedeutet einen neuen epistemischen Zustand oder eine geringere Relevanz, nicht das stille Löschen kanonischer SceneFact-Evidenz.
+
+Eine Figur kann sich an ihre eigene Rede erinnern, auch wenn der behauptete Inhalt objektiv unbestätigt bleibt.
+
+---
+
+39. WitnessKnowledge
+
+WitnessKnowledge ist die epistemische Zugriffsschicht.
+
+WitnessKnowledge ist die Zuständigkeit über Anwesenheit, Wahrnehmung und Informationsweg; es ist kein zweiter Fact-Store neben Memory oder SceneFact.
+
+Sie beantwortet:
+
+- Wer war anwesend?
+- Wer sah das Ereignis?
+- Wer hörte es?
+- Wer war direkt betroffen?
+- Wer wurde später informiert?
+- Wer weiß es nicht?
+
+Abwesende Figuren erhalten kein automatisches Wissen.
+
+Weltwissen, Figurenwissen und objektive Weltwahrheit bleiben getrennt.
+
+---
+
+40. Konjunktives Gedächtnis und Pattern Completion
+
+Zusammengehörige Fakten werden als gebundene Frames behandelt.
+
+Ein Frame kann enthalten:
+
+Wer
+Was
+Wem
+Wann
+Wo
+Warum
+Zustand
+Folge
+Quelle
+Wissende
+Proposition
+Goal
+
+Beispiel:
+
+Mara ist schwanger
+→ dritter Monat
+→ von Alrik
+→ Alrik weiß es noch nicht
+→ Mara will es sagen
+→ Offenbarung gegenüber Alrik ist relevant
+
+Pattern Completion bedeutet:
+
+- vorhandene kanonische Relationen zusammenzuführen,
+- relevante fehlende Verbindungen zu finden,
+- dieselbe Proposition und dieselben Beteiligten zu erhalten,
+- Current State zu berücksichtigen,
+- aber keine neuen Weltfakten zu erfinden.
+
+Assoziative Wort- oder Begriffspools können Recall aktivieren. Sie besitzen keine Wahrheitshoheit.
+
+---
+
+41. Recall und Kontextaufbau
+
+Vor jeder Figurenantwort werden relevant geladen:
+
+- Weltregeln,
+- aktuelle Szene,
+- TurnTruth,
+- anwesende Figuren,
+- relevante SceneFacts,
+- Current State von Propositionen und Goals,
+- eigene Memories,
+- WitnessKnowledge,
+- RuntimeState,
+- Körper und Capability,
+- RelationshipState,
+- Social-/Synapsenaktivierung,
+- aktuelle Absichten,
+- God- und Regiefakten,
+- Fate-Druck,
+- zeitlicher Kontext.
+
+Recall wird nach Relevanz begrenzt, darf aber lifecycle-relevante Evidenz nicht verlieren.
+
+Eine alte Ablehnung kann weiterhin relevant sein, solange dieselbe Proposition wieder angesprochen wird.
+
+---
+
+42. RuntimeState und Emotion
+
+RuntimeState beschreibt die Figur jetzt in einer konkreten Session.
+
+Mögliche Bestandteile:
+
+- aktuelle Emotionen,
+- Intensität,
+- Erregung,
+- Angst,
+- Vertrauen,
+- Müdigkeit,
+- Stress,
+- Schmerz,
+- Scham,
+- Wut,
+- Hoffnung,
+- Motivation,
+- Widerstand,
+- aktuelle Absicht,
+- Handlungsbereitschaft,
+- Nachwirkung,
+- aktive Ziele.
+
+RuntimeState ist nicht der Stamm.
+
+Er wird aus Ereignissen und deren wirksamen Folgen fortgeschrieben.
+
+Decay darf Zustand nur nach fachlicher Regel verändern. Eine aktive Ursache darf nicht allein durch Zeitablauf verschwinden, wenn sie weiterhin besteht.
+
+---
+
+43. PhysicalState und Capability
+
+PhysicalState beschreibt den körperlichen Zustand.
+
+Capability beschreibt, was die Figur aufgrund dieses Zustands jetzt tatsächlich tun kann.
+
+Mögliche Bereiche:
+
+- Position,
+- Beweglichkeit,
+- Verletzungen,
+- Schmerz,
+- Bewusstsein,
+- Atmung,
+- Sicht,
+- Hören,
+- Kraft,
+- Gleichgewicht,
+- Festhalten oder Fixierung,
+- Reichweite,
+- verfügbare Hände oder Gliedmaßen,
+- erlaubte und unmögliche Handlungen.
+
+Capability ist keine Dekoration.
+
+Sie muss wirksam sein bei:
+
+- Sprecherplanung,
+- Handlungsauswahl,
+- LLM-Kontext,
+- Renderer,
+- Finalizer,
+- Commit,
+- AutoChat,
+- Regie- und God-Vollzug.
+
+Eine bewegungsunfähige Figur darf nicht ohne eine neue kausale Änderung normal aufstehen oder handeln.
+
+Die Umsetzung darf PhysicalState und Capability technisch unter RuntimeState bündeln, sofern Zuständigkeit und Wirkung erhalten bleiben und Capability mögliche Handlungen tatsächlich begrenzt.
+
+---
+
+44. RelationshipState
+
+RelationshipState ist gerichtet und sessiongebunden.
+
+Mara → Alrik
+
+ist nicht dasselbe wie:
+
+Alrik → Mara
+
+Mögliche Dimensionen:
+
+- Vertrauen,
+- Sympathie,
+- Nähe,
+- Liebe,
+- Respekt,
+- Angst,
+- Feindseligkeit,
+- Dominanz,
+- Abhängigkeit,
+- Loyalität,
+- Schuld,
+- Eifersucht,
+- familiäre Bindung,
+- romantische Bindung,
+- Schutzimpuls.
+
+Die konkret geführten Dimensionen richten sich nach vorhandenem Inventar und nachweisbarer Ereigniswirkung. Nicht jede genannte Dimension muss als eigenes Speicherfeld existieren.
+
+Beziehungsänderungen benötigen ein kanonisches Ereignis oder eine bewusste Stammänderung.
+
+Sessionbeziehungen dürfen nicht automatisch in den Stamm zurückschreiben.
+
+---
+
+45. Social und Synapsen
+
+Social- und Synapsenschichten können abbilden:
+
+- Aktivierung,
+- emotionale Nähe,
+- soziale Spannung,
+- Dominanz,
+- assoziative Verbindungen,
+- Wiedererkennung,
+- kurzfristige Priorisierung.
+
+Sie sind abgeleitete Zustände.
+
+Sie dürfen keine zweite Wahrheit neben Memory, RelationshipState, RuntimeState oder SceneFact erzeugen.
+
+Jede Ableitung bleibt an User, Welt, Session, Figur, Dyade und Quelle gebunden.
+
+---
+
+46. God und Regie
+
+God und Regie sind Authority-Modi, aber nicht identisch.
+
+46.1 God
+
+God setzt eine bindende Tatsache.
+
+Beispiele:
+
+- eine Beziehungstatsache,
+- eine Weltregel,
+- Wissen einer Figur,
+- einen körperlichen Zustand,
+- ein Ereignis,
+- eine Anwesenheit,
+- einen Szenenrahmen.
+
+Die Wirkung wird in die zuständigen kanonischen Schichten geschrieben.
+
+46.2 Regie
+
+Regie setzt oder erzwingt eine konkrete Szenenwirkung.
+
+Sie beschreibt, was in der Szene geschieht, ohne selbst Figurenrede zu sein.
+
+Actor und Target werden ausdrücklich gebunden.
+
+Regie darf keine zusätzlichen nicht angeordneten Taten erfinden.
+
+46.3 Scope
+
+God und Regie besitzen immer einen klaren Scope:
+
+- Welt,
+- Session,
+- Szene,
+- Figur,
+- mehrere Figuren,
+- Beziehung,
+- Wissen,
+- Körper,
+- Zeit.
+
+Unklarer Scope darf nicht globalisiert werden.
+
+---
+
+47. Fate
+
+Fate hält die Story in Bewegung.
+
+Es liest:
+
+- Weltkonflikte,
+- offene Ziele,
+- aktuelle Szene,
+- Beziehungen,
+- Erinnerungen,
+- Geheimnisse,
+- Wissen und Nichtwissen,
+- körperliche Lage,
+- offene Propositionen,
+- Userrolle,
+- bisherige Beats.
+
+Fate kann:
+
+- nächste Ereignismöglichkeiten erzeugen,
+- Druck erhöhen oder lösen,
+- Nebenfiguren aktivieren,
+- Ortswechsel vorbereiten,
+- Konsequenzen früherer Ereignisse zurückbringen,
+- offene Storyfäden aufgreifen,
+- Überraschungen erzeugen, sofern sie weltkonform sind.
+
+Fate darf nicht:
+
+- den Avatar steuern,
+- Figurenwissen erfinden,
+- SceneFacts umgehen,
+- Weltregeln brechen,
+- dieselbe Schleife endlos wiederholen,
+- als sichtbare Chatfigur sprechen,
+- oder kanonische Wahrheit nur im Prompt halten.
+
+Fate wird im Frontend aktivierbar und konfigurierbar gemacht.
+
+---
+
+48. AutoChat
+
+AutoChat spielt eine Szene über mehrere Turns weiter.
+
+Es wählt jeweils eine zulässige anwesende Nicht-Avatar-Figur oder eine erlaubte Narration.
+
+AutoChat berücksichtigt:
+
+- Sprecherwechsel,
+- "turn_number",
+- Unterbrechungen,
+- Ziele,
+- offene Fragen,
+- SceneState,
+- Wissen,
+- Beziehungen,
+- Emotionen,
+- Körperzustand,
+- Fate,
+- Wiederholungsvermeidung.
+
+AutoChat stoppt oder pausiert bei:
+
+- notwendiger Userentscheidung,
+- unklarem Avatarvollzug,
+- fehlender Zielbindung,
+- harter Konfliktauflösung, die der Nutzer entscheiden muss,
+- konfiguriertem Turnlimit,
+- Fehlern.
+
+---
+
+49. BrainContext
+
+BrainContext ist der kompakte, relevante Lesespiegel für die nächste Modellentscheidung.
+
+Er enthält nur bereits vorhandene kanonische Informationen.
+
+Er darf:
+
+- auswählen,
+- priorisieren,
+- zusammenfassen,
+- und Quellen markieren.
+
+Er darf nicht:
+
+- Fakten erzeugen,
+- Wissen verteilen,
+- Current State neu entscheiden,
+- Relationships überschreiben,
+- oder als eigener Speicher wirken.
+
+---
+
+50. LLM-Grenze
+
+Das LLM interpretiert den bereitgestellten Zustand und formuliert als Figur.
+
+Es besitzt keine Masterwahrheit.
+
+Das LLM darf:
+
+- natürliche Sprache erzeugen,
+- Ton und Stil umsetzen,
+- menschlich abwägen,
+- lügen oder ausweichen, sofern dies als Figurenverhalten möglich ist,
+- kreative, aber weltkonforme Formulierungen erzeugen.
+
+Es darf nicht:
+
+- fehlende Fakten ersetzen,
+- nicht vorhandenes Wissen voraussetzen,
+- Authority überschreiben,
+- den Avatar selbst steuern,
+- körperlich unmögliche Handlungen als vollzogen behandeln,
+- oder eine unbelegte Figurenbehauptung automatisch in Weltwahrheit verwandeln.
+
+Promptregeln sind Transport und Kontext, kein Ersatz für Writer und Reader.
+
+---
+
+51. Renderer, Narrator und Finalizer
+
+51.1 Renderer
+
+Der Renderer stellt die Ausgabe in lesbarer Form dar.
+
+51.2 Narrator
+
+Der Narrator kann:
+
+- Atmosphäre beschreiben,
+- sichtbare Handlungen darstellen,
+- Übergänge formulieren,
+- die Szene verständlich machen.
+
+Er darf nicht:
+
+- geheimes Wissen verteilen,
+- Körperzustände überschreiben,
+- Beziehungen erfinden,
+- God oder Regie ersetzen,
+- oder ungecommittete Handlungen als geschehen darstellen.
+
+51.3 Finalizer
+
+Der Finalizer prüft Form, Rollenreinheit, Wiederholung, Lesbarkeit und zulässige Darstellung.
+
+Er darf keine kanonische Wahrheit umschreiben und keine unmögliche Handlung glattbügeln.
+
+Die Qualitätsziele umfassen insbesondere:
+
+- hohe Kohärenz,
+- rollenreinen Figurenstil,
+- geringe Wiederholung,
+- keine KI-Floskeln,
+- keine Meta-Erklärungen in Figurenrede,
+- keine falsche Sicherheit gegen den Zustand.
+
+---
+
+52. Review und Stammübernahme
+
+Sessionerfahrung darf nicht automatisch dauerhafte Charakteridentität werden.
+
+Ein Review kann vorschlagen:
+
+- langfristige Charakterentwicklung,
+- neues Stammwissen,
+- dauerhafte Beziehungsausgangswerte,
+- neue Weltfakten,
+- neue Charaktermerkmale,
+- dauerhafte Erinnerungen,
+- Kanonerweiterungen.
+
+Der Nutzer sieht:
+
+- Quelle,
+- betroffene Figur oder Welt,
+- bisheriger Wert,
+- vorgeschlagener Wert,
+- Begründung,
+- Scope,
+- mögliche Folgen.
+
+Er kann:
+
+- annehmen,
+- bearbeiten,
+- ablehnen,
+- oder nur sessionbezogen belassen.
+
+Erst nach Freigabe wird der Stamm oder Weltkanon geändert.
+
+---
+
+53. Profiler und gezielte Feldverbesserung
+
+Der Profiler darf aus Material Vorschläge für Charakter- oder Weltfelder erzeugen.
+
+Er arbeitet feldbezogen und quellengebunden.
+
+Zulässig:
+
+- einzelnes Feld auswählen,
+- Vorschlag erzeugen,
+- Quelle anzeigen,
+- Vorschau vergleichen,
+- bewusst speichern.
+
+Nicht zulässig:
+
+- automatische globale Neuberechnung,
+- stilles Autosave,
+- Überschreiben mehrerer Felder ohne Auswahl,
+- Ableitung ohne Quelle,
+- oder Ersetzen des gesamten Charakters bei einem Feldwechsel.
+
+---
+
+54. Benutzeroberfläche
+
+Die Oberfläche ist Teil der Architektur.
+
+Zentrale Seiten:
+
+1. Start / Hauptmenü
+2. Userprofil
+3. Welten
+4. Charaktere
+5. Sessions
+6. Chat
+7. Upload-Center
+8. Gedächtnis / Wissen
+9. Beziehungen / Social
+10. Timeline
+11. Fate / Storysteuerung
+12. Konfiguration / API
+13. Review
+14. Admin / Diagnose / Reset
+15. Logs und Testansicht
+
+Jede Backendfunktion mit Produktwirkung muss über eine dieser Oberflächen bedienbar, sichtbar oder prüfbar sein.
+
+---
+
+55. Startseite und Hauptmenü
+
+Die Startseite zeigt klar:
+
+- geladenen Buildnamen,
+- aktive Datenbank,
+- Serverstatus,
+- Providerstatus,
+- aktiven User,
+- zuletzt verwendete Welt,
+- zuletzt verwendete Session,
+- direkte Zugänge zu Welt, Charakteren, Chat, Uploads, Config und Diagnose.
+
+Der Nutzer muss das System ohne manuelle Pfadeingabe starten und bedienen können.
+
+---
+
+56. Chatoberfläche
+
+Die Chatseite zeigt mindestens:
+
+- aktive Welt,
+- aktive Session,
+- aktive Szene,
+- anwesende Figuren,
+- ausgewählten Avatar,
+- Rollenmodus,
+- direktes Ziel,
+- AutoChat-Status,
+- Fate-Status,
+- Chatverlauf,
+- Uploadbezug,
+- Eingabefeld,
+- Mikrofonmodus,
+- Senden,
+- Stoppen,
+- verständliche Statusmeldungen.
+
+Rollenwechsel, Avatarwahl, Zielwahl, God, Regie und AutoChat müssen sichtbar bedienbar sein.
+
+Das Frontend sendet die dafür notwendigen IDs und Modi ausdrücklich an das Backend.
+
+---
+
+57. Upload-Center
+
+Das Upload-Center ermöglicht:
+
+- Dateien auswählen,
+- Vorschau,
+- Dateityp erkennen,
+- OCR- oder Textextraktion starten,
+- Zielwelt, Zielcharakter, Session oder Szene wählen,
+- Mode A oder Mode B wählen,
+- Dokumentgruppe festlegen,
+- Analysebereiche wählen,
+- Status sehen,
+- Fehler sehen,
+- Review durchführen,
+- Commit ausführen,
+- Uploads wiederfinden,
+- Uploads gezielt löschen.
+
+Keine prägende Wirkung darf ohne sichtbare Ziel- und Moduswahl stattfinden.
+
+---
+
+58. Gedächtnis- und Wissensseite
+
+Die Gedächtnisseite zeigt figurenbezogen:
+
+- eigene Erlebnisse,
+- eigene Rede,
+- gesehenes,
+- gehörtes,
+- später erfahrenes,
+- Dokumentwissen,
+- Unsicherheit,
+- Quellen,
+- Zeit,
+- zugehörige Facts,
+- Propositionen,
+- Beziehungen und Wissenswege.
+
+Sie trennt:
+
+- Stammwissen,
+- Sessionmemory,
+- Weltwissen,
+- Cache,
+- Index,
+- Reviewvorschläge.
+
+---
+
+59. Beziehungs- und Socialseite
+
+Die Beziehungsseite trennt sichtbar:
+
+- dauerhafte Ausgangsbeziehung im Stamm,
+- aktuelle gerichtete Sessionbeziehung,
+- abgeleitete Socialwerte,
+- historische Veränderungen,
+- Quellenereignisse.
+
+Eine Änderung muss klar zeigen, welche Ebene verändert wird.
+
+Das Frontend darf nicht einen alten Socialwert bearbeiten, während der Chat einen anderen Runtime- oder Relationship-Pfad liest.
+
+---
+
+60. Konfiguration und API
+
+Konfiguration kann betreffen:
+
+- LLM-Provider,
+- API-Key,
+- Modell,
+- Antwortlänge,
+- Temperatur oder Kreativitätsparameter,
+- AutoChat,
+- Fate,
+- Sprache,
+- TTS,
+- STT,
+- Accessibility,
+- Weltparameter,
+- Charakterparameter,
+- Sessionparameter,
+- Runtimeparameter,
+- Debugtiefe.
+
+Jede Einstellung besitzt einen klaren Scope:
+
+- global,
+- userbezogen,
+- weltbezogen,
+- charakterbezogen,
+- sessionbezogen,
+- runtimebezogen.
+
+Ein gespeicherter Wert muss nach Reload sichtbar bleiben und vom Backend tatsächlich verwendet werden.
+
+Der API-Key darf nicht aus einer funktionierenden Konfiguration entfernt oder im Klartext in Berichten und Logs ausgegeben werden.
+
+---
+
+61. Accessibility
+
+Das System wird barrierearm und insbesondere für starke Sehbehinderung bedienbar gestaltet.
+
+Verbindlich:
+
+- große Schrift,
+- hoher Kontrast,
+- große Schaltflächen,
+- klare Textbeschriftungen statt ausschließlich Icons,
+- einfache Seitenstruktur,
+- keine überfüllten Dialoge,
+- eindeutige Fokusreihenfolge,
+- Tastaturbedienung,
+- Screenreader-taugliche Beschriftungen,
+- klare Erfolgs- und Fehlermeldungen,
+- keine manuelle Pfadeingabe für Standardbetrieb,
+- klare Fortschrittsanzeige,
+- einfache Startprozedur,
+- keine versteckten Mini-Menüs für zentrale Funktionen.
+
+---
+
+62. STT und TTS
+
+Das System unterstützt zwei Spracheingabemodi:
+
+1. Sprache wird in Text umgewandelt und vor dem Senden bearbeitet.
+2. Sprache wird aufgenommen, umgewandelt und automatisch gesendet.
+
+Verbindlich:
+
+- Modus sichtbar,
+- Aufnahme abbrechbar,
+- keine versteckte Auto-Sendung,
+- STT pausiert während TTS,
+- keine Selbstaufnahme der Systemstimme,
+- keine Endlosschleife,
+- klare Trennung von Eingabe und Ausgabe,
+- Antworttext darf nicht versehentlich wieder in das Eingabefeld gelangen.
+
+---
+
+63. Persistenz und Datenhaltung
+
+SQLite ist der lokale persistente Master.
+
+Es speichert mindestens:
+
+- User,
+- Welten,
+- Orte,
+- Fraktionen,
+- Charakterstämme,
+- Sessions,
+- Szenen,
+- Turns,
+- SceneFacts,
+- Propositionen,
+- Goals,
+- Lifecycle,
+- Memory,
+- WitnessKnowledge,
+- RuntimeState,
+- PhysicalState,
+- Capability,
+- RelationshipState,
+- Social-/Synapsenzustände,
+- Uploads,
+- Dokumentgruppen,
+- Assets,
+- Timeline,
+- Fate-Ereignisse,
+- God- und Regiecommits,
+- Reviews,
+- Snapshots,
+- Konfiguration,
+- Diagnosedaten.
+
+WitnessKnowledge wird als Wissens- oder Wahrnehmungsbindung persistiert; es ist kein dritter Universal-Store neben SceneFact und Memory.
+
+Zu unterscheiden sind:
+
+- Stamm,
+- Session,
+- Runtime,
+- Current State,
+- historische Evidenz,
+- Cache,
+- Suchindex,
+- Uploadrohdaten,
+- extrahiertes Wissen,
+- Anzeige,
+- Legacy,
+- Testdaten.
+
+JSON kann Import, Export, Cache oder Legacy sein, aber keine heimliche zweite aktuelle Wahrheit neben SQLite.
+
+---
+
+64. Snapshots, Backup, Import und Export
+
+Das System ermöglicht:
+
+- Session-Snapshots,
+- Weltbackup,
+- Charakterexport,
+- Sessionexport,
+- Upload- und Dokumentexport,
+- Wiederherstellung,
+- Versionsvergleich,
+- kontrollierten Import.
+
+Ein Snapshot enthält die für den Fortgang benötigten gebundenen Zustände.
+
+Wiederherstellung darf keine andere Session oder fremde Userdaten überschreiben.
+
+---
+
+65. Diagnose, Logs und Nachvollziehbarkeit
+
+Diagnose und Logs zeigen:
+
+- Buildstand,
+- aktive Datenbank,
+- User,
+- Welt,
+- Session,
+- Turn,
+- Rolle,
+- Sprecher,
+- Ziel,
+- Anwesenheit,
+- Providerweg,
+- Writer,
+- Fact-IDs,
+- Propositionen,
+- Lifecycle,
+- Memory- und Runtimewirkung,
+- sichtbare Antwort,
+- Fehler.
+
+Logs dienen der Nachvollziehbarkeit. Sie sind nicht selbst die kanonische Weltwahrheit.
+
+Fehler dürfen nicht verschluckt werden.
+
+Eine UI-Erfolgsmeldung darf nur erscheinen, wenn die zugrunde liegende Operation tatsächlich erfolgreich war.
+
+---
+
+66. Inhalts- und Genresteuerung
+
+Genre, Ton und Inhaltsgrenzen werden ausdrücklich über Welt-, User- oder Sessionkonfiguration gesteuert.
+
+Es gibt keine versteckten Produktfilter, die ohne sichtbare Bedienung Figurenverhalten, Weltlogik oder Ausgabe verändern.
+
+Zulässige Steuerung ist:
+
+- im Frontend sichtbar,
+- gescopet,
+- nachvollziehbar,
+- und als Konfiguration oder Weltregel gespeichert.
+
+Ein Darstellungsfilter darf keine kanonische Wahrheit verändern.
+
+---
+
+67. Sicherheit
+
+Lokale Bedienbarkeit und Sicherheit müssen zusammen bestehen.
+
+Zu schützen sind:
+
+- Uploadpfade,
+- erlaubte Dateitypen,
+- Dateigrößen,
+- Archivextraktion,
+- Pfadmanipulation,
+- unerlaubte Ausführung,
+- fremde Userdaten,
+- API-Keys,
+- Backups,
+- Exportdaten.
+
+Sicherheitsfunktionen müssen über die Oberfläche verständlich konfigurierbar oder als technische Schutzmaßnahme ohne inhaltliche Verhaltensänderung dokumentiert sein.
+
+---
+
+68. Kanonische Invarianten
+
+Verbindlich gelten:
+
+1. Eine Welt besitzt stabile Identität.
+2. Eine Session ist ein unabhängiger Verlauf in einer Welt.
+3. Charakterstamm und Sessionzustand sind getrennt.
+4. Userprofil und Avatarfigur sind getrennt.
+5. Sprecher und Ziel sind getrennt.
+6. Anwesenheit, Hören und Sehen bestimmen Wissen.
+7. Abwesende Figuren wissen nichts ohne Informationsweg.
+8. SceneFacts sind append-only Evidenz.
+9. Current State wird aus Lifecycle-Evidenz bestimmt.
+10. Memory ist Figurenwissen, nicht automatisch Weltwahrheit.
+11. RuntimeState ist aktueller Zustand, nicht Stamm.
+12. RelationshipState ist gerichtet und sessiongebunden.
+13. PhysicalState begrenzt Capability.
+14. God und Regie wirken nur in ihrem Scope.
+15. Fate erzeugt Druck, besitzt aber keine eigene Wahrheit.
+16. AutoChat verwendet denselben kanonischen Pfad wie normale Turns.
+17. BrainContext spiegelt nur.
+18. Das LLM formuliert nur.
+19. Renderer, Narrator und Finalizer dürfen Wahrheit nicht umschreiben.
+20. Chathere-Kompass ist Verhaltenslinse, keine Faktenmaschine.
+21. Eine SceneBehaviorEngine gehört nicht zur Architektur.
+22. Upload Mode A prägt nur nach Zielbindung und Review.
+23. Upload Mode B erzeugt Wissen oder Referenz, nicht Identität.
+24. Kein Parallelstore neben den zuständigen kanonischen Schichten.
+25. Keine produktive Backendfunktion ohne Frontendbedienung oder sichtbare Prüfbarkeit.
+26. Keine Frontendanzeige ohne reale Backendwirkung.
+27. Ein Writer ist erst vollständig wirksam, wenn der zuständige Leser die Information erhält.
+28. Ein guter Satz ersetzt keinen korrekten Zustand.
+29. Ein menschlicher Bruch erzeugt neue Evidenz; technische Amnesie ist kein Bruch.
+30. User-, Welt- und Sessionisolation bleiben erhalten.
+31. Ein sichtbarer Turn kann mehrere SceneFacts unter derselben "source_turn_id" erzeugen.
+32. Körperliche Handlung, Rede, Ablehnung, Offenbarung und andere eigenständige Ereigniskomponenten werden nicht durch eine unvereinbare Einzelkategorie ersetzt, sondern getrennt validiert und gebunden.
+33. Die Sichtbarkeit eines Satzes und die kanonische Wirksamkeit seiner einzelnen Komponenten sind getrennt; ein gültiger Bestandteil darf nicht allein wegen eines anderen ungültigen Bestandteils verloren gehen.
+34. Die Zusammengehörigkeit zusammengesetzter Outputs wird durch bestehende TurnTruth, "source_turn_id" und Turn-Binding hergestellt; dafür entsteht kein neuer Store und kein zweiter Wahrheitsbesitzer.
+35. Ein bereits kanonisch gebundener Current State wird nicht aus dem Wortlaut eines Folgeturns neu erraten. Neue Eingaben werden als Evidenz oder Delta zu diesem Zustand bewertet; Fallbacks dürfen ihn ohne neue gültige Evidenz weder löschen noch zurückstufen.
+
+---
+
+69. Verbindliche Produktabnahme
+
+Das Gesamtsystem erfüllt sein SOLL nur, wenn End-to-End nachweisbar ist:
+
+User bedient sichtbare Funktion
+→ Frontend sendet eindeutigen Scope und Identitäten
+→ Backend nutzt den vorgesehenen kanonischen Pfad
+→ Zustand wird im zuständigen Owner gespeichert
+→ berechtigte Figuren erhalten Wissen und Folgen
+→ der nächste relevante Leser erhält denselben Zustand
+→ sichtbare Antwort entspricht Rolle, Wissen, Welt, Körper und aktueller Szene
+→ Folgeturn trägt den Zustand weiter
+→ andere User, Welten und Sessions bleiben unverändert
+
+Eine isolierte Speicherung, ein Marker oder ein einzelner schöner Antwortsatz genügt nicht.
+
+---
+
+70. Verbindliche Kurzform
+
+Lokales KI-Universum statt reaktiver Chatbot.
+
+Userprofil → Welt → Weltanalyse → Charakterstamm/Spawn → Session → Szene → TurnTruth.
+
+Eine Welt besitzt Kanon, Regeln, Orte, Geschichte und Figuren.
+Eine Session besitzt ihren eigenen Verlauf.
+Eine Figur besitzt Stamm, Wissen, Erinnerung, Runtime, Körper, Ziele und Beziehungen.
+
+Uploads sind entweder prägend (Mode A) oder Wissen/Referenz (Mode B).
+Wissen entsteht nur durch Beteiligung, Wahrnehmung, Information oder ausdrücklich gesetzte Authority.
+
+SceneFacts sind append-only Evidenz.
+Proposition und Goal verbinden Ereignisse.
+Current State wird aus Lifecycle bestimmt.
+SceneState hält den aktuellen Konfliktraum.
+Runtime und Relationship halten den Jetztzustand.
+PhysicalState begrenzt Capability.
+
+God und Regie wirken gescopet.
+Fate erzeugt Storydruck.
+AutoChat verwendet denselben kanonischen Pfad.
+Avatar wird niemals automatisch gesteuert.
+
+Chathere-Kompass ist eine editierbare Verhaltenslinse.
+Keine SceneBehaviorEngine.
+Kein Parallelstore.
+Kein Prompt und kein LLM als Wahrheitsbesitzer.
+
+Jede Backendfunktion ist im Frontend bedienbar oder sichtbar prüfbar.
+Jeder Writer muss den realen Leser erreichen.
+Jede Wirkung muss im Folgeturn weiterleben.

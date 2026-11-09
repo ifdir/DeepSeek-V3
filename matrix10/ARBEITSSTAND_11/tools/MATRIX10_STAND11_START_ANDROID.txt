@@ -1,0 +1,97 @@
+MATRIX10 - Arbeitsstand 12A - Android (aarch64) - Pydroid 3 oder Termux
+======================================================================
+
+STATUS: ROT - KEINE Produktfreigabe. Auf einem echten Android-Geraet NICHT getestet (kein Geraet verfuegbar).
+
+Was 12A aendert (Kettenkarte, live gemessen):
+- Was eine Figur tut, kommt in der Szene an: zieht sich Mara zurueck, ist danach Abstand; haelt Johann sie fest, kann sie
+  nicht einfach weggehen (blockiert); zwei Taten in einem Satz sind zwei Taten mit eigener Wirkung.
+- Die Szene eskaliert, wenn wirklich Bedrohliches geschieht (Schlag, Festhalten, Beruehrung gegen ihr Nein, Rueckzug
+  ueberwunden), und beruhigt sich in ruhigen Zuegen.
+- "Laufzeit zuruecksetzen" setzt auch Raum und Eskalation zurueck.
+
+Was 12 aendert (gemessen mit echtem Modell gpt-4o-mini auf deiner Sitzung vom 09.11.):
+- Das Erleben antwortet etwa halb so lang (kurzer Nachweis) - die langsamste Stufe wird schneller.
+- Gefuehl, Absicht und Beziehung gehen nicht mehr verloren, nur weil das Modell Johanns Satz an seine Handlung statt an
+  seine Rede gehaengt hat.
+- Mit AutoChat: hat eine Figur auf das Letzte schon geantwortet, handelt sie im naechsten Zug aus eigener Absicht,
+  statt dieselbe Zeile noch einmal zu beantworten.
+- Ihre frueheren eigenen Saetze stehen im Verlauf als "schon gesagt".
+
+Was 11F korrigiert (unabhaengige Pruefung von 11E):
+- Die Figur bekommt nicht pauschal weniger, sondern das RICHTIGE: Profilstellen, die ein noch wirkendes Erlebnis
+  beruehrt hat oder die eine anwesende bzw. gerade genannte Person betreffen; im ruhigen Moment Werte und Lebenslauf.
+- Fragst du nach einer abwesenden Person, kennt die Figur weiter, was sie ueber sie weiss.
+- "Hat nicht gereicht" steht nur, wenn ihr Verhalten wirklich ueberwunden oder blockiert wurde.
+- Dein Paket enthaelt deinen Schluessel: siehe ENTHAELT_DEINEN_SCHLUESSEL_NICHT_WEITERGEBEN.txt.
+
+Was 11E aendert ("ein Mensch ruft nicht sein ganzes Leben ins Gedaechtnis"):
+- Die Figur bekommt nicht mehr ihr ganzes Profil, alle Beziehungen und die ganze Welt bei jedem Satz, sondern das, was der
+  Moment in ihr anspricht: ihre Lage, die Stellen ihres Stamms, die das Erlebnis beruehrt hat, die Anwesenden.
+- Lebenslauf, Aengste, Vorlieben usw. erscheinen nur in einem ruhigen Moment ohne Erlebnis.
+
+Was 11D aendert (dein Lauf 09.11., 11:08 - "wirkt mechanisch"):
+- Die Figur darf ausfuehrlicher antworten: Rede bis etwa 6 Saetze, was sie tut in 1-4 Saetzen (Koerper, Blick, Stimme, Zoegern).
+- Ihr Brief ist eine Szene statt eines Dossiers (etwa halb so lang, kein roher Datenauszug mehr).
+- Sie sieht, ob ihr Verhalten gewirkt hat ("du wolltest Abstand - es hat nicht gereicht") und keine festen Beispielgesten mehr.
+- Tipp: unter "Konfiguration" ein staerkeres Modell als gpt-4o-mini (z. B. gpt-4.1-mini oder gpt-4o) macht die Figur lebendiger.
+
+Was 11C aendert (deine Rueckmeldung 22:22/22:37):
+- Kein Wort geht mehr verloren: was du fuer die Figur schreibst und nicht als Handlung erkannt wird, ist ihre Rede
+  ("Hey suesse", "dir gefaellt das ja"). Eine Handlung wirkt weiter nur, wenn sie geprueft geschehen ist.
+- Die antwortende Figur bekommt deine GANZE Aeusserung woertlich - und getrennt, was davon wirklich geschehen ist.
+- Keine internen Lesevermerke mehr unter dem Eingabefeld.
+
+Was 11B repariert (dein Lauf 08.11., 21:58):
+- "Ach komm, ich streiche ueber deine brust, dir gefaellt das ja" wurde ganz abgewiesen, weil das Modell "dir gefaellt das ja" keinem
+  Teil zugeordnet hat. Jetzt wird gespeichert, was gelesen ist (Rede und Tat); der ungelesene Rest bleibt als Hinweis sichtbar.
+  Nur ein Rest, der eine andere Person nennt, haelt die Eingabe weiter an (Schutz vor falsch adressierter Rede).
+- Die Meldung "Diese Rede ueberschneidet sich mit einer Handlung" kam von einer doppelten Lesung derselben Worte - kommt nicht mehr.
+- Maras Gefuehl und Absicht gingen verloren (der Nachweis stand getrennt vom Wert). Jetzt steht er direkt daneben (Pflicht);
+  im naechsten Zug kennt Mara ihr Gefuehl, die Ursache und was sie vorhat.
+
+Was 11A gegenueber 11 repariert (dein Lauf 08.11., 20:51):
+- "Ich klatsche auf deinen arsch" wurde zweimal abgewiesen: das Modell (gpt-4o-mini) hat die Pruefangaben, die Stand 11 nur als
+  angehaengte Liste verlangte, gar nicht geliefert. Ab 11A sind sie PFLICHTFELDER in jedem Teil der Antwort; bei OpenAI erzwingt
+  der Anbieter das feste Antwortformat. Der Planer-Text ist von 30 000 auf 13 800 Zeichen geschrumpft.
+
+Was 11 aendert (SPS V62.7):
+- Je Austausch nur noch: 1 Planer-Lesung deiner Eingabe + 1 Erlebens-Lesung je Figur, die es wahrnimmt + 1 Formulierung.
+  Die frueheren Einzelpruefungen (Vollzug, Wirkung, Koerper, Grenze, Sprecher, Sprache, Namen ...) stehen in derselben
+  ersten Antwort; der Kernel prueft sie wie bisher. Gemessen mit Testmodell (1,5 s je Aufruf): 4-5 statt 9-15 Aufrufe.
+- Im Figurenbrief steht zuerst die aktuelle Lage der Figur (Gefuehl, Ursache, Absicht, Grenze, Schmerz, Beziehung),
+  danach Profil und Kompass. Die Figur soll aus der Lage handeln; Profil und Kompass faerben nur.
+- Mit echtem Modell auf dem Handy NICHT geprueft - bitte zurueckmelden, wie lange ein Austausch dauert und wie Mara reagiert.
+
+Was 10a fuer dein Handy repariert:
+- Der Fehler "503 Rust-Schreibgrenze konnte nicht geladen werden" bei Beruehrungs-Eingaben kam daher, dass Android aus
+  Download / Interner Speicher keine Bibliothek laden darf (Pydroid 3 + Ordner in Download). P25 brauchte keine.
+- Ab 10a laedt START.py dieselbe Rust-Bibliothek (byte-gleich, SHA-256 geprueft) aus dem eigenen App-Speicher.
+  Der Ordner darf in Download bleiben. Nachgestellt und geprueft auf einem solchen Speicher (Pruefprotokoll 9d).
+- Beim Start steht: [RUST] Einwilligungskern geladen (...). Laedt er trotzdem nicht, steht dort der Grund, und in der
+  Oberflaeche erscheint oben ein roter Balken mit Grund und Abhilfe.
+
+Wichtig: das ANDROID-Paket verwenden (Name enthaelt "android-aarch64"), nicht das Linux-Paket.
+
+Pydroid 3
+---------
+1. ZIP entpacken (z. B. in Download), wie bisher.
+2. In Pydroid 3: Menue -> Pip -> "flask" installieren (einmalig).
+3. START.py im entpackten Ordner in Pydroid oeffnen und ausfuehren (gelber Knopf).
+4. In der Ausgabe muss stehen: [RUST] Einwilligungskern geladen
+5. Browser: http://127.0.0.1:8080 (START.py versucht ihn selbst zu oeffnen).
+
+Termux (Alternative)
+--------------------
+   pkg install python unzip && pip install flask
+   termux-setup-storage
+   Paket MIT DEINEN DATEN (so wird es dir geliefert):
+   mkdir -p ~/m10 && cd ~/m10 && unzip ~/storage/downloads/MATRIX10_STAND12A_ANDROID_MIT_DEINEN_DATEN.zip
+   cd MATRIX10_STAND12A_ANDROID_MIT_DEINEN_DATEN && python START.py
+   (Leeres Paket ohne deine Daten: MATRIX10_STAND12A_PRODUKT_android-aarch64_<commit>.zip, Ordner gleichen Namens.)
+   Falls "[RUST-FEHLER] ... cannot locate symbol ...": bash RUST_AUF_DEM_HANDY_BAUEN.sh (baut den Kern auf dem Handy).
+
+Bitte zurueckmelden: die [RUST]- bzw. [RUST-FEHLER]-Zeile aus der Pydroid-Ausgabe.
+
+Ohne Modell-Schluessel aendern Erlebnisse Gefuehl, Absicht und Beziehung NICHT. Mit Schluessel: Provider + API-Key unter
+"Konfiguration" eintragen (nie in den Chat). Offene Punkte: MATRIX10_STAND11_STATUS.json.

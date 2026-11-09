@@ -1,0 +1,113 @@
+MATRIX10 PRÜFMASCHINE V1.2 – SELBSTABNAHME
+============================================================
+GESAMT: GRUEN (109 von 109 Proben bestanden)
+
+[OK] B P25 ist der Kandidat aus den Sollwerten (Hash) | 33a51497ce5e84fa
+[OK] B P24 ist der Kandidat aus den Sollwerten (Hash) | 8a232c4bed8a7cdd
+[OK] B P23 ist der Kandidat aus den Sollwerten (Hash) | 4d7113084eb74fa5
+[OK] A Befund 1: leere Gliederliste ist nie GRÜN | ('BLOCKIERT', ['Glieder nicht genau 1..20 je einmal (fehlt [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], doppelt [])'])
+[OK] A Befund 1: ein einziges grünes Glied ist nie GRÜN
+[OK] A 20 grüne Glieder ergeben GRÜN (GRÜN erreichbar)
+[OK] A doppeltes Glied statt Glied 20 blockiert
+[OK] A NICHT_ZUTREFFEND ohne Katalogerlaubnis blockiert
+[OK] A NICHT_ZUTREFFEND mit Katalogerlaubnis zulässig
+[OK] A erlaubtes NICHT_ZUTREFFEND, aber bewertet, blockiert
+[OK] A ein rotes Glied macht den Fall ROT
+[OK] A unbekannter Gliedstatus blockiert
+[OK] A Lauf ohne Fälle ist BLOCKIERT
+[OK] A Abbruch mit grünen Teilfällen ist BLOCKIERT
+[OK] A Befund 2: eine PASS-Prüfung + eine grüne Achse ist nicht GRÜN | ('BLOCKIERT', ["Pflichtprüfungen fehlen: ['00_pruefmaschine_abgenommen', '00_basis_eingefroren', '01_zip', '02_soll_2_7master.txt', '02_soll_MATRIX10_SPS_MASTER.md', '02_soll_VERBINDLICHER_REPARATUR_K
+[OK] A GRÜN erreichbar, wenn wirklich alles nachgewiesen ist
+[OK] A eine fehlende Pflichtprüfung blockiert
+[OK] A eine doppelte Pflichtprüfung blockiert
+[OK] A eine fehlende Achse blockiert
+[OK] A eine UNGEPRÜFTE Achse blockiert
+[OK] A eine ROT-Prüfung macht ROT
+[OK] A eine rote Achse macht ROT
+[OK] A eine BLOCKIERT-Prüfung macht nicht GRÜN
+[OK] A kein Ergebnis -> Kette BLOCKIERT, keine Achse GRÜN
+[OK] F ohne Manifest: nicht abgenommen
+[OK] F passendes Manifest: abgenommen
+[OK] F Fallkatalog geändert: nicht abgenommen
+[OK] F Datei hinzugefügt: nicht abgenommen
+[OK] F Prüfregeln entfernt: nicht abgenommen
+[OK] F Manifest einer nicht bestandenen Selbstabnahme: nicht abgenommen
+[OK] B P25: Lauf vollständig, Rückgabecode passt | rc 2, gesamt ROT, abbruch None
+[OK] B P25: bekannter Fehler PU2_anrede_gegen_ui_auswahl Glied 04 ROT | UI-Ziel None statt char_g7_mara
+[OK] B P25: bekannter Fehler GO1_bewusstlos Glied 10 ROT | char_g7_mara bezeugt 'Man hört so einiges hier, nich', nimmt aber nicht wahr (Bewusstsein 0.2); char_g7_mara bezeugt 'Lehnt sich leicht nach vorne, ', nimmt aber nicht wahr (Bewusstsein 0.2); M als Ze
+[OK] B P25: bekannter Fehler RE1_figur_verlaesst_raum Glied 11 ROT | char_g7_johann anwesend in Szene 'Küche', Position aber 'Schankraum'; char_g7_mara anwesend in Szene 'Küche', Position aber 'Schankraum'
+[OK] B P25: Vergleichsfall PU1_handlung_eigenes_subjekt GRÜN | []
+[OK] B P25: Vergleichsfall PU3_fremde_rede_abgelehnt GRÜN | []
+[OK] B P25: Vergleichsfall PU4_verneinung_mit_rede GRÜN | []
+[OK] B P25: Vergleichsfall AV1_frage_und_antwort GRÜN | []
+[OK] B P25: Vergleichsfall AV2_fremde_rede_im_avatar GRÜN | []
+[OK] B P25: Vergleichsfall GO2_verneinter_zustand GRÜN | []
+[OK] B P25: Vergleichsfall RE2_unbekannte_figur GRÜN | []
+[OK] D echtes P25-Ergebnis wird als echt und vollständig übernommen | Lauf echt (ZIP-, Prüfer-, Katalog-Hash), Rückgabecode 2 = ROT, alle 10 Pflichtfälle genau einmal
+[OK] D echtes P25-Ergebnis: Puppet/God/Regie ROT, Avatar GRÜN, Rest UNGEPRÜFT | {'EPUB zu Welt (§7)': 'UNGEPRUEFT', 'Charakterprofil und Spawn (§8)': 'UNGEPRUEFT', 'Normale Session/Scene/Turn (§9)': 'UNGEPRUEFT', 'Wissen, Memory, psychologische Wirkung (§10)': 'UNGEPRUEFT', 'Rela
+[OK] D Befund 3: roter Fall PU2_anrede_gegen_ui_auswahl entfernt -> Achse nicht GRÜN, Fall fehlt | Achse Puppet (§12.2)=BLOCKIERT, 07_kette_PU2_anrede_gegen_ui_auswahl=BLOCKIERT
+[OK] D Befund 3: roter Fall GO1_bewusstlos entfernt -> Achse nicht GRÜN, Fall fehlt | Achse God (§12.4)=BLOCKIERT, 07_kette_GO1_bewusstlos=BLOCKIERT
+[OK] D Befund 3: roter Fall RE1_figur_verlaesst_raum entfernt -> Achse nicht GRÜN, Fall fehlt | Achse Regie (§12.3)=BLOCKIERT, 07_kette_RE1_figur_verlaesst_raum=BLOCKIERT
+[OK] D Pflichtglied 13 entfernt -> Fall BLOCKIERT | Achse Puppet (§12.2)=ROT, 07_kette_PU1_handlung_eigenes_subjekt=BLOCKIERT
+[OK] D Glied 10 durch doppeltes Glied 9 ersetzt -> BLOCKIERT | Achse Avatar (§12.1)=BLOCKIERT, 07_kette_AV1_frage_und_antwort=BLOCKIERT
+[OK] D Glied 13 unerlaubt NICHT_ZUTREFFEND -> BLOCKIERT | Achse Avatar (§12.1)=BLOCKIERT, 07_kette_AV1_frage_und_antwort=BLOCKIERT
+[OK] D roter Fall als GRÜN gemeldet (Glieder rot) -> nicht übernommen | Achse Puppet (§12.2)=BLOCKIERT, 07_kette_PU2_anrede_gegen_ui_auswahl=BLOCKIERT
+[OK] D Abbruch mit Teilresultat -> Lauf BLOCKIERT | Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT
+[OK] D gesamt=GRÜN bei roten Fällen, Rückgabecode 0 -> BLOCKIERT | Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT
+[OK] D Rückgabecode 0 zu gesamt=ROT -> BLOCKIERT | Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT
+[OK] D fremdes ZIP (Hash) -> BLOCKIERT | Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT
+[OK] D falscher Katalog-Hash im Ergebnis -> BLOCKIERT | Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT
+[OK] D fehlender Katalog-Hash im Ergebnis -> BLOCKIERT | Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT
+[OK] D Katalog der Maschine verändert (Hash) -> BLOCKIERT | Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT
+[OK] D unbekannter zusätzlicher Fall -> BLOCKIERT | Achse None=None, 07_kettenpruefer_lauf=BLOCKIERT
+[OK] D Fall unter falscher Achse gemeldet -> BLOCKIERT | Achse Avatar (§12.1)=BLOCKIERT, 07_kette_AV1_frage_und_antwort=BLOCKIERT
+[OK] D Wissensnachweis PU1 echt: GRÜN | Spur kpr_1794076474372_544863: Sprecher char_g7_mara (Mara Nowak), Sitzung gebunden, Zeugenwissen vorhanden, PROMPT nach Hauptcommit enthält ['trinkt sein bier aus']
+[OK] D Befund 4: PROMPT gehört einer anderen Figur -> ROT | kein PROMPT für char_g7_mara (Mara Nowak) in der Spur des Folgezugs nach dem Hauptcommit (vorhanden: ['Johann Bruckner'])
+[OK] D Befund 4: PROMPT aus anderer Spur als der Folgezug-Writer -> ROT | kein PROMPT für char_g7_mara (Mara Nowak) in der Spur des Folgezugs nach dem Hauptcommit (vorhanden: [])
+[OK] D Befund 4: Spur bindet eine andere Sitzung -> ROT | KERNEL_BIND der Spur kpr_1794076474372_544863 bindet nicht Sitzung ses_kp_fall_01 und Sprecher char_g7_mara ([('andere_sitzung', 'char_g7_mara'), ('andere_sitzung', 'char_g7_mara')])
+[OK] D Befund 4: PROMPT ohne das Ereignis -> ROT | PROMPT für Mara Nowak enthält 'trinkt sein Bier aus' nicht
+[OK] D Befund 4: Folgezug-Figur ohne kanonisches Zeugenwissen -> ROT | char_g7_mara hat kein kanonisches Zeugenwissen zu 'trinkt sein Bier aus'
+[OK] D Befund 4: Folgezug-Figur nicht Zeuge -> ROT | char_g7_mara ist nicht Zeuge von 'trinkt sein Bier aus'
+[OK] D Befund 4: PROMPT vor dem Hauptcommit -> ROT | kein PROMPT für char_g7_mara (Mara Nowak) in der Spur des Folgezugs nach dem Hauptcommit (vorhanden: ['Mara Nowak'])
+[OK] D Befund 4: kein Folgezug gespeichert -> ROT | kein gespeicherter Folgezug einer Figur
+[OK] B P24: Lauf vollständig, Rückgabecode passt | rc 2, gesamt ROT, abbruch None
+[OK] B P24: bekannter Fehler PU4_verneinung_mit_rede Glied 05 ROT | HTTP 422 statt 200 | HTTP 422, Spur kp_1794076824270_444815: CONSENT_CHECK,KERNEL_BIND,SPRACHE,TARGET_BIND,TURN_START,UI_REQUEST,VALIDATION, Meldung: Puppet: Nicht alle Satzteile wurden sicher gelesen
+[OK] B P24: bekannter Fehler PU4_verneinung_mit_rede Glied 06 ROT | keine Haupt-Facts/-Züge geschrieben (Commits der Hauptspur 0)
+[OK] B P24: bekannter Fehler PU4_verneinung_mit_rede Glied 09 ROT | fehlt: {'kind': 'speech', 'akteur': 'J', 'text': 'Hallo'} | Haupt-Facts: keine
+[OK] B P24: bekannter Fehler PU2_anrede_gegen_ui_auswahl Glied 04 ROT | UI-Ziel None statt char_g7_mara
+[OK] B P24: Vergleichsfall PU1_handlung_eigenes_subjekt GRÜN | []
+[OK] B P24: Freigabeauswertung übernimmt den Lauf und meldet nicht GRÜN | {'EPUB zu Welt (§7)': 'UNGEPRUEFT', 'Charakterprofil und Spawn (§8)': 'UNGEPRUEFT', 'Normale Session/Scene/Turn (§9)': 'UNGEPRUEFT', 'Wissen, Memory, psychologi
+[OK] B P23: Kandidat als ROT erkannt (bekannter Fehler) | rc 2, gesamt ROT, ['Frontend des Kandidaten: Frontend-Bau Exitcode 1 (node_modules aus Cache mit gleichem package-lock)']
+[OK] C M1_falsche_figuren_id ausgeführt, Lauf ohne Abbruch | angewendet: M1_falsche_figuren_id (Der Puppet-Writer schreibt die Eingabe einer ANDEREN anwesenden Figur zu.) | None
+[OK] C M1_falsche_figuren_id: PU1_handlung_eigenes_subjekt Glied 09 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | fehlt: {'kind': 'action', 'akteur': 'J', 'text': 'Bier aus'} | Haupt-Facts: action/char_g7_gustav/trinkt sein Bier aus→None
+[OK] C M1_falsche_figuren_id: PU2_anrede_gegen_ui_auswahl Glied 09 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | fehlt: {'kind': 'speech', 'akteur': 'J', 'text': 'Gustav, setz dich', 'ziel': 'G'}; verboten vorhanden: speech von char_g7_gustav:
+[OK] C M2_falscher_adressat ausgeführt, Lauf ohne Abbruch | angewendet: M2_falscher_adressat (Der Writer bindet die Rede an einen FALSCHEN Adressaten (eine andere anwesende Figur statt des gebundenen).) | None
+[OK] C M2_falscher_adressat: PU2_anrede_gegen_ui_auswahl Glied 09 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | speech an ['char_g7_mara'] statt char_g7_gustav | Haupt-Facts: speech/char_g7_johann/Gustav, setz dich.→char_g7_mara
+[OK] C M3_fehlender_commit ausgeführt, Lauf ohne Abbruch | angewendet: M3_fehlender_commit (Die Puppet-Route meldet Erfolg, schreibt aber nichts nach SQLite.) | None
+[OK] C M3_fehlender_commit: PU1_handlung_eigenes_subjekt Glied 06 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | keine Haupt-Facts/-Züge geschrieben (Commits der Hauptspur 1)
+[OK] C M3_fehlender_commit: PU1_handlung_eigenes_subjekt Glied 09 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | fehlt: {'kind': 'action', 'akteur': 'J', 'text': 'Bier aus'} | Haupt-Facts: keine
+[OK] C M3_fehlender_commit: PU1_handlung_eigenes_subjekt Glied 13 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | kein Haupt-Ereignis (Rede/Handlung) gespeichert
+[OK] C M3_fehlender_commit: PU2_anrede_gegen_ui_auswahl Glied 06 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | keine Haupt-Facts/-Züge geschrieben (Commits der Hauptspur 1)
+[OK] C M3_fehlender_commit: PU2_anrede_gegen_ui_auswahl Glied 09 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | fehlt: {'kind': 'speech', 'akteur': 'J', 'text': 'Gustav, setz dich', 'ziel': 'G'} | Haupt-Facts: keine
+[OK] C M3_fehlender_commit: PU2_anrede_gegen_ui_auswahl Glied 13 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | kein Haupt-Ereignis (Rede/Handlung) gespeichert
+[OK] C M4_nebenwirkung_stamm ausgeführt, Lauf ohne Abbruch | angewendet: M4_nebenwirkung_stamm (Der Puppet-Writer verändert bei JEDEM Aufruf nebenbei den Figurenstamm (unerlaubte Nebenwirkung).) | None
+[OK] C M4_nebenwirkung_stamm: PU1_handlung_eigenes_subjekt Glied 18 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | characters/char_g7_johann verändert
+[OK] C M4_nebenwirkung_stamm: PU2_anrede_gegen_ui_auswahl Glied 18 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | characters/char_g7_johann verändert
+[OK] C M5_abwesende_als_zeugen ausgeführt, Lauf ohne Abbruch | angewendet: M5_abwesende_als_zeugen (Die Szenenwahrnehmung prüft Anwesenheit und Ort nicht mehr: abwesende Figuren hören und sehen mit.) | None
+[OK] C M5_abwesende_als_zeugen: PU1_handlung_eigenes_subjekt Glied 10 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | abwesende Figur char_g7_clara ist Zeuge von 'trinkt sein Bier aus'; abwesende Figur char_g7_robert ist Zeuge von 'trinkt sein Bier
+[OK] C M5_abwesende_als_zeugen: PU2_anrede_gegen_ui_auswahl Glied 10 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | abwesende Figur char_g7_clara ist Zeuge von 'Gustav, setz dich.'; abwesende Figur char_g7_robert ist Zeuge von 'Gustav, setz dich.
+[OK] C M6_kein_zeugenwissen ausgeführt, Lauf ohne Abbruch | angewendet: M6_kein_zeugenwissen (Der Writer legt für Zeugen kein Zeugenwissen (WitnessKnowledge) mehr an.) | None
+[OK] C M6_kein_zeugenwissen: PU1_handlung_eigenes_subjekt Glied 10 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | Zeuge char_g7_gustav ohne kanonisches Zeugenwissen zu 'trinkt sein Bier aus'; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 
+[OK] C M6_kein_zeugenwissen: PU1_handlung_eigenes_subjekt Glied 13 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | char_g7_mara hat kein kanonisches Zeugenwissen zu 'trinkt sein Bier aus'
+[OK] C M6_kein_zeugenwissen: PU2_anrede_gegen_ui_auswahl Glied 10 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | Zeuge char_g7_gustav ohne kanonisches Zeugenwissen zu 'Gustav, setz dich.'; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'G
+[OK] C M6_kein_zeugenwissen: PU2_anrede_gegen_ui_auswahl Glied 13 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | char_g7_gustav hat kein kanonisches Zeugenwissen zu 'Gustav, setz dich.'
+[OK] C M7_avatar_falsches_ziel ausgeführt, Lauf ohne Abbruch | angewendet: M7_avatar_falsches_ziel (Die Avatar-Eingabe wird mit einem falschen Adressaten (andere anwesende Figur) gespeichert.) | None
+[OK] C M7_avatar_falsches_ziel: AV1_frage_und_antwort Glied 09 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | speech an ['char_g7_clara'] statt char_g7_mara | Haupt-Facts: speech/char_g7_johann/Mara, wie geht es dir?→char_g7_clara
+[OK] C M8_god_koerper_falsche_figur ausgeführt, Lauf ohne Abbruch | angewendet: M8_god_koerper_falsche_figur (Die von God gesetzte Körperänderung landet bei einer anderen anwesenden Figur.) | None
+[OK] C M8_god_koerper_falsche_figur: GO1_bewusstlos Glied 11 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | M.canSpeak = True statt False
+[OK] C M9_regie_fail_open ausgeführt, Lauf ohne Abbruch | angewendet: M9_regie_fail_open (Regie ohne gebundenen Akteur und ohne Wirkung wird nicht mehr abgelehnt (fail-open).) | None
+[OK] C M9_regie_fail_open: RE2_unbekannte_figur Glied 05 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | HTTP 200 statt 422 | HTTP 200, Spur kr_1794077464894_719860: EFFECT_PLAN,EFFECT_VERDICT,KERNEL_BIND,OUTPUT,READER,REGIE_SQLITE_RUE
+[OK] C M9_regie_fail_open: RE2_unbekannte_figur Glied 06 unverändert GRÜN -> mutiert ROT | unverändert GRUEN, mutiert ROT, Modell-Fehlgriffe vor Hauptcommit 0 | neue Facts 1, neue Züge 1, Commits der Hauptspur 1 (erwartet: keine)
+[OK] E echter Abbruch (Port belegt): Kettenprüfer BLOCKIERT, Rückgabecode 3 | rc 3, RuntimeError: BLOCKIERT: Port(s) [5050] schon belegt - fremder Server, Messung wäre wertlos
+[OK] E echter Abbruch: Freigabe nicht GRÜN, keine Achse GRÜN | {'EPUB zu Welt (§7)': 'UNGEPRUEFT', 'Charakterprofil und Spawn (§8)': 'UNGEPRUEFT', 'Normale Session/Scene/Turn (§9)': 'UNGEPRUEFT', 'Wissen, Memory, psychologische Wirkung (§10)': 'UNGEPRUEFT', 'Rela
+[OK] F Maschine während der Selbstabnahme unverändert

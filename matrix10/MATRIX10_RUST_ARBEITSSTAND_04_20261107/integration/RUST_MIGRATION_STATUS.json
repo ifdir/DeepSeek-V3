@@ -1,0 +1,34 @@
+{
+  "status": "QUELLKANDIDAT_04_ROT_BLOCKIERT_NICHT_INSTALLIEREN",
+  "basis": "MATRIX10 V67 frozen 20261031",
+  "native_abi": 2,
+  "source_contract": "AMASTERv2.md(1).txt, Matrix10.txt, MATRIX10_SPS_MASTER.md, verbindlicher Reparatur-Kettenvertrag",
+  "source_main_sections_mapped": 70,
+  "source_requirements_automatically_proven": false,
+  "native_source_reducers": [
+    "restricted_refusals",
+    "restricted_permissions",
+    "body_contact_standing"
+  ],
+  "rust_compiled": false,
+  "native_tests_executed": 0,
+  "rust_test_definitions": 78,
+  "python_adapter_tests_passed": 39,
+  "original_sqlite_negative_counterprobes": {
+    "tested": 4,
+    "contract_failures": 4
+  },
+  "full_frontend_e2e": false,
+  "full_backend_port": false,
+  "release": false,
+  "canonical_runtime_state_owner": "V67 existing SQLite/SceneState; no second datastore",
+  "modified_original_files": [
+    "matrix_api/repos.py",
+    "matrix_api/scene_state.py"
+  ],
+  "original_file_sha256": {
+    "matrix_api/repos.py": "0d99efb2601c63ab7c2477d28ec090fa2db55c95b50428726c44b06cb07b594e",
+    "matrix_api/scene_state.py": "2d3c0dfa98981d77cd5b1b9e5b8c5f480b4ac437b78d3a82f14ad212101617fe"
+  },
+  "safety": "Native missing => fail closed with 503; no Python decision fallback; original SQLite unchanged."
+}

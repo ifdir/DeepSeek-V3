@@ -1,0 +1,33 @@
+MATRIX10 KETTENPRÜFER V1.2
+============================================================
+GESAMT: ROT
+Kandidat: 25e137c2-MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107.zip  SHA-256 33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1
+Modell: wiedergabe   Mutation: M8_god_koerper_falsche_figur   Fälle: GO1_bewusstlos
+
+Vorbereitung soll_2_7master.txt: GRUEN
+Vorbereitung soll_MATRIX10_SPS_MASTER.md: GRUEN
+Vorbereitung soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt: GRUEN
+Vorbereitung mutation: angewendet: M8_god_koerper_falsche_figur (Die von God gesetzte Körperänderung landet bei einer anderen anwesenden Figur.)
+Vorbereitung frontend: GRUEN: frisch gebaut (node_modules aus Cache mit gleichem package-lock), Kennung MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103
+
+[ROT] GO1_bewusstlos (God (§12.4), positiv): Mara ist bewusstlos.
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: God setzt den Körperzustand; eine bewusstlose Figur spricht nicht und nimmt nichts wahr. 2_7master Z.224 (Capability), Z.1329, Z.2402.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_07 geöffnet; Modus-Reiter: Gott; Senden: Mara ist bewusstlos.; Seite neu geladen
+   04 GRUEN            Gesendete IDs, Rolle, Modus, Actor, Target, Scope: Route /api/kernel/god, Sitzung ses_kp_fall_07, Figur None, UI-Ziel None, Text gleich
+   05 GRUEN            Backendroute und erste serverseitige Bindung: HTTP 200, Spur kg_1794077419462_136214: GOD_BODY,KERNEL_BIND,KOERPER_BESTAETIGUNG,OUTPUT,READER,SCENE_TRANSITION,SQLITE_COMMIT,TURN_END,TURN_START,UI_REQUEST,VALIDATION,WRITER, Meldung: 
+   06 GRUEN            Kanonischer Owner und Writer: Writer: 2 Haupt-Facts, Commit 37 in Spur kg_1794077419462_136214 (PASS)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 4 Facts, 3 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum
+   09 GRUEN            Erzeugte Fact-IDs und ihr Inhalt: Haupt-Facts: god/god/[body] Mara ist bewusstlos.→char_g7_mara; body_state/char_g7_gustav/Mara Nowak: Körperzustand — posture: liegend, cons→None
+   10 ROT              Wissensverteilung und Unwissende: Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'Mara Nowak: Körperzustand — po'; char_g7_gustav bezeugt 'Man hört so einiges hier, nich', nimmt aber nicht wahr (Bewusstsein 0.2); char_g7_gustav bezeugt 'Lehnt sich leicht nach vorne, ', nimmt aber nicht wahr (Bewusstsein 0.2); M als Zeuge im Fol
+   11 ROT              Runtime-/Körper-/Szenenfolgen: M.canSpeak = True statt False
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 4 von 4 neuen Facts gleich; ok
+   13 NICHT_ZUTREFFEND BrainContext im Folgezug: Soll offen: ob Anwesende einen von God gesetzten Körperzustand wahrnehmen, legt 2_7master nicht eindeutig fest (Z.1340-1352 'God setzt Wissen' nur für Betroffene) - nicht vom Prüfer zu entscheiden
+   14 GRUEN            Sichtbare Antwort und Komponentencommit: Folgezug von ['char_g7_mara']: Modellantwort und Commit in Spur kpr_1794077419665_619682
+   15 ROT              Zustand im Folgezug: M spricht im Folgezug, obwohl ausgeschlossen
+   16 GRUEN            Reload/Neustart: nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt
+   17 GRUEN            Sichtbare UI-Rückanzeige: Verlauf nach Neuladen stimmt; Meldungen: ['Gott: 1 tatsächlich angewendet, 0 nicht angewendet · Vollzogen: zustand Mara Nowak']
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut
+   20 ROT              Status mit Begründung: 10 Wissensverteilung und Unwissende: Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'Mara Nowak: Körperzustand — po'; char_g7_gustav bezeugt 'Man hört so einiges hier, nich', nimmt aber nicht wahr (Bewusstsein 0.2); char_g7_gustav bezeugt 'Lehnt sich leicht nach vorne, ', nimmt aber nicht wahr 

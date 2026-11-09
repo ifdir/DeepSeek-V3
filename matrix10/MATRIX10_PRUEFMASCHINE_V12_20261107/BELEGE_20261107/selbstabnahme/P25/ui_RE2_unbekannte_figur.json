@@ -1,0 +1,37 @@
+{
+ "fall": "RE2_unbekannte_figur",
+ "schritte": [
+  "Profil gewählt, Chat ses_kp_fall_10 geöffnet",
+  "Modus-Reiter: Regisseur",
+  "Senden: Kurt Wendler betritt den Schankraum.",
+  "Seite neu geladen"
+ ],
+ "anfragen": [
+  {
+   "pfad": "/api/kernel/regie",
+   "sessionId": "ses_kp_fall_10",
+   "figur": null,
+   "ziel": null,
+   "rolle": null,
+   "autoritaet": null,
+   "sprichtAls": null,
+   "scope": null,
+   "text": "Kurt Wendler betritt den Schankraum.",
+   "wiederaufnahme": false
+  }
+ ],
+ "antworten": [
+  {
+   "pfad": "/api/kernel/regie",
+   "status": 422,
+   "code": "REGIE_AKTEUR_NICHT_GEBUNDEN",
+   "meldung": "Regie nicht ausgefuehrt: handelnde Figur nicht gebunden. In der Regie-Oberflaeche 'Angewiesene Figur' auswaehlen; 'Direktes Ziel' ist die betroffene Figur, NICHT der Handelnde. Keine Szenenaenderung gespeichert."
+  }
+ ],
+ "hauptstatus": 422,
+ "meldungen": [
+  "POST /api/kernel/regie 422 REGIE_AKTEUR_NICHT_GEBUNDEN: Regie nicht ausgefuehrt: handelnde Figur nicht gebunden. In der Regie-Oberflaeche 'Angewiesene Figur' auswaehlen; 'Direktes Ziel' ist die betroffene Figur, NICHT der Handelnde. Keine Szenenaenderung gespeichert."
+ ],
+ "verlauf_vor_reload": "SZENE Der Schankraum ist voller nasser Mäntel und halber Sätze. Clara steht an der Theke. Mara trägt Gläser. Johann ist zurück. Gustav lächelt zu lange. Robert trinkt zu schnell. Draußen prasselt Regen auf die Bank.",
+ "verlauf_nach_reload": "SZENE Der Schankraum ist voller nasser Mäntel und halber Sätze. Clara steht an der Theke. Mara trägt Gläser. Johann ist zurück. Gustav lächelt zu lange. Robert trinkt zu schnell. Draußen prasselt Regen auf die Bank."
+}

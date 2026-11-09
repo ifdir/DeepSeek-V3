@@ -1,0 +1,32 @@
+test_all_truncated_prefixes (test_transport_02.TransportTests.test_all_truncated_prefixes) ... ok
+test_depth_is_error_not_truncation (test_transport_02.TransportTests.test_depth_is_error_not_truncation) ... ok
+test_deterministic_random_roundtrips (test_transport_02.TransportTests.test_deterministic_random_roundtrips) ... ok
+test_golden_binary_protocol (test_transport_02.TransportTests.test_golden_binary_protocol) ... ok
+test_huge_collection_count_rejected (test_transport_02.TransportTests.test_huge_collection_count_rejected) ... ok
+test_invalid_scope_query_never_returns_false_as_a_verdict (test_transport_02.TransportTests.test_invalid_scope_query_never_returns_false_as_a_verdict) ... ok
+test_json_types_and_unicode (test_transport_02.TransportTests.test_json_types_and_unicode) ... ok
+test_missing_library_never_authorizes (test_transport_02.TransportTests.test_missing_library_never_authorizes) ... ok
+test_no_six_component_truncation (test_transport_02.TransportTests.test_no_six_component_truncation) ... ok
+test_nonfinite_and_out_of_range (test_transport_02.TransportTests.test_nonfinite_and_out_of_range) ... ok
+test_scope_query_cannot_be_used_as_writer_authorization (test_transport_02.TransportTests.test_scope_query_cannot_be_used_as_writer_authorization) ... ok
+test_scope_query_does_not_fallback_without_rust (test_transport_02.TransportTests.test_scope_query_does_not_fallback_without_rust) ... ok
+test_trailing_unknown_and_duplicate (test_transport_02.TransportTests.test_trailing_unknown_and_duplicate) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.022s
+
+OK
+
+test_11_entries_are_never_silently_truncated (test_consent_transport_03.ConsentEnvelopeTests.test_11_entries_are_never_silently_truncated) ... ok
+test_fail_closed_without_native_library (test_consent_transport_03.ConsentEnvelopeTests.test_fail_closed_without_native_library) ... ok
+test_invalid_giver_or_non_event_never_becomes_empty_permission (test_consent_transport_03.ConsentEnvelopeTests.test_invalid_giver_or_non_event_never_becomes_empty_permission) ... ok
+test_legacy_nullable_fields_are_normalized_without_new_effect (test_consent_transport_03.ConsentEnvelopeTests.test_legacy_nullable_fields_are_normalized_without_new_effect) ... ok
+test_native_indices_are_validated_no_silent_drop (test_consent_transport_03.ConsentEnvelopeTests.test_native_indices_are_validated_no_silent_drop) ... ok
+test_preserves_canonical_indices_not_new_rows (test_consent_transport_03.ConsentEnvelopeTests.test_preserves_canonical_indices_not_new_rows) ... ok
+test_reader_op_is_not_a_write_authorization (test_consent_transport_03.ConsentEnvelopeTests.test_reader_op_is_not_a_write_authorization) ... ok
+test_zero_event_input_remains_valid_when_native_says_empty (test_consent_transport_03.ConsentEnvelopeTests.test_zero_event_input_remains_valid_when_native_says_empty) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.002s
+
+OK

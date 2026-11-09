@@ -1,0 +1,18 @@
+--- stand_07/matrix_api/kernel.py
++++ stand_08/matrix_api/kernel.py
+@@ -8112,6 +8112,15 @@
+         turn = int(s.get("turnIndex") or 0)
+         # User input is already committed; do not write it a second time.
+         truth["text"] = ""
++        # Stand 08 / K-02 (AMASTER §26 "Anwesenheit ist ein kanonischer Szenenzustand", §39, §28 Schritt 5): the RESPONSE is
++        # its own event - who is present, hears and sees it is bound from the SceneState at the time of the response, not
++        # copied from the input's TurnTruth. Between input and response the scene can change (a figure leaves, falls
++        # asleep, an override is set; the open input is answered later via "Antwort erneut erzeugen"). The stored input
++        # TurnTruth keeps its own perception (history); only this response's writers (witness, memory, dialogue mirror,
++        # claims/frames) read the response-time perception. Same owner as prepare (_scene_perception).
++        _pres_now = list((s.get("scene") or {}).get("presentIds") or [])
++        _hears_now, _sees_now = _scene_perception(s, _pres_now)
++        truth["present_ids"], truth["hears_ids"], truth["sees_ids"] = _pres_now, list(_hears_now), list(_sees_now)
+     else:
+         if s.get("pendingInputTurnId"):
+             raise ValueError("previous input awaits its response")

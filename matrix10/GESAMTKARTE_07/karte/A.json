@@ -1,0 +1,1234 @@
+[
+ {
+  "id": "A-01",
+  "funktion": "God-Eingang: Text -> Scope -> zuständiger kanonischer Writer (Routing)",
+  "amaster": "§46.1 (Z.1736-1750), §46.3 (Z.1762-1776)",
+  "soll": "God setzt eine bindende Tatsache; die Wirkung wird in die zuständige kanonische Schicht geschrieben (Z.1738, Z.1750); Scope ist immer klar, unklarer Scope wird nicht globalisiert (Z.1764, Z.1776).",
+  "kettenvertrag": "§12.4 God; §4 'God/Regie: gescopte bindende Wirkung über zuständige kanonische Writer'",
+  "sps_loesung": "V65J.4 (SPS Z.4009, God-Körpertatsache typisiert), V65E (SPS Z.4453, Folgezug nach God), V92 P19 (tests/test_v92_p19_koerper.py)",
+  "owner": "Python app.kernel_god (app.py:2393) -> god_extract.local_god_instructions/normalize_llm_instructions -> kernel.apply_god (kernel.py:10510) -> app.kernel_session_response (app.py:1413)",
+  "owner_soll_nach_architektur": "God/Regie-Authority bindet; Wirkung über Fachowner (Memory, Relationship, PhysicalState, SceneState, Welt) laut Kettenvertrag §4",
+  "kette": {
+   "eingang": "chat.$sessionId.tsx:628-640 send() -> kernel-bridge kernelGod -> POST /api/kernel/god (app.py:2393) mit text, scope (Default 'auto'), targetId, otherId",
+   "verarbeitung": "scope auto: extract_god_instructions (Provider) bzw. god_extract.local_god_instructions (app.py:2446) -> je Anweisung ART_TO_SCOPE (god_extract.py:16) -> kernel.apply_god (app.py:2498); expliziter Scope: apply_god direkt (app.py:2525)",
+   "speicherung": "sessions + Kindtabellen via kernel_session_response->save_session (app.py:1445); godFacts/facts/memories/relations; zusätzlich worlds.canon / characters.knowledge via _godOwnerWrites (app.py:1418-1440)",
+   "wiederlesen": "kernel.recall godFacts nur, wenn ein zugehöriger Fact im Wahrnehmungsfilter der Figur liegt (kernel.py:13265-13271); Spiegel 'godFacts' (kernel.py:14740); llm_contract state_keys enthält godFacts (llm_contract.py:2357)",
+   "entscheidung": "rank_speakers 'vom letzten Ereignis betroffen' über witnessKnowledge access=affected (kernel.py:11736, 11784-11818)",
+   "folgewirkung": "Frontend startet nach applied God queueAuto (chat.$sessionId.tsx:668) -> Gate -> Figurenturn",
+   "frontend": "chat.$sessionId.tsx:1232-1242 God-Scope-Select (auto/world/session/scene/character/relationship/knowledge/body/time/action), Rückmeldung 'Gott: n tatsächlich angewendet' chat.$sessionId.tsx:645-652; Anzeige God-Zeile als meta-Turn chat.$sessionId.tsx:1516"
+  },
+  "ui_bedienung": "'Spreche als: gott' + God-Scope-Select + Direktes Ziel im Chat",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "god_extract.py:86-101 _classify: Wortlisten-Regex (_KNOW_RE/_BODY_RE/_REL_RE/_SCENE_RE/_WORLD_RE/_PERSON_ACT_RE) entscheidet ohne Provider den Scope und damit den Owner (Keyword-Automat, Kettenvertrag §4 verboten)",
+   "god_extract.py:101 Fallback 'zustand' für jede Figur-Klausel ohne Treffer -> Scope 'character' -> Stammwrite (siehe A-02)",
+   "app.py:2443 Netzwerkaufruf extract_god_instructions innerhalb _persist/_run_write (Schreibsperre)"
+  ],
+  "abhaengig_von": [
+   "A-02",
+   "A-03",
+   "A-04",
+   "A-05",
+   "Memory-Writer",
+   "WitnessKnowledge",
+   "PhysicalState-Writer write_body_change"
+  ],
+  "auswirkung_bestehender_fehler": "Falsches Scope-Routing schreibt God-Text in Stamm/Weltkanon (A-02/A-03) oder ändert Körper nicht (A-05); Folgeturn liest dann falsche oder keine Wirkung.",
+  "belege": [
+   "app.py:2436-2446 – auto-Scope: Provider-Extraktion, sonst local_god_instructions (codefluss)",
+   "god_extract.py:16 – ART_TO_SCOPE zustand->character, welt->world (codefluss)",
+   "ausgeführt: local_god_instructions('Mara Nowak setzt sich.') -> [('zustand','character')], ('Der König hat ein neues Gesetz erlassen.') -> [('welt','world')] (probe p1.py)"
+  ]
+ },
+ {
+  "id": "A-02",
+  "funktion": "God-Scope 'character'/'zustand' schreibt Session-God-Text dauerhaft in den Charakterstamm",
+  "amaster": "§46.1 (Z.1744 Wissen einer Figur), §46.3 (Z.1764-1776), §52 (Z.1946, Z.1975)",
+  "soll": "God-Wirkung im gewählten Scope; Sessionerfahrung darf nicht automatisch Stamm werden, erst nach Freigabe (Z.1946, Z.1975).",
+  "kettenvertrag": "§12.4; §15 'Sessionerfahrung geht nur nach sichtbarem Review ... in Stamm'; §4 'Vermischung von Stamm- und Sessionzustand' verboten",
+  "sps_loesung": "keine gefunden (SPS V65Y-Kommentar kernel.py:10456-10463 nennt persistenceScope 'session' für character)",
+  "owner": "Python kernel.apply_god Zweig character (kernel.py:10614-10627) + app.kernel_session_response characterKnowledge (app.py:1432-1440, patch_character)",
+  "owner_soll_nach_architektur": "Session-Memory/WitnessKnowledge der Figur (Session); Stamm nur über Review §52",
+  "kette": {
+   "eingang": "God-Text mit Scope 'character' oder auto-Klassifikation 'zustand' (god_extract.py:101)",
+   "verarbeitung": "apply_god setzt _godOwnerWrites.characterKnowledge + Session-Memory (kernel.py:10614-10627); god_scope_axes meldet persistenceScope='session' (kernel.py:10456-10463)",
+   "speicherung": "characters.json knowledge via patch_character (app.py:1432-1440) – STAMM, nicht Session",
+   "wiederlesen": "Stammfeld knowledge wird in rank_speakers (kernel.py:11665) und bind_formulation_spiegel (Wissen) gelesen – auch in jeder neuen Session",
+   "entscheidung": "Sprecherwahl-Kontexttreffer (kernel.py:11665-11669), Brief-Wissen",
+   "folgewirkung": "Session-God-Fakt erscheint in allen künftigen Sessions der Welt als Stammwissen",
+   "frontend": "keine Anzeige, dass der Stamm geändert wurde; Rückmeldung nur 'zustand Mara Nowak' (chat.$sessionId.tsx:650)"
+  },
+  "ui_bedienung": "God-Scope 'character' oder 'auto'",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "app.py:1432-1440 – characterKnowledge wird per patch_character in characters.knowledge (Stamm) geschrieben, ohne Review, obwohl god_scope_axes persistenceScope='session' angibt (kernel.py:10459)",
+   "kernel.py:10614-10627 – dieselbe Aussage zusätzlich als Session-Memory: doppelte Wahrheit in zwei Schichten",
+   "ausgeführt: God auto 'Mara Nowak setzt sich.' -> Stamm-knowledge enthält 'Mara Nowak setzt sich.', Körper unverändert, neue Session ses_b sieht es (probe p2.py)"
+  ],
+  "abhaengig_von": [
+   "A-01",
+   "A-31",
+   "Charakterstamm-Owner"
+  ],
+  "auswirkung_bestehender_fehler": "Bricht Sessionisolation (neue Session übernimmt Erlebnis), Review §52, Körperkette (Haltungs-God landet als Wissen statt PhysicalState).",
+  "belege": [
+   "kernel.py:10614-10627 – writes['characterKnowledge'] + make_memory(layer='session') (codefluss)",
+   "app.py:1432-1440 – patch_character(knowledge) (codefluss)",
+   "ausgeführt: POST /api/kernel/god {text:'Mara Nowak setzt sich.', scope:'auto'} -> 200 applied scope=character; characters.knowledge[-1]=='Mara Nowak setzt sich.'; runtimes Mara posture None; neue Session ses_b: Stammwissen vorhanden"
+  ]
+ },
+ {
+  "id": "A-03",
+  "funktion": "God-Scope 'world': Weltkanon-Write und dessen Folgereader",
+  "amaster": "§46.1 (Z.1743 Weltregel), §46.3 (Z.1765, Z.1776)",
+  "soll": "Eine God-Weltregel wird in den Weltkanon geschrieben und danach beachtet; unklarer Scope darf nicht globalisiert werden (Z.1776).",
+  "kettenvertrag": "§12.4 'nach Reload gelesen und im Folgeturn beachtet ... Unklarer Scope wird nicht globalisiert'; §1 'gespeicherter Wert ohne realen Folgereader ist ROT'",
+  "sps_loesung": "B.5-Kommentar kernel.py:10608-10611; keine SPS-Zeile gefunden",
+  "owner": "Python kernel.apply_god world (kernel.py:10607-10613) + app.kernel_session_response worldCanon (app.py:1420-1430, patch_world canon)",
+  "owner_soll_nach_architektur": "Welt-Owner (worlds) mit realem Reader (Weltregeln im Spiegel, Fate)",
+  "kette": {
+   "eingang": "God-Scope 'world' oder auto-Wortliste _WORLD_RE (god_extract.py:25: 'könig|gesetz|krieg|die stadt|das dorf...')",
+   "verarbeitung": "apply_god writes['worldCanon']=text, applied=True (kernel.py:10612-10613)",
+   "speicherung": "worlds.json 'canon' append via patch_world (app.py:1420-1430)",
+   "wiederlesen": "FEHLT: kein Reader von world.canon (grep: nur app.py:1426); Spiegel liest world.rules/knowledgeLimits (kernel.py:14277-14288), Fate liest conflicts/fateSeeds/storyGoals (kernel.py:10845-10868)",
+   "entscheidung": "FEHLT für Kanon; nur der Session-God-Fact selbst wirkt für Anwesende über recall",
+   "folgewirkung": "andere Sessions/Abwesende: keine; dauerhaft gespeicherter Text ohne Leser",
+   "frontend": "Weltseite zeigt canon? UNKLAR (welt.$worldId.tsx nicht auf 'canon' geprüft); Chat meldet 'welt' applied"
+  },
+  "ui_bedienung": "God-Scope 'world'/'auto'",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "app.py:1420-1430 – worlds.canon wird geschrieben, aber kein Reader im Kernel/Spiegel/Fate (grep '\"canon\"' nur app.py:1426) -> Write ohne Folgereader",
+   "god_extract.py:25,97 – auto-Scope globalisiert per Wortliste ('Der König hat ein neues Gesetz erlassen.' -> world) ohne ausdrückliche Scope-Wahl (AMASTER Z.1776)",
+   "ausgeführt: POST /api/kernel/god auto 'Der König hat ein neues Gesetz erlassen.' -> applied scope=world; worlds.canon endet mit diesem Satz (probe p2.py)"
+  ],
+  "abhaengig_von": [
+   "A-01",
+   "Welt-Owner",
+   "Fate-Lesekette A-16"
+  ],
+  "auswirkung_bestehender_fehler": "God-Weltregel wirkt nur im laufenden Session-Fact für Anwesende, nicht als Weltregel; Weltkanon wird aus Sessiontext dauerhaft verändert.",
+  "belege": [
+   "kernel.py:10607-10613 (codefluss)",
+   "app.py:1420-1430 (codefluss)",
+   "kernel.py:14281-14288 – world_rules nur aus world.rules (codefluss)",
+   "ausgeführt: probe p2.py WORLD canon tail"
+  ]
+ },
+ {
+  "id": "A-04",
+  "funktion": "God-Scope 'relationship': gerichteter Beziehungswrite",
+  "amaster": "§46.1 (Z.1742 Beziehungstatsache), §46.3 (Z.1771)",
+  "soll": "Eine God-Beziehungstatsache wird in die zuständige Beziehungsschicht geschrieben (Z.1750), mit klarem Scope.",
+  "kettenvertrag": "§12.4; §11 gerichtete Relationship; §4 Keyword-Automat verboten",
+  "sps_loesung": "keine gefunden",
+  "owner": "Python kernel._write_god_relationship (kernel.py:10466-10490)",
+  "owner_soll_nach_architektur": "Session-Relationship-Writer (_apply_relation_target, SPS V62 Z.5163)",
+  "kette": {
+   "eingang": "God-Scope relationship; Frontend setzt otherId fest auf live.avatarId (chat.$sessionId.tsx:638)",
+   "verarbeitung": "_write_god_relationship: Regex 'hass|feind|misstrau|ablehn' / 'liebe|vertraut|freund', sonst hostility>=0.25 (kernel.py:10481-10490)",
+   "speicherung": "session.relations (Kindtabelle) via save_session",
+   "wiederlesen": "recall relations fromId==Figur (kernel.py:13258); rank_speakers Beziehung (kernel.py:11679-11685); _derive_fate Konflikt bei hostility>=0.35 (kernel.py:10874)",
+   "entscheidung": "Sprecherwahl/Fate/Brief relationsHere",
+   "folgewirkung": "Folgeturn liest geänderte Werte",
+   "frontend": "Select 'relationship'; zweite Person nicht wählbar (immer Avatar)"
+  },
+  "ui_bedienung": "God-Scope 'relationship' + Direktes Ziel; Gegenüber = Avatar fest",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "kernel.py:10481-10490 – Werte per Wortliste; neutraler Text (z. B. Verwandtschaft) setzt hostility=0.25 und note (else-Zweig)",
+   "chat.$sessionId.tsx:638 – otherId = live.avatarId fest; Beziehung zwischen zwei Nicht-Avatar-Figuren per expliziter Scope-Wahl nicht bedienbar, ohne Avatar 'relationship_requires_pair'",
+   "kernel.py:10466 – eigener Writer statt des gemeinsamen Relationship-Writers",
+   "ausgeführt: apply_god('Mara ist die Schwester von Johann.','relationship') -> hostility 0.25 (probe p1.py)"
+  ],
+  "abhaengig_von": [
+   "Relationship-Writer (Bereich Relationship)",
+   "A-01"
+  ],
+  "auswirkung_bestehender_fehler": "Erzeugt grundlose Feindseligkeit -> Fate 'Konflikt' ab 0.35 nicht, aber rank_speakers Beziehung ab 0.4 nicht; Brief zeigt falsche Beziehung.",
+  "belege": [
+   "kernel.py:10466-10490 (codefluss)",
+   "ausgeführt: probe p1.py REL"
+  ]
+ },
+ {
+  "id": "A-05",
+  "funktion": "God-Körpertatsache -> PhysicalState (G-5 God-Vollzug)",
+  "amaster": "§46.1 (Z.1745 körperlicher Zustand)",
+  "soll": "Ein God-Körperzustand wird in die kanonische Körperschicht geschrieben und im Folgeturn beachtet (Z.1745, Z.1750).",
+  "kettenvertrag": "§12.4; §11 'PhysicalState begrenzt Capability ... in God-Vollzug'",
+  "sps_loesung": "V65J.4 (SPS Z.4009), V92 Paket 19 (kernel.py:10562-10568 Kommentar; tests/test_v92_p19_koerper.py)",
+  "owner": "Python kernel.apply_god body -> authority_body_change + write_body_change (kernel.py:10559-10572, 10734-10749); Lesung llm_contract.god_body_state (app.py:2476-2497)",
+  "owner_soll_nach_architektur": "PhysicalState-Writer write_body_change (ein Writer)",
+  "kette": {
+   "eingang": "God-Scope body mit targetId oder auto-Klassifikation 'koerper' (_BODY_RE god_extract.py:19)",
+   "verarbeitung": "nur mit Provider: god_body_state + _koerper_bestaetigen (app.py:2482-2492); ohne Provider body_state=None -> koerperNichtGelesen, applied=False (kernel.py:10730-10733, 10750-10762)",
+   "speicherung": "runtimes via write_body_change (kernel.py:10738) bei bestätigter Lesung",
+   "wiederlesen": "Spiegel constraintContext.body (kernel.py:14729-14732), capability_blocks_action, pick_speaker canSpeak/consciousness (kernel.py:11525-11530)",
+   "entscheidung": "Capability in Commit/Gate",
+   "folgewirkung": "Folgeturn begrenzt Handlung",
+   "frontend": "Chat-Rückmeldung 'ABGELEHNT/UNKLAR' (chat.$sessionId.tsx:648-651)"
+  },
+  "ui_bedienung": "God-Scope 'body'",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "god_extract.py:19 – Haltungsverben wie 'setzt sich' fehlen in _BODY_RE ('sitzt' ja, 'setzt sich' nein) -> 'zustand' -> character-Scope -> Stammwissen statt Körper (A-02)",
+   "kernel.py:10730-10733 – ohne Provider wird keine Körperwirkung geschrieben (fail-closed korrekt), aber auto-Pfad meldet für 'setzt sich' applied=True über den falschen Owner",
+   "ausgeführt: God auto 'Mara Nowak setzt sich.' -> applied=True scope character; runtimes.posture unverändert None (probe p2.py)"
+  ],
+  "abhaengig_von": [
+   "PhysicalState-Writer (Bereich Körper)",
+   "Provider-Lesung (Bereich LLM/Config)",
+   "A-01"
+  ],
+  "auswirkung_bestehender_fehler": "Körperliche God-Fakten erreichen Capability nicht; Figuren handeln im Folgeturn normal weiter.",
+  "belege": [
+   "kernel.py:10559-10572, 10730-10762 (codefluss)",
+   "app.py:2476-2530 (codefluss)",
+   "ausgeführt: probe p2.py RT Mara posture None"
+  ]
+ },
+ {
+  "id": "A-06",
+  "funktion": "God-Scope 'knowledge': Figurenwissen setzen",
+  "amaster": "§46.1 (Z.1744)",
+  "soll": "God setzt Wissen einer Figur in die zuständige kanonische Schicht (Z.1744, Z.1750).",
+  "kettenvertrag": "§12.4; §10 Wissenskette",
+  "sps_loesung": "V25 UPL-B03 Kommentar kernel.py:10711; keine SPS-Zeile geprüft",
+  "owner": "Python kernel.apply_god knowledge (kernel.py:10536-10552) + apply_knowledge_effect (kernel.py:10724-10727)",
+  "owner_soll_nach_architektur": "Memory-Writer + WitnessKnowledge (Kettenvertrag §4)",
+  "kette": {
+   "eingang": "God-Scope knowledge + targetId",
+   "verarbeitung": "make_memory(kind='gelesen', layer='session', truthStatus='canon') + Fact mit witnessedBy=[target] + _record_fact_witnesses + apply_knowledge_effect",
+   "speicherung": "session_memories, session_facts, witnessKnowledge via save_session",
+   "wiederlesen": "kernel.recall memories/witnessKnowledge der Figur (kernel.py:13201ff)",
+   "entscheidung": "Brief/Recall; rank_speakers memories-Treffer (kernel.py:11664)",
+   "folgewirkung": "Runtime/Beziehung/Ziel über apply_knowledge_effect (Ursache God-Fact)",
+   "frontend": "God-Scope 'knowledge'; Memory-Seite (memory.tsx) zeigt Sessionmemory"
+  },
+  "ui_bedienung": "God-Scope 'knowledge'",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "kernel.py:10536-10552 – truthStatus='canon' für gesetztes Wissen; Trennung 'weiß X' vs. Weltwahrheit X nicht geprüft (UNKLAR)"
+  ],
+  "abhaengig_von": [
+   "Memory-Writer",
+   "WitnessKnowledge",
+   "apply_knowledge_effect (Bereich Wissen)"
+  ],
+  "auswirkung_bestehender_fehler": "keine zusätzliche bekannte",
+  "belege": [
+   "kernel.py:10536-10552, 10709-10714 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-07",
+  "funktion": "God-Scope 'action': angeordnete Handlung mit Actor/Target",
+  "amaster": "§46.1 (Z.1746 Ereignis), §46.2 (Z.1758)",
+  "soll": "Ereignis wird als kanonische Handlung mit gebundenem Actor/Target geschrieben (Z.1746, Z.1750).",
+  "kettenvertrag": "§12.4; §11 Capability im God-Vollzug",
+  "sps_loesung": "V74 Kommentar kernel.py:10580; V65E (SPS Z.4453)",
+  "owner": "Python kernel.apply_god action (kernel.py:10573-10590, 10662-10698)",
+  "owner_soll_nach_architektur": "SceneFact-Writer + Memory + WitnessKnowledge + SceneState record_physical",
+  "kette": {
+   "eingang": "God-Scope action, targetId=Handelnde (chat.$sessionId.tsx:1203)",
+   "verarbeitung": "Präsenz/Cast/Capability-Prüfung (kernel.py:10573-10590); Action-Fact authority=god mit cause_fact_id; record_physical; Memories getan/erlebt",
+   "speicherung": "facts, memories, turns (byGod) via save_session",
+   "wiederlesen": "latest_event_stimulus (kernel.py:11784) für Gate; recall facts",
+   "entscheidung": "Gate wählt betroffene Figur (affected_ids)",
+   "folgewirkung": "queueAuto nach God (chat.$sessionId.tsx:668)",
+   "frontend": "Chat zeigt Handlungszeile byGod"
+  },
+  "ui_bedienung": "God-Scope 'action'",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "kernel.py:10587 – capability_blocks_action(rt,text) liest Handlungstext lexikalisch (UNKLAR, nicht vertieft)",
+   "keine Körperwirkung der God-Handlung auf das Ziel (effect_kinds=[] kernel.py:10689-10690) – UNKLAR ob gewollt"
+  ],
+  "abhaengig_von": [
+   "SceneFact-Writer",
+   "SceneState",
+   "A-21"
+  ],
+  "auswirkung_bestehender_fehler": "keine zusätzliche bekannte",
+  "belege": [
+   "kernel.py:10573-10590, 10662-10698 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-08",
+  "funktion": "God-Scope 'scene'/'time'/'session'",
+  "amaster": "§46.1 (Z.1747-1748 Anwesenheit, Szenenrahmen), §46.3 (Z.1766-1774)",
+  "soll": "Szenenrahmen/Zeit werden in SceneState/Zeit-Owner geschrieben; Session-Scope bleibt sessiongebunden.",
+  "kettenvertrag": "§12.4",
+  "sps_loesung": "V65W C4 / V65Y N06 (Szenenübergang, kernel.py:10521-10522 Kommentar)",
+  "owner": "Python kernel.apply_god time/scene/session (kernel.py:10591-10632) + scene_state.external_delta (kernel.py:10763-10764)",
+  "owner_soll_nach_architektur": "SceneState-Owner / Zeit-Owner (bind_time)",
+  "kette": {
+   "eingang": "God-Scope scene/time/session",
+   "verarbeitung": "time: scene.time = text[:80] (kernel.py:10591-10593); scene: scene.notes/foreground (kernel.py:10594-10602); session: nur openMatters + godFact, applied=True (kernel.py:10629-10632)",
+   "speicherung": "sessions.json scene, godFacts, facts",
+   "wiederlesen": "Spiegel scene/openMatters; _derive_fate openMatters (kernel.py:10894-10895); recall godFacts für Wahrnehmende",
+   "entscheidung": "UNKLAR (Zeit-Owner bind_time liest scene.time als Freitext?)",
+   "folgewirkung": "UNKLAR",
+   "frontend": "God-Scope-Select"
+  },
+  "ui_bedienung": "God-Scope 'scene'/'time'/'session'",
+  "statischer_befund": "UNKLAR",
+  "status": "UNGEPRÜFT",
+  "defekte": [
+   "kernel.py:10592 – Zeit-God schreibt Freitext in scene.time statt typisierter Zeitwahrheit (SPS V61/V62 Z.5122 'God-Zeitsprung ohne Story-Uhr')"
+  ],
+  "abhaengig_von": [
+   "SceneState (Bereich Szene)",
+   "Zeit-Owner"
+  ],
+  "auswirkung_bestehender_fehler": "Zeitbezug im Folgeturn evtl. nicht typisiert",
+  "belege": [
+   "kernel.py:10591-10632 (codefluss)",
+   "MATRIX10_SPS_MASTER.md:5122"
+  ]
+ },
+ {
+  "id": "A-09",
+  "funktion": "God-Folgeturn: God-Wahrheit wird im nächsten Turn gelesen und nicht wegformuliert",
+  "amaster": "§46.1 (Z.1750), §49 (Z.1858), §50 (Z.1895)",
+  "soll": "Gesetzte Tatsache ist kanonisch und wird von späteren Turns gelesen; LLM darf Authority nicht überschreiben (Z.1895).",
+  "kettenvertrag": "§12.4 'nach Reload gelesen und im Folgeturn beachtet. God ist nicht bloß eine Promptzeile'",
+  "sps_loesung": "SPS V62 Z.5165 'God Vorrang gleicher/späterer Turn ... Test God-Vorrang grün'",
+  "owner": "Python kernel.recall (kernel.py:13265-13271) -> bind_formulation_spiegel godFacts (kernel.py:14740) -> llm_contract state_keys (llm_contract.py:2356-2358)",
+  "owner_soll_nach_architektur": "zuständiger Fach-Reader (Memory/Relationship/Body), BrainContext als Spiegel",
+  "kette": {
+   "eingang": "gespeicherte godFacts/facts",
+   "verarbeitung": "recall übernimmt godFact nur, wenn ein Fact mit gleicher sourceTurnId in den von der Figur wahrgenommenen facts liegt",
+   "speicherung": "god_facts-Tabelle (repos.py:60,129)",
+   "wiederlesen": "kernel.py:13265-13271",
+   "entscheidung": "Prompt-State 'godFacts' (llm_contract.py:2357); kein Validator, der Figurenrede gegen God-Fakt prüft",
+   "folgewirkung": "nur über Fach-Owner (Memory/Body/Relationship) wirksam; reine Szenen/Session-God-Fakten nur als Promptzeile",
+   "frontend": "keine eigene God-Faktliste im Chat; timeline/diagnose UNKLAR"
+  },
+  "ui_bedienung": "keine eigene",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "kernel.py:13265-13271 – für scene/session/world-Scope ist die Wirkung im Folgeturn nur Promptinhalt (godFacts im State-JSON), kein Commit-Validator gegen Widerspruch (§50 Z.1895)"
+  ],
+  "abhaengig_von": [
+   "A-01..A-08",
+   "Recall/WitnessKnowledge"
+  ],
+  "auswirkung_bestehender_fehler": "God-Fakten ohne Fach-Owner können vom LLM ignoriert werden",
+  "belege": [
+   "kernel.py:13265-13271 (codefluss)",
+   "llm_contract.py:2356-2358 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-10",
+  "funktion": "Regie-Freitext: Komponentenbindung Actor/Target und Vollzug über kanonische Writer",
+  "amaster": "§46.2 (Z.1752-1760), §46.3",
+  "soll": "Regie erzwingt eine konkrete Szenenwirkung, ist keine Figurenrede, bindet Actor/Target ausdrücklich und erfindet keine nicht angeordneten Taten (Z.1754-1760).",
+  "kettenvertrag": "§12.3 Regie; §4 keine Kurzpipeline",
+  "sps_loesung": "V59C (SPS Z.5305 C2: extract_regie_components -> bind_regie_components -> apply_regie), V65J.3 (SPS Z.4008), V65R (SPS Z.3484), V92 P19",
+  "owner": "Python app.kernel_regie (app.py:2567) -> llm_contract.extract_regie_components -> kernel.bind_regie_components (kernel.py:6368) -> kernel.apply_regie (kernel.py:9976)",
+  "owner_soll_nach_architektur": "Regie-Authority bindet; SceneFact-, Physical-, Body-, Memory-, Witness-Writer vollziehen",
+  "kette": {
+   "eingang": "chat.$sessionId.tsx:669-681 kernelRegie(text, actorId=regieActorId, targetId, directAction-Checkbox, szenenuebergang) -> POST /api/kernel/regie",
+   "verarbeitung": "Provider-Lesung vor Schreibsperre (app.py:2626-2631); ohne Lesung und ohne Legacy-Syntax 503 REGIE_SEMANTIK_NICHT_VERFUEGBAR (app.py:2826-2829); apply_regie: Capability/Ziel/Wirkungsklasse je Komponente, Action-Fact authority=regie, _apply_physical, write_body_change, record_physical, Memories, Witness (kernel.py:10080-10230)",
+   "speicherung": "sessions + facts/memories/turns/directorActions via kernel_session_response (app.py:2908)",
+   "wiederlesen": "regie_persisted_verdict liest SQLite zurück (app.py:2912, kernel.py:10388); Folgeturn: latest_event_stimulus/affected (kernel.py:11784)",
+   "entscheidung": "Gate-Sprecherwahl betroffene Figur; _bind_profile_triggers Reaktionsregeln (kernel.py:10232-10244)",
+   "folgewirkung": "regieActsOnly -> queueAuto (chat.$sessionId.tsx:704-706)",
+   "frontend": "Regie-Panel: 'Angewiesene Figur', 'Direktes Ziel', Checkbox matrix-regie-direct, Szenenübergang; Fehlertexte chat.$sessionId.tsx:707-711"
+  },
+  "ui_bedienung": "'Spreche als: regie' + Angewiesene Figur + Direktes Ziel + 'direkte Handlung'",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "app.py:2826-2829 – ohne Provider ist Freitext-Regie nicht ausführbar (503); nur directAction-Checkbox oder Legacy-Syntax laufen lokal",
+   "ausgeführt: POST /api/kernel/regie 'Mara setzt sich.' ohne Provider -> 503 REGIE_SEMANTIK_NICHT_VERFUEGBAR (probe p2.py)"
+  ],
+  "abhaengig_von": [
+   "Provider/LLM-Config (Bereich Konfiguration)",
+   "PhysicalState-Writer",
+   "WitnessKnowledge",
+   "A-21"
+  ],
+  "auswirkung_bestehender_fehler": "Ohne Provider fällt Regie auf A-11 zurück",
+  "belege": [
+   "app.py:2567-2928 (codefluss)",
+   "kernel.py:9976-10386 (codefluss)",
+   "ausgeführt: probe p2.py REGIE free 503"
+  ]
+ },
+ {
+  "id": "A-11",
+  "funktion": "Regie-Legacy-Syntax 'Name: *Tat*' / 'Name: Rede' (R-1 'setzt sich')",
+  "amaster": "§46.2 (Z.1754-1760)",
+  "soll": "Angeordnete Szenenwirkung wird vollzogen, auch körperlich; Regie ist keine Figurenrede.",
+  "kettenvertrag": "§12.3; §11 PhysicalState",
+  "sps_loesung": "V92 Paket 19 (kernel.py:10318-10320 Kommentar), V65J.3",
+  "owner": "Python kernel.apply_regie else-Zweig parse_regie_components (kernel.py:10257-10372)",
+  "owner_soll_nach_architektur": "Regie-Authority + Body-Writer write_body_change",
+  "kette": {
+   "eingang": "Regietext 'Mara: *setzt sich*' mit actorId",
+   "verarbeitung": "parse_regie_components; Körperlesung nur mit Provider (app.py:2760-2790); ohne Lesung authority_body_change -> keine Änderung",
+   "speicherung": "Action-Fact authority='character' (kernel.py:10329), Speech-Fact authority='character' (kernel.py:10303), turns",
+   "wiederlesen": "regie_persisted_verdict -> 'UNVERIFIED' (regieEffects fehlt)",
+   "entscheidung": "keine Körperwirkung -> Capability unverändert",
+   "folgewirkung": "Figur sitzt kanonisch nicht",
+   "frontend": "Chat zeigt Handlungszeile 'setzt sich'"
+  },
+  "ui_bedienung": "Regie-Eingabe mit Legacy-Syntax",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "kernel.py:10303, 10329 – Regie-angeordnete Rede/Tat wird mit authority='character' gespeichert (Authority-Vermischung Regie vs. eigene Figurentat)",
+   "kernel.py:10318-10320 – ohne Provider-Lesung keine Körperänderung trotz validated=True Action-Fact",
+   "ausgeführt: Regie 'Mara: *setzt sich*' -> 200, effect_verdict UNVERIFIED, Fact ('setzt sich','character',True), runtimes.posture/haltung None (probe p2.py)"
+  ],
+  "abhaengig_von": [
+   "PhysicalState-Writer",
+   "Provider-Lesung"
+  ],
+  "auswirkung_bestehender_fehler": "Folgeturn/AutoChat sehen eine 'vollzogene' Tat ohne Körperzustand; Fate/Capability lesen falsche Lage.",
+  "belege": [
+   "kernel.py:10257-10372 (codefluss)",
+   "ausgeführt: probe p2.py REGIE legacy"
+  ]
+ },
+ {
+  "id": "A-12",
+  "funktion": "Regie angeordnete Rede -> Figurenturn mit Directive",
+  "amaster": "§46.2 (Z.1756), §50",
+  "soll": "Angeordnete Rede wird von der Figur in eigenen Worten umgesetzt; keine zusätzliche Tat.",
+  "kettenvertrag": "§12.3 'Die Figur erlebt die Folge und kann entsprechend ihrem Zustand darauf reagieren'",
+  "sps_loesung": "V65P/V65Q (kernel.py:6193 regie_order_for, kernel.py:14317-14341), V65R (SPS Z.3484)",
+  "owner": "Python kernel.apply_regie directiveFor (kernel.py:10027, 10255-10256) + Client runFigure(directive) + llm_contract.canonical_formulation_context directorActions (llm_contract.py:2742-2746) + bind_formulation_spiegel (kernel.py:14301-14341)",
+  "owner_soll_nach_architektur": "Server bindet Directive aus Regie-Fact; Figurenturn über normalen Turnpfad",
+  "kette": {
+   "eingang": "Regie mit Redeauftrag; Client wählt actor = lastRegie.directiveFor || regieActorId (chat.$sessionId.tsx:689)",
+   "verarbeitung": "Client runFigure(inputKind autochat, directive) (chat.$sessionId.tsx:721-725) -> prepare -> formulate: Server leitet directive aus directorActions des Turns ab (llm_contract.py:2742-2746) -> Spiegel nur bei Text-Match der Regiezeile (kernel.py:14311)",
+   "speicherung": "commit_turn mit regie_order_for (kernel.py:8658-8659)",
+   "wiederlesen": "regie_outcomes/record_regie_reaction (kernel.py:9775, 9791)",
+   "entscheidung": "Spiegel 'directive' (kernel.py:14650)",
+   "folgewirkung": "queueAuto nach Figurenturn (chat.$sessionId.tsx:729)",
+   "frontend": "keine eigene Anzeige des Redeauftrags außer Regiezeile"
+  },
+  "ui_bedienung": "Regie-Eingabe",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "kernel.py:14302 – directive_eff = directive_raw (Clientwert) bleibt im prepare-Spiegel stehen, wenn die jüngste Regiezeile nicht passt (Schleife bricht nach erster Regiezeile, kernel.py:14342); Formulierung selbst leitet serverseitig neu ab (llm_contract.py:2742)",
+   "chat.$sessionId.tsx:689 – Fallback auf UI-Auswahl regieActorId, wenn Server kein directiveFor setzt",
+   "Vollzug des Redeauftrags hängt am Browser (Client startet den Figurenturn); kein serverseitiger offener Auftrag"
+  ],
+  "abhaengig_von": [
+   "A-21",
+   "A-10"
+  ],
+  "auswirkung_bestehender_fehler": "Redeauftrag kann verloren gehen (Browser zu) oder an falsche Figur gehen",
+  "belege": [
+   "chat.$sessionId.tsx:685-730 (codefluss)",
+   "kernel.py:14296-14345 (codefluss)",
+   "llm_contract.py:2731-2746 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-13",
+  "funktion": "Fate-Lesekette (_derive_fate): welche Zustände Fate liest",
+  "amaster": "§47 (Z.1782-1796)",
+  "soll": "Fate liest Weltkonflikte, offene Ziele, Szene, Beziehungen, Erinnerungen, Geheimnisse, Wissen/Nichtwissen, Körper, offene Propositionen, Userrolle, bisherige Beats (Z.1784-1796).",
+  "kettenvertrag": "§12.5 Fate",
+  "sps_loesung": "V60B.3 (SPS Z.5249 fateBeats/storyGoals), V59 FB08M.5 (SPS Z.5345), V34-Kommentar kernel.py:10897",
+  "owner": "Python kernel._derive_fate (kernel.py:10815-10945), aufgerufen in commit_turn (kernel.py:9176-9188) und apply_fate (kernel.py:10794-10799)",
+  "owner_soll_nach_architektur": "Fate als Storydruck-Leser ohne eigene Wahrheit (Kettenvertrag §4)",
+  "kette": {
+   "eingang": "jeder commit_turn bei pipeline.fate und fate.enabled (kernel.py:9177-9178)",
+   "verarbeitung": "sammelt Textschnipsel: Avatar-Abweichung per Regex _RESIGN_RE (kernel.py:118, 10833), world.conflicts/fateSeeds/fateBeats/storyGoals/secretKnowledge/knowledgeLimits, relations, offene Propositionen, Memories bestimmter kinds, Runtime pain/consciousness, openMatters, urgent Körper/Eskalation; Beat = erster Kandidat (kernel.py:10933)",
+   "speicherung": "session.fate {beat, derived, pressure, lastShiftTurn} im Session-Envelope",
+   "wiederlesen": "rank_speakers fate.beat (kernel.py:11624, 11737-11739); autchat_should_stop fate.requiresUser (kernel.py:14892-14894); brain_context fate (kernel.py:14788)",
+   "entscheidung": "nur Sprecherwahl (Name im Beat)",
+   "folgewirkung": "keine Ereignismöglichkeiten erzeugt",
+   "frontend": "fate.tsx:61-62 Druck/Beat; chat.$sessionId.tsx:1893"
+  },
+  "ui_bedienung": "Anzeige Druck/Beat auf /fate und im Chat-Panel",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "kernel.py:118, 10833 – Abweichungserkennung des Avatars per Wortliste _RESIGN_RE ('kündig|verlass das haus|...') + 'gehe weg|nicht zurück' (Keyword-Automat); ausgeführt: _derive_fate('Ich kündige.') -> Beat 'Avataränderung', Druck 0.75 (probe p1.py)",
+   "kernel.py:10861-10863 – world.secretKnowledge wird unbeschränkt Beatkandidat (Weltgeheimnis als Storydruck; Wissen/Nichtwissen je Figur nicht gelesen)",
+   "kernel.py:10933-10945 – keine Suche nach weltlogischen Wegen zum Storyziel bei Abweichung (Kettenvertrag §12.5, Matrix10 Z.107); Beat = erster Textkandidat",
+   "kernel.py:10790 / grep – fate.activeSeedId wird geschrieben, aber von _derive_fate nicht gelesen (alle fateSeeds[:4])",
+   "kernel.py:14893 – fate.requiresUser wird nirgends gesetzt (grep) -> Stoppgrund 'fate' tot"
+  ],
+  "abhaengig_von": [
+   "Welt-Owner (fateSeeds/storyGoals)",
+   "Relationship",
+   "Runtime",
+   "Propositions"
+  ],
+  "auswirkung_bestehender_fehler": "Fate liefert keinen weltlogischen Druck; AutoChat-Sprecherwahl erhält nur Namenstreffer.",
+  "belege": [
+   "kernel.py:10815-10945 (codefluss)",
+   "kernel.py:9176-9188 (codefluss)",
+   "ausgeführt: probe p1.py RESIGN"
+  ]
+ },
+ {
+  "id": "A-14",
+  "funktion": "Fate-Wirkung: Druck, Nebenfiguren aktivieren, Konsequenzen, Ortswechsel",
+  "amaster": "§47 (Z.1798-1806)",
+  "soll": "Fate erzeugt Ereignismöglichkeiten, erhöht/löst Druck, aktiviert Nebenfiguren, bereitet Ortswechsel vor, bringt Konsequenzen zurück (Z.1800-1806).",
+  "kettenvertrag": "§12.5 'erzeugt weltlogische Möglichkeiten und Druck'",
+  "sps_loesung": "SPS Z.5284 'Fate als Gelegenheitsgenerator §47' als offen genannt; V61-Kommentar llm_contract.py:2044-2050",
+  "owner": "Python kernel.rank_speakers (kernel.py:11737-11739) – einziger Entscheidungsleser",
+  "owner_soll_nach_architektur": "Fate-Leser -> Vorschlag an Orchestrator (Sprecherwahl/Gate/Szene), keine Masterwahrheit",
+  "kette": {
+   "eingang": "session.fate.beat",
+   "verarbeitung": "rank_speakers: +1 agenda wenn Vorname im Beat (nur autochat)",
+   "speicherung": "keine eigene",
+   "wiederlesen": "Beat nicht im LLM-Brief (llm_contract.py:2050 '_ = fate'; state_keys ohne fate)",
+   "entscheidung": "nur Sprecherreihenfolge",
+   "folgewirkung": "keine Ereignis-/Ortswechselvorschläge, keine Aktivierung abwesender Nebenfiguren (pick_speaker nur presentIds kernel.py:11521)",
+   "frontend": "keine Fate-Vorschläge sichtbar"
+  },
+  "ui_bedienung": "keine",
+  "statischer_befund": "FEHLT_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "kernel.py:11737-11739 – Fate wirkt ausschließlich über Namenstreffer im Beattext auf die Sprecherwahl",
+   "kein Code für Fate-Ereignismöglichkeiten/Nebenfiguraktivierung/Ortswechsel gefunden (SPS Z.5284 offen)"
+  ],
+  "abhaengig_von": [
+   "A-13",
+   "A-20"
+  ],
+  "auswirkung_bestehender_fehler": "Produktziel 'selbstständig handelnde Figuren' erhält keinen Storyantrieb aus Fate.",
+  "belege": [
+   "kernel.py:11737-11739 (codefluss)",
+   "llm_contract.py:2044-2050 (codefluss)",
+   "MATRIX10_SPS_MASTER.md:5284"
+  ]
+ },
+ {
+  "id": "A-15",
+  "funktion": "Fate-Grenzen: kein Avatar, keine Chatfigur, keine Masterwahrheit",
+  "amaster": "§47 (Z.1808-1816)",
+  "soll": "Fate steuert nicht den Avatar, erfindet kein Figurenwissen, spricht nicht als Chatfigur, hält Wahrheit nicht nur im Prompt.",
+  "kettenvertrag": "§12.5; §4 'Fate ... niemals eigener Wahrheitsmaster'",
+  "sps_loesung": "V61 (llm_contract.py:2044-2050 Kommentar), V59 FB08M.5 (SPS Z.5345)",
+  "owner": "Python kernel.apply_fate (kernel.py:10769) – keine Facts; pick_speaker schließt 'fate' aus (kernel.py:11519)",
+  "owner_soll_nach_architektur": "Fate ohne Writer auf Fachowner",
+  "kette": {
+   "eingang": "POST /api/kernel/fate (app.py:4122)",
+   "verarbeitung": "apply_fate setzt nur fate/pipeline/proposals",
+   "speicherung": "Session-Envelope fate",
+   "wiederlesen": "s. A-13",
+   "entscheidung": "pick_speaker/rank_speakers ignorieren Avatar und 'fate'",
+   "folgewirkung": "keine Fate-Zeile im Chat (role fate nur als meta-Anzeige vorgesehen chat.$sessionId.tsx:1516)",
+   "frontend": "fate.tsx Hinweis 'nie Figurensprache'"
+  },
+  "ui_bedienung": "Fate-Schalter",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "kernel.py:10861-10863 – Weltgeheimnisse fließen in fate.beat, der über brain_context (kernel.py:14788) an den Client geht; Beat selbst nicht im LLM-Brief"
+  ],
+  "abhaengig_von": [
+   "A-13"
+  ],
+  "auswirkung_bestehender_fehler": "keine zusätzliche bekannte",
+  "belege": [
+   "kernel.py:10769-10812 (codefluss)",
+   "kernel.py:11519 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-16",
+  "funktion": "Fate im Frontend aktivierbar und konfigurierbar (Seeds, Druck, Scope)",
+  "amaster": "§47 (Z.1818)",
+  "soll": "Fate wird im Frontend aktivierbar und konfigurierbar gemacht (Z.1818).",
+  "kettenvertrag": "§12.5 'Fate-Konfiguration und Seeds ... sichtbar, editierbar, gescopet, persistiert und von der echten Fate-Lesekette benutzt'; §5",
+  "sps_loesung": "V60B.3 (SPS Z.5249)",
+  "owner": "Python app.kernel_fate (app.py:4122) -> kernel.apply_fate; Welt-Seeds über patch_world",
+  "owner_soll_nach_architektur": "Session-Envelope fate + Welt fateSeeds als Konfigurationsowner, gelesen von _derive_fate",
+  "kette": {
+   "eingang": "fate.tsx:46-60 Switch -> kernelFate({enabled}); chat.$sessionId.tsx:311-318 patchPipeline('fate'); welt.$worldId.tsx:942-957 fateSeeds (title/beat/mustNot), welt.$worldId.tsx:771 fateEnabled",
+   "verarbeitung": "apply_fate(enabled) setzt fate.enabled + pipeline.fate (kernel.py:10782-10786); seedId/beat/pressure nur per API, keine UI",
+   "speicherung": "sessions.json fate/pipeline; worlds.json fateSeeds",
+   "wiederlesen": "_derive_fate liest world.fateSeeds[:4] (kernel.py:10851-10855), nicht activeSeedId; build_new_session liest world.fateEnabled (kernel.py:12759)",
+   "entscheidung": "s. A-13",
+   "folgewirkung": "s. A-14",
+   "frontend": "fate.tsx:61-71 Anzeige Druck/Beat/Seeds (nur lesend)"
+  },
+  "ui_bedienung": "Schalter 'Fate in dieser Session' (fate.tsx:59), Chat-Schalter 'Fate' (chat.$sessionId.tsx:1259), Seeds auf Weltseite",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "fate.tsx:46-71 – kein Bedienelement für Druck, aktiven Seed oder Beat; kernelFate(pressure/seedId/beat) wird von keiner UI aufgerufen (grep kernelFate: fate.tsx:49, chat.$sessionId.tsx:313 nur enabled)",
+   "kernel.py:10790 – activeSeedId persistiert ohne Reader in _derive_fate",
+   "welt.$worldId.tsx:957 – Seed-Feld 'pressure' angelegt, aber nicht editierbar und nicht gelesen"
+  ],
+  "abhaengig_von": [
+   "A-13",
+   "Welt-Owner"
+  ],
+  "auswirkung_bestehender_fehler": "Nutzer kann Fate nicht gezielt konfigurieren; Seedwahl ohne Wirkung.",
+  "belege": [
+   "fate.tsx:1-86 (codefluss)",
+   "app.py:4122-4169 (codefluss)",
+   "kernel.py:10769-10812 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-17",
+  "funktion": "AutoChat-Sprecherwahl (Gate): Entscheidungsgrundlage",
+  "amaster": "§48 (Z.1824-1841)",
+  "soll": "AutoChat wählt eine zulässige anwesende Nicht-Avatar-Figur und berücksichtigt Sprecherwechsel, turn_number, Unterbrechungen, Ziele, offene Fragen, SceneState, Wissen, Beziehungen, Emotionen, Körper, Fate, Wiederholungsvermeidung (Z.1826-1841).",
+  "kettenvertrag": "§12.6 'wählt nur zulässige anwesende Nicht-Avatar-Figuren ..., beachtet Wissen, Ziele, Körper, Beziehungen, SceneState, Fate'",
+  "sps_loesung": "V40 Turn-Taking (kernel.py:11597 Kommentar), V65E (SPS Z.4453, latest_event_stimulus), V65J.6 (SPS Z.4011 Gate im Live-Log), V65R R2 (SPS Z.3484)",
+  "owner": "Python kernel.autochat_gate (kernel.py:11821) -> latest_event_stimulus (kernel.py:11784) -> pick_speaker (kernel.py:11498) -> rank_speakers (kernel.py:11618)",
+  "owner_soll_nach_architektur": "Orchestrator/Kernel serverseitig, Lesen aus kanonischen Ownern",
+  "kette": {
+   "eingang": "POST /api/kernel/autochat-gate (app.py:4171) mit sessionId, remaining (Client), stimulus (wird von latest_event_stimulus überschrieben, kernel.py:11842-11844)",
+   "verarbeitung": "Eligibility: nicht Avatar/god/fate, in presentIds, consciousness>=0.5, canSpeak, nicht gagged (kernel.py:11512-11531). Score: direct_address (Name im Reiz), question, urgency (fear/anger/stress/pain), context (Wort>=4 Zeichen in Stamm-knowledge/Stamm-goals/occupation/role/6 Memories, kernel.py:11664-11670), Kompass-Linse fire_compass_lens, relationship (relations fromId->letzter Sprecher >=0.4), emotion, agenda (frames whom, offene Propositionen targetId, rt.intent im Reiz, sceneState.nextBeatOwner/openBeats), flow (Cooldown/Streak), autochat: -6 für letzten Sprecher, affected_ids +3, Fate-Beat-Name +1, eigene Ziele/intent +0.4, 'noch nicht zu Wort' +0.8; Unterbrechung bei Dringlichkeit >=1.44 (kernel.py:11624-11765)",
+   "speicherung": "keine (Lesepfad, _run_read app.py:4207)",
+   "wiederlesen": "liest session.facts, memories, relations, frames, propositions, goals, sceneState, runtimes, fate (SQLite über _kernel_stored_session)",
+   "entscheidung": "speakerId + candidates (Top 4 mit reasons) (kernel.py:11848-11863)",
+   "folgewirkung": "Client startet Figurenturn mit diesem Sprecher (chat.$sessionId.tsx:996-1003)",
+   "frontend": "chat.$sessionId.tsx:1276-1277 Kandidatenliste mit Score/Gründen (setSpeakerPick chat.$sessionId.tsx:1001); Live-Log AUTOCHAT_GATE (app.py:4194-4202)"
+  },
+  "ui_bedienung": "Panel 'AutoChat' mit Kandidaten/Gründen im Chat",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "kernel.py:11664-11670 – 'Wissen' = Stammfeld knowledge + Wortüberlappung (Keyword-Linse), nicht WitnessKnowledge/Nichtwissen der Figur",
+   "kernel.py:11666 – Memories ohne Wahrnehmungs-/Relevanzfilter, nur erste 6",
+   "Körperzustand nur als Ausschluss (canSpeak/consciousness), keine Mobilität/Schmerz-Capability für Handlungen",
+   "kernel.py:11737-11739 – Fate nur als Namenstreffer",
+   "ausgeführt: autochat_gate(Szene K84) -> Mara 1.1 ['lange still'], Johann -6.0 ['hat gerade gesprochen'] (probe p1.py); Route /api/kernel/autochat-gate 200 speakerId Johann (probe p2.py)"
+  ],
+  "abhaengig_von": [
+   "Memory",
+   "Relationship",
+   "Runtime/Körper",
+   "SceneState",
+   "Goals/Propositions",
+   "A-13 Fate"
+  ],
+  "auswirkung_bestehender_fehler": "Sprecherwahl ohne epistemische Grundlage; Figuren 'reden aus Antrieb' nur über Rotation und Wortüberlappung.",
+  "belege": [
+   "kernel.py:11498-11765, 11821-11863 (codefluss)",
+   "app.py:4171-4209 (codefluss)",
+   "ausgeführt: probe p1.py GATE, probe p2.py GATE"
+  ]
+ },
+ {
+  "id": "A-18",
+  "funktion": "AutoChat-Turn läuft über denselben kanonischen Turnpfad (prepare -> formulate -> commit)",
+  "amaster": "§48 (Z.1824-1826), §6 (Turnpfad)",
+  "soll": "AutoChat spielt die Szene über mehrere Turns mit zulässigen Figuren weiter (Z.1824-1826).",
+  "kettenvertrag": "§12.6 'benutzt denselben kanonischen Turnpfad ... führt keine verkürzte Parallelpipeline ein'; §9 normaler Turn",
+  "sps_loesung": "V65E (SPS Z.4453), V65U/P23 (pending input), SPS Z.4571 Netzfolge 'regie, autochat-gate, prepare, formulate, commit'",
+  "owner": "Client chat.$sessionId.tsx queueAuto (967) -> runFigure (375) -> /api/kernel/prepare (app.py:1563) -> /api/llm/formulate (app.py:2299, llm_contract.canonical_formulation_context 2720) -> /api/kernel/commit (app.py:1884) -> kernel.commit_turn (kernel.py:8074)",
+  "owner_soll_nach_architektur": "derselbe Kernel-Turnpfad wie Nutzerturn (Kettenvertrag §9)",
+  "kette": {
+   "eingang": "runFigure(nextSpeaker, '', {inputKind:'autochat', speakAs, roleOverride 'teilnehmer'}) (chat.$sessionId.tsx:1003); kernelPrepare sendet truth.text='' bei autochat (kernel-bridge.ts:181)",
+   "verarbeitung": "prepare: is_figure_followup_turn -> role/authority 'character' (app.py:1583-1584, app.py:292-310); kein Input-Commit (is_input False, app.py:1679); _appraise_perceived; prepare_turn BrainContext. formulate: Server liest Session neu, bindet AutoChat-Truth serverseitig, STALE-Check turnIndex (llm_contract.py:2733-2746). commit: Sprecher muss anwesende Weltfigur sein (app.py:1943-1949), Effekt-/Körper-/Grenzprüfungen, commit_turn phase 'complete' (app.py:2102-2121)",
+   "speicherung": "kernel_session_response -> save_session; Graph-Kante turn_address (app.py:2155-2180)",
+   "wiederlesen": "nächstes Gate/prepare liest SQLite (_kernel_stored_session)",
+   "entscheidung": "commit_turn Komponententrennung (split_output_components kernel.py:1412), Capability",
+   "folgewirkung": "queueAuto(n-1) rekursiv (chat.$sessionId.tsx:1008)",
+   "frontend": "Figurenzeile im Chat, Fehler 'TURN_WITHOUT_LINE' (chat.$sessionId.tsx:482-484)"
+  },
+  "ui_bedienung": "Schalter 'AutoChat', Button 'Figuren jetzt weiterreden lassen', Turns, Pause (chat.$sessionId.tsx:1706-1750)",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Gate-Entscheidung ist nicht an den Folgeturn gebunden: Client schickt speaker.id; prepare prüft nur Präsenz (app.py:1663-1664), formulate/commit nur Präsenz+Weltzugehörigkeit (llm_contract.py:2753-2757, app.py:1943-1949) – ein anderer anwesender Sprecher als speakerId des Gates wird akzeptiert",
+   "prepare/formulate prüfen für den Client-Sprecher keine Capability (canSpeak/consciousness) wie pick_speaker (kernel.py:11525-11530); erst commit_turn behandelt Capability",
+   "kernel.py:14907-14945 autchat_step (Kurzpfad commit_turn ohne prepare/formulate) existiert, wird aber nirgends aufgerufen (grep) – toter Parallelpfad",
+   "AutoChat-Turn commit_phase 'complete' = One-shot-Writer (app.py:2095 Kommentar 'Legacy autochat/observer events still use the one-shot writer')"
+  ],
+  "abhaengig_von": [
+   "TurnTruth/Prepare (Bereich Turn)",
+   "Commit/Komponentencommit (Bereich Turn)",
+   "A-17"
+  ],
+  "auswirkung_bestehender_fehler": "Wenn Gate und Client auseinanderlaufen, spricht eine nicht gewählte Figur; sonst gleicher Pfad wie Nutzerturn.",
+  "belege": [
+   "chat.$sessionId.tsx:375-480, 967-1012 (codefluss)",
+   "app.py:1563-1880, 1884-2210 (codefluss)",
+   "llm_contract.py:2720-2762 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-19",
+  "funktion": "AutoChat-Stopp-/Pausebedingungen",
+  "amaster": "§48 (Z.1843-1850)",
+  "soll": "Stopp/Pause bei notwendiger Userentscheidung, unklarem Avatarvollzug, fehlender Zielbindung, harter Konfliktauflösung, Turnlimit, Fehlern.",
+  "kettenvertrag": "§12.6 'Stopbedingungen'",
+  "sps_loesung": "V65E (Kommentar kernel.py:14875-14882), V65J.6",
+  "owner": "Python kernel.autochat_gate (kernel.py:11829-11848) + kernel.autchat_should_stop (kernel.py:14836-14904)",
+  "owner_soll_nach_architektur": "Kernel-Gate serverseitig",
+  "kette": {
+   "eingang": "Gate-Aufruf mit remaining (Client-Zähler), user_decision",
+   "verarbeitung": "turn_limit (remaining<=0), user_decision, no_speaker, capability (eines zweiten, nicht-autochat pick_speaker kernel.py:14857-14862), danger>=0.95, repetition (exakt gleiche speech der letzten zwei character-Turns kernel.py:14865-14870), unconscious, god_regie (nicht validiert), error (letzter Fact nicht validiert), interruption (needsReply), fate (requiresUser), await_user (offene Proposition an Avatar + Frage), hard_conflict (kernel.py:14901-14903)",
+   "speicherung": "keine",
+   "wiederlesen": "-",
+   "entscheidung": "stop/reason an Client",
+   "folgewirkung": "Kette endet",
+   "frontend": "nur Client-Log 'AUTOCHAT_STOP' (chat.$sessionId.tsx:993, 998, 1006); keine sichtbare Stoppbegründung im Chat"
+  },
+  "ui_bedienung": "Turns-Feld (Limit), Stopp-Button stop() (chat.$sessionId.tsx:1033)",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "kernel.py:14901-14903 – 'harte Konfliktauflösung' = Wortliste 'samstag'/'sonntag' in zwei offenen Propositionen; ausgeführt: Samstag+Sonntag -> 'hard_conflict', zwei kollidierende Freitag-18-Uhr-Propositionen -> None (probe p1.py)",
+   "kein Stoppgrund 'unklarer Avatarvollzug' (AMASTER Z.1847) im Gate",
+   "kernel.py:14849-14850 – 'fehlende Zielbindung' nur für mode 'A', vom Gate nie übergeben (autochat_gate ruft ohne mode, kernel.py:11848)",
+   "kernel.py:14865-14870 – Wiederholung nur bei exakt identischem String",
+   "kernel.py:14893 – Stopp 'fate' tot (requiresUser nie gesetzt)",
+   "chat.$sessionId.tsx:993 – Stoppgrund nur im Client-Log, nicht als sichtbarer Hinweis"
+  ],
+  "abhaengig_von": [
+   "Propositions/Goals (Bereich Lifecycle)",
+   "A-13"
+  ],
+  "auswirkung_bestehender_fehler": "AutoChat läuft weiter, wo Nutzerentscheidung nötig wäre, oder stoppt aus Wortzufall.",
+  "belege": [
+   "kernel.py:14836-14904 (codefluss)",
+   "ausgeführt: probe p1.py STOP_SAMSTAG/STOP_FREITAG"
+  ]
+ },
+ {
+  "id": "A-20",
+  "funktion": "Eigenständige Handlung einer Nicht-Avatar-Figur: Auslösung und Anzeige (Produktziel)",
+  "amaster": "§48 (Z.1824), §28 Sprecherwahl (Verweis), §50",
+  "soll": "Figuren spielen die Szene selbstständig weiter (Rede und Handlung) im erlaubten Rahmen, ohne Avatarsteuerung.",
+  "kettenvertrag": "§12.6, §12.1 (Negativprüfung Avatar), §5 (UI-Bedienbarkeit)",
+  "sps_loesung": "V65E (SPS Z.4453 'Folgezug nach Regie und God'), V47-Kommentar chat.$sessionId.tsx:1711",
+  "owner": "Client chat.$sessionId.tsx queueAuto (967-1012); kein serverseitiger Scheduler",
+  "owner_soll_nach_architektur": "Kernel-Orchestrator (Gate) + kanonischer Turnpfad; Auslösung im Frontend bedienbar",
+  "kette": {
+   "eingang": "Auslöser nur clientseitig: nach erfolgreichem Nutzerturn wenn autoChat.enabled (chat.$sessionId.tsx:947), nach God (668), nach Regie (706, 729), nach Puppet (808), Button 'Figuren jetzt weiterreden lassen' (1720-1727); window.setTimeout mit delayMs",
+   "verarbeitung": "Gate -> runFigure; Formulierung liefert speech+action; commit_turn trennt Komponenten, Handlung wird über Effekt-/Körper-/Capability-Prüfung committed (app.py:2005-2064)",
+   "speicherung": "autoChat {enabled, turns, delayMs} im Session-Envelope via PUT /api/sessions (store.ts:1012-1027, repos.py:175); Default enabled=False (kernel.py:12796)",
+   "wiederlesen": "Gate liest autoChat.turns nur, wenn Client kein remaining sendet (app.py:4181-4183)",
+   "entscheidung": "Server-Gate (A-17)",
+   "folgewirkung": "Handlung einer Figur wird Fact/Memory/Witness wie jeder Turn",
+   "frontend": "Chat-Zeile der Figur; Kandidatenpanel (chat.$sessionId.tsx:1272-1278)"
+  },
+  "ui_bedienung": "AutoChat-Schalter, Turns, Pause, Button 'Figuren jetzt weiterreden lassen' im Steuerungs-Panel (regieOpen, chat.$sessionId.tsx:1705)",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "Autonomie nur reaktiv und browsergebunden: ohne geöffneten Chat/Timer handelt keine Figur; kein serverseitiger offener Antrieb (Ziel/Intent) löst einen Turn aus",
+   "chat.$sessionId.tsx:988 – remaining (Turnlimit) kommt vom Client; Server zählt nicht",
+   "ob eine Figur ohne Reiz eine HANDLUNG (nicht nur Rede) wählt, hängt allein an der Formulierung (LLM/Synapse); kein Plan-/Zielauswahlschritt im Kernel für Handlungswahl"
+  ],
+  "abhaengig_von": [
+   "A-17",
+   "A-18",
+   "A-19",
+   "Commit/Komponenten (Bereich Turn)"
+  ],
+  "auswirkung_bestehender_fehler": "Produktziel 'selbstständig handelnde Figuren' nur als clientgetriebene Weiterrede erfüllt.",
+  "belege": [
+   "chat.$sessionId.tsx:940-1012, 1705-1750 (codefluss)",
+   "kernel.py:12796 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-21",
+  "funktion": "AutoChat 'erlaubte Narration' als Alternative zur Figur",
+  "amaster": "§48 (Z.1826)",
+  "soll": "AutoChat wählt eine anwesende Nicht-Avatar-Figur ODER eine erlaubte Narration (Z.1826).",
+  "kettenvertrag": "§12.6 'oder erlaubte Narration'",
+  "sps_loesung": "keine gefunden",
+  "owner": "keiner",
+  "owner_soll_nach_architektur": "Narrator-Pfad (§51.2) im Gate",
+  "kette": {
+   "eingang": "FEHLT",
+   "verarbeitung": "pick_speaker schließt narrator aus (kernel.py:11630), Gate liefert nur Figuren-speakerId",
+   "speicherung": "FEHLT",
+   "wiederlesen": "FEHLT",
+   "entscheidung": "FEHLT",
+   "folgewirkung": "FEHLT",
+   "frontend": "Schalter 'Erzähler' ohne Wirkung (A-26)"
+  },
+  "ui_bedienung": "keine wirksame",
+  "statischer_befund": "FEHLT_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "kernel.py:11821-11863 – Gate hat keinen Narrationszweig; kein Narrator-Writer gefunden"
+  ],
+  "abhaengig_von": [
+   "A-26"
+  ],
+  "auswirkung_bestehender_fehler": "Szene stoppt 'no_speaker', wo Narration weiterführen könnte.",
+  "belege": [
+   "kernel.py:11821-11863 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-22",
+  "funktion": "Systemschleife /api/amaster/system-loop (system_loop.run_bound_system)",
+  "amaster": "§48 (kein AutoChat-Ersatz), §52 (Z.1975), §6/§9 Turnpfad",
+  "soll": "Kein Pfad darf Turns außerhalb des kanonischen Turnpfads erzeugen oder Stamm/Weltkanon ohne Freigabe ändern (Z.1975).",
+  "kettenvertrag": "§4 'getrennte Kurzpipelines ... verboten'; §15 Review; §2 Prüfmaschine selbst prüfen",
+  "sps_loesung": "amaster_route_catalog.py:511-512 ('kernel loop -> SQL owners ... same as kernel commit'); keine SPS-Zeile gefunden",
+  "owner": "Python app.api_amaster_system_loop (app.py:2214) -> system_loop.run_bound_system (system_loop.py:61)",
+  "owner_soll_nach_architektur": "reine Diagnose ohne Produktwrites, oder Test-Fixture außerhalb der Produkt-DB",
+  "kette": {
+   "eingang": "diagnose.tsx:282-284 Button 'Systemschleife' -> api.ts:661 apiSystemLoop -> POST /api/amaster/system-loop",
+   "verarbeitung": "legt in der eingebauten Welt world_gasthaus_7kreis Figuren ch_sys 'Clara', av_sys 'Gast', Session ses_sys an; Mode-A-Upload; ingest_upload; resolve_review(status accepted) für ALLE Reviews (system_loop.py:179-185); kernel.commit_turn direkt mit fixer Rede 'Ich warte.' ohne prepare/formulate (system_loop.py:204-226)",
+   "speicherung": "worlds (long/genre/places überschrieben), characters (neue Figuren), sessions, reviews (accepted)",
+   "wiederlesen": "get_session ses_sys (system_loop.py:228)",
+   "entscheidung": "-",
+   "folgewirkung": "Produktwelt Gasthaus dauerhaft verändert",
+   "frontend": "diagnose.tsx:288 Ergebniszeile 'Systemschleife ok/ROT'"
+  },
+  "ui_bedienung": "Button 'Systemschleife' auf /diagnose",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "system_loop.py:179-185 – akzeptiert automatisch alle Upload-Reviews -> Weltkanon/Stamm ohne Nutzerfreigabe (§52)",
+   "system_loop.py:220-226 – commit_turn mit fest vorgegebenem result außerhalb prepare/formulate (Kurzpipeline)",
+   "system_loop.py:73, 89-100 – schreibt in die Produktwelt GASTHAUS_ID (db.py:637) statt in eine isolierte Testwelt",
+   "ausgeführt: POST /api/amaster/system-loop -> 6 Reviews 'accepted' (world long/genre/places/subplaces/placeRelations, spawn); world.long = 'Im Gasthaus spielt ein Noir-Drama. Clara wartet.', genre 'Noir'; Figuren der Welt danach u. a. 'Gast','Clara','Clara','Clara Mertens' (probe p2.py + sqlite-Rücklesung)",
+   "ausgeführt: Ergebnis ok=False wegen MEMORY_OWNER_UNBOUND – trotzdem sind die übrigen Writes committed"
+  ],
+  "abhaengig_von": [
+   "Review-Owner A-27",
+   "Upload Mode A (Bereich Upload)"
+  ],
+  "auswirkung_bestehender_fehler": "Ein Diagnoseklick zerstört Weltbeschreibung/Genre der Startwelt und erzeugt Dubletten; alle Sessions dieser Welt lesen danach veränderten Kanon.",
+  "belege": [
+   "system_loop.py:61-244 (codefluss)",
+   "app.py:2214-2219 (codefluss)",
+   "diagnose.tsx:93-105, 282-288 (codefluss)",
+   "ausgeführt: probe p2.py SYSLOOP/REVIEWS + sqlite worlds/characters"
+  ]
+ },
+ {
+  "id": "A-23",
+  "funktion": "Diagnose-Selbsttests über Browser-Engine statt Server (God/Regie/Sprecherwahl)",
+  "amaster": "§46, §48 (Nachweisbasis), §49",
+  "soll": "Nachweise müssen den realen kanonischen Pfad prüfen.",
+  "kettenvertrag": "§2 'Auch die Prüfmaschine selbst ist zu prüfen'; §4 'zweite Verhaltensmaschine' verboten",
+  "sps_loesung": "SPS V65R Z.3484 (zweite Browser-Sprecherwahl pickSpeaker als Fehler erkannt)",
+  "owner": "Client diagnose.tsx:17-84 mit session-engine.pickSpeaker, event-engine.applyGodMutation/ingestEvent/parseAction",
+  "owner_soll_nach_architektur": "Server-Kernel",
+  "kette": {
+   "eingang": "Diagnose-Seite lädt",
+   "verarbeitung": "lokale TS-Engine auf GASTHAUS-Kopie",
+   "speicherung": "keine",
+   "wiederlesen": "-",
+   "entscheidung": "Anzeige ok/nicht ok",
+   "folgewirkung": "Scheinnachweis 'God/body mutiert Runtime' (diagnose.tsx:79)",
+   "frontend": "diagnose.tsx Checkliste"
+  },
+  "ui_bedienung": "/diagnose",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "diagnose.tsx:31, 62, 79 – God-/Sprecherwahl-Prüfungen laufen gegen die Browser-Engine (applyGodMutation, pickSpeaker), nicht gegen apply_god/pick_speaker; Ergebnis ist kein Nachweis des Produktpfads"
+  ],
+  "abhaengig_von": [
+   "A-01",
+   "A-17"
+  ],
+  "auswirkung_bestehender_fehler": "Diagnose zeigt grün für Funktionen, die im Server ROT sind (z. B. A-05).",
+  "belege": [
+   "diagnose.tsx:17-84 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-24",
+  "funktion": "BrainContext als reiner Lesespiegel",
+  "amaster": "§49 (Z.1854-1873)",
+  "soll": "Kompakter relevanter Lesespiegel aus vorhandener kanonischer Information; darf auswählen/priorisieren/zusammenfassen/Quellen markieren, aber keine Fakten erzeugen, kein Wissen verteilen, keinen Current State entscheiden, kein eigener Speicher (Z.1856-1873).",
+  "kettenvertrag": "§4 'BrainContext: reiner Lesespiegel'; §5 'keine versteckten Produktfilter'",
+  "sps_loesung": "V56 (SPS Z.6177 K07), V65S (llm_contract.py:2350-2354), V59 FB08M.3 (SPS Z.5343), SPS V66 I17 Z.1693 TEIL",
+  "owner": "Python kernel.brain_context (kernel.py:14781) + kernel.bind_formulation_spiegel (kernel.py:13945) + kernel.prepare_turn (kernel.py:14793)",
+  "owner_soll_nach_architektur": "Lesespiegel ohne Writer",
+  "kette": {
+   "eingang": "prepare (app.py:1799-1805) und formulate (llm_contract.py:2761)",
+   "verarbeitung": "recall (kernel.py:13201) + reduce_current_state + fate + Spiegel (Profil, Szene, Facts, witnessKnowledge, godFacts, Ziele/Foreground, constraintContext, knowledge/unknown, worldRules)",
+   "speicherung": "keine (writable False, kernel.py:14786, 14825)",
+   "wiederlesen": "-",
+   "entscheidung": "LLM-Brief render_persona_brief + state_keys (llm_contract.py:2348-2359)",
+   "folgewirkung": "Formulierung",
+   "frontend": "chat.$sessionId.tsx:418-422 setSpiegelStore/hintsFromPrepare (Debug)"
+  },
+  "ui_bedienung": "Debug/Spiegelanzeige",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "kernel.py:14278 – versteckter Inhaltsfilter: Welt-knowledgeLimits mit 'affäre|affare|unterschlag|vorstrafe|geldquelle' werden aus dem Unwissen-Feld entfernt (weltspezifische Wortliste, nicht bedienbar; Kettenvertrag §5)",
+   "kernel.py:14273-14276, 14280 – feste Unwissen-Sätze ohne kanonische Quelle",
+   "app.py:1789-1797 – im prepare-Lesepfad werden vor dem BrainContext Appraisal-Writes committed (_appraise_perceived); kein Verstoß des Spiegels selbst, aber prepare ist nicht schreibfrei"
+  ],
+  "abhaengig_von": [
+   "Recall/Memory",
+   "WitnessKnowledge",
+   "Current State (Bereich Szene)"
+  ],
+  "auswirkung_bestehender_fehler": "Figurenkontext enthält ungeprüfte Filterung; Unwissen wird nicht aus Kanon abgeleitet.",
+  "belege": [
+   "kernel.py:14781-14834 (codefluss)",
+   "kernel.py:14270-14288 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-25",
+  "funktion": "LLM-Grenze: Modell formuliert, Writer entscheiden",
+  "amaster": "§50 (Z.1877-1900)",
+  "soll": "LLM interpretiert und formuliert, besitzt keine Masterwahrheit; darf keine Fakten ersetzen, Authority überschreiben, Avatar steuern, Unmögliches als vollzogen behandeln oder unbelegte Behauptungen zu Weltwahrheit machen; Promptregeln ersetzen keine Writer (Z.1883-1900).",
+  "kettenvertrag": "§4 'LLM-Ausgaben als unvalidierter kanonischer Zustand' verboten; §12.1",
+  "sps_loesung": "V52 (app.py:2149-2152 Kommentar), V65I/V65V/V65W Effekt-/Grenzprüfungen, V92 P18/P19",
+  "owner": "Python app.kernel_commit (app.py:2005-2120): commit_turn(accept_llm_state=False) + _effect_check_step/_koerper_check_step/_statement_check_step; llm_contract.formulate_from_config commitsTruth False (llm_contract.py:2891)",
+  "owner_soll_nach_architektur": "Kernel-Validierung je Komponente; LLM nur Vorschläge",
+  "kette": {
+   "eingang": "Formulierung {speech, action, proposals}",
+   "verarbeitung": "Vorschläge (wirkung/emotion/beziehung/plan/aussagen) werden serverseitig neu gelesen/geprüft; accept_llm_state=False (app.py:2111); Avatar-Ausgabe abgelehnt (app.py:1990-1991)",
+   "speicherung": "nur validierte Komponenten über commit_turn",
+   "wiederlesen": "Folgeturn liest Facts",
+   "entscheidung": "Effekt-Autorisierung je Komponente",
+   "folgewirkung": "-",
+   "frontend": "Hinweis 'Kein LLM-Text: Antwort kam aus der lokalen Synapse' (chat.$sessionId.tsx:461-465)"
+  },
+  "ui_bedienung": "keine eigene",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "E2E mit echtem Modell nicht ausgeführt (BLOCKER: kein Provider in diesem Auftrag); synapse-lokal ist kein Modellbeleg"
+  ],
+  "abhaengig_von": [
+   "Komponentencommit (Bereich Turn)",
+   "Körper-/Effekt-Validatoren"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "app.py:2005-2120 (codefluss)",
+   "llm_contract.py:2844-2925 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-26",
+  "funktion": "Narrator (Atmosphäre/Übergänge) und Pipeline-Schalter 'Erzähler'/'Meta'",
+  "amaster": "§51.2 (Z.1910-1925)",
+  "soll": "Narrator beschreibt Atmosphäre, sichtbare Handlungen, Übergänge, ohne geheimes Wissen, Körperüberschreibung, Beziehungserfindung oder Darstellung ungecommitteter Handlungen.",
+  "kettenvertrag": "§4 'Renderer/Narrator/Finalizer: Darstellung, keine neue Wahrheit'; §1 'sichtbares Frontendfeld ohne echte Backendwirkung ist ROT'",
+  "sps_loesung": "SPS V66 I19 Z.1695 'TEIL ... nur indirekt geprüft'",
+  "owner": "keiner (kein Narrator-Generator); nur Eröffnungszeile role 'narrator' (kernel.py:10970, 12813-12815) und Beobachter-Fact kind 'narrator' (kernel.py:8315)",
+  "owner_soll_nach_architektur": "Narrator-Formulierung aus BrainContext, nur committete Handlungen",
+  "kette": {
+   "eingang": "chat.$sessionId.tsx:1260-1261 Schalter 'Meta' und 'Erzähler' -> patchPipeline -> saveSession (PUT /api/sessions)",
+   "verarbeitung": "FEHLT: pipeline.narrator/pipeline.meta werden im Backend nicht gelesen (grep)",
+   "speicherung": "sessions.json pipeline",
+   "wiederlesen": "FEHLT",
+   "entscheidung": "FEHLT",
+   "folgewirkung": "FEHLT",
+   "frontend": "Chip 'Erzähler' (chat.$sessionId.tsx:1341)"
+  },
+  "ui_bedienung": "Schalter 'Erzähler', 'Meta'",
+  "statischer_befund": "FEHLT_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "chat.$sessionId.tsx:1260-1261 – sichtbare Schalter ohne Backendreader (grep pipeline.narrator/meta in matrix_api: keine Treffer)",
+   "kein Narrator-Writer/-Formulierer im Kernel"
+  ],
+  "abhaengig_von": [
+   "A-24"
+  ],
+  "auswirkung_bestehender_fehler": "AutoChat-Narration (A-21) nicht möglich",
+  "belege": [
+   "chat.$sessionId.tsx:1259-1261 (codefluss)",
+   "grep 'narrator' matrix_api/*.py (codefluss)"
+  ]
+ },
+ {
+  "id": "A-27",
+  "funktion": "Finalizer (Form, Rollenreinheit, Wiederholung, KI-Floskeln, Meta)",
+  "amaster": "§51.3 (Z.1927-1940)",
+  "soll": "Finalizer prüft Form, Rollenreinheit, Wiederholung, Lesbarkeit und zulässige Darstellung, ohne Wahrheit umzuschreiben (Z.1929-1931).",
+  "kettenvertrag": "§4",
+  "sps_loesung": "SPS Z.5284 'Finalizer §51.3 (Probe mit gpt-4o-mini wirkungslos)' offen; V65 (llm_contract.py:1787-1789 Stilbeispiel-Hinweis)",
+  "owner": "Python llm_contract._clean_speech (llm_contract.py:170-176); Client finalizer.ts:3-30 (nicht eingebunden)",
+  "owner_soll_nach_architektur": "serverseitiger Finalizer nach Formulierung, vor Commit, ohne Wahrheitsänderung",
+  "kette": {
+   "eingang": "Modellantwort",
+   "verarbeitung": "_clean_speech entfernt 'Antwort:' und normalisiert Satzende; Wiederholung nur gezählt/geloggt (_log_formulation llm_contract.py:2803-2842)",
+   "speicherung": "-",
+   "wiederlesen": "-",
+   "entscheidung": "keine Prüfung auf Rollenreinheit/KI-Floskeln/Meta-Erklärung/Wiederholung",
+   "folgewirkung": "-",
+   "frontend": "keine"
+  },
+  "ui_bedienung": "keine",
+  "statischer_befund": "FEHLT_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "llm_contract.py:170-176 – einziger Finalizer-Schritt ist Formbereinigung",
+   "src/lib/matrix/finalizer.ts:3-30 – nur von llm.ts importiert, llm.ts wird nirgends importiert (grep) -> toter Code mit Wortlisten",
+   "llm_contract.py:2807 – Wiederholungszählung 'diagnosis only. It changes nothing.'"
+  ],
+  "abhaengig_von": [
+   "A-25"
+  ],
+  "auswirkung_bestehender_fehler": "Wiederholungsschleifen und Meta-/KI-Floskeln gelangen ungeprüft in Commit und Folgeturn.",
+  "belege": [
+   "llm_contract.py:170-176, 2803-2842 (codefluss)",
+   "src/lib/matrix/finalizer.ts, src/lib/matrix/llm.ts (codefluss, grep Importe)"
+  ]
+ },
+ {
+  "id": "A-28",
+  "funktion": "Renderer: Darstellung der committeten Turns",
+  "amaster": "§51.1 (Z.1906-1908)",
+  "soll": "Renderer stellt die Ausgabe lesbar dar.",
+  "kettenvertrag": "§4",
+  "sps_loesung": "V35 (chat.$sessionId.tsx:475 Kommentar)",
+  "owner": "Client chat.$sessionId.tsx:1510-1530 (visibleTurns) aus acceptKernelSession",
+  "owner_soll_nach_architektur": "Frontend aus Server-Session",
+  "kette": {
+   "eingang": "Kernel-Antwort session",
+   "verarbeitung": "applyKernel -> acceptKernelSession (store.ts:1029)",
+   "speicherung": "-",
+   "wiederlesen": "GET /api/sessions nach Write (chat.$sessionId.tsx:358-363)",
+   "entscheidung": "Meta-Darstellung für god/regie/narrator/fate (chat.$sessionId.tsx:1516)",
+   "folgewirkung": "-",
+   "frontend": "Chatverlauf"
+  },
+  "ui_bedienung": "Chat",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [],
+  "belege": [
+   "chat.$sessionId.tsx:1510-1530 (codefluss)"
+  ],
+  "abhaengig_von": [],
+  "auswirkung_bestehender_fehler": "keine bekannte"
+ },
+ {
+  "id": "A-29",
+  "funktion": "Sessionerfahrung -> Review-Vorschlag (Generator)",
+  "amaster": "§52 (Z.1946-1956)",
+  "soll": "Ein Review kann langfristige Charakterentwicklung, Stammwissen, Beziehungsausgangswerte, Weltfakten, Merkmale, dauerhafte Erinnerungen, Kanonerweiterungen vorschlagen (Z.1948-1956).",
+  "kettenvertrag": "§15 'Sessionerfahrung geht nur nach sichtbarem Review ... über'",
+  "sps_loesung": "V65K (SPS Z.3955 'Bewusst nicht gebaut: automatische Stammübernahme'), V56 learning.canonical_stem",
+  "owner": "keiner (create_review nur aus Profiler charakter.$charId.tsx:167, Weltseite welt.$worldId.tsx:305/320, Upload pipeline.py:37)",
+  "owner_soll_nach_architektur": "Review-Owner (reviews) mit Quelle Session/Fact",
+  "kette": {
+   "eingang": "FEHLT: kein Code erzeugt Reviews aus Session-Facts/Memories/Relations (grep create_review/addReview, sourceSessionId stets '' oder Upload-Session)",
+   "verarbeitung": "FEHLT",
+   "speicherung": "reviews (vorhanden)",
+   "wiederlesen": "review.tsx",
+   "entscheidung": "-",
+   "folgewirkung": "-",
+   "frontend": "review.tsx:33 'Keine Vorschläge. Turns können hierher schreiben' – Turns schreiben aber nicht"
+  },
+  "ui_bedienung": "keine Auslösung",
+  "statischer_befund": "FEHLT_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "kein Session->Review-Generator; review.tsx:33 UI-Text behauptet Turn-Vorschläge",
+   "repos.py:2649-2666 learn_into_character (direkter Stammwrite 'kein Review') ohne Aufrufer – Altpfad, Legacy-Ledger nur über canonical_stem gefiltert"
+  ],
+  "abhaengig_von": [
+   "Memory/Relationship-Owner"
+  ],
+  "auswirkung_bestehender_fehler": "§52-Kette beginnt nicht; einziger realer Session->Stamm-Weg ist der fehlerhafte God-Pfad A-02.",
+  "belege": [
+   "grep create_review/addReview (codefluss)",
+   "review.tsx:33 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-30",
+  "funktion": "Review-Anzeige und Entscheidung (annehmen/bearbeiten/ablehnen/nur Session)",
+  "amaster": "§52 (Z.1958-1975)",
+  "soll": "Nutzer sieht Quelle, betroffene Figur/Welt, bisherigen und vorgeschlagenen Wert, Begründung, Scope, mögliche Folgen; kann annehmen, bearbeiten, ablehnen oder sessionbezogen belassen; erst nach Freigabe Stammänderung (Z.1958-1975).",
+  "kettenvertrag": "§15; §5",
+  "sps_loesung": "V25 REV-01 (review.tsx:60-61, store.ts:1372-1374 Kommentar), SPS V66 G17 Z.1794 'TEIL'",
+  "owner": "Client review.tsx -> store.resolveReview (store.ts:1369) -> POST /api/reviews/<id>/resolve (app.py:1155) -> repos.resolve_review (repos.py:5267)",
+  "owner_soll_nach_architektur": "Review-Owner -> zuständiger Stamm-/Welt-Owner",
+  "kette": {
+   "eingang": "review.tsx:57-73 Buttons 'Annehmen' (mit bearbeitetem Wert), 'Nur Session', 'Ablehnen'",
+   "verarbeitung": "resolve_review: accepted -> spawn: create_character; stamm: patch_character (Listenfelder goals/fears/knowledge/coreFacts/typicalPhrases/taboos/values anhängen); world: patch_world (repos.py:5288-5434); 'session-only'/'rejected' nur Status",
+   "speicherung": "reviews.json status; characters/worlds",
+   "wiederlesen": "fetchOwnerPartial nach resolve (store.ts:1379)",
+   "entscheidung": "-",
+   "folgewirkung": "Stamm/Welt in neuen Sessions",
+   "frontend": "review.tsx:35-76 zeigt kind, status, field, alt, neu (editierbar), reason"
+  },
+  "ui_bedienung": "/review",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "review.tsx:35-54 – keine Anzeige von Quelle (sourceSessionId/sourceUploadId), betroffener Figur/Welt (Name), Scope und möglichen Folgen (AMASTER Z.1960-1966)",
+   "repos.py:5267-5287 – resolve_review prüft den bisherigen Status nicht (patch_review tut es, repos.py:5225-5226): erneutes 'accepted' wendet nochmals an (Spawn -> zweite Figur)",
+   "repos.py:5397-5409 – Stamm-Listenfelder außerhalb stamm_list_fields (secrets, likes, dislikes, favoriteWords, reactionRules, bindingPatterns, lastingAbilities, relations) werden mit dem Rohstring überschrieben",
+   "'session-only' hat keine Session-Wirkung (repos.py:5435-5437 nur Status)",
+   "charakter.$charId.tsx:174-175 – oldValue/newValue auf 400 Zeichen abgeschnitten, JSON-Listen können zerbrechen"
+  ],
+  "abhaengig_von": [
+   "Charakterstamm-Owner",
+   "Welt-Owner",
+   "A-29"
+  ],
+  "auswirkung_bestehender_fehler": "Freigaben können Stammfelder typwidrig überschreiben oder Figuren duplizieren; Nutzer entscheidet ohne Quelle/Scope.",
+  "belege": [
+   "review.tsx:1-82 (codefluss)",
+   "repos.py:5200-5437 (codefluss)",
+   "store.ts:1352-1385 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-31",
+  "funktion": "Altbestand learnedItems: Freigabe im Charakter-Tab 'Gelernt'",
+  "amaster": "§52 (Z.1946, Z.1975)",
+  "soll": "Sessionwerte werden erst nach Freigabe Stamm.",
+  "kettenvertrag": "§15",
+  "sps_loesung": "V56 (learning.canonical_stem, learning.py:194-229), V41 (repos.py:2650), SPS V65K Z.3936",
+  "owner": "Python learning.canonical_stem / approve_learned (learning.py:194-261) via patch_character approveLearned (repos.py:2617-2626)",
+  "owner_soll_nach_architektur": "Review-/Stammowner",
+  "kette": {
+   "eingang": "charakter.$charId.tsx:640-650 Button Freigabe -> patchCharacter({approveLearned})",
+   "verarbeitung": "approve_learned setzt status approved/scope stem",
+   "speicherung": "characters.json learnedItems",
+   "wiederlesen": "canonical_stem filtert nicht freigegebene Sessionwerte aus allen Lesern (kernel.py:3377, 3892, app.py-Rule-Pfad)",
+   "entscheidung": "Stammprojektion",
+   "folgewirkung": "neue Sessions",
+   "frontend": "Tab 'Gelernt' (charakter.$charId.tsx:321, 623-650)"
+  },
+  "ui_bedienung": "Tab 'Gelernt' im Charakter",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "zweiter, vom Review-Queue getrennter Freigabeweg ohne Quelle/Scope/Folgen-Anzeige (UNKLAR, Tab-Inhalt nicht vollständig geprüft)"
+  ],
+  "abhaengig_von": [
+   "A-30"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "learning.py:194-261 (codefluss)",
+   "repos.py:2614-2626 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-32",
+  "funktion": "Profiler: feldbezogener, quellengebundener Vorschlag -> Vorschau -> bewusstes Speichern",
+  "amaster": "§53 (Z.1979-1999)",
+  "soll": "Profiler erzeugt aus Material Vorschläge für einzelne Felder, quellengebunden, mit Vorschau und bewusstem Speichern; keine globale Neuberechnung, kein Autosave, keine Ableitung ohne Quelle (Z.1981-1999).",
+  "kettenvertrag": "§8 Charakterprofil; §5",
+  "sps_loesung": "SPS V66 G17 Z.1794 'Review/Profiler TEIL'",
+  "owner": "Client charakter.$charId.tsx suggest (125-163) -> POST /api/llm/profile (app.py:2360) -> llm_contract.suggest_profile_from_config (llm_contract.py:3158) -> saveProfilerReview -> addReview (kind stamm, status open) -> Review A-30",
+  "owner_soll_nach_architektur": "Profiler-Vorschlag ohne Write; Stammwrite nur über Review",
+  "kette": {
+   "eingang": "charakter.$charId.tsx:682 Feld-Select, Button Vorschlag",
+   "verarbeitung": "Provider: genau ein Feld mit status belegt/abgeleitet/unsicher (llm_contract.py:3213-3218); ohne Provider feste Generatoren '{name} spricht knapp und prüft die Lage.' (llm_contract.py:3173-3183)",
+   "speicherung": "reviews (open) über addReview (charakter.$charId.tsx:165-181)",
+   "wiederlesen": "review.tsx",
+   "entscheidung": "Annahme im Review",
+   "folgewirkung": "patch_character",
+   "frontend": "Vorschau alt/neu mit Quelle (charakter.$charId.tsx:700-708)"
+  },
+  "ui_bedienung": "Profiler-Block im Charakter (Feld wählen, Vorschlag, 'als Review speichern')",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "ROT",
+  "defekte": [
+   "charakter.$charId.tsx:131-135 – 'source' ist nur 'Weltname · Stamm Name' + world.short; kein Quellmaterial (EPUB/Upload) wird übergeben",
+   "llm_contract.py:3173-3183 – ohne Provider quellenlose Platzhalterwerte, die trotzdem als Review gespeichert werden können (charakter.$charId.tsx:148-149 nur Hinweis) -> 'Ableitung ohne Quelle' (Z.1998)",
+   "status belegt/abgeleitet wird nicht in die Review/fieldProvenance übernommen (saveProfilerReview charakter.$charId.tsx:167-178)"
+  ],
+  "abhaengig_von": [
+   "A-30",
+   "Upload/EPUB-Quelle (Bereich Upload)"
+  ],
+  "auswirkung_bestehender_fehler": "Stammfelder können mit generischen Platzhaltern gefüllt werden.",
+  "belege": [
+   "charakter.$charId.tsx:125-181, 682-708 (codefluss)",
+   "llm_contract.py:3158-3230 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-33",
+  "funktion": "Avatar-Negativgrenze in AutoChat/God/Regie (kein Avatar-Output)",
+  "amaster": "§48 (Z.1826 Nicht-Avatar), §47 (Z.1810), §50 (Z.1896)",
+  "soll": "System erzeugt nie Rede/Entscheidung/Handlung des Avatars; AutoChat wählt nur Nicht-Avatar-Figuren.",
+  "kettenvertrag": "§12.1 'Negativprüfung kein Avatar-Output/kein Avatar-Speaker-Fact ist Pflicht'",
+  "sps_loesung": "V92 avatar route (tests/test_v92_avatar_route.py), V65F (chat.$sessionId.tsx:366-369)",
+  "owner": "Python kernel.pick_speaker/rank_speakers Avatar-Ausschluss (kernel.py:11516-11517, 11648); app.kernel_prepare/commit AVATAR_NOT_SPEAKER (app.py:1595-1596, 1945-1946, 1972-1973); llm_contract.canonical_formulation_context (llm_contract.py:2753)",
+  "owner_soll_nach_architektur": "Kernel serverseitig",
+  "kette": {
+   "eingang": "AutoChat/God/Regie",
+   "verarbeitung": "Avatar nie Gate-Sprecher; Commit lehnt Avatar-Output ab; Regie bind_regie_components erhält avatar_id (kernel.py:10019-10020)",
+   "speicherung": "-",
+   "wiederlesen": "-",
+   "entscheidung": "Ablehnung 400",
+   "folgewirkung": "-",
+   "frontend": "Fehlermeldung"
+  },
+  "ui_bedienung": "keine eigene",
+  "statischer_befund": "KETTE_IM_CODE_GESCHLOSSEN",
+  "status": "TEILGESCHLOSSEN",
+  "defekte": [
+   "kernel.py:10573-10590 – God-Scope 'action' erlaubt den Avatar als Handelnden (cast enthält Avatar?) – UNKLAR, ob als 'vom Nutzer ausdrücklich gesetzter Vollzug' zulässig"
+  ],
+  "abhaengig_von": [
+   "Avatar-Bereich",
+   "A-17"
+  ],
+  "auswirkung_bestehender_fehler": "-",
+  "belege": [
+   "kernel.py:11512-11531, 11648 (codefluss)",
+   "app.py:1595-1596, 1938-1946, 1972-1973 (codefluss)"
+  ]
+ },
+ {
+  "id": "A-34",
+  "funktion": "Puppet-Turn und Folgereaktion",
+  "amaster": "§48 (Folgezug), §46.2-Abgrenzung",
+  "soll": "Puppet bindet eine Figur für genau diesen Turn und läuft durch dieselbe Komponenten-, Commit-, Wissens- und Folgeturnkette.",
+  "kettenvertrag": "§12.2 Puppet; §4 keine getrennte Kurzpipeline für Puppet",
+  "sps_loesung": "V65J (Kette C, kernel.py:12303-12309 Kommentar), V35 (chat.$sessionId.tsx:774-775), tests/test_v92_puppet_*.py",
+  "owner": "Python app.kernel_puppet (app.py:2930) -> kernel.bind_puppet_input (kernel.py:12207) -> kernel.commit_puppet (kernel.py:12289)",
+  "owner_soll_nach_architektur": "derselbe Commit-Writer wie normaler Turn",
+  "kette": {
+   "eingang": "chat.$sessionId.tsx:740-765 'Spreche als char:<id>' -> kernelPuppet",
+   "verarbeitung": "eigener Writer commit_puppet (nicht commit_turn), nutzt geteilte Helfer _apply_physical/_record_fact_witnesses/commit_session_change (kernel.py:12458, 12534, 12604)",
+   "speicherung": "save_session",
+   "wiederlesen": "Folgereaktion: puppetResponseEvidence -> Adressat oder Gate (chat.$sessionId.tsx:785-808)",
+   "entscheidung": "Gate bei unadressiert",
+   "folgewirkung": "runFigure autochat für Antwortende",
+   "frontend": "Puppet-Zeile + Antwort"
+  },
+  "ui_bedienung": "'Spreche als' Figur",
+  "statischer_befund": "LÜCKE_IM_CODE",
+  "status": "UNGEPRÜFT",
+  "defekte": [
+   "kernel.py:12289-12606 – eigener Commit-Writer statt commit_turn; z. B. _derive_fate läuft nur in commit_turn (kernel.py:9176-9188), nicht im Puppet-Turn (Detailprüfung Puppet-Bereich)"
+  ],
+  "abhaengig_von": [
+   "Puppet-Bereich",
+   "A-18"
+  ],
+  "auswirkung_bestehender_fehler": "Fate/weitere commit_turn-Schritte fehlen nach Puppet-Zeilen",
+  "belege": [
+   "kernel.py:12289-12606 (codefluss, grep)",
+   "app.py:2930-3130 (codefluss, Ausschnitt)"
+  ]
+ }
+]

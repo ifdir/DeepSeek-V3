@@ -1,0 +1,4 @@
+[vor Neustart] PU1_handlung_eigenes_subjekt: 
+[vor Neustart] PU2_anrede_gegen_ui_auswahl: 04 ROT UI-Ziel None statt char_g7_mara
+[vor Neustart] PU4_verneinung_mit_rede: 05 ROT HTTP 422 statt 200 | HTTP 422, Spur kp_1794076824270_444815: CONSENT_CHECK,KERNEL_BIND,SPR; 06 ROT keine Haupt-Facts/-Züge geschrieben (Commits der Hauptspur 0); 09 ROT fehlt: {'kind': 'speech', 'akteur': 'J', 'text': 'Hallo'} | Haupt-Facts: keine; 10 BLOCKIERT kein Wissen entstanden - Wissenskette nicht prüfbar; 13 ROT kein Haupt-Ereignis (Rede/Handlung) gespeichert; 14 ROT Oberfläche hat keinen Folgezug gespeichert (kein Commit); kein Folgezug einer Figur in SQL; 15 ROT kein Folgezug; 1
+GESAMT: ROT -> /home/claude/kp/V12/frisch/MATRIX10_PRUEFMASCHINE_V12/SELBSTABNAHME_LAUF_20261107_183415/P24/ERGEBNIS_LESEN.txt

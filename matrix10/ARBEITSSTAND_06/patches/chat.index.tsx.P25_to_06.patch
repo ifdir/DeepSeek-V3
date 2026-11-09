@@ -1,0 +1,83 @@
+--- a/src/routes/chat.index.tsx
++++ b/src/routes/chat.index.tsx
+@@ -1,9 +1,10 @@
+ import { createFileRoute, useNavigate } from "@tanstack/react-router";
+ import { confirmReset, refusalText } from "@/lib/matrix/confirm-reset";
+-import { useState } from "react";
++import { useEffect, useState } from "react";
+ import { Shell, Panel, Empty } from "@/components/shell";
+ import { Button, Select, Input } from "@/components/ui";
+-import { useHydrated } from "@/lib/matrix/use-hydrated";
++import { useHydrated, useMccReaderError } from "@/lib/matrix/use-hydrated";
++import { apiGetMcc } from "@/lib/matrix/api";
+ import { useSelectableWorlds } from "@/lib/matrix/use-selectable";
+ import { useMatrix } from "@/lib/matrix/store";
+ import { downloadJson } from "@/lib/matrix/normalize";
+@@ -13,6 +14,7 @@
+ function ChatGate() {
+   const nav = useNavigate();
+   const hydrated = useHydrated();
++  const readerError = useMccReaderError();   // Stand 06a (M3): the existing start reader's failure
+   const activeUserId = useMatrix((s) => s.activeUserId);
+   const sessions = useMatrix((s) => s.sessions);
+   const worlds = useSelectableWorlds();
+@@ -39,11 +41,39 @@
+   const [renameId, setRenameId] = useState("");
+   const [renameVal, setRenameVal] = useState("");
+   const [importErr, setImportErr] = useState<string | null>(null);
++  // Stand 06a (M3, AMASTER §65 "Fehler duerfen nicht verschluckt werden"): an empty list is shown as "Keine Session"
++  // only when the existing MCC reader CONFIRMS it; a failed read (e.g. 503 of the consent core) is a visible error.
++  const [leer, setLeer] = useState<{ status: "offen" | "leer" | "fehler"; fehler?: string }>({ status: "offen" });
++  useEffect(() => {
++    if (!hydrated || !activeUserId || mine.length > 0) return;
++    let aktiv = true;
++    setLeer({ status: "offen" });
++    apiGetMcc(activeUserId)
++      .then((m) => {
++        if (!aktiv) return;
++        const eigene = ((m.sessions as { userId?: string }[] | undefined) ?? []).filter((x) => x.userId === activeUserId);
++        setLeer(eigene.length === 0 ? { status: "leer" }
++          : { status: "fehler", fehler: `${eigene.length} Session(s) auf dem Server, aber hier nicht geladen - Seite neu laden.` });
++      })
++      .catch((err) => {
++        if (aktiv) setLeer({ status: "fehler", fehler: err instanceof Error ? err.message : String(err) });
++      });
++    return () => {
++      aktiv = false;
++    };
++  }, [hydrated, activeUserId, mine.length]);
++  const ladeFehler = readerError || (leer.status === "fehler" ? leer.fehler || "unbekannt" : null);
+ 
+   if (!hydrated) {
+     return (
+       <Shell title="Chat">
+-        <p className="text-sm text-muted">Lädt…</p>
++        {readerError ? (
++          <p className="text-sm text-danger" role="alert" data-testid="sessions-load-error">
++            Sessions konnten nicht geladen werden – technischer Fehler, keine leere Liste: {readerError}
++          </p>
++        ) : (
++          <p className="text-sm text-muted">Lädt…</p>
++        )}
+       </Shell>
+     );
+   }
+@@ -62,7 +92,17 @@
+             })()}
+           </p>
+         ) : null}
+-        {mine.length === 0 ? <Empty>Keine Session. Unten anlegen — Welt muss ausdrücklich gewählt werden.</Empty> : null}
++        {ladeFehler ? (
++          <p className="mb-2 text-sm text-danger" role="alert" data-testid="sessions-load-error">
++            Sessions konnten nicht geladen werden – technischer Fehler, keine leere Liste: {ladeFehler}
++          </p>
++        ) : mine.length === 0 ? (
++          leer.status === "leer" || !activeUserId ? (
++            <Empty>Keine Session. Unten anlegen — Welt muss ausdrücklich gewählt werden.</Empty>
++          ) : (
++            <p className="text-sm text-muted">Sessions werden geprüft…</p>
++          )
++        ) : null}
+         <ul className="space-y-2">
+           {mine.map((s) => (
+             <li key={s.id} className="rounded-[12px] border border-border bg-bg px-3 py-2">

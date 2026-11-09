@@ -1,0 +1,9 @@
+Original-DB vor/nach allen Läufen (SHA-256):
+e03dc44584db8b990abf62d6d1ae949e149268048b88686db2496e1361186f97  /home/claude/rep91_data_aside/matrix10.sqlite
+e03dc44584db8b990abf62d6d1ae949e149268048b88686db2496e1361186f97  /home/claude/rep91_data_aside/matrix10.sqlite
+
+Werkzeug-ZIP der Selbstabnahme:
+21e86d073a0ad558f6e24c361226b82365e884562482b5c265827cc5e8f3dcbd  WERKZEUG_V12.zip
+
+Abnahme-Manifest:
+9e145601cf594f5876b86f9129549c8210316121dad000ce434207879699b354  frisch/MATRIX10_PRUEFMASCHINE_V12/ABNAHME_V12.json

@@ -1,0 +1,18 @@
+--- a/src/lib/matrix/api.ts
++++ b/src/lib/matrix/api.ts
+@@ -166,7 +166,14 @@
+ 
+ export async function apiGetMcc(actor?: string): Promise<Record<string, unknown>> {
+   const r = await fetch("/api/mcc", { headers: { ...actorHeader(actor) } });
+-  if (!r.ok) throw new Error(`GET /api/mcc ${r.status}`);
++  if (!r.ok) {
++    // Stand 06a (M3): keep the server's code and message readable, like apiJson - a 503 of the consent core is a
++    // technical failure and must be shown as such, never as an empty data set.
++    const data = (await r.json().catch(() => ({}))) as { error?: string; message?: string; code?: string };
++    const code = data.code || data.error || "HTTP_ERROR";
++    const reason = data.message && data.message !== code ? `${code}: ${data.message}` : code;
++    throw Object.assign(new Error(`GET /api/mcc ${r.status} ${reason}`), { body: data, status: r.status });
++  }
+   return r.json();
+ }
+ 

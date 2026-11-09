@@ -1,0 +1,3 @@
+2 P2_neuladen_chat:ok
+P2_senden:ok
+api 200 POST /api/kernel/prepare  ; 200 POST /api/llm/formulate  ; 200 POST /api/kernel/commit 

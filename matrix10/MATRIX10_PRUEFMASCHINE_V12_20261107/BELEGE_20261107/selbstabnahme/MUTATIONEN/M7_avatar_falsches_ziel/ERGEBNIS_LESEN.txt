@@ -1,0 +1,33 @@
+MATRIX10 KETTENPRÜFER V1.2
+============================================================
+GESAMT: ROT
+Kandidat: 25e137c2-MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107.zip  SHA-256 33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1
+Modell: wiedergabe   Mutation: M7_avatar_falsches_ziel   Fälle: AV1_frage_und_antwort
+
+Vorbereitung soll_2_7master.txt: GRUEN
+Vorbereitung soll_MATRIX10_SPS_MASTER.md: GRUEN
+Vorbereitung soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt: GRUEN
+Vorbereitung mutation: angewendet: M7_avatar_falsches_ziel (Die Avatar-Eingabe wird mit einem falschen Adressaten (andere anwesende Figur) gespeichert.)
+Vorbereitung frontend: GRUEN: frisch gebaut (node_modules aus Cache mit gleichem package-lock), Kennung MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103
+
+[ROT] AV1_frage_und_antwort (Avatar (§12.1), positiv): Mara, wie geht es dir?
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: Die Frage des Avatars ist seine Rede an die Angesprochene; sie antwortet und kennt die Frage. 2_7master Z.1376-1389 (§27.3), Z.131, Z.1329.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_05 geöffnet; Modus-Reiter: Avatar; Spreche als: Avatar; Direktes Ziel: char_g7_mara; Senden: Mara, wie geht es dir?; Seite neu geladen
+   04 GRUEN            Gesendete IDs, Rolle, Modus, Actor, Target, Scope: Route /api/kernel/prepare, Sitzung ses_kp_fall_05, Figur char_g7_mara, UI-Ziel char_g7_mara, Text gleich
+   05 GRUEN            Backendroute und erste serverseitige Bindung: HTTP 200, Spur kpr_1794077373686_47745: APPRAISAL,BRAIN_CONTEXT,EFFECT_PLAN,GOAL_THEME,KERNEL_BIND,KOERPER_CHECK,MODEL_REPLY,OUTPUT,PROMPT,READER,SQLITE_COMMIT,TARGET_BIND,TURN_END,TURN_INPUT,TURN_RES, Meldung: 
+   06 GRUEN            Kanonischer Owner und Writer: Writer: 1 Haupt-Facts, Commit 34 in Spur kpr_1794077373686_47745 (INPUT_COMMITTED,PASS)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 3 Facts, 3 Züge, anwesend ['char_g7_gustav', 'char_g7_mara', 'char_g7_johann'], Ort schankraum
+   09 ROT              Erzeugte Fact-IDs und ihr Inhalt: speech an ['char_g7_clara'] statt char_g7_mara | Haupt-Facts: speech/char_g7_johann/Mara, wie geht es dir?→char_g7_clara
+   10 GRUEN            Wissensverteilung und Unwissende: 3 Facts, 9 neue Zeugenwissen: Zeugen anwesend und wahrnehmend, Abwesende ['char_g7_clara', 'char_g7_robert'] ohne Wissen
+   11 GRUEN            Runtime-/Körper-/Szenenfolgen: Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 3 von 3 neuen Facts gleich; ok
+   13 GRUEN            BrainContext im Folgezug: Spur kpr_1794077373686_47745: Sprecher char_g7_mara (Mara Nowak), Sitzung gebunden, Zeugenwissen vorhanden, PROMPT nach Hauptcommit enthält ['mara, wie geht es dir']
+   14 GRUEN            Sichtbare Antwort und Komponentencommit: Folgezug von ['char_g7_mara']: Modellantwort und Commit in Spur kpr_1794077373686_47745
+   15 GRUEN            Zustand im Folgezug: Folgezug-Sprecher ['char_g7_mara'] anwesend und sprechfähig, Haupt-Facts erhalten
+   16 GRUEN            Reload/Neustart: nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt
+   17 GRUEN            Sichtbare UI-Rückanzeige: Verlauf nach Neuladen stimmt; Meldungen: ['keine']
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut
+   20 ROT              Status mit Begründung: 09 Erzeugte Fact-IDs und ihr Inhalt: speech an ['char_g7_clara'] statt char_g7_mara | Haupt-Facts: speech/char_g7_johann/Mara, wie geht es dir?→char_g7_clara

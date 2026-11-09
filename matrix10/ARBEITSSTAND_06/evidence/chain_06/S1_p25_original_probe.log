@@ -1,0 +1,11 @@
+ROT C04_FREMDER_GIVER  | write f2: SOLL REJECT, IST OK ; state: SOLL declined, IST accepted ; act_consent a3: SOLL declined, IST accepted
+ROT C04_ABGELAUFENE_BREITE_ZUSTIMMUNG  | state: SOLL declined, IST None
+ROT C04_ABGELAUFENE_EINZELABLEHNUNG  | perms: SOLL ['rechte Hand'], IST []
+ROT C04_ABGELAUFENE_EINZELZUSTIMMUNG  | refs: SOLL ['rechte Hand'], IST []
+ROT S05_WIDERRUF_DER_AUSNAHME  | state: SOLL declined, IST None ; perms: SOLL [], IST ['rechte Hand'] ; act_consent a5: SOLL declined, IST accepted ; act_consent a6: SOLL declined, IST unknown
+OK  S05_ANDERE_STELLE
+ROT W2_ACTOR_NICHT_SPRECHER  | write f1: SOLL REJECT, IST OK
+ROT W3_OHNE_PROPOSITION  | write f1: SOLL REJECT, IST OK
+OK  K_DRITTER_SPRECHER
+OK  K_GUELTIGE_ABLEHNUNG
+SOLL erfuellt 3/10

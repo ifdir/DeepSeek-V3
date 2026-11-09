@@ -1,0 +1,51 @@
+[PASS] 00_pruefmaschine_abgenommen: Abnahme V1.2, 18 Dateien unverändert
+[PASS] 00_basis_eingefroren: P22-Basis unverändert (Hash)
+[PASS] 01_zip: SHA-256 33a51497ce5e84fa, 273 Einträge, CRC und Pfade in Ordnung
+[PASS] 02_soll_2_7master.txt: eingefroren 095d455460390dfd…
+[PASS] 02_soll_MATRIX10_SPS_MASTER.md: eingefroren 1f0cb05dc1d7fc9a…
+[PASS] 02_soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt: eingefroren e62cf6bc606a13a7…
+[BLOCKIERT] 03_quellenregister: Kettenvertrag §0 nennt AMASTERv2.md(1).txt (fb4f2015…) und Matrix10.txt (1465980a…); beide liegen nicht vor. Verwendet werden 2_7master.txt, MATRIX10_SPS_MASTER.md und der Kettenvertrag selbst. Diese Abweichung ist KEIN gleichwertiger Ersatz und gilt erst nach Bestätigung durch den Vertragseigner (A
+[PASS] 04_frontend_bau: gebaut, Kennung MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103
+[ROT] 05_typecheck_regression: TypeScript-Fehler 606 (Basis P22 605): neu 1, behoben 0 | neu: src/routes/chat.$sessionId.tsx: error TS2352: Conversion of type '{ ok: boolean; session: Record<string, unknown>; }' to type '{ session?: (Session & { pendingInput?: PendingInputView | null | undefined; }) | undefined; }' may be a mista
+[ROT] 05_typecheck_gesamt: 606 TypeScript-Fehler insgesamt (Altlast zählt für die Freigabe)
+[PASS] 06_python_suite: 448 Tests gelaufen, Exitcode 1, keine Sammelabbrüche
+[ROT] 06_regression_neu_rot: neu rot gegenüber P22: 3 – tests.test_v92_p22_component_art_and_name_gate.P22NameGate::test_puppet_route_passes_authenticated_actor_id_not_name_lookup; tests.test_v92_puppet_vertrag.PuppetRouteChain::test_denied_act_with_real_speech_stores_only_the_speech; tests.test_v92_puppet_vertrag.PuppetRouteCh
+[PASS] 06_wieder_gruen: wieder grün gegenüber P22: 0
+[ROT] 06_unveraendert_rot: unverändert rot seit P22: 9 – tests.test_v88_build_kette.ShippedBrowserBuildContract::test_entrypoints_share_v88_and_sqlite_is_not_bundled; tests.test_v92_p13_identitaet.P13AvatarRoute::test_avatar_unknown_full_name_target_and_referents; tests.test_v92_p13_identitaet.P13PuppetRoute::test_n1_n2_live_
+[PASS] 07_kette_AV1_frage_und_antwort: alle 20 Glieder belegt
+[PASS] 07_kette_AV2_fremde_rede_im_avatar: alle 20 Glieder belegt
+[PASS] 07_kette_PU1_handlung_eigenes_subjekt: alle 20 Glieder belegt
+[ROT] 07_kette_PU2_anrede_gegen_ui_auswahl: Glied 04: UI-Ziel None statt char_g7_mara
+[PASS] 07_kette_PU3_fremde_rede_abgelehnt: alle 20 Glieder belegt
+[PASS] 07_kette_PU4_verneinung_mit_rede: alle 20 Glieder belegt
+[ROT] 07_kette_RE1_figur_verlaesst_raum: Glied 10: Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'Gustav steht auf und geht in d'; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu ; Glied 11: char_g7_johann anwesend in Szene 'Küche', Position aber 'Schankraum'; char_g7_mara anwesend in Szene 'Küche', Position aber 'Schankraum'
+[PASS] 07_kette_RE2_unbekannte_figur: alle 20 Glieder belegt
+[ROT] 07_kette_GO1_bewusstlos: Glied 10: char_g7_mara bezeugt 'Man hört so einiges hier, nich', nimmt aber nicht wahr (Bewusstsein 0.2); char_g7_mara bezeugt 'Lehnt sich leicht nach
+[PASS] 07_kette_GO2_verneinter_zustand: alle 20 Glieder belegt
+[PASS] 07_kettenpruefer_lauf: Lauf echt (ZIP-, Prüfer-, Katalog-Hash), Rückgabecode 2 = ROT, alle 10 Pflichtfälle genau einmal
+[ROT] 08_vorbefund_R-1: offen: Regie-Ortswechsel: Szene zieht um, Zurückbleibende bleiben in der Anwesenheitsliste (Beweisfall nicht grün)
+[ROT] 08_vorbefund_G-5: offen: God-Vollzug nach AMASTER offen (Umfang nicht durch GO1/GO2 abgedeckt) (Beweisfall fehlt)
+[ROT] 08_vorbefund_E-1: offen: Einwilligungs-/Grenzenkette offen (Beweisfall fehlt)
+[ROT] 08_vorbefund_S-1: offen: Alte Sessions ungeklärt (Beweisfall fehlt)
+[ROT] 08_vorbefund_god_extract-Wortliste: offen: Vertragsprüfung der Wortliste offen (Beweisfall fehlt)
+[ROT] 08_vorbefund_D-Fehlermeldung: offen: Inhalt der Fehlermeldung bei Fremdrede (Fälle prüfen nur, dass eine Meldung erscheint) (Beweisfall fehlt)
+[ROT] 08_vorbefund_8-alte-Vertragstests: offen: werden über 06_unveraendert_rot gegen die P22-Basis gezählt (Beweisfall fehlt)
+[UNGEPRUEFT] 09_achse_EPUB zu Welt (§7): Pflichtfälle keine: UNGEPRUEFT
+[UNGEPRUEFT] 09_achse_Charakterprofil und Spawn (§8): Pflichtfälle keine: UNGEPRUEFT
+[UNGEPRUEFT] 09_achse_Normale Session/Scene/Turn (§9): Pflichtfälle keine: UNGEPRUEFT
+[UNGEPRUEFT] 09_achse_Wissen, Memory, psychologische Wirkung (§10): Pflichtfälle keine: UNGEPRUEFT
+[UNGEPRUEFT] 09_achse_Relationship, Runtime, Koerper (§11): Pflichtfälle keine: UNGEPRUEFT
+[PASS] 09_achse_Avatar (§12.1): Pflichtfälle ['AV1_frage_und_antwort', 'AV2_fremde_rede_im_avatar']: GRUEN
+[ROT] 09_achse_Puppet (§12.2): Pflichtfälle ['PU1_handlung_eigenes_subjekt', 'PU2_anrede_gegen_ui_auswahl', 'PU3_fremde_rede_abgelehnt', 'PU4_verneinung_mit_rede']: ROT
+[ROT] 09_achse_Regie (§12.3): Pflichtfälle ['RE1_figur_verlaesst_raum', 'RE2_unbekannte_figur']: ROT
+[ROT] 09_achse_God (§12.4): Pflichtfälle ['GO1_bewusstlos', 'GO2_verneinter_zustand']: ROT
+[UNGEPRUEFT] 09_achse_Fate (§12.5): Pflichtfälle keine: UNGEPRUEFT
+[UNGEPRUEFT] 09_achse_AutoChat (§12.6): Pflichtfälle keine: UNGEPRUEFT
+[UNGEPRUEFT] 09_achse_Upload Modus A (§13): Pflichtfälle keine: UNGEPRUEFT
+[UNGEPRUEFT] 09_achse_Upload Modus B (§13): Pflichtfälle keine: UNGEPRUEFT
+[UNGEPRUEFT] 09_achse_Provider, Modell und Konfiguration (§14): Pflichtfälle keine: UNGEPRUEFT
+[UNGEPRUEFT] 09_achse_Reset, Snapshot, Backup, Review, Isolation (§15): Pflichtfälle keine: UNGEPRUEFT
+[UNGEPRUEFT] 09_achse_Frontend-Backend-Bidirektionalitaet (§5): Pflichtfälle keine: UNGEPRUEFT
+[PASS] 10_pruefmaschine_unveraendert: Maschine nach dem Lauf unverändert
+GESAMTSTATUS: ROT -> /home/claude/kp/V12/frisch/MATRIX10_PRUEFMASCHINE_V12/ERGEBNIS_V12_20261107_185349/ERGEBNIS_LESEN.txt
+exit=2

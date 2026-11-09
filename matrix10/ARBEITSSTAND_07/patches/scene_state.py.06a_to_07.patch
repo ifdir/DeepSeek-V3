@@ -1,0 +1,28 @@
+--- basis_06a/matrix_api/scene_state.py
++++ stand_07/matrix_api/scene_state.py
+@@ -241,6 +241,25 @@
+     actor = str(f.get("actorId") or f.get("actor_id") or "")
+     if not actor:
+         return False
++    _rid = str(f.get("responds_to_fact_id") or f.get("respondsToFactId") or "")
++    if _rid:
++        # Stand 07 / K-01 (W2; AMASTER §34, §36.3): the answer's evidence is the actor's own utterance or act. A lifecycle
++        # fact whose evidence is another figure's line (P25 positional binding) is not the actor's answer - also for
++        # stored rows. A fact that names no evidence keeps the P25 rule (unchanged reader for older rows).
++        _ev = next((x for x in (session or {}).get("facts") or [] if isinstance(x, dict) and str(x.get("id") or "") == _rid), None)
++        if _ev is not None and str(_ev.get("actorId") or _ev.get("actor_id") or "") != actor:
++            return False
++    else:
++        # Without a named evidence fact the answer belongs to its Quellturn: there the actor must be a party of the turn -
++        # its figure speaker, its input actor (Avatar / operator input) or its puppet figure. NOT "actor == speaker": the
++        # Avatar answers in a turn whose response speaker is another figure. A row naming no Quellturn keeps the P25 rule.
++        _st = str(f.get("sourceTurnId") or f.get("source_turn_id") or "")
++        _tt = next((x for x in (session or {}).get("turnTruths") or [] if isinstance(x, dict) and str(x.get("id") or "") == _st), None) if _st else None
++        if _tt is not None:
++            _parteien = {str(_tt.get(k) or "") for k in ("speaker_id", "speakerId", "input_actor_id", "inputActorId",
++                                                         "puppet_id", "puppetId", "response_speaker_id")} - {""}
++            if actor not in _parteien:
++                return False
+     props = {str(p.get("id")): p for p in (session or {}).get("propositions") or [] if isinstance(p, dict) and p.get("id")}
+     if _kk and pid in props and props[pid].get("kind") == "koerperkontakt":
+         # Stand 06 (W1; AMASTER §36.2 "die antwortende Figur der berechtigte Empfaenger", §36.3 "Sprecher und Empfaenger

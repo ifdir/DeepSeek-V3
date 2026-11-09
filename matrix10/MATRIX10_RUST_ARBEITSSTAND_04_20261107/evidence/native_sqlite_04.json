@@ -1,0 +1,6 @@
+{
+  "status": "BLOCKIERT",
+  "reason": "No compiled Rust library; no native code executed",
+  "tests_executed": 0,
+  "product_release": false
+}

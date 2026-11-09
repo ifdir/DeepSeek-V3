@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "paketdatei": "MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107.zip",
+  "paket_sha256": "33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1",
+  "aktuelle_sollquellen": [
+    {
+      "pfad": "2_7master.txt",
+      "sha256": "095d455460390dfd0ae46e6938126e44a51293461d070204358d301f00609a7f"
+    },
+    {
+      "pfad": "MATRIX10_SPS_MASTER.md",
+      "sha256": "1f0cb05dc1d7fc9afccd0e14a9e851d9340f9bbf56fe9ee8e8f0ddc46363969d"
+    },
+    {
+      "pfad": "VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt",
+      "sha256": "e62cf6bc606a13a72044ab135697e209f7cb0bcfbc0a2b36ff7e1f153bf290bd"
+    }
+  ],
+  "vertrag_normreferenzen": [
+    {
+      "pfad": "AMASTERv2.md(1).txt",
+      "sha256": "fb4f2015783dafe9474ee77d26b23fafb7c2c76a1c6ba923727f3aaedba5721d"
+    },
+    {
+      "pfad": "Matrix10.txt",
+      "sha256": "1465980a0675a36b3143175c216048dae04d615c9e174d5821a8a2bb94917bc8"
+    }
+  ],
+  "epub_testdatei": "Swift_Die-mustergueltige-Ehefrau-(Ein_9798341511293.epub",
+  "epub_sha256": "32cf5c85010f448ee3257e3146d731f96ea400bce9a02ed7216372cd73c18c2a",
+  "pflichtachsen": [
+    "EPUB zu Welt (§7)",
+    "Charakterprofil und Spawn (§8)",
+    "Normale Session/Scene/Turn (§9)",
+    "Wissen, Memory, psychologische Wirkung (§10)",
+    "Relationship, Runtime, Koerper (§11)",
+    "Avatar (§12.1)",
+    "Puppet (§12.2)",
+    "Regie (§12.3)",
+    "God (§12.4)",
+    "Fate (§12.5)",
+    "AutoChat (§12.6)",
+    "Upload Modus A (§13)",
+    "Upload Modus B (§13)",
+    "Provider, Modell und Konfiguration (§14)",
+    "Reset, Snapshot, Backup, Review, Isolation (§15)",
+    "Frontend-Backend-Bidirektionalitaet (§5)"
+  ],
+  "offene_vorbefunde": [
+    {
+      "id": "G-5",
+      "quelle": "P25_PRUEFBERICHT.md",
+      "hinweis": "God-Vollzug nach AMASTER noch offen"
+    },
+    {
+      "id": "E-1",
+      "quelle": "P25_PRUEFBERICHT.md",
+      "hinweis": "Einwilligungs-/Grenzenkette offen"
+    },
+    {
+      "id": "S-1",
+      "quelle": "P25_PRUEFBERICHT.md",
+      "hinweis": "Alte Sessions ungeklärt"
+    },
+    {
+      "id": "R-1",
+      "quelle": "P25_PRUEFBERICHT.md",
+      "hinweis": "Regie-Ortswechsel offener Befund"
+    },
+    {
+      "id": "8 alte Vertragstests",
+      "quelle": "P25_PRUEFBERICHT.md",
+      "hinweis": "Nicht bestanden oder ungeklärt; keine Neubewertung durch Quelltexttest"
+    },
+    {
+      "id": "god_extract-Wortliste",
+      "quelle": "P25_PRUEFBERICHT.md",
+      "hinweis": "Vertragspruefung offen"
+    },
+    {
+      "id": "D - Fehlermeldung",
+      "quelle": "P25_PRUEFBERICHT.md",
+      "hinweis": "Fehlermeldung Fremdrede weiter offen"
+    }
+  ]
+}

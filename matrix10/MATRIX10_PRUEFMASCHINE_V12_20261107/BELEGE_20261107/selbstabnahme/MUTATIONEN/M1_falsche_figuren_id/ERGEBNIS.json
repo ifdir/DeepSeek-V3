@@ -1,0 +1,479 @@
+{
+ "pruefer": "MATRIX10_KETTENPRUEFER_V12",
+ "zeit_utc": "2026-11-07T18:41:10.844000+00:00",
+ "modus": "wiedergabe",
+ "mutation": "M1_falsche_figuren_id",
+ "basis": {
+  "zip": "25e137c2-MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107.zip",
+  "zip_sha": "33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1",
+  "db_sha": "e03dc44584db8b990abf62d6d1ae949e149268048b88686db2496e1361186f97",
+  "faelle_sha": "fd352b89881c44c331804960f17db255f9afdf2511a90f46da8f20f20c10c11d",
+  "pruefer_sha": "fd3583d71869c8a6dfe80ca4fb6dae53d08ca8d108f612c468fe7d9e655f62c3",
+  "auswertung_sha": "3b9c618935478cc7d4df1bb4fa0848bb5debad24dde8db7116f1f516e4c49039",
+  "original_db_unveraendert": true
+ },
+ "angefordert": [
+  "PU1_handlung_eigenes_subjekt",
+  "PU2_anrede_gegen_ui_auswahl"
+ ],
+ "faelle": [
+  {
+   "id": "PU1_handlung_eigenes_subjekt",
+   "achse": "Puppet (§12.2)",
+   "art": "positiv",
+   "text": "Johann trinkt sein Bier aus.",
+   "sessionId": "ses_kp_fall_01",
+   "modell": {
+    "anfragen": 4,
+    "treffer": 4,
+    "fehlgriffe": 0,
+    "weitergeleitet": 0,
+    "upstream_fehler": 0,
+    "fehlgriffe_vor_hauptcommit": 0
+   },
+   "glieder": [
+    {
+     "glied": 1,
+     "name": "SOLL-Vertrag und konkrete Erwartung",
+     "status": "GRUEN",
+     "beleg": "Eigene Handlung der geführten Figur wird als Handlung mit ihrer ID gespeichert; alle anwesenden Wahrnehmungsfähigen werden Zeugen; die Folgezug-Figur erhält das Ereignis. 2_7master Z.65, Z.1327, Z.1329, Z.222; Kettenvertrag §1, §16."
+    },
+    {
+     "glied": 2,
+     "name": "Ausgangs-ZIP, Hash und Datenbank",
+     "status": "GRUEN",
+     "beleg": "ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)"
+    },
+    {
+     "glied": 3,
+     "name": "Reale UI-Bedienung",
+     "status": "GRUEN",
+     "beleg": "Profil gewählt, Chat ses_kp_fall_01 geöffnet; Spreche als: Puppet char_g7_johann; Senden: Johann trinkt sein Bier aus.; Seite neu geladen"
+    },
+    {
+     "glied": 4,
+     "name": "Gesendete IDs, Rolle, Modus, Actor, Target, Scope",
+     "status": "GRUEN",
+     "beleg": "Route /api/kernel/puppet, Sitzung ses_kp_fall_01, Figur char_g7_johann, UI-Ziel None, Text gleich"
+    },
+    {
+     "glied": 5,
+     "name": "Backendroute und erste serverseitige Bindung",
+     "status": "GRUEN",
+     "beleg": "HTTP 200, Spur kp_1794076889552_54796: KERNEL_BIND,OUTPUT,READER,SQLITE_COMMIT,TARGET_BIND,TURN_END,TURN_INPUT,TURN_START,UI_REQUEST,VALIDATION,WRITER, Meldung: "
+    },
+    {
+     "glied": 6,
+     "name": "Kanonischer Owner und Writer",
+     "status": "GRUEN",
+     "beleg": "Writer: 1 Haupt-Facts, Commit 37 in Spur kp_1794076889552_54796 (PASS)"
+    },
+    {
+     "glied": 7,
+     "name": "Zustand vor dem Write",
+     "status": "GRUEN",
+     "beleg": "vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)"
+    },
+    {
+     "glied": 8,
+     "name": "Zustand nach dem Write",
+     "status": "GRUEN",
+     "beleg": "nachher: 1 Facts, 2 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum"
+    },
+    {
+     "glied": 9,
+     "name": "Erzeugte Fact-IDs und ihr Inhalt",
+     "status": "ROT",
+     "beleg": "fehlt: {'kind': 'action', 'akteur': 'J', 'text': 'Bier aus'} | Haupt-Facts: action/char_g7_gustav/trinkt sein Bier aus→None"
+    },
+    {
+     "glied": 10,
+     "name": "Wissensverteilung und Unwissende",
+     "status": "GRUEN",
+     "beleg": "1 Facts, 3 neue Zeugenwissen: Zeugen anwesend und wahrnehmend, Abwesende ['char_g7_clara', 'char_g7_robert'] ohne Wissen"
+    },
+    {
+     "glied": 11,
+     "name": "Runtime-/Körper-/Szenenfolgen",
+     "status": "GRUEN",
+     "beleg": "Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)"
+    },
+    {
+     "glied": 12,
+     "name": "Zuständiger Reader",
+     "status": "GRUEN",
+     "beleg": "GET /api/sessions: HTTP 200, 1 von 1 neuen Facts gleich; ok"
+    },
+    {
+     "glied": 13,
+     "name": "BrainContext im Folgezug",
+     "status": "ROT",
+     "beleg": "kein gespeicherter Folgezug einer Figur"
+    },
+    {
+     "glied": 14,
+     "name": "Sichtbare Antwort und Komponentencommit",
+     "status": "ROT",
+     "beleg": "Oberfläche hat keinen Folgezug gespeichert (kein Folgezug-Aufruf binnen 20 s nach der Hauptantwort); kein Folgezug einer Figur in SQLite; Spur des Folgezugs nicht eindeutig (0); keine fehlerfreie Modellantwort (MODEL_REPLY source=llm) in der Folgezug-Spur; kein SQLITE_COMMIT PASS in der Folgezug-Spur"
+    },
+    {
+     "glied": 15,
+     "name": "Zustand im Folgezug",
+     "status": "ROT",
+     "beleg": "kein Folgezug"
+    },
+    {
+     "glied": 16,
+     "name": "Reload/Neustart",
+     "status": "GRUEN",
+     "beleg": "nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt"
+    },
+    {
+     "glied": 17,
+     "name": "Sichtbare UI-Rückanzeige",
+     "status": "GRUEN",
+     "beleg": "Verlauf nach Neuladen stimmt; Meldungen: ['Puppet: Keine Rede oder Handlung vollzogen. Kein Folgezug gestartet.', 'Nicht alles aus deiner Eingabe wurde als Ereignis gespeichert: „trinkt sein Bier aus“ – Die Wirkung der Handlung ist unklar.']"
+    },
+    {
+     "glied": 18,
+     "name": "Negative Isolation",
+     "status": "GRUEN",
+     "beleg": "andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert"
+    },
+    {
+     "glied": 19,
+     "name": "Prüfung am frisch entpackten ZIP",
+     "status": "GRUEN",
+     "beleg": "Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut"
+    },
+    {
+     "glied": 20,
+     "name": "Status mit Begründung",
+     "status": "ROT",
+     "beleg": "09 Erzeugte Fact-IDs und ihr Inhalt: fehlt: {'kind': 'action', 'akteur': 'J', 'text': 'Bier aus'} | Haupt-Facts: action/char_g7_gustav/trinkt sein Bier aus→None | 13 BrainContext im Folgezug: kein gespeicherter Folgezug einer Figur | 14 Sichtbare Antwort und Komponentencommit: Oberfläche hat keinen Folgezug gespeichert (kein Folgezug-Aufruf binnen 20 s nach der Hauptantwort); kein Folgezug einer Figur in SQLite; Spur des Folgezugs nicht eindeutig (0); keine fehlerfreie Modellantwort (MODEL_REPLY source=llm) in der Folgezug-Spur; kein SQLITE_COMMIT PASS in der Folgezug-Spur | 15 Zustand im Folgezug: kein Folgezug"
+    }
+   ],
+   "neue_fact_ids": [
+    "fact_1a1b750d209_e75494e3001c"
+   ],
+   "haupt_status": 200,
+   "beleg": {
+    "neue_facts": [
+     {
+      "commit": 37,
+      "kind": "action",
+      "actor": "char_g7_gustav",
+      "target": null,
+      "text": "trinkt sein Bier aus",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_gustav",
+       "char_g7_johann",
+       "char_g7_mara"
+      ],
+      "betroffen": []
+     }
+    ],
+    "neue_zuege": [
+     {
+      "commit": 37,
+      "turn": 1,
+      "rolle": "character",
+      "sprecher": "char_g7_gustav",
+      "rede": "",
+      "handlung": "trinkt sein Bier aus"
+     }
+    ],
+    "neues_zeugenwissen": [
+     [
+      "char_g7_gustav",
+      "fact_1a1b750d209_e75494e3001c",
+      "performed"
+     ],
+     [
+      "char_g7_johann",
+      "fact_1a1b750d209_e75494e3001c",
+      "seen"
+     ],
+     [
+      "char_g7_mara",
+      "fact_1a1b750d209_e75494e3001c",
+      "seen"
+     ]
+    ],
+    "anwesend_vorher": [
+     "char_g7_gustav",
+     "char_g7_johann",
+     "char_g7_mara"
+    ],
+    "anwesend_nachher": [
+     "char_g7_gustav",
+     "char_g7_johann",
+     "char_g7_mara"
+    ],
+    "ort_nachher": "schankraum",
+    "positionen_nachher": {
+     "char_g7_clara": [
+      "anderswo",
+      1,
+      true
+     ],
+     "char_g7_gustav": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_johann": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_mara": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_robert": [
+      "anderswo",
+      1,
+      true
+     ]
+    }
+   },
+   "status": "ROT"
+  },
+  {
+   "id": "PU2_anrede_gegen_ui_auswahl",
+   "achse": "Puppet (§12.2)",
+   "art": "positiv",
+   "text": "Gustav, setz dich.",
+   "sessionId": "ses_kp_fall_02",
+   "modell": {
+    "anfragen": 3,
+    "treffer": 3,
+    "fehlgriffe": 0,
+    "weitergeleitet": 0,
+    "upstream_fehler": 0,
+    "fehlgriffe_vor_hauptcommit": 0
+   },
+   "glieder": [
+    {
+     "glied": 1,
+     "name": "SOLL-Vertrag und konkrete Erwartung",
+     "status": "GRUEN",
+     "beleg": "Eine Anrede ist Rede der geführten Figur; der im Text Angesprochene ist Adressat, auch gegen die UI-Auswahl; die UI-Auswahl selbst wird gesendet. 2_7master Z.131 (Sprecher, Ziel), Z.1355; SPS Paket 14; Kettenvertrag §16 Glied 04."
+    },
+    {
+     "glied": 2,
+     "name": "Ausgangs-ZIP, Hash und Datenbank",
+     "status": "GRUEN",
+     "beleg": "ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)"
+    },
+    {
+     "glied": 3,
+     "name": "Reale UI-Bedienung",
+     "status": "GRUEN",
+     "beleg": "Profil gewählt, Chat ses_kp_fall_02 geöffnet; Spreche als: Puppet char_g7_johann; Direktes Ziel: char_g7_mara; Senden: Gustav, setz dich.; Seite neu geladen"
+    },
+    {
+     "glied": 4,
+     "name": "Gesendete IDs, Rolle, Modus, Actor, Target, Scope",
+     "status": "ROT",
+     "beleg": "UI-Ziel None statt char_g7_mara"
+    },
+    {
+     "glied": 5,
+     "name": "Backendroute und erste serverseitige Bindung",
+     "status": "GRUEN",
+     "beleg": "HTTP 200, Spur kp_1794076929731_730844: KERNEL_BIND,OUTPUT,READER,SPRACHE,SQLITE_COMMIT,TARGET_BIND,TURN_END,TURN_INPUT,TURN_START,UI_REQUEST,VALIDATION,WRITER, Meldung: "
+    },
+    {
+     "glied": 6,
+     "name": "Kanonischer Owner und Writer",
+     "status": "GRUEN",
+     "beleg": "Writer: 1 Haupt-Facts, Commit 37 in Spur kp_1794076929731_730844 (PASS)"
+    },
+    {
+     "glied": 7,
+     "name": "Zustand vor dem Write",
+     "status": "GRUEN",
+     "beleg": "vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)"
+    },
+    {
+     "glied": 8,
+     "name": "Zustand nach dem Write",
+     "status": "GRUEN",
+     "beleg": "nachher: 1 Facts, 2 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum"
+    },
+    {
+     "glied": 9,
+     "name": "Erzeugte Fact-IDs und ihr Inhalt",
+     "status": "ROT",
+     "beleg": "fehlt: {'kind': 'speech', 'akteur': 'J', 'text': 'Gustav, setz dich', 'ziel': 'G'}; verboten vorhanden: speech von char_g7_gustav: Gustav, setz dich. | Haupt-Facts: speech/char_g7_gustav/Gustav, setz dich.→None"
+    },
+    {
+     "glied": 10,
+     "name": "Wissensverteilung und Unwissende",
+     "status": "GRUEN",
+     "beleg": "1 Facts, 3 neue Zeugenwissen: Zeugen anwesend und wahrnehmend, Abwesende ['char_g7_clara', 'char_g7_robert'] ohne Wissen"
+    },
+    {
+     "glied": 11,
+     "name": "Runtime-/Körper-/Szenenfolgen",
+     "status": "GRUEN",
+     "beleg": "Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)"
+    },
+    {
+     "glied": 12,
+     "name": "Zuständiger Reader",
+     "status": "GRUEN",
+     "beleg": "GET /api/sessions: HTTP 200, 1 von 1 neuen Facts gleich; ok"
+    },
+    {
+     "glied": 13,
+     "name": "BrainContext im Folgezug",
+     "status": "ROT",
+     "beleg": "kein gespeicherter Folgezug einer Figur"
+    },
+    {
+     "glied": 14,
+     "name": "Sichtbare Antwort und Komponentencommit",
+     "status": "ROT",
+     "beleg": "Oberfläche hat keinen Folgezug gespeichert (kein Folgezug-Aufruf binnen 20 s nach der Hauptantwort); kein Folgezug einer Figur in SQLite; Spur des Folgezugs nicht eindeutig (0); keine fehlerfreie Modellantwort (MODEL_REPLY source=llm) in der Folgezug-Spur; kein SQLITE_COMMIT PASS in der Folgezug-Spur"
+    },
+    {
+     "glied": 15,
+     "name": "Zustand im Folgezug",
+     "status": "ROT",
+     "beleg": "kein Folgezug"
+    },
+    {
+     "glied": 16,
+     "name": "Reload/Neustart",
+     "status": "GRUEN",
+     "beleg": "nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt"
+    },
+    {
+     "glied": 17,
+     "name": "Sichtbare UI-Rückanzeige",
+     "status": "GRUEN",
+     "beleg": "Verlauf nach Neuladen stimmt; Meldungen: ['Puppet: Keine Rede oder Handlung vollzogen. Kein Folgezug gestartet.']"
+    },
+    {
+     "glied": 18,
+     "name": "Negative Isolation",
+     "status": "GRUEN",
+     "beleg": "andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert"
+    },
+    {
+     "glied": 19,
+     "name": "Prüfung am frisch entpackten ZIP",
+     "status": "GRUEN",
+     "beleg": "Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut"
+    },
+    {
+     "glied": 20,
+     "name": "Status mit Begründung",
+     "status": "ROT",
+     "beleg": "04 Gesendete IDs, Rolle, Modus, Actor, Target, Scope: UI-Ziel None statt char_g7_mara | 09 Erzeugte Fact-IDs und ihr Inhalt: fehlt: {'kind': 'speech', 'akteur': 'J', 'text': 'Gustav, setz dich', 'ziel': 'G'}; verboten vorhanden: speech von char_g7_gustav: Gustav, setz dich. | Haupt-Facts: speech/char_g7_gustav/Gustav, setz dich.→None | 13 BrainContext im Folgezug: kein gespeicherter Folgezug einer Figur | 14 Sichtbare Antwort und Komponentencommit: Oberfläche hat keinen Folgezug gespeichert (kein Folgezug-Aufruf binnen 20 s nach der Hauptantwort); kein Folgezug einer Figur in SQLite; Spur des Folgezugs nicht eindeutig (0); keine fehlerfreie Modellantwort (MODEL_REPLY source=llm) in der Folgezug-Spur; kein SQLITE_COMMIT PASS in der Folgezug-Spur | 15 Zustand im Folgezug: kein Folgezug"
+    }
+   ],
+   "neue_fact_ids": [
+    "fact_1a1b7516eee_e78fbd96003c"
+   ],
+   "haupt_status": 200,
+   "beleg": {
+    "neue_facts": [
+     {
+      "commit": 37,
+      "kind": "speech",
+      "actor": "char_g7_gustav",
+      "target": null,
+      "text": "Gustav, setz dich.",
+      "ort": "schankraum",
+      "zeugen": [
+       "char_g7_gustav",
+       "char_g7_johann",
+       "char_g7_mara"
+      ],
+      "betroffen": []
+     }
+    ],
+    "neue_zuege": [
+     {
+      "commit": 37,
+      "turn": 1,
+      "rolle": "character",
+      "sprecher": "char_g7_gustav",
+      "rede": "Gustav, setz dich.",
+      "handlung": ""
+     }
+    ],
+    "neues_zeugenwissen": [
+     [
+      "char_g7_gustav",
+      "fact_1a1b7516eee_e78fbd96003c",
+      "heard"
+     ],
+     [
+      "char_g7_johann",
+      "fact_1a1b7516eee_e78fbd96003c",
+      "heard"
+     ],
+     [
+      "char_g7_mara",
+      "fact_1a1b7516eee_e78fbd96003c",
+      "heard"
+     ]
+    ],
+    "anwesend_vorher": [
+     "char_g7_gustav",
+     "char_g7_johann",
+     "char_g7_mara"
+    ],
+    "anwesend_nachher": [
+     "char_g7_gustav",
+     "char_g7_johann",
+     "char_g7_mara"
+    ],
+    "ort_nachher": "schankraum",
+    "positionen_nachher": {
+     "char_g7_clara": [
+      "anderswo",
+      1,
+      true
+     ],
+     "char_g7_gustav": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_johann": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_mara": [
+      "Schankraum",
+      1,
+      true
+     ],
+     "char_g7_robert": [
+      "anderswo",
+      1,
+      true
+     ]
+    }
+   },
+   "status": "ROT"
+  }
+ ],
+ "vorbereitung": {
+  "soll_2_7master.txt": "GRUEN",
+  "soll_MATRIX10_SPS_MASTER.md": "GRUEN",
+  "soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt": "GRUEN",
+  "mutation": "angewendet: M1_falsche_figuren_id (Der Puppet-Writer schreibt die Eingabe einer ANDEREN anwesenden Figur zu.)",
+  "frontend": "GRUEN: frisch gebaut (node_modules aus Cache mit gleichem package-lock), Kennung MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103"
+ },
+ "gesamt": "ROT"
+}

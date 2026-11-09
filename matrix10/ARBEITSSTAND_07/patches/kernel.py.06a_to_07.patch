@@ -1,0 +1,172 @@
+--- basis_06a/matrix_api/kernel.py
++++ stand_07/matrix_api/kernel.py
+@@ -8685,7 +8685,7 @@
+                                           recipient_id=str(sf.get("targetId") or "") or None)
+             sf["plan"] = plan
+             sf["speech_act"] = plan.get("speech_act")
+-            hears_now = list((s.get("scene") or {}).get("hearsIds") or (s.get("scene") or {}).get("presentIds") or [])
++            hears_now = list(_scene_perception(s, list((s.get("scene") or {}).get("presentIds") or []))[0])   # Stand 07 / K-01: canonical perception (explicit empty list, position, canHear, consciousness)
+             wit = list(dict.fromkeys(hears_now + [str(speaker.get("id"))]))
+             selfc = [i for i in _truth.local_contradictions(s, speaker, utterer_id=str(speaker.get("id")), plan=plan, text=speech) if i.get("art") == "selbstwiderspruch"]
+             reg = _truth.register_claim(s, plan, fact_id=sf["id"], turn=turn, witnesses=wit)
+@@ -8975,7 +8975,7 @@
+             plan = uf.get("plan") or input_plan
+             uf["plan"] = plan
+             uf["speech_act"] = plan.get("speech_act")
+-            hears_now = list((s.get("scene") or {}).get("hearsIds") or (s.get("scene") or {}).get("presentIds") or [])
++            hears_now = list(_scene_perception(s, list((s.get("scene") or {}).get("presentIds") or []))[0])   # Stand 07 / K-01: canonical perception (explicit empty list, position, canHear, consciousness)
+             wit = list(dict.fromkeys(hears_now + [str(input_actor)]))
+             # V42: Widerspruch, den die antwortende Figur bemerkt — Prüfung gegen den Stand VOR der neuen
+             # Behauptung, Registrierung danach (damit die neue Behauptung ihren Status bekommt)
+@@ -11495,6 +11495,39 @@
+     return hits
+ 
+ 
++def figure_speaker_eligible(session: dict, c: dict | None) -> bool:
++    """Who may be the figure speaker of a turn at all (AMASTER §28 Schritt 16, §43 PhysicalState begrenzt Capability).
++
++    Stand 07 / K-01: the former inner rule of pick_speaker, now one owner for the server's own choice AND for the check
++    of a speaker the UI selected (prepare/commit took a selected speaker after a presence check only). Present in the
++    scene, never the Avatar / God / Fate, conscious and able to speak. Position drift is pick_speaker's own preference."""
++    if not isinstance(c, dict):
++        return False
++    cid = c.get("id")
++    if not cid or cid == session.get("avatarId"):
++        return False
++    role = str(c.get("role") or "").lower()
++    if cid in ("god", "fate") or role in ("god", "fate", "avatar"):
++        return False
++    present_ids = list((session.get("scene") or {}).get("presentIds") or [])
++    if present_ids and cid not in present_ids:
++        return False
++    rt = (session.get("runtimes") or {}).get(cid) or {}
++    if not isinstance(rt, dict):
++        rt = {}
++    # Stand 07: `consciousness or 1` read an unconscious figure (0.0) as fully conscious; only a missing value is 1
++    # (same rule as _scene_perception).
++    _cons = rt.get("consciousness")
++    try:
++        if float(1 if _cons is None else _cons) < 0.5:
++            return False
++    except (TypeError, ValueError):
++        pass
++    if rt.get("canSpeak") is False or rt.get("gagged"):
++        return False
++    return True
++
++
+ def pick_speaker(
+     session: dict,
+     natives: list[dict],
+@@ -11505,28 +11538,14 @@
+     affected_ids: list[str] | None = None,
+ ) -> dict | None:
+     """Figure speaker only. Avatar / fate / god never speak. Scores AMASTER §28 factors."""
+-    avatar = session.get("avatarId")
+     place = (session.get("scene") or {}).get("placeName")
+-    present_ids = list((session.get("scene") or {}).get("presentIds") or [])
+ 
+     def _eligible(c: dict, *, at_place: bool) -> bool:
+-        if not isinstance(c, dict):
+-            return False
+-        cid = c.get("id")
+-        if not cid or cid == avatar:
++        if not figure_speaker_eligible(session, c):
+             return False
+-        role = str(c.get("role") or "").lower()
+-        if cid in ("god", "fate") or role in ("god", "fate", "avatar"):
+-            return False
+-        if present_ids and cid not in present_ids:
+-            return False
+-        rt = (session.get("runtimes") or {}).get(cid) or {}
++        rt = (session.get("runtimes") or {}).get(c.get("id")) or {}
+         if not isinstance(rt, dict):
+             rt = {}
+-        if float(rt.get("consciousness") or 1) < 0.5:
+-            return False
+-        if rt.get("canSpeak") is False or rt.get("gagged"):
+-            return False
+         if at_place and place and rt.get("position") and rt.get("position") != place:
+             return False
+         return True
+@@ -11863,6 +11882,27 @@
+     }
+ 
+ 
++def lifecycle_evidence_fact(session: dict, actor_id: str, fact_id: str | None = None) -> dict | None:
++    """The SceneFact that evidences an answer (request, acceptance, refusal, commitment, revoke) of `actor_id`.
++
++    Stand 07 / K-01 (W2; AMASTER §34 SceneFact bindet Quellturn und Actor, §35 dieselbe Angelegenheit, §36.3 "Sprecher und
++    Empfaenger stimmen"): the evidence is the actor's OWN utterance or act. P25 bound a named fact without checking its
++    actor and, without a fact id, the latest speech OF OR TO the actor - so a figure that said nothing "accepted" with
++    the requester's question as its evidence (lifecycle back-dated to that turn). Not "actor == TurnTruth speaker": the
++    Avatar / the operator answer in a turn whose response speaker is another figure, a touched figure answers a body
++    contact, a Regie act is the ordered figure's own act - all of them are the actor's own fact."""
++    facts = [f for f in (session.get("facts") or []) if isinstance(f, dict)]
++    if fact_id:
++        named = next((f for f in facts if str(f.get("id") or "") == str(fact_id)), None)
++        if named is not None:
++            return named if str(named.get("actorId") or named.get("actor_id") or "") == str(actor_id or "") else None
++        # (P25 fell back to the positional search when the named fact was not in the session yet - kept, own facts only)
++    for f in reversed(facts):
++        if f.get("kind") in ("speech", "narrator") and str(f.get("actorId") or "") == str(actor_id or ""):
++            return f
++    return None
++
++
+ def _bind_lifecycle_evidence(
+     session: dict,
+     *,
+@@ -11889,19 +11929,17 @@
+             gid = g.get("id")
+             break
+     responds = None
+-    _named = next((f for f in (session.get("facts") or []) if isinstance(f, dict) and fact_id and str(f.get("id") or "") == str(fact_id)), None)
+-    for f in ([_named] if _named is not None else reversed(session.get("facts") or [])):
+-        if not isinstance(f, dict):
+-            continue
+-        if _named is not None or (f.get("kind") in ("speech", "narrator") and (f.get("actorId") == actor_id or f.get("targetId") == actor_id)):
+-            if stamp:   # V65T: a second component of the same utterance keeps the Fact's own matter binding
+-                f["propositionId"] = pid
+-                f["proposition_id"] = pid
+-                f["goalId"] = gid
+-                f["goal_id"] = gid
+-            if not responds:
+-                responds = f.get("id")
+-            break
++    f = lifecycle_evidence_fact(session, actor_id, fact_id)
++    if f is not None:
++        if stamp:   # V65T: a second component of the same utterance keeps the Fact's own matter binding
++            f["propositionId"] = pid
++            f["proposition_id"] = pid
++            f["goalId"] = gid
++            f["goal_id"] = gid
++        responds = f.get("id")
++    elif kind != "request":
++        # Stand 07 / K-01 (W2): no own utterance or act of this actor - no answer evidence, no lifecycle fact
++        return
+     if kind == "request":
+         # Proposition is the request. Do not append a duplicate request lifecycle fact.
+         return
+@@ -12144,6 +12182,12 @@
+     if kind in ("refusal", "acceptance", "commitment") and (not recipient or str(actor_id) != str(recipient)):
+         commit_session_change(s, sync_scene=False)
+         return s
++    if lifecycle_evidence_fact(s, str(actor_id), fact_id) is None:
++        # Stand 07 / K-01 (W2; AMASTER §35 "Der aktuelle Zustand wird aus der neuesten gueltigen Evidenz reduziert"):
++        # the stored status changed BEFORE the evidence was searched - an answer without the actor's own utterance or
++        # act changed the matter. No evidence: nothing changes (fail-closed), no lifecycle fact.
++        commit_session_change(s, sync_scene=False)
++        return s
+     if open_prop.get("kind") == "koerperkontakt":
+         # V65T (§35 "Der aktuelle Zustand wird aus der neuesten gueltigen Evidenz reduziert", §36.5): the answer is
+         # bound with its acts and scope; the container's status is the boundary standing now (open without one).
+@@ -12539,7 +12583,7 @@
+             # V60 (AMASTER §24.6, §68 Nr. 54): no regex speech-act reader.
+             _pp = _conj.literal_plan(spoken, actor_id=str(figure["id"]), recipient_id=str(truth.get("target_id") or "") or None)
+         sf["plan"] = _pp
+-        hears_now = list((s.get("scene") or {}).get("hearsIds") or (s.get("scene") or {}).get("presentIds") or [])
++        hears_now = list(_scene_perception(s, list((s.get("scene") or {}).get("presentIds") or []))[0])   # Stand 07 / K-01: canonical perception (explicit empty list, position, canHear, consciousness)
+         ch = _conj.apply_plan(s, _pp, fact_id=sf["id"], turn=turn, witnesses=list(dict.fromkeys(hears_now + [str(figure["id"])])))
+         if ch:
+             sf["frameChange"] = ch

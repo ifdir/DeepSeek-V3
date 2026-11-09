@@ -1,0 +1,253 @@
+{
+  "label": "Mutation Rust+Python ohne Sprecherbindung",
+  "root": "/tmp/matrix06_chain_uadt2it2/mut_kombiniert/MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107",
+  "rust_native": true,
+  "faelle": [
+    {
+      "fall": "C04_FREMDER_GIVER",
+      "beschreibung": "Mara lehnt jede Beruehrung ab, Johann 'stimmt zu'",
+      "writes": {
+        "f1": "OK",
+        "f2": "OK",
+        "a3": "REJECT:NATIVE_REPLY_INVALID"
+      },
+      "gespeichert": [],
+      "lesen": {},
+      "fremde_session_fakten": 0,
+      "befunde": [
+        "write f2: SOLL REJECT, IST OK",
+        "state: SOLL declined, IST None",
+        "act_consent a3: SOLL declined, IST None",
+        "Lesen gescheitert: NativeBoundaryError:NATIVE_REPLY_INVALID:Native consent result has an unbound evidence index"
+      ],
+      "soll_erfuellt": false
+    },
+    {
+      "fall": "C04_ABGELAUFENE_BREITE_ZUSTIMMUNG",
+      "beschreibung": "Mara lehnt ab, spaetere eigene Zustimmung ist abgelaufen",
+      "writes": {
+        "f1": "OK",
+        "f2": "OK"
+      },
+      "gespeichert": [
+        "f1",
+        "f2"
+      ],
+      "lesen": {
+        "state": "declined",
+        "perms": [],
+        "refs": [],
+        "acts": {},
+        "spiegel_state": "declined"
+      },
+      "fremde_session_fakten": 0,
+      "befunde": [],
+      "soll_erfuellt": true
+    },
+    {
+      "fall": "C04_ABGELAUFENE_EINZELABLEHNUNG",
+      "beschreibung": "Mara erlaubt rechte Hand, spaetere Ablehnung abgelaufen",
+      "writes": {
+        "f1": "OK",
+        "f2": "OK"
+      },
+      "gespeichert": [
+        "f1",
+        "f2"
+      ],
+      "lesen": {
+        "state": null,
+        "perms": [
+          "rechte Hand"
+        ],
+        "refs": [],
+        "acts": {},
+        "spiegel_state": "open"
+      },
+      "fremde_session_fakten": 0,
+      "befunde": [],
+      "soll_erfuellt": true
+    },
+    {
+      "fall": "C04_ABGELAUFENE_EINZELZUSTIMMUNG",
+      "beschreibung": "Mara lehnt rechte Hand ab, spaetere Zustimmung abgelaufen",
+      "writes": {
+        "f1": "OK",
+        "f2": "OK"
+      },
+      "gespeichert": [
+        "f1",
+        "f2"
+      ],
+      "lesen": {
+        "state": null,
+        "perms": [],
+        "refs": [
+          "rechte Hand"
+        ],
+        "acts": {},
+        "spiegel_state": "open"
+      },
+      "fremde_session_fakten": 0,
+      "befunde": [],
+      "soll_erfuellt": true
+    },
+    {
+      "fall": "S05_WIDERRUF_DER_AUSNAHME",
+      "beschreibung": "Ablehnung jeder Beruehrung, Ausnahme rechte Hand, Widerruf an der Hand-Tat",
+      "writes": {
+        "f1": "OK",
+        "f2": "OK",
+        "a3": "OK",
+        "f4": "OK",
+        "a5": "OK",
+        "a6": "OK"
+      },
+      "gespeichert": [
+        "a3",
+        "a5",
+        "a6",
+        "f1",
+        "f2",
+        "f4"
+      ],
+      "lesen": {
+        "state": "declined",
+        "perms": [],
+        "refs": [],
+        "acts": {
+          "a3": "accepted",
+          "a5": "declined",
+          "a6": "declined"
+        },
+        "spiegel_state": "declined"
+      },
+      "fremde_session_fakten": 0,
+      "befunde": [],
+      "soll_erfuellt": true
+    },
+    {
+      "fall": "S05_ANDERE_STELLE",
+      "beschreibung": "Erlaubnis rechte Hand, Widerruf an einer Schulter-Tat",
+      "writes": {
+        "f1": "OK",
+        "a2": "OK",
+        "f3": "OK",
+        "a4": "OK"
+      },
+      "gespeichert": [
+        "a2",
+        "a4",
+        "f1",
+        "f3"
+      ],
+      "lesen": {
+        "state": null,
+        "perms": [
+          "rechte Hand"
+        ],
+        "refs": [],
+        "acts": {
+          "a2": "unknown",
+          "a4": "accepted"
+        },
+        "spiegel_state": "open"
+      },
+      "fremde_session_fakten": 0,
+      "befunde": [],
+      "soll_erfuellt": true
+    },
+    {
+      "fall": "W2_ACTOR_NICHT_SPRECHER",
+      "beschreibung": "Ablehnung mit Actor Mara aus einer TurnTruth, in der Johann spricht",
+      "writes": {
+        "f1": "OK"
+      },
+      "gespeichert": [
+        "f1"
+      ],
+      "lesen": {
+        "state": "declined",
+        "perms": [],
+        "refs": [],
+        "acts": {},
+        "spiegel_state": "declined"
+      },
+      "fremde_session_fakten": 0,
+      "befunde": [
+        "write f1: SOLL REJECT, IST OK"
+      ],
+      "soll_erfuellt": false
+    },
+    {
+      "fall": "W3_OHNE_PROPOSITION",
+      "beschreibung": "Koerperkontakt-Antwort ohne propositionId",
+      "writes": {
+        "f1": "REJECT:LIFECYCLE_ACTOR_UNBOUND"
+      },
+      "gespeichert": [],
+      "lesen": {
+        "state": null,
+        "perms": [],
+        "refs": [],
+        "acts": {},
+        "spiegel_state": "open"
+      },
+      "fremde_session_fakten": 0,
+      "befunde": [],
+      "soll_erfuellt": true
+    },
+    {
+      "fall": "K_DRITTER_SPRECHER",
+      "beschreibung": "Kontrolle: Gustav (keine Partei) stimmt zu",
+      "writes": {
+        "f1": "OK",
+        "f2": "REJECT:LIFECYCLE_ACTOR_UNBOUND"
+      },
+      "gespeichert": [
+        "f1"
+      ],
+      "lesen": {
+        "state": "declined",
+        "perms": [],
+        "refs": [],
+        "acts": {},
+        "spiegel_state": "declined"
+      },
+      "fremde_session_fakten": 0,
+      "befunde": [],
+      "soll_erfuellt": true
+    },
+    {
+      "fall": "K_GUELTIGE_ABLEHNUNG",
+      "beschreibung": "Kontrolle: Mara lehnt jede Beruehrung ab, Kuss danach",
+      "writes": {
+        "f1": "OK",
+        "a2": "OK"
+      },
+      "gespeichert": [
+        "a2",
+        "f1"
+      ],
+      "lesen": {
+        "state": "declined",
+        "perms": [],
+        "refs": [],
+        "acts": {
+          "a2": "declined"
+        },
+        "spiegel_state": "declined"
+      },
+      "fremde_session_fakten": 0,
+      "befunde": [],
+      "soll_erfuellt": true
+    }
+  ],
+  "soll_erfuellt": 8,
+  "gesamt": 10,
+  "rot": [
+    "C04_FREMDER_GIVER",
+    "W2_ACTOR_NICHT_SPRECHER"
+  ],
+  "product_release": false
+}

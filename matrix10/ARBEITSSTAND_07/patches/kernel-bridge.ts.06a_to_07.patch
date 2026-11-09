@@ -1,0 +1,38 @@
+--- basis_06a/src/lib/matrix/kernel-bridge.ts
++++ stand_07/src/lib/matrix/kernel-bridge.ts
+@@ -150,6 +150,8 @@
+   truth: Record<string, unknown>;
+   brainContext: Record<string, unknown> | undefined;
+   traceId: string;
++  /** Stand 07 / K-01: the server's proof of this prepared turn - formulate and commit accept the turn only with it */
++  turnBeleg?: string;
+   speakerCandidates?: Array<{ id: string; name?: string; score: number; reasons?: string[] }>;
+ }> {
+   const authority = authorityForUiRole(opts.session.role);
+@@ -207,6 +209,7 @@
+     brainContext: prepared.brainContext,
+     speakerCandidates: (prepared.speakerCandidates as Array<{ id: string; name?: string; score: number; reasons?: string[] }> | undefined) || [],
+     traceId,
++    turnBeleg: typeof prepared.turnBeleg === "string" ? prepared.turnBeleg : undefined,
+   };
+ }
+ 
+@@ -222,6 +225,9 @@
+   userName?: string;
+   truth?: Record<string, unknown>;
+   traceId?: string;
++  /** Stand 07 / K-01: proofs of the prepared turn and of the server's formulation (the commit takes no client text) */
++  turnBeleg?: string;
++  formulierungsBeleg?: string;
+ }): Promise<{ session: Session; trace: KernelTrace }> {
+   const authority = authorityForUiRole(opts.session.role);
+   const traceId = opts.traceId || newTraceId("kc");
+@@ -263,6 +269,8 @@
+       ...(opts.result.proposals ? { proposals: opts.result.proposals } : {}),
+     },
+     fired: opts.fired,
++    ...(opts.turnBeleg ? { turnBeleg: opts.turnBeleg } : {}),
++    ...(opts.formulierungsBeleg ? { formulierungsBeleg: opts.formulierungsBeleg } : {}),
+     ...(typeof opts.recallCount === "number" ? { recallCount: opts.recallCount } : {}),
+     ...(Array.isArray(opts.contradictions) && opts.contradictions.length ? { contradictions: opts.contradictions } : {}),
+   });

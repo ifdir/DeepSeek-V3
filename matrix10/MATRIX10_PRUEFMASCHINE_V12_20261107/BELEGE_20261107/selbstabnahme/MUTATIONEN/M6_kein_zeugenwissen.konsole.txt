@@ -1,0 +1,3 @@
+[vor Neustart] PU1_handlung_eigenes_subjekt: 10 ROT Zeuge char_g7_gustav ohne kanonisches Zeugenwissen zu 'trinkt sein Bier aus'; Zeuge char_g; 13 ROT char_g7_mara hat kein kanonisches Zeugenwissen zu 'trinkt sein Bier aus'
+[vor Neustart] PU2_anrede_gegen_ui_auswahl: 04 ROT UI-Ziel None statt char_g7_mara; 10 ROT Zeuge char_g7_gustav ohne kanonisches Zeugenwissen zu 'Gustav, setz dich.'; Zeuge char_g7_; 13 ROT char_g7_gustav hat kein kanonisches Zeugenwissen zu 'Gustav, setz dich.'
+GESAMT: ROT -> /home/claude/kp/V12/frisch/MATRIX10_PRUEFMASCHINE_V12/SELBSTABNAHME_LAUF_20261107_183415/MUTATIONEN/M6_kein_zeugenwissen/ERGEBNIS_LESEN.txt

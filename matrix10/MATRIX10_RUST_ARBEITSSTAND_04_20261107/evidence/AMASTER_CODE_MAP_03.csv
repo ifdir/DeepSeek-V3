@@ -1,0 +1,71 @@
+AMASTER Abschnitt;Inhalt;Rustquelle;Python-Kandidaten;Frontend-Kandidaten;E2E-Stand
+1;Systemidentität;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/repos.py;src/routes/index.tsx;UNGEPRUEFT
+2;Produktziel;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/repos.py;src/routes/index.tsx;UNGEPRUEFT
+3;Lokale Produktgrenze;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/repos.py;src/routes/index.tsx;UNGEPRUEFT
+4;Gesamtsystemfluss;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/repos.py;src/routes/index.tsx;UNGEPRUEFT
+5;Dokumentenrollen;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/repos.py;src/routes/index.tsx;UNGEPRUEFT
+6;Wahrheitshierarchie und Zuständigkeiten;TEILQUELLE_UNKOMPILIERT;matrix_api/kernel.py, matrix_api/repos.py;src/routes/index.tsx;UNGEPRUEFT
+7;Menschliche Figurenlinie;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/repos.py;src/routes/index.tsx;UNGEPRUEFT
+8;Userprofil;TEILQUELLE_UNKOMPILIERT;matrix_api/repos.py, matrix_api/isolation.py;src/routes/user.tsx;UNGEPRUEFT
+9;Weltmodell;NICHT_PORTIERT;matrix_api/repos.py, matrix_api/analyze.py;src/routes/welt.index.tsx, src/routes/welt.$worldId.tsx;UNGEPRUEFT
+10;Welterstellung;NICHT_PORTIERT;matrix_api/repos.py, matrix_api/analyze.py;src/routes/welt.index.tsx, src/routes/welt.$worldId.tsx;UNGEPRUEFT
+11;Weltanalyse;NICHT_PORTIERT;matrix_api/repos.py, matrix_api/analyze.py;src/routes/welt.index.tsx, src/routes/welt.$worldId.tsx;UNGEPRUEFT
+12;Weltseite;NICHT_PORTIERT;matrix_api/repos.py, matrix_api/analyze.py;src/routes/welt.index.tsx, src/routes/welt.$worldId.tsx;UNGEPRUEFT
+13;Charaktererstellung und Spawning;NICHT_PORTIERT;matrix_api/repos.py, matrix_api/kernel.py;src/routes/charakter.index.tsx, src/routes/charakter.$charId.tsx;UNGEPRUEFT
+14;Charakterstamm;NICHT_PORTIERT;matrix_api/repos.py, matrix_api/kernel.py;src/routes/charakter.index.tsx, src/routes/charakter.$charId.tsx;UNGEPRUEFT
+15;Charakterprofil und Chathere-Kompass;NICHT_PORTIERT;matrix_api/repos.py, matrix_api/kernel.py;src/routes/charakter.index.tsx, src/routes/charakter.$charId.tsx;UNGEPRUEFT
+16;SceneBehaviorEngine;NICHT_PORTIERT;matrix_api/repos.py, matrix_api/kernel.py;src/routes/charakter.index.tsx, src/routes/charakter.$charId.tsx;UNGEPRUEFT
+17;Charakterseite;NICHT_PORTIERT;matrix_api/repos.py, matrix_api/kernel.py;src/routes/charakter.index.tsx, src/routes/charakter.$charId.tsx;UNGEPRUEFT
+18;Sessions;TEILQUELLE_UNKOMPILIERT;matrix_api/repos.py, matrix_api/scene_state.py;src/routes/chat.index.tsx, src/routes/timeline.tsx;UNGEPRUEFT
+19;Sessionverwaltung;NICHT_PORTIERT;matrix_api/repos.py, matrix_api/scene_state.py;src/routes/chat.index.tsx, src/routes/timeline.tsx;UNGEPRUEFT
+20;Szene und SceneState;NICHT_PORTIERT;matrix_api/repos.py, matrix_api/scene_state.py;src/routes/chat.index.tsx, src/routes/timeline.tsx;UNGEPRUEFT
+21;Timeline;NICHT_PORTIERT;matrix_api/repos.py, matrix_api/scene_state.py;src/routes/chat.index.tsx, src/routes/timeline.tsx;UNGEPRUEFT
+22;Chat und Turn;NICHT_PORTIERT;matrix_api/app.py, matrix_api/kernel.py, matrix_api/truth.py;src/routes/chat.$sessionId.tsx;UNGEPRUEFT
+23;TurnTruth und Eingangsbindung;TEILQUELLE_UNKOMPILIERT;matrix_api/app.py, matrix_api/kernel.py, matrix_api/truth.py;src/routes/chat.$sessionId.tsx;UNGEPRUEFT
+24;Eingabenormalisierung;NICHT_PORTIERT;matrix_api/app.py, matrix_api/kernel.py, matrix_api/truth.py;src/routes/chat.$sessionId.tsx;UNGEPRUEFT
+25;Sprecher- und Zielbindung;NICHT_PORTIERT;matrix_api/app.py, matrix_api/kernel.py, matrix_api/truth.py;src/routes/chat.$sessionId.tsx;UNGEPRUEFT
+26;Anwesenheit, Hören und Sehen;TEILQUELLE_UNKOMPILIERT;matrix_api/app.py, matrix_api/kernel.py, matrix_api/truth.py;src/routes/chat.$sessionId.tsx;UNGEPRUEFT
+27;Rollen und Modi;NICHT_PORTIERT;matrix_api/app.py, matrix_api/kernel.py, matrix_api/truth.py;src/routes/chat.$sessionId.tsx;UNGEPRUEFT
+28;Sprecherwahl und Orchestrierung;NICHT_PORTIERT;matrix_api/app.py, matrix_api/kernel.py, matrix_api/truth.py;src/routes/chat.$sessionId.tsx;UNGEPRUEFT
+29;Uploadsystem;NICHT_PORTIERT;matrix_api/analyze.py, matrix_api/vector.py, matrix_api/repos.py;src/routes/upload.tsx;UNGEPRUEFT
+30;Upload Mode A — prägend und bindend;NICHT_PORTIERT;matrix_api/analyze.py, matrix_api/vector.py, matrix_api/repos.py;src/routes/upload.tsx;UNGEPRUEFT
+31;Upload Mode B — Wissen, Beobachtung und Referenz;NICHT_PORTIERT;matrix_api/analyze.py, matrix_api/vector.py, matrix_api/repos.py;src/routes/upload.tsx;UNGEPRUEFT
+32;Dokument-, OCR- und Knowledge-Base-Schicht;NICHT_PORTIERT;matrix_api/analyze.py, matrix_api/vector.py, matrix_api/repos.py;src/routes/upload.tsx;UNGEPRUEFT
+33;Semantik-, Graph- und Vektorsuche;NICHT_PORTIERT;matrix_api/analyze.py, matrix_api/vector.py, matrix_api/repos.py;src/routes/upload.tsx;UNGEPRUEFT
+34;SceneFact und Commit;TEILQUELLE_UNKOMPILIERT;matrix_api/repos.py, matrix_api/kernel.py, matrix_api/scene_state.py;src/routes/chat.$sessionId.tsx, src/routes/timeline.tsx;UNGEPRUEFT
+35;Proposition, Goal und Lifecycle;TEILQUELLE_UNKOMPILIERT;matrix_api/repos.py, matrix_api/kernel.py, matrix_api/scene_state.py;src/routes/chat.$sessionId.tsx, src/routes/timeline.tsx;UNGEPRUEFT
+36;Request, Refusal, Acceptance und Commitment;TEILQUELLE_UNKOMPILIERT;matrix_api/repos.py, matrix_api/kernel.py, matrix_api/scene_state.py;src/routes/chat.$sessionId.tsx, src/routes/timeline.tsx;UNGEPRUEFT
+37;Zeit und Termine;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/scene_state.py;src/routes/chat.$sessionId.tsx;UNGEPRUEFT
+38;Memory;NICHT_PORTIERT;matrix_api/conjunctive.py, matrix_api/kernel.py, matrix_api/repos.py;src/routes/memory.tsx;UNGEPRUEFT
+39;WitnessKnowledge;TEILQUELLE_UNKOMPILIERT;matrix_api/conjunctive.py, matrix_api/kernel.py, matrix_api/repos.py;src/routes/memory.tsx;UNGEPRUEFT
+40;Konjunktives Gedächtnis und Pattern Completion;NICHT_PORTIERT;matrix_api/conjunctive.py, matrix_api/kernel.py, matrix_api/repos.py;src/routes/memory.tsx;UNGEPRUEFT
+41;Recall und Kontextaufbau;NICHT_PORTIERT;matrix_api/conjunctive.py, matrix_api/kernel.py, matrix_api/repos.py;src/routes/memory.tsx;UNGEPRUEFT
+42;RuntimeState und Emotion;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/scene_state.py;src/routes/charakter.$charId.tsx;UNGEPRUEFT
+43;PhysicalState und Capability;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/scene_state.py;src/routes/charakter.$charId.tsx;UNGEPRUEFT
+44;RelationshipState;TEILQUELLE_UNKOMPILIERT;matrix_api/kernel.py, matrix_api/repos.py;src/routes/social.tsx;UNGEPRUEFT
+45;Social und Synapsen;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/repos.py;src/routes/social.tsx;UNGEPRUEFT
+46;God und Regie;TEILQUELLE_UNKOMPILIERT;matrix_api/kernel.py, matrix_api/app.py, matrix_api/god_extract.py;src/routes/chat.$sessionId.tsx;UNGEPRUEFT
+47;Fate;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/system_loop.py;src/routes/fate.tsx;UNGEPRUEFT
+48;AutoChat;NICHT_PORTIERT;matrix_api/system_loop.py, matrix_api/pipeline.py;src/routes/chat.$sessionId.tsx;UNGEPRUEFT
+49;BrainContext;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/llm_contract.py;src/routes/chat.$sessionId.tsx;UNGEPRUEFT
+50;LLM-Grenze;NICHT_PORTIERT;matrix_api/llm_contract.py, matrix_api/pipeline.py;src/routes/config.tsx;UNGEPRUEFT
+51;Renderer, Narrator und Finalizer;NICHT_PORTIERT;matrix_api/local_render.py, matrix_api/kernel.py;src/routes/chat.$sessionId.tsx;UNGEPRUEFT
+52;Review und Stammübernahme;NICHT_PORTIERT;matrix_api/repos.py, matrix_api/analyze.py;src/routes/review.tsx;UNGEPRUEFT
+53;Profiler und gezielte Feldverbesserung;NICHT_PORTIERT;matrix_api/analyze.py, matrix_api/kernel.py;src/routes/charakter.$charId.tsx;UNGEPRUEFT
+54;Benutzeroberfläche;NICHT_PORTIERT;matrix_api/app.py;src/router.tsx;UNGEPRUEFT
+55;Startseite und Hauptmenü;NICHT_PORTIERT;matrix_api/app.py;src/routes/index.tsx;UNGEPRUEFT
+56;Chatoberfläche;NICHT_PORTIERT;matrix_api/app.py, matrix_api/kernel.py;src/routes/chat.$sessionId.tsx;UNGEPRUEFT
+57;Upload-Center;NICHT_PORTIERT;matrix_api/app.py, matrix_api/repos.py;src/routes/upload.tsx;UNGEPRUEFT
+58;Gedächtnis- und Wissensseite;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/repos.py;src/routes/memory.tsx;UNGEPRUEFT
+59;Beziehungs- und Socialseite;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/repos.py;src/routes/social.tsx;UNGEPRUEFT
+60;Konfiguration und API;NICHT_PORTIERT;matrix_api/app.py, matrix_api/repos.py;src/routes/config.tsx;UNGEPRUEFT
+61;Accessibility;NICHT_PORTIERT;matrix_api/app.py;src/routes/__root.tsx;UNGEPRUEFT
+62;STT und TTS;NICHT_PORTIERT;matrix_api/app.py, matrix_api/llm_contract.py;src/routes/chat.$sessionId.tsx;UNGEPRUEFT
+63;Persistenz und Datenhaltung;NICHT_PORTIERT;matrix_api/db.py, matrix_api/repos.py, matrix_api/schema.sql;src/routes/diagnose.tsx;UNGEPRUEFT
+64;Snapshots, Backup, Import und Export;NICHT_PORTIERT;matrix_api/repos.py, matrix_api/app.py;src/routes/admin.tsx, src/routes/diagnose.tsx;UNGEPRUEFT
+65;Diagnose, Logs und Nachvollziehbarkeit;NICHT_PORTIERT;matrix_api/live_log.py, matrix_api/app.py;src/routes/diagnose.tsx, src/routes/logs.tsx;UNGEPRUEFT
+66;Inhalts- und Genresteuerung;NICHT_PORTIERT;matrix_api/genre_policy.py, matrix_api/kernel.py;src/routes/config.tsx;UNGEPRUEFT
+67;Sicherheit;NICHT_PORTIERT;matrix_api/upload_security.py, matrix_api/isolation.py;src/routes/admin.tsx;UNGEPRUEFT
+68;Kanonische Invarianten;TEILQUELLE_UNKOMPILIERT;matrix_api/kernel.py, matrix_api/repos.py, matrix_api/app.py;src/router.tsx;UNGEPRUEFT
+69;Verbindliche Produktabnahme;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/repos.py, matrix_api/app.py;src/router.tsx;UNGEPRUEFT
+70;Verbindliche Kurzform;NICHT_PORTIERT;matrix_api/kernel.py, matrix_api/repos.py, matrix_api/app.py;src/router.tsx;UNGEPRUEFT

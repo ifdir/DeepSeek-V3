@@ -1,0 +1,11 @@
+MATRIX10 KETTENPRÜFER V1.2
+============================================================
+GESAMT: BLOCKIERT
+Kandidat: 25e137c2-MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107.zip  SHA-256 33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1
+Modell: wiedergabe   Mutation: keine   Fälle: PU1_handlung_eigenes_subjekt
+
+Vorbereitung soll_2_7master.txt: GRUEN
+Vorbereitung soll_MATRIX10_SPS_MASTER.md: GRUEN
+Vorbereitung soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt: GRUEN
+Vorbereitung frontend: GRUEN: frisch gebaut (node_modules aus Cache mit gleichem package-lock), Kennung MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103
+ABBRUCH: RuntimeError: BLOCKIERT: Port(s) [5050] schon belegt - fremder Server, Messung wäre wertlos

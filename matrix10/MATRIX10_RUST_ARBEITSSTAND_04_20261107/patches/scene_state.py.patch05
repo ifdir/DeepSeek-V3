@@ -1,0 +1,289 @@
+--- a/matrix_api/scene_state.py
++++ b/matrix_api/scene_state.py
+@@ -183,6 +183,7 @@
+         return []
+     pid = str(prop.get("id") or "")
+     out = []
++    by_id = {str(f.get("id") or ""): f for f in session.get("facts") or [] if isinstance(f, dict)}
+     for i, f in enumerate(session.get("facts") or []):
+         if not isinstance(f, dict) or f.get("kind") != "lifecycle" or f.get("validated") is False:
+             continue
+@@ -193,8 +194,13 @@
+             continue
+         pl = f.get("payload") if isinstance(f.get("payload"), dict) else {}
+         kk = pl.get("koerperkontakt") if isinstance(pl.get("koerperkontakt"), dict) else {}
++        acts = [str(x) for x in kk.get("actFactIds") or []]
++        # Stand 05 (AMASTER §34.1/§35): the persisted texts of the concrete acts this answer is bound to. Only
++        # transported; Rust decides which part an act names. Bound only if every named act exists in this session.
++        found = [by_id[a] for a in acts if a in by_id]
+         out.append({"index": i, "factId": f.get("id"), "kind": kind, "turn": int(f.get("turn") or 0), "text": str(f.get("text") or ""),
+-                    "by": str(f.get("actorId") or ""), "acts": [str(x) for x in kk.get("actFactIds") or []],
++                    "by": str(f.get("actorId") or ""), "acts": acts,
++                    "actTexts": [str(x.get("text") or "") for x in found], "actsBound": bool(acts) and len(found) == len(acts),
+                     "scope": kk.get("scope") if kk.get("scope") in ("diese_tat", "jede_beruehrung", "eingeschraenkt") else None,
+                     "einschraenkung": str(kk.get("einschraenkung") or "")[:160] if kk.get("scope") == "eingeschraenkt" else None,
+                     # V65X: the words of a part an UNCONFIRMED answer named (grenze unbestaetigt, kept for visibility)
+@@ -272,57 +278,39 @@
+ 
+ def body_contact_standing(session: dict, prop: dict | None, *, before: tuple[int, int] | None = None, at: str | None = None,
+                           act: dict | None = None) -> dict | None:
+-    """V65T (§36.5 Scope/Zeitfenster/Widerruf, §34.1 Grenze): the boundary standing at a point - the latest validated
+-    "jede_beruehrung" answer of the giver before `before` that no later answer ended. A standing permission ends
+-    with any later refusal or revocation, a standing refusal with any later acceptance or revocation (an earlier answer
+-    is not a current one, Z. 1974). Outside its window it does not apply. `before` = (turn, position) of the act: the
+-    order is the turn first (the SQLite reader returns Facts by ID, not by commit order), then the position.
+-    Returns {state: declined|accepted|revoked, since, causeFactId, beleg, window} or None (no boundary: the act alone
+-    decides nothing). Read only.
+-    V65X (Nachpruefung V65W E01, selektiver Widerruf; AMASTER §34.3 Z. 1831-1839 Revoke/Supersede nur fuer das, was die neue
+-    Evidenz sagt, §36.5 Z. 1947 an die betreffende Handlung gebunden, Z. 1974): an answer that names its own restricted part
+-    (scope eingeschraenkt) ends a standing boundary for every touch no longer as a whole - it stands with that part as an
+-    exception (`ausnahmen`, each with its literal words and window): a restricted permission or revocation under a standing
+-    refusal, a restricted refusal under a standing permission (that one is read per act, restricted_refusals_standing). A
+-    permission for ONE act ("diese_tat") answers that act only (act_consent `answer`) and no longer lifts a refusal for every
+-    touch. A refusal of one act, or a revocation without a restricted part, still ends a standing permission (an earlier
+-    permission is not a current one, Z. 1974) - the conservative direction: no consent from an unclear scope."""
+-    entries = sorted((e for e in body_contact_entries(session, prop) if before is None or (e["turn"], e["index"]) < before),
++    """Current broad consent is reduced in Rust, never inferred by text.
++
++    The existing canonical SceneState reader owns `_in_window` (scene/time)
++    and projects the returned indices onto append-only Fact evidence.
++    Every event is scoped to the giver AND checked for validity before it
++    may replace an earlier state. A timed-out permission cannot erase a
++    still-active refusal. No second persistence owner and no Python fallback.
++    """
++    if not isinstance(prop, dict):
++        return None
++    giver = str(prop.get("targetId") or "")
++    entries = sorted((e for e in body_contact_entries(session, prop)
++                      if before is None or (e["turn"], e["index"]) < before),
+                      key=lambda e: (e["turn"], e["index"]))
+-    standing, ended, exc = None, None, []
+-    for e in entries:
+-        if e["scope"] == "jede_beruehrung" and e["kind"] in ("acceptance", "refusal"):
+-            standing, ended, exc = e, None, []
+-            continue
+-        if standing is None:
+-            continue
+-        if standing["kind"] == "refusal" and e.get("einschraenkungOffen") and e["kind"] in ("acceptance", "refusal"):
+-            # V65X: a later answer of the giver that names a part but could not be confirmed (direction or object unread):
+-            # her refusal for every touch stays, yet an act naming that part is not declined against her later words
+-            exc = [x for x in exc if not same_restriction(x["einschraenkung"], e["einschraenkungOffen"])] + [
+-                {**e, "kind": "unbestaetigt", "einschraenkung": e["einschraenkungOffen"]}]
+-            continue
+-        if e["scope"] == "eingeschraenkt" and e["einschraenkung"]:
+-            same = [x for x in exc if not same_restriction(x["einschraenkung"], e["einschraenkung"])]
+-            opposite = ((standing["kind"] == "refusal" and e["kind"] in ("acceptance", "revoke"))
+-                        or (standing["kind"] == "acceptance" and e["kind"] in ("refusal", "revoke")))
+-            exc = same + [e] if opposite else same   # same direction as the standing: that part follows the standing again
+-            continue
+-        if standing["kind"] == "refusal" and e["kind"] == "acceptance" and e["scope"] == "diese_tat":
+-            continue
+-        if ((standing["kind"] == "acceptance" and e["kind"] in ("refusal", "revoke"))
+-                or (standing["kind"] == "refusal" and e["kind"] in ("acceptance", "revoke"))):
+-            standing, ended, exc = None, (standing, e), []
+-    if standing is not None:
+-        if not _in_window(standing.get("window"), at, session=session, act=act):
+-            return None
++    active = [_in_window(e.get("window"), at, session=session, act=act) for e in entries]
++    from .native_boundary import reduce_body_contact_standing
++    result = reduce_body_contact_standing(giver, entries, active)
++    if result["standing"] is not None:
++        standing = entries[result["standing"]]
++        exceptions = []
++        for item in result["exceptions"]:
++            event = entries[item["index"]]
++            exceptions.append({"causeFactId": event["factId"], "kind": item["kind"],
++                               "einschraenkung": event["einschraenkungOffen"] if item["kind"] == "unbestaetigt"
++                               else event["einschraenkung"], "turn": event["turn"]})
+         return {"state": "declined" if standing["kind"] == "refusal" else "accepted", "since": standing["turn"],
+-                "causeFactId": standing["factId"], "beleg": standing["beleg"], "window": standing.get("window"), "text": standing["text"],
+-                "ausnahmen": [{"causeFactId": x["factId"], "kind": x["kind"], "einschraenkung": x["einschraenkung"], "turn": x["turn"]}
+-                              for x in exc if _in_window(x.get("window"), at, session=session, act=act)]}
+-    if ended is not None and ended[0]["kind"] == "acceptance" and ended[1]["kind"] == "revoke":
+-        return {"state": "revoked", "since": ended[1]["turn"], "causeFactId": ended[1]["factId"], "beleg": ended[0]["beleg"],
+-                "grantedTurn": ended[0]["turn"], "text": ended[1]["text"]}
++                "causeFactId": standing["factId"], "beleg": standing["beleg"], "window": standing.get("window"),
++                "text": standing["text"], "ausnahmen": exceptions}
++    if result["ended"] is not None:
++        old, latest = (entries[i] for i in result["ended"])
++        if old["kind"] == "acceptance" and latest["kind"] == "revoke":
++            return {"state": "revoked", "since": latest["turn"], "causeFactId": latest["factId"],
++                    "beleg": old["beleg"], "grantedTurn": old["turn"], "text": latest["text"]}
+     return None
+ 
+ 
+@@ -333,14 +321,6 @@
+     return [w.translate(_FOLD) for w in re.findall(r"[a-zäöüß]+", str(text or "").casefold())]
+ 
+ 
+-def restriction_head(restriction: Any) -> str | None:
+-    """V65X (Nachpruefung V65W E01/E02; AMASTER §24.2 Z. 1113 Validierung vor dem Writer, §34.1 Provenienz): the head of a
+-    restriction's own literal words - the last word of the quoted object ("auf die Schulter" -> schulter, "meine Haare" ->
+-    haare, "küssen" -> kussen). Grammar of the quote, no vocabulary. Read only."""
+-    toks = _word_tokens(restriction)
+-    return toks[-1] if toks else None
+-
+-
+ def _same_stem(a: str, b: str) -> bool:
+     n = len(a) if len(a) <= 3 else max(3, len(a) - 2)
+     return len(b) >= n and a[:n] == b[:n]
+@@ -359,66 +339,13 @@
+     return _same_word(a, b) or (len(a) == len(b) >= 4 and a[1:] == b[1:])
+ 
+ 
+-def restriction_parts(restriction: Any) -> tuple[str | None, str | None, list[str]]:
+-    """V66 (Audit5 E06 "Links/Rechts"; AMASTER §36.5 Z. 1949 "vorgeschlagene oder betroffene Handlung", §24.2 Z. 1113): the
+-    restriction's own quote as (head, determiner, attributes): the head is its last word; the first word of 4+ letters before
+-    it holds the determiner place (meine / deine / auf meine); the words of 4+ letters between that place and the head are
+-    the attributes that narrow the part ("meine LINKE Hand", "an meinem LINKEN Arm"). "die linke Hand" has its attribute in
+-    the determiner place and keeps no attribute (as before). Read only."""
+-    toks = _word_tokens(restriction)
+-    if not toks:
+-        return None, None, []
+-    pre = toks[:-1]
+-    i = next((k for k, t in enumerate(pre) if len(t) >= 4), None)
+-    if i is None:
+-        return toks[-1], None, []
+-    return toks[-1], pre[i], [t for t in pre[i + 1:] if len(t) >= 4]
+-
+-
+-def _attribute_conflict(text: Any, restriction: Any) -> bool:
+-    """V66 (E06): the text names the restriction's part with ANOTHER attribute than the restriction: the restriction has an
+-    attribute the text does not name, and right before the part the text puts, after the determiner in the giver's or the
+-    other voice, a word of 4+ letters the restriction does not have ("deine RECHTE Hand" against "meine linke Hand").
+-    Structure of both quotes; without that structure there is no conflict (the part stays named). Read only."""
+-    head, det, attrs = restriction_parts(restriction)
+-    if not head or not attrs:
+-        return False
+-    toks = _word_tokens(text)
+-    if all(any(_voice_match(q, t) for t in toks) for q in attrs):
+-        return False
+-    rtoks = _word_tokens(restriction)
+-    for k, t in enumerate(toks):
+-        if k >= 2 and _same_word(head, t):
+-            p1, p2 = toks[k - 1], toks[k - 2]
+-            if len(p1) >= 4 and not any(_voice_match(p1, r) for r in rtoks) and det and _voice_match(det, p2):
+-                return True
+-    return False
+-
+-
+ def names_restriction(text: Any, restriction: Any, *, exact: bool = False, word: bool = False) -> bool:
+-    """V65X (E02): does `text` name the restriction itself - a word with the stem of the restriction's head (Schulter /
+-    Schultern, Haare / Haaren, küssen / Kuss / küsse)? A necessary kernel anchor beside the act reading: an act that does not
+-    name the forbidden body part or kind is never a violation of that restriction, whatever a reading says. It decides
+-    nothing by itself (a named part is not yet a touch of it). Read only.
+-    Three uses (V66, Audit5 E06):
+-    - `exact` - the anchor PERMITS (an exception or restricted permission covers the act): the part itself (the same word,
+-      not a compound: "Handtasche" is not "meine Hand") AND every attribute of the restriction ("meine linke Hand" does not
+-      cover "deine rechte Hand", V65Z: innerhalb);
+-    - `word` - a validated reading may make the act a VIOLATION of a refused part: the part itself (not "Schultertasche" for
+-      "meine Schulter", V65Z: validiert) and no other attribute ("deine rechte Hand" is no touch of "meine linke Hand");
+-    - default - a VETO against acceptance ("does the act perhaps touch a refused part?"): the stem, as before, and no other
+-      attribute. A veto only keeps an act unknown; it never declines or accepts by itself."""
+-    head = restriction_head(restriction)
+-    if not head:
+-        return False
+-    toks = _word_tokens(text)
+-    same = _same_word if (exact or word) else _same_stem
+-    if not any(same(head, t) for t in toks):
+-        return False
+-    if exact:
+-        _h, _d, attrs = restriction_parts(restriction)
+-        return all(any(_voice_match(q, t) for t in toks) for q in attrs)
+-    return not _attribute_conflict(text, restriction)
++    """Canonical reader: native restriction anchor, never a consent by itself."""
++    from .native_boundary import restriction_match
++    # The text/restriction types are fixed by the existing reader's canonical
++    # string coercion; booleans and None never authorize an exact positive.
++    return restriction_match(str(text or ""), str(restriction or ""),
++                             "exact" if exact else "word" if word else "veto")
+ 
+ 
+ def literal_in(part: Any, text: Any) -> bool:
+@@ -485,15 +412,9 @@
+ 
+ 
+ def same_restriction(a: Any, b: Any) -> bool:
+-    """V65X (E01): two restrictions name the same body part or kind - their heads are the same word (die Schulter /
+-    meine Schulter / der Schulter). V66 (Audit5 E06): the same word, not a compound (Schulter / Schultertasche), and the same
+-    attributes ("meine linke Hand" and "meine rechte Hand" are two parts: a permission for one does not end the refusal of
+-    the other). Read only."""
+-    ha, da, qa = restriction_parts(a)
+-    hb, db, qb = restriction_parts(b)
+-    if not (ha and hb and (_same_word(ha, hb) or _same_word(hb, ha))):
+-        return False
+-    return all(any(_voice_match(x, y) for y in qb) for x in qa) and all(any(_voice_match(y, x) for x in qa) for y in qb)
++    """Current State identity is owned by Rust; no alternate Python comparison."""
++    from .native_boundary import restriction_match
++    return restriction_match(str(a or ""), str(b or ""), "same")
+ 
+ 
+ def restricted_refusals_standing(session: dict, prop: dict | None, *, before: tuple[int, int] | None = None, at: str | None = None,
+@@ -510,21 +431,13 @@
+     giver = str(prop.get("targetId") or "")
+     entries = sorted((e for e in body_contact_entries(session, prop) if before is None or (e["turn"], e["index"]) < before),
+                      key=lambda e: (e["turn"], e["index"]))
+-    standing: list[dict] = []
+-    for e in entries:
+-        if e["by"] not in ("", giver):
+-            continue
+-        if e["scope"] == "eingeschraenkt" and e["kind"] == "refusal" and e["einschraenkung"]:
+-            # V65X: a new refusal of the same part supersedes the older one (its words and window are the current ones)
+-            standing = [x for x in standing if not same_restriction(x["einschraenkung"], e["einschraenkung"])] + [e]
+-        elif e["scope"] == "eingeschraenkt" and e["kind"] in ("acceptance", "revoke") and e["einschraenkung"]:
+-            # V65X (Nachpruefung V65W E01; AMASTER §34.3 Z. 1831-1839 Revoke/Supersede als neue Evidenz, §36.5 Z. 1974): a later
+-            # permission or revocation of the giver for the SAME restricted part (validated scope reading + the same head
+-            # of both literal quotes) ends exactly that refusal - selectively; other restrictions stand.
+-            standing = [x for x in standing if not same_restriction(x["einschraenkung"], e["einschraenkung"])]
+-        elif e["scope"] == "jede_beruehrung" and e["kind"] == "acceptance":
+-            standing = []
+-    return [e for e in standing if _in_window(e.get("window"), at, session=session, act=act)]
++    from .native_boundary import reduce_restricted_refusals
++    # The actual state is reconstructed from canonical, ordered Fact evidence.
++    # Rust chooses the surviving evidence IDs; the existing reader remains
++    # owner of time-/scene-bound validity. Never rewrite historical Facts.
++    active = [_in_window(e.get("window"), at, session=session, act=act) for e in entries]
++    selected = reduce_restricted_refusals(giver, entries, active)
++    return [entries[i] for i in selected]
+ 
+ 
+ def act_boundary_readings(fact: dict | None) -> list[dict]:
+@@ -708,26 +621,22 @@
+ 
+ def restricted_permissions_standing(session: dict, prop: dict | None, *, before: tuple[int, int] | None = None,
+                                     at: str | None = None, act: dict | None = None) -> list[dict]:
+-    """V65Y (Gesamtpruefung V65X N05; AMASTER §36.5 Z. 1947-1957, Z. 1974): the giver's validated RESTRICTED permissions
+-    ("Du darfst meine Hand halten") standing at a point while no boundary for every touch stands. A later restricted
+-    refusal or revocation of the same part ends it; a later answer for every touch ends all of them (an earlier
+-    permission is not a current one). Outside their window they do not apply. Read only."""
++    """Only the native Rust reducer chooses current scoped permissions.
++
++    The existing canonical reader supplies time/scene validity for every
++    historical event and projects surviving indices onto the original Facts.
++    Unknown speaker, part or expired permission never yields a grant.
++    """
+     if not isinstance(prop, dict):
+         return []
+     giver = str(prop.get("targetId") or "")
+-    entries = sorted((e for e in body_contact_entries(session, prop) if before is None or (e["turn"], e["index"]) < before),
++    entries = sorted((e for e in body_contact_entries(session, prop)
++                      if before is None or (e["turn"], e["index"]) < before),
+                      key=lambda e: (e["turn"], e["index"]))
+-    standing: list[dict] = []
+-    for e in entries:
+-        if e["by"] not in ("", giver):
+-            continue
+-        if e["scope"] == "eingeschraenkt" and e["einschraenkung"]:
+-            standing = [x for x in standing if not same_restriction(x["einschraenkung"], e["einschraenkung"])]
+-            if e["kind"] == "acceptance":
+-                standing.append(e)
+-        elif e["scope"] == "jede_beruehrung":
+-            standing = []
+-    return [e for e in standing if _in_window(e.get("window"), at, session=session, act=act)]
++    active = [_in_window(e.get("window"), at, session=session, act=act) for e in entries]
++    from .native_boundary import reduce_restricted_permissions
++    selected = reduce_restricted_permissions(giver, entries, active)
++    return [entries[i] for i in selected]
+ 
+ 
+ def body_contact_state(session: dict, prop: dict | None, *, now: str | None = None) -> dict | None:

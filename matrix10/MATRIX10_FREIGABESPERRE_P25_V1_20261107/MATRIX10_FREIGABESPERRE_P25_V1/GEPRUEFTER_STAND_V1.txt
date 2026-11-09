@@ -1,0 +1,36 @@
+MATRIX10 - ECHTER LOKALER PRUEFSTAND DER EXTERNEN FREIGABESPERRE
+Datum: 07.11.2026
+
+GEPRUEFTES EINGABEPARKET:
+MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107.zip
+SHA-256: 33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1
+ZIP-Eintraege: 273
+Dateien mit P25-Manifest SHA-256: 271 OK
+Produktdateien / VERSION.txt von Freigabesperre unveraendert: JA
+
+GATE-SELBSTTEST:
+- Rot-/Blockierlogik: bestanden
+- ZIP Path Traversal: abgefangen
+- doppelte ZIP-Eintraege: abgefangen
+- absichtlich falsches ZIP unter erwartetem Namen: EXITCODE 2 / ROT
+- selbst pauschal als gruen gesetzte Einzelresultate: weiterhin BLOCKIERT
+
+ECHTER PRUEFLAUF (ohne npm-Abhaengigkeitsinstallation):
+Gesamt: ROT / keine Produktfreigabe
+Exitcode: 2
+
+NACHGEWIESENE SPERRGRUENDE:
+- Vertrag §0 benennt andere normative Quelldokumente als das vorhandene P25.
+- Der Windows-Produktstarter START.bat ist nicht im Paket.
+- Verbindliche EPUB-Testquelle fehlt im Pruefset.
+- Flask ist hier nicht installiert; damit keine echte Flask-Routensuite.
+- Node/npm Abhaengigkeiten sind im frischen ZIP nicht installiert.
+- Ein erwartetes Browser-E2E-Skript fehlt.
+- Echter Provider, Folgeturn, Reload, Isolation, bidirektionale UI-Matrix fehlen.
+- G-5, E-1, S-1, R-1, 8 alte Vertragstests, god_extract und D bleiben
+  gemaess beigepacktem P25-Baubericht offene Vorbefunde, NICHT frisch live nachgemessen.
+
+DIESE PRUEFUNG IST KEINE PRODUKTABNAHME.
+Der Prüfer kann in V1 absichtlich keine GRUENE Freigabe erzeugen.
+Eine echte unabhängige E2E-Pruefmaschine fehlt noch und muss VOR P26 gebaut
+und gegen echte SQLite-/Browser-/Modell-Fehlerbilder getestet werden.

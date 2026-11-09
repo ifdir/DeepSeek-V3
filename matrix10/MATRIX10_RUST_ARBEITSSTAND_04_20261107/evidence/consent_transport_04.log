@@ -1,0 +1,13 @@
+test_11_entries_are_never_silently_truncated (test_consent_transport_03.ConsentEnvelopeTests.test_11_entries_are_never_silently_truncated) ... ok
+test_fail_closed_without_native_library (test_consent_transport_03.ConsentEnvelopeTests.test_fail_closed_without_native_library) ... ok
+test_invalid_giver_or_non_event_never_becomes_empty_permission (test_consent_transport_03.ConsentEnvelopeTests.test_invalid_giver_or_non_event_never_becomes_empty_permission) ... ok
+test_legacy_nullable_fields_are_normalized_without_new_effect (test_consent_transport_03.ConsentEnvelopeTests.test_legacy_nullable_fields_are_normalized_without_new_effect) ... ok
+test_native_indices_are_validated_no_silent_drop (test_consent_transport_03.ConsentEnvelopeTests.test_native_indices_are_validated_no_silent_drop) ... ok
+test_preserves_canonical_indices_not_new_rows (test_consent_transport_03.ConsentEnvelopeTests.test_preserves_canonical_indices_not_new_rows) ... ok
+test_reader_op_is_not_a_write_authorization (test_consent_transport_03.ConsentEnvelopeTests.test_reader_op_is_not_a_write_authorization) ... ok
+test_zero_event_input_remains_valid_when_native_says_empty (test_consent_transport_03.ConsentEnvelopeTests.test_zero_event_input_remains_valid_when_native_says_empty) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.002s
+
+OK

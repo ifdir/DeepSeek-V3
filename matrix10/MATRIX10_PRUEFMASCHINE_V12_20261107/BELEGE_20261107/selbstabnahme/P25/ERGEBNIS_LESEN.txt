@@ -1,0 +1,230 @@
+MATRIX10 KETTENPRÜFER V1.2
+============================================================
+GESAMT: ROT
+Kandidat: 25e137c2-MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107.zip  SHA-256 33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1
+Modell: wiedergabe   Mutation: keine   Fälle: PU1_handlung_eigenes_subjekt,PU2_anrede_gegen_ui_auswahl,PU3_fremde_rede_abgelehnt,PU4_verneinung_mit_rede,AV1_frage_und_antwort,AV2_fremde_rede_im_avatar,GO1_bewusstlos,GO2_verneinter_zustand,RE1_figur_verlaesst_raum,RE2_unbekannte_figur
+
+Vorbereitung soll_2_7master.txt: GRUEN
+Vorbereitung soll_MATRIX10_SPS_MASTER.md: GRUEN
+Vorbereitung soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt: GRUEN
+Vorbereitung frontend: GRUEN: frisch gebaut (node_modules aus Cache mit gleichem package-lock), Kennung MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103
+
+[GRUEN] PU1_handlung_eigenes_subjekt (Puppet (§12.2), positiv): Johann trinkt sein Bier aus.
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: Eigene Handlung der geführten Figur wird als Handlung mit ihrer ID gespeichert; alle anwesenden Wahrnehmungsfähigen werden Zeugen; die Folgezug-Figur erhält das Ereignis. 2_7master Z.65, Z.1327, Z.1329, Z.222; Kettenvertrag §1, §16.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_01 geöffnet; Spreche als: Puppet char_g7_johann; Senden: Johann trinkt sein Bier aus.; Seite neu geladen
+   04 GRUEN            Gesendete IDs, Rolle, Modus, Actor, Target, Scope: Route /api/kernel/puppet, Sitzung ses_kp_fall_01, Figur char_g7_johann, UI-Ziel None, Text gleich
+   05 GRUEN            Backendroute und erste serverseitige Bindung: HTTP 200, Spur kp_1794076474149_489172: KERNEL_BIND,OUTPUT,READER,SQLITE_COMMIT,TARGET_BIND,TURN_END,TURN_INPUT,TURN_START,UI_REQUEST,VALIDATION,WRITER, Meldung: 
+   06 GRUEN            Kanonischer Owner und Writer: Writer: 1 Haupt-Facts, Commit 37 in Spur kp_1794076474149_489172 (PASS)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 3 Facts, 3 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum
+   09 GRUEN            Erzeugte Fact-IDs und ihr Inhalt: Haupt-Facts: action/char_g7_johann/trinkt sein Bier aus→None
+   10 GRUEN            Wissensverteilung und Unwissende: 3 Facts, 9 neue Zeugenwissen: Zeugen anwesend und wahrnehmend, Abwesende ['char_g7_clara', 'char_g7_robert'] ohne Wissen
+   11 GRUEN            Runtime-/Körper-/Szenenfolgen: Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 3 von 3 neuen Facts gleich; ok
+   13 GRUEN            BrainContext im Folgezug: Spur kpr_1794076474372_544863: Sprecher char_g7_mara (Mara Nowak), Sitzung gebunden, Zeugenwissen vorhanden, PROMPT nach Hauptcommit enthält ['trinkt sein bier aus']
+   14 GRUEN            Sichtbare Antwort und Komponentencommit: Folgezug von ['char_g7_mara']: Modellantwort und Commit in Spur kpr_1794076474372_544863
+   15 GRUEN            Zustand im Folgezug: Folgezug-Sprecher ['char_g7_mara'] anwesend und sprechfähig, Haupt-Facts erhalten
+   16 GRUEN            Reload/Neustart: nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt
+   17 GRUEN            Sichtbare UI-Rückanzeige: Verlauf nach Neuladen stimmt; Meldungen: ['Nicht alles aus deiner Eingabe wurde als Ereignis gespeichert: „trinkt sein Bier aus“ – Die Wirkung der Handlung ist unklar.']
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut
+   20 GRUEN            Status mit Begründung: alle Glieder belegt
+
+[ROT] PU2_anrede_gegen_ui_auswahl (Puppet (§12.2), positiv): Gustav, setz dich.
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: Eine Anrede ist Rede der geführten Figur; der im Text Angesprochene ist Adressat, auch gegen die UI-Auswahl; die UI-Auswahl selbst wird gesendet. 2_7master Z.131 (Sprecher, Ziel), Z.1355; SPS Paket 14; Kettenvertrag §16 Glied 04.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_02 geöffnet; Spreche als: Puppet char_g7_johann; Direktes Ziel: char_g7_mara; Senden: Gustav, setz dich.; Seite neu geladen
+   04 ROT              Gesendete IDs, Rolle, Modus, Actor, Target, Scope: UI-Ziel None statt char_g7_mara
+   05 GRUEN            Backendroute und erste serverseitige Bindung: HTTP 200, Spur kp_1794076494535_169394: KERNEL_BIND,OUTPUT,READER,SPRACHE,SQLITE_COMMIT,TARGET_BIND,TURN_END,TURN_INPUT,TURN_START,UI_REQUEST,VALIDATION,WRITER, Meldung: 
+   06 GRUEN            Kanonischer Owner und Writer: Writer: 1 Haupt-Facts, Commit 37 in Spur kp_1794076494535_169394 (PASS)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 3 Facts, 3 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum
+   09 GRUEN            Erzeugte Fact-IDs und ihr Inhalt: Haupt-Facts: speech/char_g7_johann/Gustav, setz dich.→char_g7_gustav
+   10 GRUEN            Wissensverteilung und Unwissende: 3 Facts, 9 neue Zeugenwissen: Zeugen anwesend und wahrnehmend, Abwesende ['char_g7_clara', 'char_g7_robert'] ohne Wissen
+   11 GRUEN            Runtime-/Körper-/Szenenfolgen: Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 3 von 3 neuen Facts gleich; ok
+   13 GRUEN            BrainContext im Folgezug: Spur kpr_1794076494721_671388: Sprecher char_g7_gustav (Gustav Pfeiffer), Sitzung gebunden, Zeugenwissen vorhanden, PROMPT nach Hauptcommit enthält ['gustav, setz dich']
+   14 GRUEN            Sichtbare Antwort und Komponentencommit: Folgezug von ['char_g7_gustav']: Modellantwort und Commit in Spur kpr_1794076494721_671388
+   15 GRUEN            Zustand im Folgezug: Folgezug-Sprecher ['char_g7_gustav'] anwesend und sprechfähig, Haupt-Facts erhalten
+   16 GRUEN            Reload/Neustart: nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt
+   17 GRUEN            Sichtbare UI-Rückanzeige: Verlauf nach Neuladen stimmt; Meldungen: ['keine']
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut
+   20 ROT              Status mit Begründung: 04 Gesendete IDs, Rolle, Modus, Actor, Target, Scope: UI-Ziel None statt char_g7_mara
+
+[GRUEN] PU3_fremde_rede_abgelehnt (Puppet (§12.2), negativ): Mara sagt: Lass mich in Ruhe!
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: Die geführte Figur darf keine Rede einer anderen Figur erzeugen; nichts wird gespeichert, die Ablehnung ist sichtbar. 2_7master Z.1030, Z.262 (fail-closed); Kettenvertrag §2.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_03 geöffnet; Spreche als: Puppet char_g7_johann; Senden: Mara sagt: Lass mich in Ruhe!; Seite neu geladen
+   04 GRUEN            Gesendete IDs, Rolle, Modus, Actor, Target, Scope: Route /api/kernel/puppet, Sitzung ses_kp_fall_03, Figur char_g7_johann, UI-Ziel None, Text gleich
+   05 GRUEN            Backendroute und erste serverseitige Bindung: HTTP 422, Spur kp_1794076514283_888924: KERNEL_BIND,SPRACHE,TARGET_BIND,TURN_INPUT,TURN_START,UI_REQUEST,VALIDATION, Meldung: Puppet: Nichts davon ist eine ausführbare Rede oder Handlung von Johann Bruckner: „Lass mich in Ruhe!“ – die Rede gehört einer anderen Figur
+   06 GRUEN            Kanonischer Owner und Writer: neue Facts 0, neue Züge 0, Commits der Hauptspur 0 (erwartet: keine)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 0 Facts, 1 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum
+   09 GRUEN            Erzeugte Fact-IDs und ihr Inhalt: Haupt-Facts: keine
+   10 GRUEN            Wissensverteilung und Unwissende: kein Wissen entstanden
+   11 GRUEN            Runtime-/Körper-/Szenenfolgen: Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 0 von 0 neuen Facts gleich; ok
+   13 NICHT_ZUTREFFEND BrainContext im Folgezug: abgelehnte Eingabe: nichts gespeichert, also kein Folgezug und kein BrainContext (Z.262)
+   14 NICHT_ZUTREFFEND Sichtbare Antwort und Komponentencommit: abgelehnte Eingabe: kein Folgezug (Z.262)
+   15 NICHT_ZUTREFFEND Zustand im Folgezug: abgelehnte Eingabe: kein Folgezug (Z.262)
+   16 GRUEN            Reload/Neustart: nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt
+   17 GRUEN            Sichtbare UI-Rückanzeige: Verlauf nach Neuladen stimmt; Meldungen: ['Puppet: Nichts davon ist eine ausführbare Rede oder Handlung von Johann Bruckner: „Lass mich in Ruhe!“ – die Rede gehört einer anderen Figur als der geführten. Nichts wurde gespeichert. Bitte anders formulieren oder die passende Figur wählen.']
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut
+   20 GRUEN            Status mit Begründung: alle Glieder belegt
+
+[GRUEN] PU4_verneinung_mit_rede (Puppet (§12.2), positiv): Johann küsst Mara nicht und sagt: Hallo.
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: Eine verneinte Handlung geschieht nicht; die Rede der Figur wird gespeichert und von den Anwesenden gehört. 2_7master Z.262, Z.1079, Z.1329.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_04 geöffnet; Spreche als: Puppet char_g7_johann; Senden: Johann küsst Mara nicht und sagt: Hallo.; Seite neu geladen
+   04 GRUEN            Gesendete IDs, Rolle, Modus, Actor, Target, Scope: Route /api/kernel/puppet, Sitzung ses_kp_fall_04, Figur char_g7_johann, UI-Ziel None, Text gleich
+   05 GRUEN            Backendroute und erste serverseitige Bindung: HTTP 200, Spur kp_1794076533564_767213: CONSENT_CHECK,KERNEL_BIND,OUTPUT,READER,SPRACHE,SQLITE_COMMIT,TARGET_BIND,TURN_END,TURN_INPUT,TURN_START,UI_REQUEST,VALIDATION,WRITER, Meldung: 
+   06 GRUEN            Kanonischer Owner und Writer: Writer: 1 Haupt-Facts, Commit 37 in Spur kp_1794076533564_767213 (PASS)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 3 Facts, 3 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum
+   09 GRUEN            Erzeugte Fact-IDs und ihr Inhalt: Haupt-Facts: speech/char_g7_johann/Hallo.→None
+   10 GRUEN            Wissensverteilung und Unwissende: 3 Facts, 9 neue Zeugenwissen: Zeugen anwesend und wahrnehmend, Abwesende ['char_g7_clara', 'char_g7_robert'] ohne Wissen
+   11 GRUEN            Runtime-/Körper-/Szenenfolgen: Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 3 von 3 neuen Facts gleich; ok
+   13 GRUEN            BrainContext im Folgezug: Spur kpr_1794076533753_98199: Sprecher char_g7_mara (Mara Nowak), Sitzung gebunden, Zeugenwissen vorhanden, PROMPT nach Hauptcommit enthält ['hallo']
+   14 GRUEN            Sichtbare Antwort und Komponentencommit: Folgezug von ['char_g7_mara']: Modellantwort und Commit in Spur kpr_1794076533753_98199
+   15 GRUEN            Zustand im Folgezug: Folgezug-Sprecher ['char_g7_mara'] anwesend und sprechfähig, Haupt-Facts erhalten
+   16 GRUEN            Reload/Neustart: nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt
+   17 GRUEN            Sichtbare UI-Rückanzeige: Verlauf nach Neuladen stimmt; Meldungen: ['Nicht alles aus deiner Eingabe wurde als Ereignis gespeichert: „Johann küsst Mara nicht“ – Die Handlung geschieht nach deinem Wortlaut nicht (verneint, gewünscht, gefragt, bedingt oder angekündigt) und wurde nicht ausgeführt.']
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut
+   20 GRUEN            Status mit Begründung: alle Glieder belegt
+
+[GRUEN] AV1_frage_und_antwort (Avatar (§12.1), positiv): Mara, wie geht es dir?
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: Die Frage des Avatars ist seine Rede an die Angesprochene; sie antwortet und kennt die Frage. 2_7master Z.1376-1389 (§27.3), Z.131, Z.1329.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_05 geöffnet; Modus-Reiter: Avatar; Spreche als: Avatar; Direktes Ziel: char_g7_mara; Senden: Mara, wie geht es dir?; Seite neu geladen
+   04 GRUEN            Gesendete IDs, Rolle, Modus, Actor, Target, Scope: Route /api/kernel/prepare, Sitzung ses_kp_fall_05, Figur char_g7_mara, UI-Ziel char_g7_mara, Text gleich
+   05 GRUEN            Backendroute und erste serverseitige Bindung: HTTP 200, Spur kpr_1794076554170_10123: APPRAISAL,BRAIN_CONTEXT,EFFECT_PLAN,GOAL_THEME,KERNEL_BIND,KOERPER_CHECK,MODEL_REPLY,OUTPUT,PROMPT,READER,SQLITE_COMMIT,TARGET_BIND,TURN_END,TURN_INPUT,TURN_RES, Meldung: 
+   06 GRUEN            Kanonischer Owner und Writer: Writer: 1 Haupt-Facts, Commit 34 in Spur kpr_1794076554170_10123 (INPUT_COMMITTED,PASS)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 3 Facts, 3 Züge, anwesend ['char_g7_gustav', 'char_g7_mara', 'char_g7_johann'], Ort schankraum
+   09 GRUEN            Erzeugte Fact-IDs und ihr Inhalt: Haupt-Facts: speech/char_g7_johann/Mara, wie geht es dir?→char_g7_mara
+   10 GRUEN            Wissensverteilung und Unwissende: 3 Facts, 9 neue Zeugenwissen: Zeugen anwesend und wahrnehmend, Abwesende ['char_g7_clara', 'char_g7_robert'] ohne Wissen
+   11 GRUEN            Runtime-/Körper-/Szenenfolgen: Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 3 von 3 neuen Facts gleich; ok
+   13 GRUEN            BrainContext im Folgezug: Spur kpr_1794076554170_10123: Sprecher char_g7_mara (Mara Nowak), Sitzung gebunden, Zeugenwissen vorhanden, PROMPT nach Hauptcommit enthält ['mara, wie geht es dir']
+   14 GRUEN            Sichtbare Antwort und Komponentencommit: Folgezug von ['char_g7_mara']: Modellantwort und Commit in Spur kpr_1794076554170_10123
+   15 GRUEN            Zustand im Folgezug: Folgezug-Sprecher ['char_g7_mara'] anwesend und sprechfähig, Haupt-Facts erhalten
+   16 GRUEN            Reload/Neustart: nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt
+   17 GRUEN            Sichtbare UI-Rückanzeige: Verlauf nach Neuladen stimmt; Meldungen: ['keine']
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut
+   20 GRUEN            Status mit Begründung: alle Glieder belegt
+
+[GRUEN] AV2_fremde_rede_im_avatar (Avatar (§12.1), negativ): Gustav sagt: Ich gehe jetzt nach Hause.
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: Der Avatar erzeugt keine Rede einer anderen Figur; unklare fremde Rede wird nicht gespeichert und sichtbar abgelehnt. 2_7master Z.1380-1382 (§27.3), Z.1030, Z.262.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_06 geöffnet; Modus-Reiter: Avatar; Spreche als: Avatar; Direktes Ziel: char_g7_mara; Senden: Gustav sagt: Ich gehe jetzt nach Hause.; Seite neu geladen
+   04 GRUEN            Gesendete IDs, Rolle, Modus, Actor, Target, Scope: Route /api/kernel/prepare, Sitzung ses_kp_fall_06, Figur char_g7_mara, UI-Ziel char_g7_mara, Text gleich
+   05 GRUEN            Backendroute und erste serverseitige Bindung: HTTP 422, Spur kpr_1794076574835_114278: TARGET_BIND,TURN_INPUT,TURN_START,UI_REQUEST, Meldung: Eingabe: Nichts davon ist eine ausführbare Rede oder Handlung von Johann Bruckner: „Ich gehe jetzt nach Hause.“ – die Rede gehört einer ande
+   06 GRUEN            Kanonischer Owner und Writer: neue Facts 0, neue Züge 0, Commits der Hauptspur 0 (erwartet: keine)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 0 Facts, 1 Züge, anwesend ['char_g7_gustav', 'char_g7_mara', 'char_g7_johann'], Ort schankraum
+   09 GRUEN            Erzeugte Fact-IDs und ihr Inhalt: Haupt-Facts: keine
+   10 GRUEN            Wissensverteilung und Unwissende: kein Wissen entstanden
+   11 GRUEN            Runtime-/Körper-/Szenenfolgen: Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 0 von 0 neuen Facts gleich; ok
+   13 NICHT_ZUTREFFEND BrainContext im Folgezug: abgelehnte Eingabe: kein Folgezug (Z.262)
+   14 NICHT_ZUTREFFEND Sichtbare Antwort und Komponentencommit: abgelehnte Eingabe: kein Folgezug (Z.262)
+   15 NICHT_ZUTREFFEND Zustand im Folgezug: abgelehnte Eingabe: kein Folgezug (Z.262)
+   16 GRUEN            Reload/Neustart: nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt
+   17 GRUEN            Sichtbare UI-Rückanzeige: Verlauf nach Neuladen stimmt; Meldungen: ['Eingabe: Nichts davon ist eine ausführbare Rede oder Handlung von Johann Bruckner: „Ich gehe jetzt nach Hause.“ – die Rede gehört einer anderen Figur als der geführten. Nichts wurde gespeichert. Bitte anders formulieren (Handlung in *Sternchen*, Rede als ei
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut
+   20 GRUEN            Status mit Begründung: alle Glieder belegt
+
+[ROT] GO1_bewusstlos (God (§12.4), positiv): Mara ist bewusstlos.
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: God setzt den Körperzustand; eine bewusstlose Figur spricht nicht und nimmt nichts wahr. 2_7master Z.224 (Capability), Z.1329, Z.2402.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_07 geöffnet; Modus-Reiter: Gott; Senden: Mara ist bewusstlos.; Seite neu geladen
+   04 GRUEN            Gesendete IDs, Rolle, Modus, Actor, Target, Scope: Route /api/kernel/god, Sitzung ses_kp_fall_07, Figur None, UI-Ziel None, Text gleich
+   05 GRUEN            Backendroute und erste serverseitige Bindung: HTTP 200, Spur kg_1794076594195_317700: GOD_BODY,KERNEL_BIND,KOERPER_BESTAETIGUNG,OUTPUT,READER,SCENE_TRANSITION,SQLITE_COMMIT,TURN_END,TURN_START,UI_REQUEST,VALIDATION,WRITER, Meldung: 
+   06 GRUEN            Kanonischer Owner und Writer: Writer: 2 Haupt-Facts, Commit 37 in Spur kg_1794076594195_317700 (PASS)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 4 Facts, 3 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum
+   09 GRUEN            Erzeugte Fact-IDs und ihr Inhalt: Haupt-Facts: god/god/[body] Mara ist bewusstlos.→char_g7_mara; body_state/char_g7_mara/Mara Nowak: Körperzustand — posture: liegend, cons→None
+   10 ROT              Wissensverteilung und Unwissende: char_g7_mara bezeugt 'Man hört so einiges hier, nich', nimmt aber nicht wahr (Bewusstsein 0.2); char_g7_mara bezeugt 'Lehnt sich leicht nach vorne, ', nimmt aber nicht wahr (Bewusstsein 0.2); M als Zeuge im Folgezug: 'Man hört so einiges hier, nicht wahr? Di'
+   11 GRUEN            Runtime-/Körper-/Szenenfolgen: Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 4 von 4 neuen Facts gleich; ok
+   13 NICHT_ZUTREFFEND BrainContext im Folgezug: Soll offen: ob Anwesende einen von God gesetzten Körperzustand wahrnehmen, legt 2_7master nicht eindeutig fest (Z.1340-1352 'God setzt Wissen' nur für Betroffene) - nicht vom Prüfer zu entscheiden
+   14 GRUEN            Sichtbare Antwort und Komponentencommit: Folgezug von ['char_g7_gustav']: Modellantwort und Commit in Spur kpr_1794076594399_529627
+   15 GRUEN            Zustand im Folgezug: Folgezug-Sprecher ['char_g7_gustav'] anwesend und sprechfähig, Haupt-Facts erhalten
+   16 GRUEN            Reload/Neustart: nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt
+   17 GRUEN            Sichtbare UI-Rückanzeige: Verlauf nach Neuladen stimmt; Meldungen: ['Gott: 1 tatsächlich angewendet, 0 nicht angewendet · Vollzogen: zustand Mara Nowak']
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut
+   20 ROT              Status mit Begründung: 10 Wissensverteilung und Unwissende: char_g7_mara bezeugt 'Man hört so einiges hier, nich', nimmt aber nicht wahr (Bewusstsein 0.2); char_g7_mara bezeugt 'Lehnt sich leicht nach vorne, ', nimmt aber nicht wahr (Bewusstsein 0.2); M als Zeuge im Folgezug: 'Man hört so einiges hier, nicht wahr? Di'
+
+[GRUEN] GO2_verneinter_zustand (God (§12.4), negativ): Mara ist nicht bewusstlos.
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: Ein verneinter Zustand ändert den Körper nicht. 2_7master Z.262 (keine Wahrheit aus Unklarem), Z.1079.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_08 geöffnet; Modus-Reiter: Gott; Senden: Mara ist nicht bewusstlos.; Seite neu geladen
+   04 GRUEN            Gesendete IDs, Rolle, Modus, Actor, Target, Scope: Route /api/kernel/god, Sitzung ses_kp_fall_08, Figur None, UI-Ziel None, Text gleich
+   05 GRUEN            Backendroute und erste serverseitige Bindung: HTTP 200, Spur kg_1794076614177_322060: GOD_BODY,KERNEL_BIND,KOERPER_BESTAETIGUNG,OUTPUT,READER,SCENE_TRANSITION,SQLITE_COMMIT,TURN_END,TURN_START,UI_REQUEST,VALIDATION,WRITER, Meldung: 
+   06 GRUEN            Kanonischer Owner und Writer: Writer: 1 Haupt-Facts, Commit 37 in Spur kg_1794076614177_322060 (PASS)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 1 Facts, 1 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum
+   09 GRUEN            Erzeugte Fact-IDs und ihr Inhalt: Haupt-Facts: god/god/[body] Mara ist nicht bewusstlos.→char_g7_mara
+   10 GRUEN            Wissensverteilung und Unwissende: 1 Facts, 0 neue Zeugenwissen: Zeugen anwesend und wahrnehmend, Abwesende ['char_g7_clara', 'char_g7_robert'] ohne Wissen
+   11 GRUEN            Runtime-/Körper-/Szenenfolgen: Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 1 von 1 neuen Facts gleich; ok
+   13 NICHT_ZUTREFFEND BrainContext im Folgezug: kein Folgezug vertraglich bestimmt: God erfindet keinen Folgeakt (2_7master §46.6)
+   14 NICHT_ZUTREFFEND Sichtbare Antwort und Komponentencommit: kein Folgezug vertraglich bestimmt (§46.6)
+   15 NICHT_ZUTREFFEND Zustand im Folgezug: kein Folgezug vertraglich bestimmt (§46.6)
+   16 GRUEN            Reload/Neustart: nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt
+   17 GRUEN            Sichtbare UI-Rückanzeige: Verlauf nach Neuladen stimmt; Meldungen: ['Gott: 0 tatsächlich angewendet, 2 nicht angewendet · ABGELEHNT: Mara ist nicht bewusstlos. · UNKLAR: „Mara ist nicht bewusstlos.“ (Körperzustand nicht sicher lesbar oder nicht bestätigt - nicht angewendet)']
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut
+   20 GRUEN            Status mit Begründung: alle Glieder belegt
+
+[ROT] RE1_figur_verlaesst_raum (Regie (§12.3), positiv): Gustav steht auf und geht in die Küche.
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: Regie bindet Actor und exakt angeordnete Szenenwirkung (Gustav geht in die Küche); Anwesenheit ist kanonisch: Szenenort, Anwesenheitsliste und Position jeder Figur stimmen überein, die anderen bleiben, wo sie sind. 2_7master Z.2596, Z.1415, Z.1327, Z.1329, Z.2402.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_09 geöffnet; Modus-Reiter: Regisseur; Senden: Gustav steht auf und geht in die Küche.; Seite neu geladen
+   04 GRUEN            Gesendete IDs, Rolle, Modus, Actor, Target, Scope: Route /api/kernel/regie, Sitzung ses_kp_fall_09, Figur None, UI-Ziel None, Text gleich
+   05 GRUEN            Backendroute und erste serverseitige Bindung: HTTP 200, Spur kr_1794076653608_813580: EFFECT_PLAN,EFFECT_VERDICT,KERNEL_BIND,KOERPER_BESTAETIGUNG,OUTPUT,READER,REGIE_BODY,REGIE_SQLITE_RUECKLESUNG,SCENE_TRANSITION,SQLITE_COMMIT,TURN_END,TURN_REGIE, Meldung: 
+   06 GRUEN            Kanonischer Owner und Writer: Writer: 4 Haupt-Facts, Commit 37 in Spur kr_1794076653608_813580 (PASS)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 6 Facts, 4 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort kueche
+   09 GRUEN            Erzeugte Fact-IDs und ihr Inhalt: Haupt-Facts: regie/char_g7_gustav/Gustav steht auf und geht in die Küche.→None; action/char_g7_gustav/Gustav steht auf und geht in die Küche.→None; physical/char_g7_gustav/Gustav steht auf und geht in die Küche.→char_g7_gustav; body_state/char_g7_gustav/Gustav Pfeiffer: Körperzustand — posture: steh
+   10 ROT              Wissensverteilung und Unwissende: Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'Gustav steht auf und geht in d'; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'Gustav steht auf und geht in d'; Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'Gustav Pfeiffer: Körperzustand'; Zeuge char_g7_mara ohne kanonisches Ze
+   11 ROT              Runtime-/Körper-/Szenenfolgen: char_g7_johann anwesend in Szene 'Küche', Position aber 'Schankraum'; char_g7_mara anwesend in Szene 'Küche', Position aber 'Schankraum'
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 6 von 6 neuen Facts gleich; ok
+   13 GRUEN            BrainContext im Folgezug: Spur kpr_1794076653833_209077: Sprecher char_g7_gustav (Gustav Pfeiffer), Sitzung gebunden, Zeugenwissen vorhanden, PROMPT nach Hauptcommit enthält ['gustav steht auf und geht in die küche']
+   14 GRUEN            Sichtbare Antwort und Komponentencommit: Folgezug von ['char_g7_gustav']: Modellantwort und Commit in Spur kpr_1794076653833_209077
+   15 GRUEN            Zustand im Folgezug: Folgezug-Sprecher ['char_g7_gustav'] anwesend und sprechfähig, Haupt-Facts erhalten
+   16 GRUEN            Reload/Neustart: nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt
+   17 GRUEN            Sichtbare UI-Rückanzeige: Verlauf nach Neuladen stimmt; Meldungen: ['keine']
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut
+   20 ROT              Status mit Begründung: 10 Wissensverteilung und Unwissende: Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'Gustav steht auf und geht in d'; Zeuge char_g7_mara ohne kanonisches Zeugenwissen zu 'Gustav steht auf und geht in d'; Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'Gustav Pfeiffer: Körperzustand'; Z
+
+[GRUEN] RE2_unbekannte_figur (Regie (§12.3), negativ): Kurt Wendler betritt den Schankraum.
+   01 GRUEN            SOLL-Vertrag und konkrete Erwartung: Regie erfindet keine Figur: eine unbekannte Person wird nicht angelegt, nichts wird gespeichert, die Ablehnung ist sichtbar. 2_7master Z.2549, Z.2596, Z.262.
+   02 GRUEN            Ausgangs-ZIP, Hash und Datenbank: ZIP 33a51497ce5e84fa…, DB-Kopie aus Original e03dc44584db8b99… (Original unverändert: True)
+   03 GRUEN            Reale UI-Bedienung: Profil gewählt, Chat ses_kp_fall_10 geöffnet; Modus-Reiter: Regisseur; Senden: Kurt Wendler betritt den Schankraum.; Seite neu geladen
+   04 GRUEN            Gesendete IDs, Rolle, Modus, Actor, Target, Scope: Route /api/kernel/regie, Sitzung ses_kp_fall_10, Figur None, UI-Ziel None, Text gleich
+   05 GRUEN            Backendroute und erste serverseitige Bindung: HTTP 422, Spur kr_1794076673490_753773: EFFECT_PLAN,EFFECT_VERDICT,KERNEL_BIND,SCENE_TRANSITION,TURN_REGIE,TURN_START,UI_REQUEST,VALIDATION,WRITER, Meldung: Regie nicht ausgefuehrt: handelnde Figur nicht gebunden. In der Regie-Oberflaeche 'Angewiesene Figur' auswaehlen; 'Direktes Ziel' ist die be
+   06 GRUEN            Kanonischer Owner und Writer: neue Facts 0, neue Züge 0, Commits der Hauptspur 0 (erwartet: keine)
+   07 GRUEN            Zustand vor dem Write: vorher: ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'] in Schankraum, alle wahrnehmungsfähig; 0 Facts, 1 Züge (Nur-Lese-Verbindung)
+   08 GRUEN            Zustand nach dem Write: nachher: 0 Facts, 1 Züge, anwesend ['char_g7_gustav', 'char_g7_johann', 'char_g7_mara'], Ort schankraum
+   09 GRUEN            Erzeugte Fact-IDs und ihr Inhalt: Haupt-Facts: keine
+   10 GRUEN            Wissensverteilung und Unwissende: kein Wissen entstanden
+   11 GRUEN            Runtime-/Körper-/Szenenfolgen: Laufzeit, Körper und Anwesenheit stimmig (Szene Schankraum)
+   12 GRUEN            Zuständiger Reader: GET /api/sessions: HTTP 200, 0 von 0 neuen Facts gleich; ok
+   13 NICHT_ZUTREFFEND BrainContext im Folgezug: abgelehnte Eingabe: kein Folgezug (Z.262)
+   14 NICHT_ZUTREFFEND Sichtbare Antwort und Komponentencommit: abgelehnte Eingabe: kein Folgezug (Z.262)
+   15 NICHT_ZUTREFFEND Zustand im Folgezug: abgelehnte Eingabe: kein Folgezug (Z.262)
+   16 GRUEN            Reload/Neustart: nach Server-Neustart: SQLite gleich, Reader vollständig, Verlauf in der Oberfläche stimmt
+   17 GRUEN            Sichtbare UI-Rückanzeige: Verlauf nach Neuladen stimmt; Meldungen: ["POST /api/kernel/regie 422 REGIE_AKTEUR_NICHT_GEBUNDEN: Regie nicht ausgefuehrt: handelnde Figur nicht gebunden. In der Regie-Oberflaeche 'Angewiesene Figur' auswaehlen; 'Direktes Ziel' ist die betroffene Figur, NICHT der Handelnde. Keine Szenenaenderung ge
+   18 GRUEN            Negative Isolation: andere Sitzungen, Figurenstamm, Welt, Nutzer und Konfiguration unverändert
+   19 GRUEN            Prüfung am frisch entpackten ZIP: Kandidat frisch aus ZIP 33a51497ce5e84fa… in eigenem Arbeitsordner entpackt und gebaut
+   20 GRUEN            Status mit Begründung: alle Glieder belegt

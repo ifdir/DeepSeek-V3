@@ -1,0 +1,11 @@
+MATRIX10 KETTENPRÜFER V1.2
+============================================================
+GESAMT: ROT
+Kandidat: 40d6511f-MATRIX10_V92_P23_QUELLREPARATUR_ROT_20261107.zip  SHA-256 4d7113084eb74fa5f13e0b371f174c23d84048d06c1a40a2dce61fdf827e32eb
+Modell: wiedergabe   Mutation: keine   Fälle: PU1_handlung_eigenes_subjekt,PU2_anrede_gegen_ui_auswahl,PU4_verneinung_mit_rede
+
+Vorbereitung soll_2_7master.txt: GRUEN
+Vorbereitung soll_MATRIX10_SPS_MASTER.md: GRUEN
+Vorbereitung soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt: GRUEN
+Vorbereitung frontend: ROT: Frontend-Bau Exitcode 1 (node_modules aus Cache mit gleichem package-lock)
+KANDIDAT ROT: Frontend des Kandidaten: Frontend-Bau Exitcode 1 (node_modules aus Cache mit gleichem package-lock)

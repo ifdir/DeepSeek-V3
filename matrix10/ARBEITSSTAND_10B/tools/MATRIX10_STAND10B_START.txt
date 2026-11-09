@@ -1,0 +1,47 @@
+MATRIX10 - Arbeitsstand 10B - Produktpaket Linux x86_64
+=======================================================
+
+STATUS: ROT - KEINE Produktfreigabe. Arbeitsstand zum Pruefen und Weiterarbeiten.
+Plattform: Linux x86_64 (nur dort gebaut und getestet). Windows/Android: NICHT getestet, keine Aussage.
+Details: MATRIX10_STAND10B_STATUS.json (Commit, Hashes je Ebene, Vertragsstatus) und das Pruefprotokoll.
+Vertragsgrundlage im Paket: vertrag/ (AMASTERv2, Matrix10.txt, Reparatur-Kettenvertrag); SPS: MATRIX10_SPS_MASTER.md.
+
+Inhalt: P25 + Reparaturen 06/06a (Rust-Einwilligungskern ABI 3, 503-Fehlerkette, Fehleranzeige), 07 (K-01
+TurnTruth- und Commit-Bindung, W2, SEC Schluesselleck), 08 (K-02 Wahrnehmung der Antwortphase, Figurenabruf auf der
+Gedaechtnisseite), 09 (F1-B2: Bewertung nennt die Person ihres
+Beziehungsrahmens), 10 (F2: Folgezuege ohne Eingabe spricht nur die vom Server gewaehlte Figur), 10a (Rust-Ladediagnose beim
+Start, Laden auch aus Download), 10B (unabhaengige Modell-Lesungen gleichzeitig, kuerzere Wartezeit). Gebaut: matrix_api/native/libmatrix_boundary_core.so (Rust), frontend_dist/ (Frontend).
+
+Voraussetzungen
+---------------
+- Linux x86_64, Python 3.11 oder neuer (geprueft mit 3.13)
+- Python-Paket Flask:   python3 -m pip install -r requirements.txt
+  (Node/npm und Rust werden zum START NICHT gebraucht - Frontend und Rust-Bibliothek sind fertig gebaut.)
+
+Starten
+-------
+1. ZIP in einen NEUEN, leeren Ordner entpacken.
+2. cd MATRIX10_STAND10B_PRODUKT_linux-x86_64_<commit>
+3. python3 START.py   (die Zeile "[RUST] Einwilligungskern geladen" muss erscheinen; sonst steht dort der Grund)
+4. Browser selbst oeffnen: http://127.0.0.1:8080   (API: http://127.0.0.1:5050)
+   (Unter Linux oeffnet START.py den Browser nicht automatisch.)
+   Andere Ports, falls 8080/5050 belegt: MATRIX_UI_PORT=8180 MATRIX_API_PORT=5150 python3 START.py
+Datenbank: data/matrix10.sqlite (wird beim ersten Start mit der eingebauten Welt angelegt).
+
+Ohne Modell-Schluessel: unter "Konfiguration" Provider "Nur lokale Synapse (kein LLM)" waehlen. Dann antworten die
+Figuren mit der lokalen Synapse (kein KI-Text). Mit Schluessel: Provider + API-Key unter "Konfiguration" eintragen.
+WICHTIG: Ohne Schluessel veraendert ein Erlebnis (z. B. ein Schlag) Gefuehl, Absicht und Beziehung einer Figur NICHT -
+die Bedeutung liefert das Modell, der Server prueft und speichert sie (mit Testmodell gemessen: F1 erfuellt).
+Die Verwendung eines echten Modells ist in diesem Stand NICHT abgenommen (BLOCKIERT).
+
+Selbst pruefen (optional)
+-------------------------
+cd tests && MATRIX07_ROOT=.. python3 -m pytest -q ../pruefung/tests
+(K-01/K-02/SEC-Tests auf temporaeren Datenbanken; aendert data/ nicht)
+
+Bekannte offene Punkte (Auszug, vollstaendig in MATRIX10_STAND10B_STATUS.json)
+------------------------------------------------------------------------------
+ROT:       P25-Altbefunde der Testsuite (24 Fehlschlaege + 1 Fehler), 1 P25-Test zusaetzlich rot durch K-01 (verlangt
+           den reparierten Defektpfad), Rust-only-Mutation ueber die Kette nicht erkannt, epistemische Gedaechtnis-
+           zustaende/Hoerensagen fehlen (K-03), weitere ROT-Ketten laut Gesamtkarte.
+BLOCKIERT: Formulierung und Verhalten mit echtem Modell, Pruefmaschine V12, 2 Fehlerpfade nie erreicht.

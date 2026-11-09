@@ -1,0 +1,26 @@
+{
+ "pruefer": "MATRIX10_KETTENPRUEFER_V12",
+ "zeit_utc": "2026-11-07T18:51:48.518080+00:00",
+ "modus": "wiedergabe",
+ "mutation": "",
+ "basis": {
+  "zip": "25e137c2-MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107.zip",
+  "zip_sha": "33a51497ce5e84fa9ee1f05a96338a67f93fdb17233b811713648cd4ac9860d1",
+  "db_sha": "e03dc44584db8b990abf62d6d1ae949e149268048b88686db2496e1361186f97",
+  "faelle_sha": "fd352b89881c44c331804960f17db255f9afdf2511a90f46da8f20f20c10c11d",
+  "pruefer_sha": "fd3583d71869c8a6dfe80ca4fb6dae53d08ca8d108f612c468fe7d9e655f62c3",
+  "auswertung_sha": "3b9c618935478cc7d4df1bb4fa0848bb5debad24dde8db7116f1f516e4c49039"
+ },
+ "angefordert": [
+  "PU1_handlung_eigenes_subjekt"
+ ],
+ "faelle": [],
+ "vorbereitung": {
+  "soll_2_7master.txt": "GRUEN",
+  "soll_MATRIX10_SPS_MASTER.md": "GRUEN",
+  "soll_VERBINDLICHER_REPARATUR_KETTENVERTRAG.txt": "GRUEN",
+  "frontend": "GRUEN: frisch gebaut (node_modules aus Cache mit gleichem package-lock), Kennung MATRIX10_CHATHERE_V91_KETTENREPARATUR_20261103"
+ },
+ "abbruch": "RuntimeError: BLOCKIERT: Port(s) [5050] schon belegt - fremder Server, Messung wäre wertlos",
+ "gesamt": "BLOCKIERT"
+}

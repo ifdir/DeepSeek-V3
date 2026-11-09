@@ -1,0 +1,34 @@
+[DATEN] Vorhandene Projektdatenbank bleibt erhalten: /tmp/claude-0/-home-user-DeepSeek-V3/fe0b93ac-e3e4-569a-9216-d3a55d143b32/scratchpad/live07/MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107/data/matrix10.sqlite
+[START] Backend: Python -> Port 5150
+[START] Frontend: fertiger Build, nur Python -> Port 8180
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5150
+Press CTRL+C to quit
+127.0.0.1 - - [08/Nov/2026 11:01:54] "GET /api/health HTTP/1.1" 200 -
+[OK] Backend und Frontend laufen.
+[OK] Node.js/npm werden NICHT benoetigt.
+[UI] http://127.0.0.1:8180/
+[STOP] Strg+C beendet die von START.py gestarteten Prozesse.
+127.0.0.1 - - [08/Nov/2026 11:01:54] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 11:01:54] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 11:01:54] "GET /api/sessions/ses_v92 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 11:01:54] "POST /api/kernel/prepare HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 11:01:54] "GET /api/sessions/ses_v92 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 11:01:55] "POST /api/kernel/commit HTTP/1.1" 200 -
+[DATEN] Vorhandene Projektdatenbank bleibt erhalten: /tmp/claude-0/-home-user-DeepSeek-V3/fe0b93ac-e3e4-569a-9216-d3a55d143b32/scratchpad/live07/MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107/data/matrix10.sqlite
+[START] Backend: Python -> Port 5150
+[START] Frontend: fertiger Build, nur Python -> Port 8180
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5150
+Press CTRL+C to quit
+127.0.0.1 - - [08/Nov/2026 11:01:55] "GET /api/health HTTP/1.1" 200 -
+[OK] Backend und Frontend laufen.
+[OK] Node.js/npm werden NICHT benoetigt.
+[UI] http://127.0.0.1:8180/
+[STOP] Strg+C beendet die von START.py gestarteten Prozesse.
+127.0.0.1 - - [08/Nov/2026 11:01:56] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 11:01:56] "GET /api/sessions/ses_v92 HTTP/1.1" 200 -

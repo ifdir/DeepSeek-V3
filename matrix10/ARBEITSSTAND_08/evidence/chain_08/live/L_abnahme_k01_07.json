@@ -1,0 +1,763 @@
+{
+  "vorlage_sha256": "a37f8f886c8a3c092382d90a6b7a1754f56efc8a8d3a3b49fe91a6f3f2c001ec",
+  "kriterien": {
+    "L1_ui_commit_200_turn_und_weiterreden": true,
+    "L2_eingabe_actor_bedienperson_user": true,
+    "L3_figurenrede_ist_servertext": true,
+    "L4_ui_zeigt_figurenrede": true,
+    "L5_verlauf_nach_neustart_sichtbar": true,
+    "L6_folgeturn_nach_neustart_commit_200": true,
+    "L7_folgeturn_liest_erste_figurenrede": true,
+    "N1_fremder_eingabe_actor_422": true,
+    "N2_erfundene_figurenrede_abgewiesen": true,
+    "N3_sqlite_unveraendert_nach_faelschung": true,
+    "N4_fremde_session_unveraendert": true,
+    "S1_kein_schluessel_in_mcc": true,
+    "S2_kein_schluessel_im_browserzustand": true,
+    "S3_kein_schluessel_in_logs": true
+  },
+  "phase1": {
+    "schritte": [
+      {
+        "name": "P1_nutzer",
+        "fehler": null,
+        "alerts": []
+      },
+      {
+        "name": "P1_config_synapse",
+        "fehler": null,
+        "alerts": []
+      },
+      {
+        "name": "P1_chat_oeffnen",
+        "fehler": null,
+        "alerts": []
+      },
+      {
+        "name": "P1_senden",
+        "fehler": null,
+        "alerts": []
+      },
+      {
+        "name": "P1_weiterreden",
+        "fehler": null,
+        "alerts": []
+      }
+    ],
+    "api": [
+      {
+        "status": 200,
+        "method": "GET",
+        "url": "/api/users",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "GET",
+        "url": "/api/mcc",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/llm/ping",
+        "code": "URLError: <urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "status": 200,
+        "method": "GET",
+        "url": "/api/mcc",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "GET",
+        "url": "/api/config?scope=user",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "PUT",
+        "url": "/api/config",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "PATCH",
+        "url": "/api/users/admin",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "GET",
+        "url": "/api/sessions/ses_v92",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "PUT",
+        "url": "/api/sessions/ses_v92",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/kernel/prepare",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/llm/formulate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/kernel/commit",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "GET",
+        "url": "/api/sessions/ses_v92",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "GET",
+        "url": "/api/sessions/ses_v92",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/kernel/autochat-gate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/kernel/prepare",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/llm/formulate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/kernel/commit",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "GET",
+        "url": "/api/sessions/ses_v92",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/kernel/autochat-gate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "GET",
+        "url": "/api/sessions/ses_v92",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/kernel/prepare",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/llm/formulate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/kernel/commit",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "GET",
+        "url": "/api/sessions/ses_v92",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "GET",
+        "url": "/api/sessions/ses_v92",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      }
+    ]
+  },
+  "phase1_neue_facts": [
+    {
+      "id": "fact_1a1bb0b2b6f_bdbf266a0003",
+      "kind": "speech",
+      "actorId": "user",
+      "targetId": "char_g7_johann",
+      "text": "Johann, wie geht es dir heute?",
+      "sourceTurnId": "tt_1a1bb0b2b6c_8257846a0001",
+      "authority": "teilnehmer"
+    },
+    {
+      "id": "fact_1a1bb0b2bad_4cf5baa40011",
+      "kind": "speech",
+      "actorId": "char_g7_johann",
+      "targetId": "user",
+      "text": "Ehrlich gesagt: Das weiß ich nicht.",
+      "sourceTurnId": "tt_1a1bb0b2b6c_8257846a0001",
+      "authority": "character"
+    },
+    {
+      "id": "fact_1a1bb0b3a7e_2ad038860020",
+      "kind": "speech",
+      "actorId": "char_g7_mara",
+      "targetId": "char_g7_johann",
+      "text": "Ich habe dich gehört.",
+      "sourceTurnId": "tt_1a1bb0b3a25_2d824eeb001a",
+      "authority": "character"
+    },
+    {
+      "id": "fact_1a1bb0b3b6c_0f0df63d002f",
+      "kind": "speech",
+      "actorId": "char_g7_johann",
+      "targetId": "char_g7_mara",
+      "text": "Ich hab gezahlt.",
+      "sourceTurnId": "tt_1a1bb0b3b12_65c7eea90029",
+      "authority": "character"
+    }
+  ],
+  "phase2": {
+    "schritte": [
+      {
+        "name": "P2_neuladen_chat",
+        "fehler": null,
+        "alerts": []
+      },
+      {
+        "name": "P2_senden",
+        "fehler": null,
+        "alerts": []
+      }
+    ],
+    "api": [
+      {
+        "status": 200,
+        "method": "GET",
+        "url": "/api/mcc",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "GET",
+        "url": "/api/sessions/ses_v92",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "PUT",
+        "url": "/api/sessions/ses_v92",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/kernel/prepare",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/llm/formulate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/kernel/commit",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "GET",
+        "url": "/api/sessions/ses_v92",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "GET",
+        "url": "/api/sessions/ses_v92",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs/live",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/ids/allocate",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      },
+      {
+        "status": 200,
+        "method": "POST",
+        "url": "/api/logs",
+        "code": null
+      }
+    ]
+  },
+  "negativ": {
+    "prepare_fremder_actor": [
+      422,
+      "EINGABE_ACTOR_UNGEBUNDEN"
+    ],
+    "commit_erfunden": [
+      422,
+      "TURN_BELEG_UNGUELTIG"
+    ]
+  },
+  "gesamt": "ERFUELLT"
+}

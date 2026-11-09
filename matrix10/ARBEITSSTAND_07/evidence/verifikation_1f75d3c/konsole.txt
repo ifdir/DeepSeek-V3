@@ -1,0 +1,45 @@
+{
+  "teilpruefungen": {
+    "0_integritaet": "PASS",
+    "A_fail_closed_ohne_bibliothek": "PASS",
+    "B_cargo_test": "PASS",
+    "C_build_und_K1_abi3": "PASS",
+    "D_einwilligungskette_stage07": "PASS",
+    "D2_differenz_p25": "PASS",
+    "D3_http_503": "PASS",
+    "D3_K2a_verschluckte_pfade": "PASS",
+    "LIVE_k01_sec": "PASS",
+    "D3F_frontend": "PASS",
+    "E_gegenprobe": "ROT",
+    "F_p25_testsuite": "PASS",
+    "K_k01_sec_tests": "PASS",
+    "AUS_ausgangsnachweis_06a": "PASS",
+    "MUT_mutationsgegenprobe": "PASS",
+    "G_pruefmaschine_v12": "BLOCKIERT"
+  },
+  "vertragsstatus": {
+    "C04_fremder_giver_und_abgelaufene_fenster": "GRUEN",
+    "S05_tat_antwort_hebt_keine_grenze_auf": "GRUEN",
+    "W1_W3_schreibgrenze_giver_und_proposition": "GRUEN",
+    "W2_lifecycle_evidenz_eigene_aeusserung": "GRUEN",
+    "K1_abi3": "GRUEN",
+    "K2_http_503": "GRUEN",
+    "K2a_verschluckte_pfade": "BLOCKIERT",
+    "K2_frontend_fehler_sichtbar": "GRUEN",
+    "P25_altbefunde_testsuite": "ROT",
+    "modell_folgeturn_live": "BLOCKIERT",
+    "pruefmaschine_v12_achsen": "BLOCKIERT",
+    "M1_rust_sprecherbindung_eigene_tests": "GRUEN",
+    "M1_kette_fail_closed_ohne_python_und_rust_schicht": "GRUEN",
+    "M1_rust_only_mutation_ueber_kette": "ROT",
+    "M2_prepare_meldung_teilcommit": "GRUEN",
+    "M3_chatliste_fehler_statt_leer": "GRUEN",
+    "K01_turntruth_und_commit_bindung_offline": "GRUEN",
+    "K01_formulierung_mit_echtem_modell": "BLOCKIERT",
+    "SEC_kein_schluessel_in_antworten_browser_logs": "GRUEN",
+    "P25_test_verlangt_defektpfad_portiert": "GRUEN"
+  },
+  "gesamt": "ROT",
+  "exitcode": 2
+}
+EXIT=2

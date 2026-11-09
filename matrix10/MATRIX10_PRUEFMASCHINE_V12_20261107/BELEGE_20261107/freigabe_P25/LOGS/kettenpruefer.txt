@@ -1,0 +1,11 @@
+[vor Neustart] PU1_handlung_eigenes_subjekt: 
+[vor Neustart] PU2_anrede_gegen_ui_auswahl: 04 ROT UI-Ziel None statt char_g7_mara
+[vor Neustart] PU3_fremde_rede_abgelehnt: 
+[vor Neustart] PU4_verneinung_mit_rede: 
+[vor Neustart] AV1_frage_und_antwort: 
+[vor Neustart] AV2_fremde_rede_im_avatar: 
+[vor Neustart] GO1_bewusstlos: 10 ROT char_g7_mara bezeugt 'Man hört so einiges hier, nich', nimmt aber nicht wahr (Bewusstsein 
+[vor Neustart] GO2_verneinter_zustand: 
+[vor Neustart] RE1_figur_verlaesst_raum: 10 ROT Zeuge char_g7_johann ohne kanonisches Zeugenwissen zu 'Gustav steht auf und geht in d'; Ze; 11 ROT char_g7_johann anwesend in Szene 'Küche', Position aber 'Schankraum'; char_g7_mara anwesen
+[vor Neustart] RE2_unbekannte_figur: 
+GESAMT: ROT -> /home/claude/kp/V12/frisch/MATRIX10_PRUEFMASCHINE_V12/ERGEBNIS_V12_20261107_185349/KETTENPRUEFER/ERGEBNIS_LESEN.txt

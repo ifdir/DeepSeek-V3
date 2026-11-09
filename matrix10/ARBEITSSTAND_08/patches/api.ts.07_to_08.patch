@@ -1,0 +1,16 @@
+--- stand_07/src/lib/matrix/api.ts
++++ stand_08/src/lib/matrix/api.ts
+@@ -661,10 +661,11 @@
+ export async function apiSystemLoop(): Promise<Record<string, unknown>> {
+   return apiJson("/api/amaster/system-loop", { method: "POST", body: JSON.stringify({}) }) as Promise<Record<string, unknown>>;
+ }
+-export async function apiRecall(sessionId: string, cue: string): Promise<Record<string, unknown>> {
++export async function apiRecall(sessionId: string, cue: string, characterId?: string): Promise<Record<string, unknown>> {
++  // Stand 08 / K-02: with a figure, the server answers with that figure's canonical recall (kernel.recall)
+   return apiJson(`/api/sessions/${encodeURIComponent(sessionId)}/recall`, {
+     method: "POST",
+-    body: JSON.stringify({ cue }),
++    body: JSON.stringify({ cue, ...(characterId ? { characterId } : {}) }),
+   }) as Promise<Record<string, unknown>>;
+ }
+ export async function apiListAppointments(sessionId: string): Promise<Record<string, unknown>> {

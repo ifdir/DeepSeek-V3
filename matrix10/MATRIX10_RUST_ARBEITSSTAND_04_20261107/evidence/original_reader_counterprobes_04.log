@@ -1,0 +1,45 @@
+{
+  "source": "UNCHANGED_V67",
+  "purpose": "reproduce existing bugs (not candidate proof)",
+  "cases": [
+    {
+      "case": "C04_WRONG_GIVER_BROAD",
+      "required": "declined",
+      "original_actual": "accepted",
+      "original_contract_pass": false,
+      "sqlite_facts_after_reopen": 2,
+      "unrelated_session_facts": 0
+    },
+    {
+      "case": "C04_EXPIRED_BROAD_ACCEPTANCE",
+      "required": "declined",
+      "original_actual": null,
+      "original_contract_pass": false,
+      "sqlite_facts_after_reopen": 2,
+      "unrelated_session_facts": 0
+    },
+    {
+      "case": "C04_EXPIRED_NARROW_REFUSAL",
+      "required": [
+        "rechte Hand"
+      ],
+      "original_actual": [],
+      "original_contract_pass": false,
+      "sqlite_facts_after_reopen": 2,
+      "unrelated_session_facts": 0
+    },
+    {
+      "case": "C04_EXPIRED_NARROW_ACCEPTANCE",
+      "required": [
+        "rechte Hand"
+      ],
+      "original_actual": [],
+      "original_contract_pass": false,
+      "sqlite_facts_after_reopen": 2,
+      "unrelated_session_facts": 0
+    }
+  ],
+  "contract_failures": 4,
+  "rust_executed": false,
+  "product_release": false
+}

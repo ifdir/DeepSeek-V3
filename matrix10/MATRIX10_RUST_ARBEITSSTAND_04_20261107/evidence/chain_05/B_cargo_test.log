@@ -1,0 +1,135 @@
+
+running 86 tests
+test boundary::tests::authority_is_not_target_figure ... ok
+test boundary::tests::cause_alone_is_not_source ... ok
+test boundary::tests::boolean_never_counts_as_identity ... ok
+test boundary::tests::conflicting_actor_alias_rejected ... ok
+test boundary::tests::directed_relation_requires_two_figures ... ok
+test boundary::tests::equal_aliases_accepted ... ok
+test boundary::tests::correct_source_does_not_hide_wrong_source ... ok
+test boundary::tests::god_authority_cannot_be_forged_by_avatar ... ok
+test boundary::tests::god_cannot_speak_as_character_via_alias ... ok
+test boundary::tests::god_needs_explicit_scope ... ok
+test boundary::tests::foreign_witness_rejected ... ok
+test boundary::tests::god_needs_real_source_row ... ok
+test boundary::tests::god_needs_source_authority_not_just_a_turn_id ... ok
+test boundary::tests::god_scope_does_not_silently_become_global ... ok
+test boundary::tests::god_scope_matches_canonical_kernel ... ok
+test boundary::tests::god_target_cannot_be_operator ... ok
+test boundary::tests::kernel_operator_is_not_real_user_id ... ok
+test boundary::tests::new_relation_needs_origin ... ok
+test boundary::tests::patch_keeps_unchanged_legacy_identity ... ok
+test boundary::tests::no_first_six_limit_in_perception_validation ... ok
+test boundary::tests::real_user_id_is_not_figure ... ok
+test boundary::tests::patch_cannot_change_to_foreign_identity ... ok
+test boundary::tests::rejects_fact_id_as_turn_truth ... ok
+test boundary::tests::relation_accepts_canonical_cause ... ok
+test boundary::tests::rejects_foreign_session_source ... ok
+test boundary::tests::relation_cannot_use_user_as_character ... ok
+test boundary::tests::restriction_query_explicit_side_is_accepted_only_in_its_own_scope ... ok
+test boundary::tests::restriction_query_fails_closed_for_missing_mode ... ok
+test boundary::tests::restriction_query_is_not_a_writer_authorization ... ok
+test boundary::tests::scalar_perception_rejected ... ok
+test boundary::tests::self_cause_is_invalid ... ok
+test boundary::tests::turn_truth_valid ... ok
+test boundary::tests::source_aliases_cannot_disagree ... ok
+test boundary::tests::unknown_source_kind_is_a_contract_error ... ok
+test boundary::tests::unsupported_operation_never_succeeds ... ok
+test boundary::tests::upload_is_valid_primary_source ... ok
+test boundary::tests::valid_fact ... ok
+test boundary::tests::witness_operator_has_no_figure_memory ... ok
+test boundary::tests::witness_requires_local_fact ... ok
+test boundary::tests::witness_valid ... ok
+test consent::tests::b04_other_side_does_not_revoke ... ok
+test consent::tests::broad_accepted_then_revoked_has_historical_end ... ok
+test consent::tests::broad_refusal_ends_prior_standalone_narrow_permission ... ok
+test consent::tests::different_speaker_cannot_undo_broad_refusal ... ok
+test consent::tests::broad_acceptance_clears_narrow_refusal ... ok
+test consent::tests::different_speaker_cannot_undo_narrow_refusal ... ok
+test consent::tests::empty_giver_refused ... ok
+test consent::tests::empty_actor_cannot_undo_narrow_refusal ... ok
+test consent::tests::expired_broad_acceptance_does_not_undo_broad_refusal ... ok
+test consent::tests::expired_narrow_permission_is_not_carried_forward ... ok
+test consent::tests::inactive_acceptance_cannot_undo_narrow_refusal ... ok
+test consent::tests::incomplete_window_flag_never_defaults_to_active ... ok
+test consent::tests::invalid_unknown_kind_refused ... ok
+test consent::tests::narrow_permission_is_scoped_to_the_giver ... ok
+test consent::tests::other_part_refusal_keeps_earlier_permission ... ok
+test consent::tests::s05_act_refusal_under_refusal_ends_only_bound_exception ... ok
+test consent::tests::restricted_permission_is_a_narrow_exception_to_broad_refusal ... ok
+test consent::tests::no_truncation_after_six_entries ... ok
+test consent::tests::s05_broad_acceptance_still_ended_by_act_answer ... ok
+test consent::tests::s05_foreign_or_expired_answer_ends_nothing ... ok
+test consent::tests::s05_missing_act_fields_are_contract_errors ... ok
+test consent::tests::s05_other_side_act_does_not_end_permission ... ok
+test consent::tests::s05_standalone_permission_ended_only_by_answer_bound_to_its_part ... ok
+test consent::tests::s05_unbound_revoke_under_refusal_ends_all_acceptance_exceptions_not_refusal ... ok
+test consent::tests::s05_revoke_bound_to_part_act_keeps_broad_refusal_and_ends_that_exception ... ok
+test consent::tests::same_part_refusal_ends_only_its_permission ... ok
+test consent::tests::same_scope_replaces_exact_restriction ... ok
+test consent::tests::single_act_acceptance_cannot_clear_narrow_refusal ... ok
+test consent::tests::time_expired_refusal_does_not_remain_active ... ok
+test ffi_tests::abi_is_fixed ... ok
+test consent::tests::unknown_exception_is_not_promoted_to_consent ... ok
+test ffi_tests::small_output_buffer_is_rejected ... ok
+test restriction::tests::b04_opposite_sides_are_distinct ... ok
+test restriction::tests::adjective_from_other_component_never_authorizes ... ok
+test ffi_tests::malformed_frame_is_a_structured_failure ... ok
+test ffi_tests::null_pointer_is_rejected ... ok
+test restriction::tests::explicit_numbered_parts_are_distinct ... ok
+test restriction::tests::no_compound_identity ... ok
+test restriction::tests::same_scope_across_articles_and_grammatical_voice ... ok
+test restriction::tests::uncertain_scope_does_not_grant_permission ... ok
+test value::tests::all_json_types_roundtrip ... ok
+test value::tests::boolean_is_not_integer ... ok
+test value::tests::every_truncated_prefix_fails ... ok
+test value::tests::rejects_duplicate_keys ... ok
+test value::tests::rejects_trailing_and_non_finite ... ok
+test restriction::tests::v66_compound_veto_preserved ... ok
+
+test result: ok. 86 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+warning: field `0` is never read
+  --> src/boundary.rs:55:15
+   |
+55 | struct UserId(String);
+   |        ------ ^^^^^^
+   |        |
+   |        field in this struct
+   |
+   = help: consider removing this field
+   = note: `UserId` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `0` is never read
+  --> src/boundary.rs:57:16
+   |
+57 | struct WorldId(String);
+   |        ------- ^^^^^^
+   |        |
+   |        field in this struct
+   |
+   = help: consider removing this field
+   = note: `WorldId` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `0` is never read
+  --> src/boundary.rs:59:18
+   |
+59 | struct SessionId(String);
+   |        --------- ^^^^^^
+   |        |
+   |        field in this struct
+   |
+   = help: consider removing this field
+   = note: `SessionId` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: `matrix-boundary-core` (lib) generated 3 warnings
+warning: `matrix-boundary-core` (lib test) generated 3 warnings (3 duplicates)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running unittests src/lib.rs (target/debug/deps/matrix_boundary_core-c0a0cabec86f9afc)
+   Doc-tests matrix_boundary_core

@@ -1,0 +1,97 @@
+{
+  "stand": "05",
+  "product_release": false,
+  "stages": {
+    "0_integritaet": {
+      "unerwartet_abweichend": [],
+      "bewusst_geaendert_05": [
+        "integration/native_boundary.py",
+        "integration/native_core/matrix-boundary-core/src/consent.rs",
+        "integration/native_core/matrix-boundary-core/src/lib.rs",
+        "integration/scene_state.py",
+        "tests/test_consent_transport_03.py"
+      ]
+    },
+    "A_fail_closed_ohne_rust": [
+      {
+        "pattern": "test_transport_02.py",
+        "exit": 0,
+        "ran": 13,
+        "skipped": 0
+      },
+      {
+        "pattern": "test_consent_transport_03.py",
+        "exit": 0,
+        "ran": 8,
+        "skipped": 0
+      }
+    ],
+    "B_cargo_test": {
+      "rustc": "rustc 1.97.0 (2d8144b78 2026-07-07)",
+      "exit": 0,
+      "passed": 86,
+      "failed": 0
+    },
+    "C_cargo_build": {
+      "exit": 0,
+      "warnings": 4,
+      "library_sha256": "146db175eb140c5917f84b24d0cdd922dd4a5da73f2e12d18c4666188045d6f7"
+    },
+    "D_native_gesamtkette": [
+      {
+        "pattern": "test_consent_transport_03.py",
+        "exit": 0,
+        "ran": 8,
+        "skipped": 1
+      },
+      {
+        "pattern": "test_consent_native_chain_05.py",
+        "exit": 0,
+        "ran": 18,
+        "skipped": 0
+      }
+    ],
+    "E_mutationsprobe": {
+      "ohne_sprecherbindung": {
+        "build_exit": 0,
+        "chain_exit": 1,
+        "erkannt": true
+      },
+      "ohne_gueltigkeitsfenster": {
+        "build_exit": 0,
+        "chain_exit": 1,
+        "erkannt": true
+      },
+      "taetantwort_hebt_grenze_auf": {
+        "build_exit": 0,
+        "chain_exit": 1,
+        "erkannt": true
+      },
+      "taetantwort_ohne_bindung": {
+        "build_exit": 0,
+        "chain_exit": 1,
+        "erkannt": true
+      }
+    },
+    "F_schreibgrenze_lifecycle": {
+      "exit": 0,
+      "controls_ok": true,
+      "offene_defekte": [
+        "W1_FREMDER_GIVER_ZUSTIMMUNG",
+        "W2_ACTOR_NICHT_TURNTRUTH_SPRECHER",
+        "W3_OHNE_PROPOSITION"
+      ]
+    }
+  },
+  "status": "TEILGRUEN_CONSENT_READER_KETTE__WRITER_ROT",
+  "nicht_pruefbar": [
+    "V67-Writer",
+    "SQLite Commit/Close/Reopen",
+    "Folgeturn",
+    "HTTP",
+    "Frontend",
+    "User-/Session-Isolation",
+    "AMASTER-Gesamtabnahme V12"
+  ],
+  "fehlt": "MATRIX10_V67_ABHAENGIGKEIT_20261031.zip (SHA-256 5158df26...efed)"
+}

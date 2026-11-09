@@ -1,0 +1,10 @@
+{
+  "product_acceptance": "UNGEPRUEFT",
+  "product_release": false,
+  "rustc": null,
+  "cargo": null,
+  "steps": [],
+  "status": "BLOCKIERT",
+  "reason": "Rust compiler/toolchain not installed",
+  "native_tests_executed": 0
+}

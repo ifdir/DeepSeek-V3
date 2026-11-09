@@ -1,0 +1,624 @@
+{
+ "vorlage_sha256": "f751a20c70a780f0e5f45f25bdbcf82367c7c04c59e7ca2091217a48e2732a15",
+ "config": 200,
+ "vorher": {
+  "mara_runtime": {
+   "emotion": "wach",
+   "intensity": 0.35,
+   "fear": 0.25,
+   "anger": 0.1,
+   "pain": 0.05,
+   "stress": 0.25,
+   "intent": "",
+   "trust": 0.4,
+   "mobility": 0.9,
+   "affects": null
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.15,
+    "closeness": 0.25,
+    "fear": 0.7
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 0
+ },
+ "puppet": [
+  200,
+  null,
+  null
+ ],
+ "nach_tat": {
+  "mara_runtime": {
+   "emotion": "Angst",
+   "intensity": 0.55,
+   "fear": 0.5,
+   "anger": 0.25,
+   "pain": 0.25,
+   "stress": 0.45,
+   "intent": "",
+   "trust": 0.4,
+   "mobility": 0.75,
+   "affects": null
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.15,
+    "closeness": 0.25,
+    "fear": 0.7
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 1
+ },
+ "turn1": {
+  "prepare": [
+   200,
+   null,
+   null
+  ],
+  "formulate": [
+   200,
+   null,
+   "Fass mich nie wieder an, Johann.",
+   "llm"
+  ],
+  "commit": [
+   200,
+   null,
+   null
+  ],
+  "spiegel_mara": {
+   "runtime": {
+    "activeCause": "fact_1a1bb74397b_5a3544c0000f",
+    "activeCauseText": "",
+    "affects": [],
+    "anger": 0.25,
+    "canSpeak": true,
+    "characterId": "char_g7_mara",
+    "consciousness": 1.0,
+    "constraints": [],
+    "emotion": "Angst",
+    "emotionToward": "",
+    "fatigue": 0.2,
+    "fear": 0.5,
+    "gagged": false,
+    "heldBy": null,
+    "holding": null,
+    "intensity": 0.55,
+    "intent": "",
+    "lust": 0.05,
+    "mobility": 0.75,
+    "pain": 0.25,
+    "position": "Schankraum",
+    "restrained": false,
+    "shame": 0.1,
+    "stress": 0.45,
+    "trust": 0.4
+   },
+   "relationsHere": [
+    {
+     "closeness": 0.25,
+     "fear": 0.7,
+     "hostility": 0.2,
+     "kind": "Druck",
+     "name": "Johann Bruckner",
+     "note": "Angst und alter Anspruch.",
+     "trust": 0.15
+    },
+    {
+     "closeness": 0.05,
+     "fear": 0.4,
+     "hostility": 0.0,
+     "kind": "Ekel",
+     "name": "Gustav Pfeiffer",
+     "note": "Weiß, dass er zusieht.",
+     "trust": 0.1
+    }
+   ],
+   "affects": null,
+   "intent": null,
+   "memories": [
+    {
+     "factId": "fact_1a1bb74397b_5a3544c0000f",
+     "hinweis": "gegen deine Ablehnung seit Turn 0",
+     "kind": "erlebt",
+     "salience": 0.6,
+     "text": "Johann Bruckner: Johann schlägt Mara mit der Faust ins Gesicht",
+     "truth": "canon",
+     "turn": 1
+    }
+   ]
+  }
+ },
+ "nach_turn1": {
+  "mara_runtime": {
+   "emotion": "Angst",
+   "intensity": 0.55,
+   "fear": 0.5,
+   "anger": 0.25,
+   "pain": 0.25,
+   "stress": 0.45,
+   "intent": "",
+   "trust": 0.4,
+   "mobility": 0.75,
+   "affects": null
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.15,
+    "closeness": 0.25,
+    "fear": 0.7
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 2
+ },
+ "nach_neustart": {
+  "mara_runtime": {
+   "emotion": "Angst",
+   "intensity": 0.55,
+   "fear": 0.5,
+   "anger": 0.25,
+   "pain": 0.25,
+   "stress": 0.45,
+   "intent": "",
+   "trust": 0.4,
+   "mobility": 0.75,
+   "affects": null
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.15,
+    "closeness": 0.25,
+    "fear": 0.7
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 2
+ },
+ "turn2": {
+  "prepare": [
+   200,
+   null,
+   null
+  ],
+  "formulate": [
+   200,
+   null,
+   "Nichts. Bleib weg von mir, Johann.",
+   "llm"
+  ],
+  "commit": [
+   200,
+   null,
+   null
+  ],
+  "spiegel_mara": {
+   "runtime": {
+    "activeCause": "fact_1a1bb74397b_5a3544c0000f",
+    "activeCauseText": "",
+    "affects": [],
+    "anger": 0.25,
+    "canSpeak": true,
+    "characterId": "char_g7_mara",
+    "consciousness": 1.0,
+    "constraints": [],
+    "emotion": "Angst",
+    "emotionToward": "",
+    "fatigue": 0.2,
+    "fear": 0.5,
+    "gagged": false,
+    "heldBy": null,
+    "holding": null,
+    "intensity": 0.55,
+    "intent": "",
+    "lust": 0.05,
+    "mobility": 0.75,
+    "pain": 0.25,
+    "position": "Schankraum",
+    "restrained": false,
+    "shame": 0.1,
+    "stress": 0.45,
+    "trust": 0.4
+   },
+   "relationsHere": [
+    {
+     "closeness": 0.25,
+     "fear": 0.7,
+     "hostility": 0.2,
+     "kind": "Druck",
+     "name": "Johann Bruckner",
+     "note": "Angst und alter Anspruch.",
+     "trust": 0.15
+    },
+    {
+     "closeness": 0.05,
+     "fear": 0.4,
+     "hostility": 0.0,
+     "kind": "Ekel",
+     "name": "Gustav Pfeiffer",
+     "note": "Weiß, dass er zusieht.",
+     "trust": 0.1
+    }
+   ],
+   "affects": null,
+   "intent": null,
+   "memories": [
+    {
+     "factId": "fact_1a1bb74397b_5a3544c0000f",
+     "hinweis": "gegen deine Ablehnung seit Turn 0",
+     "kind": "erlebt",
+     "salience": 0.6,
+     "text": "Johann Bruckner: Johann schlägt Mara mit der Faust ins Gesicht",
+     "truth": "canon",
+     "turn": 1
+    }
+   ]
+  }
+ },
+ "nach_turn2": {
+  "mara_runtime": {
+   "emotion": "Angst",
+   "intensity": 0.55,
+   "fear": 0.5,
+   "anger": 0.25,
+   "pain": 0.25,
+   "stress": 0.45,
+   "intent": "",
+   "trust": 0.4,
+   "mobility": 0.75,
+   "affects": null
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.15,
+    "closeness": 0.25,
+    "fear": 0.7
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 3
+ },
+ "isolation_andere_session_unveraendert": true,
+ "stamm_mara_unveraendert": true,
+ "modellaufrufe": [
+  [
+   "PLAN_RULES",
+   1,
+   true
+  ],
+  [
+   "VOLLZUG_CHECK_RULES",
+   1,
+   true
+  ],
+  [
+   "KOERPER_CHECK_RULES",
+   1,
+   true
+  ],
+  [
+   "EFFECT_CHECK_RULES",
+   1,
+   true
+  ],
+  [
+   "PLAN_RULES",
+   2,
+   true
+  ],
+  [
+   "LANGUAGE_RULES",
+   1,
+   true
+  ],
+  [
+   "RULEKIND_RULES",
+   1,
+   true
+  ],
+  [
+   "GOAL_FRAME_RULES",
+   1,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   1,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   2,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   3,
+   true
+  ],
+  [
+   "FORMULIERUNG",
+   1,
+   true
+  ],
+  [
+   "GRENZE_CHECK_RULES",
+   1,
+   false
+  ],
+  [
+   "PLAN_RULES",
+   3,
+   true
+  ],
+  [
+   "LANGUAGE_RULES",
+   2,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   4,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   5,
+   true
+  ],
+  [
+   "APPRAISAL_RULES",
+   6,
+   true
+  ],
+  [
+   "FORMULIERUNG",
+   2,
+   true
+  ],
+  [
+   "GRENZE_CHECK_RULES",
+   2,
+   false
+  ]
+ ],
+ "appraisal_log": [
+  {
+   "ts": "2026-11-08T13:58:38.849271+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794146318732_12250",
+   "turn_id": "kpr_1794146318732_12250",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bb74397b_5a3544c0000f",
+      "fact_1a1bb74397b_908783d80010",
+      "fact_1a1bb7439af_931545f70026"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Johann Bruckner",
+     "events": [
+      "fact_1a1bb7439af_931545f70026"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": [
+      "bloße_frage_oder_smalltalk_§50"
+     ]
+    },
+    {
+     "figure": "Mara Nowak",
+     "events": [
+      "fact_1a1bb74397b_5a3544c0000f",
+      "fact_1a1bb74397b_908783d80010",
+      "fact_1a1bb7439af_931545f70026"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Johann Bruckner"
+    },
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Mara Nowak"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {}
+  },
+  {
+   "ts": "2026-11-08T13:58:41.087667+00:00",
+   "stage": "APPRAISAL",
+   "trace_id": "kpr_1794146320970_12296",
+   "turn_id": "kpr_1794146320970_12296",
+   "status": "COMMITTED",
+   "error": null,
+   "figures": [
+    {
+     "figure": "Gustav Pfeiffer",
+     "events": [
+      "fact_1a1bb743a31_90b3316f0044",
+      "fact_1a1bb744274_52b3bbd80009"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Johann Bruckner",
+     "events": [
+      "fact_1a1bb743a31_90b3316f0044",
+      "fact_1a1bb744274_52b3bbd80009"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": []
+    },
+    {
+     "figure": "Mara Nowak",
+     "events": [
+      "fact_1a1bb744274_52b3bbd80009"
+     ],
+     "affect": null,
+     "intent": null,
+     "runtime": {},
+     "relations": [],
+     "rejects": [],
+     "notes": [
+      "bloße_frage_oder_smalltalk_§50"
+     ]
+    }
+   ],
+   "proposals": [
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Gustav Pfeiffer"
+    },
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Johann Bruckner"
+    },
+    {
+     "raum": null,
+     "aktivierung": 0,
+     "gefuehl": "",
+     "gegenueber": "",
+     "zustand_aenderung": {},
+     "absicht": "",
+     "vorher_absicht_erledigt": false,
+     "beziehung_aenderung": [],
+     "grund": "betrifft sie nicht",
+     "_kausalpruefung": {
+      "pruefungen": []
+     },
+     "figur": "Mara Nowak"
+    }
+   ],
+   "intentKinds": null,
+   "emotions": {}
+  }
+ ],
+ "kriterien": {
+  "G1_tat_serverseitig_gebunden_johann_an_mara_gewalt": true,
+  "G2_wahrnehmung_mara_erlebt_gustav_gesehen_robert_nichts": true,
+  "G3_koerper_schmerz_steigt_beweglichkeit_sinkt": true,
+  "G4_bedeutung_angst_gegen_johann_absicht_abstand_aus_bewertung": false,
+  "G4b_beziehung_vertrauen_sinkt_furcht_steigt": false,
+  "G6_naechster_zug_brief_enthaelt_beziehung_koerper_erinnerung_gefuehl_absicht": false,
+  "G6b_nach_neustart_brief_enthaelt_dasselbe": false,
+  "G7_figurenantworten_committet": true,
+  "G9_neustart_zustand_unveraendert": true,
+  "G9b_kein_doppeltes_anwenden_im_folgezug": true,
+  "G10_isolation_andere_session_und_stamm_unveraendert": true
+ },
+ "gesamt": "F1 VERLETZT"
+}

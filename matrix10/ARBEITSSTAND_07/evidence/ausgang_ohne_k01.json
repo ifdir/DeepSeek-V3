@@ -1,0 +1,66 @@
+{
+  "root": "/tmp/claude-0/-home-user-DeepSeek-V3/fe0b93ac-e3e4-569a-9216-d3a55d143b32/scratchpad/k01/st07_ohne/MATRIX10_V92_P25_QUELLREPARATUR_ROT_20261107",
+  "H1_perception": 200,
+  "H1": {
+    "prepare": 200,
+    "commit": 200,
+    "code": null,
+    "tt": "tt_1a1baeb2ef0_af7b29e60031",
+    "hoerer_der_szene": [],
+    "hearsExplicit": true,
+    "fact_witnessedBy": [],
+    "claims": 1,
+    "frames": 0,
+    "claim_frame_zeugen": [
+      "char_g7_johann",
+      "char_g7_mara"
+    ],
+    "mara_als_zeugin_trotz_leerer_hoererliste": true
+  },
+  "S1_proposals_synapsen": {
+    "prepare": 200,
+    "commit": 200,
+    "code": null,
+    "tt": "tt_1a1baeb2f37_34f29cda003f",
+    "runtime_vorher": {
+      "emotion": "wach",
+      "intensity": 0.35,
+      "fear": 0.25,
+      "stress": 0.25,
+      "intent": "",
+      "activeCauseText": null
+    },
+    "runtime_nachher": {
+      "emotion": "Angst",
+      "intensity": 1.0,
+      "fear": 0.46,
+      "stress": 0.39,
+      "intent": "Lage verstehen, bevor gehandelt wird",
+      "activeCauseText": "Synapse Angst"
+    },
+    "runtime_geaendert": true
+  },
+  "S2_fired": {
+    "prepare": 200,
+    "commit": 200,
+    "code": null,
+    "tt": "tt_1a1baeb2f7b_4f333aff0050",
+    "runtime_vorher": {
+      "emotion": "wach",
+      "intensity": 0.35,
+      "fear": 0.25,
+      "stress": 0.25,
+      "intent": "",
+      "activeCauseText": null
+    },
+    "runtime_nachher": {
+      "emotion": "wach",
+      "intensity": 0.35,
+      "fear": 0.25,
+      "stress": 0.25,
+      "intent": "",
+      "activeCauseText": null
+    },
+    "runtime_geaendert": false
+  }
+}

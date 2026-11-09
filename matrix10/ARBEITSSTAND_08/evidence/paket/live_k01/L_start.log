@@ -1,0 +1,144 @@
+[DATEN] Vorhandene Projektdatenbank bleibt erhalten: /tmp/matrix10_abnahme_stand08_20261108_131837/entpackt/MATRIX10_STAND08_PRODUKT_linux-x86_64_6713376/data/matrix10.sqlite
+[START] Backend: Python -> Port 5150
+[START] Frontend: fertiger Build, nur Python -> Port 8180
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5150
+Press CTRL+C to quit
+127.0.0.1 - - [08/Nov/2026 13:19:28] "GET /api/health HTTP/1.1" 200 -
+[OK] Backend und Frontend laufen.
+[OK] Node.js/npm werden NICHT benoetigt.
+[UI] http://127.0.0.1:8180/
+[STOP] Strg+C beendet die von START.py gestarteten Prozesse.
+127.0.0.1 - - [08/Nov/2026 13:19:28] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:29] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:29] "GET /api/users HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:30] "GET /api/mcc HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:30] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:32] "POST /api/llm/ping HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:33] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:33] "GET /api/mcc HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:33] "GET /api/config?scope=user HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:33] "PUT /api/config HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:37] "PATCH /api/users/admin HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:37] "GET /api/sessions/ses_v92 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:39] "PUT /api/sessions/ses_v92 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/kernel/prepare HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/llm/formulate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/kernel/commit HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "GET /api/sessions/ses_v92 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "GET /api/sessions/ses_v92 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:42] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/kernel/autochat-gate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/kernel/prepare HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/llm/formulate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/kernel/commit HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "GET /api/sessions/ses_v92 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/kernel/autochat-gate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "GET /api/sessions/ses_v92 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/kernel/prepare HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/llm/formulate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/kernel/commit HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "GET /api/sessions/ses_v92 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "GET /api/sessions/ses_v92 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:46] "POST /api/logs HTTP/1.1" 200 -
+[DATEN] Vorhandene Projektdatenbank bleibt erhalten: /tmp/matrix10_abnahme_stand08_20261108_131837/entpackt/MATRIX10_STAND08_PRODUKT_linux-x86_64_6713376/data/matrix10.sqlite
+[START] Backend: Python -> Port 5150
+[START] Frontend: fertiger Build, nur Python -> Port 8180
+ * Serving Flask app 'app'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5150
+Press CTRL+C to quit
+127.0.0.1 - - [08/Nov/2026 13:19:51] "GET /api/health HTTP/1.1" 200 -
+[OK] Backend und Frontend laufen.
+[OK] Node.js/npm werden NICHT benoetigt.
+[UI] http://127.0.0.1:8180/
+[STOP] Strg+C beendet die von START.py gestarteten Prozesse.
+127.0.0.1 - - [08/Nov/2026 13:19:52] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:53] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:53] "GET /api/mcc HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:53] "GET /api/sessions/ses_v92 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:57] "PUT /api/sessions/ses_v92 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:57] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:57] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:57] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:57] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:57] "POST /api/kernel/prepare HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:57] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:57] "POST /api/llm/formulate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:57] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:57] "POST /api/kernel/commit HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:58] "GET /api/sessions/ses_v92 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:58] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:58] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:58] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:58] "POST /api/logs/live HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:58] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:58] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:58] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:58] "POST /api/ids/allocate HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:58] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:58] "GET /api/sessions/ses_v92 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:58] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:58] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:58] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:19:58] "POST /api/logs HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:20:01] "GET /api/sessions/ses_v92 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Nov/2026 13:20:01] "POST /api/kernel/prepare HTTP/1.1" 422 -
+127.0.0.1 - - [08/Nov/2026 13:20:01] "POST /api/kernel/commit HTTP/1.1" 422 -
+127.0.0.1 - - [08/Nov/2026 13:20:01] "GET /api/logs HTTP/1.1" 200 -

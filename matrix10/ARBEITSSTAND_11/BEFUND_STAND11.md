@@ -1,0 +1,260 @@
+# Stand 11 / 11A – SPS V62.7 wiederhergestellt: Planer → Erleben → Formulierung
+
+**Status: ROT – keine Produktfreigabe.** Echte Modellantworten und das Android-Gerät sind nicht geprüft. 12 P25-Tests sind schon im unveränderten P25 rot (Abschnitt 5).
+
+## 1. Was geändert ist (Overlay 11: `matrix_api/llm_contract.py`, `matrix_api/app.py`)
+
+- **Fachlesungen aus der ersten Antwort.**
+  - Gilt für: Vollzug, Komponentenart, Sprecher, Wirkung, Bewegung/Bewegungsversuch, Berührung, Bitte-/Erlaubnis-/Grenzbezug, Grenzumfang, Körper + Körperbestätigung, Sprache, Namen, Aussage/Aussage-Tat, Offenbarung, Absichtsart.
+  - Diese Lesungen stehen jetzt in der ersten Antwort (Planer, Formulierung bzw. Erleben) im Feld `lesungen`.
+  - Jede Lesestelle behält ihren Aufruf, ihre Nachverarbeitung und ihren Kernel-Validator.
+  - Nur der Netzaufruf entfällt (`_llm_json` → `ERSTE_ANTWORT_LESUNGEN`).
+  - Fehlt eine Lesung, gibt es keinen Ersatzaufruf. Die Sache bleibt unbestätigt.
+- **Speicher je Anfrage.** Die Lesungen liegen je Anfrage in einem eigenen Speicher (`contextvars`). Hilfsthreads derselben Anfrage bekommen den Kontext mit (`lesungen_gleichzeitig`, Sprachlesung im Puppet-Weg). Gleichzeitige Anfragen sehen sich nie gegenseitig.
+- **Erleben.**
+  - Je Figur gibt es einen Aufruf. Der Kausalnachweis `kausalpruefung` steht in derselben Antwort; `dispositionsquellen` bleiben im Payload.
+  - Der Antwortraum beträgt 320 + 3200 Tokens: das frühere Erleben plus der Höchstwert des früheren Kausalaufrufs. Eine abgeschnittene Antwort ist ungültig.
+  - `_appraisal_cause_proofs` prüft wie bisher.
+- **Namen (Wortgrenzen).**
+  - Die Lesung kommt aus der Planer-Antwort (Avatar, Puppet) bzw. aus der God-Zerlegung.
+  - Die Textpositionen setzt der Server aus seinen eigenen Kandidaten. Danach wird die Zielbindung neu bestimmt.
+  - `with_name_boundary_reading` ist unverändert.
+- **God/Regie-Körper.** Die Bestätigung der Körperänderung kommt in derselben Antwort wie die Körperlesung. Der Kernel prüft wie bisher.
+- **Brief.** „DEINE LAGE JETZT“ steht vor dem Profil. Dazu gehören Gefühl mit Stärke und Ursache, Absicht, Grenzen, Schmerz und die Beziehung zu den betroffenen Personen. Es gibt keine festen Antworten und keine Wortlisten.
+
+## 2. Modellaufrufe (gezählt am Testmodell-Protokoll, 1,5 s je Aufruf)
+
+| Lauf | Stand 10C | Stand 11 |
+|---|---|---|
+| 5 echte Geräteeingaben (Puppet Johann → Mara) | 9–15 Aufrufe, 12,2–18,4 s je Austausch | **4–5 Aufrufe, 4,7–4,9 s** (Planer 1, Erleben 2–3 parallel, Formulierung 1) |
+| Maras Zustand nach 5 Eingaben (Furcht zu Johann) | 0,73 → 0,823 | 0,73 → 0,823 (gleich) |
+
+Im Protokoll gibt es keine ungeskriptete Lesung. `llm_contract.vorab_abrufe()` weist je Anfrage nach, welche Lesung an welcher Stelle angefragt und aus der ersten Antwort beantwortet wurde.
+
+## 3. Kette (Testmodell über den echten HTTP-Weg mit START.py und Neustart)
+
+- F1 (`f1_durchlauf_09.py`): **ERFÜLLT 12/12**.
+- Gegenprobe ohne Bedeutung: G4/G4b/G6/G6b sind **ROT**, wie erwartet.
+- F2 (`f2_durchlauf_10.py`): **ERFÜLLT 7/7**.
+- F1-Rest: Die Grenze „Fass mich nicht an“ steht im Brief.
+
+## 4. Tests
+
+- Mitgelieferte K-Tests: 44/44. `test_k01_p18_portiert_11.py` ersetzt `..._07`; nur `respond()` liefert die Lesungen in der Formulierungsantwort.
+- P25-Suite: 435 bestanden, 13 rot. Das ist derselbe Satz wie in 10B; es gibt keine neue Abweichung.
+- Angepasste P25-Tests (`overlay/tests`, Basis-Hash in `stage_source_11.py`): Angepasst ist **nur die Aufrufstruktur**, die Schutzaussagen sind unverändert.
+  - Das Test-Double liefert dieselben Antworten jetzt in der ersten Antwort.
+  - Prüfungen wie „die Lesung lief“ und „ihre Nutzlast“ lesen `vorab_abrufe()`.
+  - Die Kausal- und Namensprüfung bestätigt: ein Aufruf, voller Antwortraum, Serverpositionen.
+
+## 5. Offen (nicht grün)
+
+- **12 P25-Tests sind schon im unveränderten P25 rot.**
+  - Die Fälle: Identität „Mara Schmidt“/„Anna Mara Nowak“ (5), verneinte Tat neben Rede/Teilablehnung (3), fremde Rede (1), Berührungsklasse (1), Quelltextprüfung p22 (1), `START.bat` fehlt (1).
+  - Sie sind nicht durch Stand 11 entstanden und nicht repariert.
+  - `test_v92_p18_koerper` (P25-Client-Textweg) bleibt nach K-01 abgewiesen. Die Portierung ist grün.
+- **Direkter Commit ohne vorbereitete Eingabe** (`kernel_commit` ohne `pendingInputTurnId`): Dieser Weg hat keine erste Antwort mit Namen. Bei einer unsicheren Namensgrenze wird deshalb nachgefragt. Die Oberfläche nutzt prepare → commit.
+- **Echtes Modell:** Der Planer-Prompt ist um ≈22 000 Zeichen Lesungsregeln länger. Ob ein echtes Modell alle Lesungen vollständig liefert, ist **ungeprüft**. Fehlende Lesungen machen die Handlung unbestätigt; sie werden nicht geraten.
+- **Android-Gerät:** Das Paket ist gebaut, auf dem Gerät aber nicht geprüft.
+
+## 6. Stand 11A – Befund auf dem Gerät und Reparatur
+
+**Gerät (Upload `34769ab5`, Live-Log 08.11. 20:51, Rohantworten in der Tabelle `logs`; Modell gpt-4o-mini):**
+- „Hey süsse“ funktioniert: Erleben mit Kausalnachweis in einer Antwort, Mara reagiert mit Unbehagen.
+- „Ich klatsche auf deinen arsch“ wurde **zweimal nichts gespeichert**.
+  - Die Planer-Antwort hatte **kein** Feld `lesungen`.
+  - Damit wurden Vollzug und Wirkung nicht gelesen (`modell: null`, `keine_pruefung`), und die Tat galt als unbestätigt.
+- Die Formulierung lieferte `"lesungen": []`.
+- Dauer je Austausch: Planer 11 s, Erleben 20 s, Formulierung 11 s.
+- **Messlücke von Stand 11:** Das Testmodell hatte die Lesungen selbst eingesetzt.
+
+**Reparatur 11A** (nur `llm_contract.py`, keine neue Route/Tabelle/Schicht):
+- **Lesungen sind Pflichtfelder der ersten Antwort.**
+  - Planer: je Komponente `pruefung`, dazu `teilstellen` (Sternchen-Teile, Einzelsätze, eigene Tat in der Ankündigung), `sprache`, `namen`, `grenzumfang`.
+  - Formulierung: `pruefung` und `aussagen[].lesung`.
+  - God-Körper: `bestaetigung`. God-Zerlegung: `namen`. Erleben: `vorher_absicht_art`.
+- **Schemas:** `PLAN_SCHEMA`, `FORMULATION_SCHEMA`, `GOD_SCHEMA`, `GOD_BODY_SCHEMA` werden bei OpenAI **strikt erzwungen**. Andere Anbieter bekommen `json_object` mit demselben Regeltext.
+- **Übergabe:** Die Felder gehen über `plan_lesungen` / `antwort_lesungen` in den unveränderten Lesungsspeicher. Lesestellen und Kernel-Validatoren sind unverändert. Fehlt ein Feld, bleibt die Sache unbestätigt.
+- **Regeltext des Planers:** 30 000 (Stand 11) → **13 800 Zeichen**. 10C hatte 8 155 Zeichen (+69 %). Das Ziel „≤ 10C + 20 %“ ist **nicht erreicht**; dafür entfallen 9–15 Einzelaufrufe.
+- **Testmodell:** ergänzt nichts mehr. Die Drehbücher sind einmal mit `tools/drehbuch_11a.py` in das Schema-Format umgewandelt und gegen die Schemas geprüft (22 Antworten, 0 Abweichungen).
+
+**Geprüft (Testmodell, HTTP-Weg mit START.py):**
+- F1: 12/12. Gegenprobe: 8/12, also wie erwartet rot.
+- F2: 7/7.
+- F1-Rest: Grenze im Brief.
+- 5 Geräteeingaben: je 4–5 Aufrufe, 4,7–4,9 s, Mara 0,73 → 0,823 (gleich).
+- K-Tests: 49/49, neu `tests/test_erste_antwort_11a.py`:
+  - strikter Request an api.openai.com;
+  - jede Lesestelle hat ein Pflichtfeld;
+  - **wörtliche Geräteantwort ohne Pflichtfelder → unbestätigt**;
+  - mit Pflichtfeldern → die Lesung kommt an der Lesestelle an.
+
+**Weiter offen:**
+- **Echtes Modell:** Hier nicht prüfbar, das Netzgeheimnis der Umgebung bekommt 401. Abnahme auf dem Gerät.
+- **Erleben mit 20 s auf dem Gerät:** Ob 11A insgesamt schneller ist als 10C, zeigt erst der Gerätelauf.
+
+## 7. Stand 11B – zweiter Gerätelauf (Upload `74b5e4f1`, 08.11. 21:58, gpt-4o-mini)
+
+**Befund:**
+1. „Ich streiche über deine schenkel“ wurde gespeichert, Mara reagierte. Der Planer las dieselben Worte zweimal, als handlung **und** als rede. Die Folge war ein interner Hinweis „Rede überschneidet sich mit einer Handlung“ an dich.
+2. „Ach komm, ich streiche über deibe brust, dir gefällt das ja“ wurde **ganz abgewiesen** (422 PUPPET_TEILABLEHNUNG). Grund: Der Planer ließ „dir gefällt das ja“ aus, und `input_binding_outcome` verwirft bei jedem ungelesenen Rest alles.
+3. Maras Gefühl und Absicht wurden verworfen (`kausalpruefung_fehlend:gefuehl/absicht`). Das Modell schrieb den Nachweis in der freien Liste für „aktivierung“ und vergaß „absicht“. Im Brief standen nur Schmerz und die letzte Tat.
+4. Dauer: Planer 17 s, Erleben 13 s, Formulierung 16 s.
+
+**Reparatur 11B** (`kernel.py` neu im Overlay, Basis Ebene 09; `llm_contract.py`):
+- **Ungelesener Rest:**
+  - Er wird **nie** Rede (P25 Paket-8-Prüfung C6 bleibt).
+  - Er kippt die Eingabe nur, wenn er ungekennzeichnet eine Person nennt (P24 „Gustav, setz dich.“, R1 „Robert steht auf.“, beide weiter geschützt). Sonst wird gespeichert, was gelesen ist, und der Rest bleibt sichtbar.
+  - Rest in einem `*Marker*`: Die Tat bleibt unbewiesen, die Eingabe läuft.
+- **Wortgleiche Doppel-Lesung** rede = gelesene handlung: Die Handlung zählt, es gibt keinen Hinweis. Überschneidungen mit anderen Worten oder mit einem Marker bleiben sichtbar.
+- **Erleben:** `APPRAISAL_SCHEMA`, bei OpenAI strikt. Der Nachweis steht **direkt neben** jedem vorgeschlagenen Wert. `erleben_aus_antwort` baut daraus die bisherige Struktur mit exakten Feldnamen; `_appraisal_cause_proofs` ist unverändert. Ein Wert ohne Nachweis wird allein verworfen.
+- **Planer-Komponente nach Typ:** rede `{komponentenart, sprecher}`, handlung ohne `sprecher`. Deine echten Antworten wären damit rund 24 % kürzer (1 907 → 1 457, 2 088 → 1 578 Zeichen).
+
+**Geprüft:**
+- Deine zwei Eingaben **wörtlich** (rohe gpt-4o-mini-Antworten, `tools/drehbuch_geraetefall_2158_11b.json`, `tools/geraetefall_11b.py`):
+  - beide 200;
+  - Johann: Tat Schenkel / „Ach komm“ + Tat Brust;
+  - Hinweis nur `rest_ohne_komponente: dir gefällt das ja`, kein Doppelungs-Hinweis;
+  - Mara: Gefühl Bedrohung 0,80, Absicht „sich zurückziehen“, Furcht zu Johann 0,79 → 0,853;
+  - im Brief des Folgezugs: Gefühl, Ursache, Absicht und Grenzverletzung.
+- F1: 12/12. Gegenprobe: 8/12, also wie erwartet rot.
+- F2: 7/7.
+- F1-Rest: Grenze im Brief.
+- 5 Gerätefälle: 4–5 Aufrufe, Mara 0,73 → 0,823.
+- K-Tests: 50/50.
+- P25-Suite: 436 bestanden, 12 rot (alle vorbekannt), **neu grün:** `test_p10_partial_and_multiple_markers_over_the_route`.
+
+**Offen:**
+- „dir gefällt das ja“ wird nicht zur Rede, solange das Modell es keinem Teil zuordnet. Der Planer-Text verlangt jetzt ausdrücklich, dass jedes Wort in einer Komponente steht.
+- Echtes Modell, Zeit und Reaktion: Abnahme auf dem Gerät.
+
+## 8. Stand 11C – eine Äußerung bleibt eine Äußerung (deine Rückmeldung 08.11. 22:22 / 22:37)
+
+**Befund:**
+- „Hey süsse“ (22:22) und „dir gefällt das ja“ (21:58) gingen verloren. Die P25-Regel C6 („ungelesener Rest nie Rede“) hat sie verworfen, weil das Modell sie keinem Teil zugeordnet hat.
+- Maras Brief zeigte deine Eingabe nur zerlegt („JETZT TUT …“). Weggefallene Worte hat sie nie erfahren.
+- Die Vergleichs-KI (22:37) gibt die ganze Nachricht an die Figur, und die Figur antwortet auf alles zusammen.
+
+**AMASTER:**
+- §27.4: Die Puppet-Eingabe ist die tatsächliche Rede oder Handlung der Figur.
+- §34.1: Getrennt wird nur zur Prüfung der Wirkungen. Ein Scheitern vernichtet keine andere Komponente. Ungeprüftes bleibt sichtbare Redeprovenienz, ohne Körper- oder Weltwirkung.
+
+**Reparatur 11C:**
+- **`kernel._speech_from_components`: kein Wort geht verloren.** Ungekennzeichneter Text ohne geprüfte Handlung und ohne fremden Namen ist Rede der Figur (Provenienz `rest_als_rede`, nie Tat).
+  - Ausnahmen bleiben geschützt: `*Marker*`-Rest, abgeschnittene Lesung, Wortrest direkt an einer abgewiesenen Komponente („Johann küsst Mara **nicht** und sagt: Hallo“), fremder Name (P24/R1).
+  - C6 ist für diesen Fall aufgehoben; Test `test_unassigned_text_is_visible_and_never_spoken` ist mit Begründung angepasst.
+- **Wahrnehmung der ganzen Äußerung:**
+  - Die Puppet-TurnTruth trägt `wortlaut` (die ganze Eingabe; Provenienz, keine Wahrheit).
+  - Die antwortende Figur bekommt im Brief „JETZT – …, die ganze Äußerung wörtlich: „…““ und darunter „Davon wirklich geschehen (geprüft): …“ bzw. „keine Handlung – nur Worte“.
+  - Wirkungen kommen weiter nur aus geprüften Facts.
+- **UI (`eingabe-hinweis.ts`):** Keine internen Lesevermerke mehr (Rest-als-Rede, Doppelung, verneinte oder ungeprüfte Teil-Tat, Marker-Rest). Hinweise mit Folge für dich bleiben (z. B. Wirkung nicht angewendet), ebenso Rückfragen.
+
+**Geprüft (Testmodell):**
+- Gerätefälle:
+  - „Hey süsse ich klatsche dir auf deinen arsch“ → Johann: Rede „Hey süsse“ + Tat.
+  - Schenkel → Tat.
+  - „Ach komm, ich streiche über deibe brust, dir gefällt das ja“ → Rede „Ach komm dir gefällt das ja“ + Tat; Maras Brief enthält den ganzen Satz wörtlich und darunter die geprüfte Tat.
+  - Mara: Bedrohung 0,80, Absicht „sich zurückziehen“, Furcht zu Johann 0,79 → 0,85 → 0,90.
+- F1: 12/12. Gegenprobe: 8/12, also wie erwartet rot.
+- F2: 7/7.
+- 5 Gerätefälle: 4–5 Aufrufe.
+- K-Tests: 50/50.
+- P25-Suite: keine neue Abweichung außer dem bewusst angepassten C6-Test.
+
+## 9. Stand 11D – Antwort statt Formular (dein Lauf 09.11. 11:08, Upload `217e6724`)
+
+**Befund:**
+- Die Kette läuft: 3/3 Eingaben gespeichert, Mara Ekel 0,80, ≈ 20 s je Austausch.
+- Die Antworten wirken trotzdem mechanisch:
+  1. **80 % Formular:** Maras Antwort hatte 330–385 Tokens, die meisten davon Pflichtfelder. Für Rede und Tun blieben ein Satz und ein Halbsatz; die Vorgabe lautete „action = kurze Beschreibung“.
+  2. **Dossier:** 9 500 Zeichen Regeln + 11 400–16 900 Zeichen Zustand, davon 5 100–9 400 Zeichen roher JSON-Auszug, wachsend.
+  3. **Wiederholung aus dem Brief:**
+     - Absicht „sich distanzieren“ stand als Auftrag da, das Kompass-Zeichen „tritt zurück“ und die Wendungen „Ich hab Arbeit | Lass mich“ in jedem Zug.
+     - Dass ihr Wegdrehen nichts gebracht hat, stand nur versteckt.
+     - Ergebnis dreimal: „Lass das …“ / „dreht sich weg“.
+  4. **Anzeige:** „Ich greife unter dein tshirt / und lach dich an“.
+
+**Reparatur 11D** (`llm_contract.py`, `kernel.py`):
+- **Antwort:** Rede bis etwa 6 Sätze, Handlung 1–4 Sätze (Körper, Blick, Stimme, Zögern), Pflichtfelder knapp (synapsen ≤ 2), Antwortraum 2 400.
+- **Kein roher Zustand mehr im Prompt,** nur die Kennungen für refers_to/aussagen. Alle Werte stehen im Brief.
+- **Absicht als Lage:**
+  - „du willst gerade: …“;
+  - nach einem gescheiterten Versuch „du wolltest: … – du hast es versucht (…), aber es hat nicht gereicht: …“, aus `actionOutcome` der Facts.
+- **Keine Kopiervorlagen:** Kompass ohne festes Beispielzeichen. Typische Wendungen und Lieblingswörter nur, solange sie in ihren letzten Beiträgen nicht vorkamen. Das Profil ist unverändert.
+- **Taten derselben Eingabe** stehen in Textreihenfolge mit Leerzeichen verbunden, ohne „ / “.
+- **F1-Werkzeug:** liest Gefühl und Absicht jetzt aus dem Brieftext statt aus dem entfernten JSON.
+
+**Geprüft (Testmodell, rohe Geräteantworten 11:08):**
+- Prompt der Formulierung: 6 700 / 6 700 / 8 000 statt 11 450 / 13 577 / 16 859 Zeichen.
+- Im 3. Zug steht „hat nicht gereicht“.
+- Johanns Tat steht als ein Satz da.
+- F1: 12/12. Gegenprobe: 8/12, also wie erwartet rot.
+- F2: 7/7.
+- 5 Gerätefälle: 4–5 Aufrufe.
+- K-Tests: 50/50.
+- P25-Suite: keine neue Abweichung. Ausnahme ist der Build-Vertrag im ungebauten Arbeitsordner; er wird im Paket neu gebaut und geprüft.
+
+**Offen:**
+- Ob Mara jetzt menschlicher antwortet, zeigt nur das Gerät mit echtem Modell.
+- gpt-4o-mini begrenzt freie Figurenrede; ein stärkeres Modell ist eine Einstellung unter „Konfiguration“.
+
+## 10. Stand 11E – Recall nach Relevanz („ein Mensch ruft nicht sein ganzes Leben ins Gedächtnis“)
+
+**Befund (Brief 11:08):** In jedem Zug stand der ganze Stamm im Brief:
+- Lebenslauf, Werte, Ängste, Vorlieben, Tabus, Muster;
+- alle Stamm-Bindungen, auch zu Abwesenden;
+- alles Wissen, auch über Abwesende;
+- Weltbeschreibung, Vorgeschichte und doppelte Zeilen.
+
+AMASTER §41 verlangt dagegen „Recall wird nach Relevanz begrenzt“, §49 „auswählen, priorisieren“.
+
+**Reparatur 11E** (`kernel.py`, `llm_contract.py`; Profil unverändert):
+- **„WAS DAS IN DIR ANSPRICHT“:** die wörtlichen Stammstellen, die die geprüfte Bewertung der jüngsten Erlebnisse als Ursache belegt hat (Appraisal-Fact `kausalBelege.dispositionsBeleg`).
+  - Die Auswahl trifft das Erleben (Modellvorschlag, Kernel-geprüft), nicht eine Wortliste.
+- **Mit angesprochenem Erlebnis bleibt vom Stamm nur:** Persönlichkeit, Sprache, Geheimnis und die aktiven Kompassräume. Lebenslauf, Werte, Ängste, Vorlieben, Tabus, Muster und Kernfakten erscheinen nur im offenen Moment ohne Erlebnis (Lebenslauf gekürzt).
+- **Bindungen und Wissen:** Stamm-Bindungen nur zu Anwesenden oder jetzt Genannten. Wissen, das nur Abwesende nennt, fällt weg.
+- **Welt:** keine Weltbeschreibung und Vorgeschichte in jedem Zug; Genre, Ton, Ort und Szene bleiben.
+- **Keine Doppelzeilen:** Grenze und letzte Tat stehen nur in „DEINE LAGE JETZT“.
+- **Werkzeug:** f1_rest_10 findet die Grenze auch in der Lagezeile.
+
+**Geprüft (Testmodell):**
+- Gerätefälle 11:08:
+  - Formulierungs-Prompt 5 340 / 5 416 / 6 579 Zeichen (11D: 6 700–8 000; 11C: 11 450–16 860);
+  - Brief zeigt „WAS DAS IN DIR ANSPRICHT: „Johanns Druck““, keine Abwesenden.
+- F1: 12/12. Gegenprobe: 8/12, also wie erwartet rot.
+- F2: 7/7.
+- F1-Rest: Grenze in 6/6 Briefen.
+- 5 Gerätefälle: 4–5 Aufrufe.
+- K-Tests: 50/50.
+- P25-Suite: keine neue Abweichung. Ausnahme ist der Build-Vertrag im ungebauten Arbeitsordner; er wird im Paket neu gebaut.
+
+**Offen:** Wie natürlich Mara damit antwortet, zeigt nur das Gerät mit echtem Modell.
+
+## 11. Stand 11F – Prüfbericht 11E: Auswahl nach Bedeutung, nicht nach Länge
+
+**Prüfbericht (unabhängig) und eigene Prüfung am Code:**
+
+| Punkt | Befund | 11F |
+|---|---|---|
+| Ganze Profilbereiche fallen weg, sobald `angesprochen` etwas enthält | bestätigt | Auswahl je Stelle im Kernel (`_brief_auswahl`): (a) belegt durch ein noch wirkendes Erleben (`kausalBelege.dispositionsQuelle` = `appraisal_source_id`), (b) nennt eine anwesende oder jetzt genannte Person (`bind_referents`), (c) offener Moment: Werte und kurzer Lebenslauf. Persönlichkeit, Sprechweise und Tabus bleiben immer |
+| Wissen über einen jetzt erfragten Abwesenden fehlt (Alrik) | bestätigt | Wissen fällt nur weg, wenn es ausschließlich Personen nennt, die weder anwesend noch jetzt genannt sind (Identität) |
+| `_angesprochen` nur die letzten 2 Erlebnisse | bestätigt | alle Belege, deren Ereignis noch wirkt (Ursachen und Verstärkungen aktiver Gefühle, `activeCause`, `intentCause`) |
+| `actionOutcome` mischt Ergebnis und Einwilligung | bestätigt | `actionOutcomeState` und `consentNote` getrennt; „hat nicht gereicht“ nur bei overcome/blocked/attempted |
+| Namensteile („Annette“ → „Ann“) | bestätigt | Stamm-Bindungen und Wissen nach Figuren-ID (`bind_referents`, ganze Namensteile/Aliase) |
+| Geheimnis immer im Brief | bestätigt | nur bei Beleg oder Personenbezug |
+| `intent_kind` macht einen zusätzlichen Modellaufruf | **nicht zutreffend** | Der Abfang in `_llm_json` beantwortet `INTENT_KIND_RULES` aus der Erlebensantwort. Der Test belegt: `urlopen` wird nicht aufgerufen (auch in 11E) |
+| Android-Anleitung mit falschen Namen | bestätigt | echte Paket- und Ordnernamen |
+| Schlüssel im ZIP | so verlangt (Pakete mit deinen Daten) | Hinweisdatei im Paket; Werkzeug `tools/mit_deinen_daten_11.sh`; im Repository nur Testvorlagen ohne Schlüssel (geprüft) |
+| Sprecherwahl mit Wortlisten (K-05) | offen | nicht in diesem Schritt – ROT |
+
+**Geprüft:**
+- `tests/test_brief_auswahl_11f.py`: 7/7. Gegenprobe an 11E: 6 rot, nur der Netzaufruf-Test ist grün.
+- F1: 12/12. Gegenprobe: 8/12, also wie erwartet rot.
+- F2: 7/7.
+- F1-Rest: Grenze in 6/6 Briefen.
+- Gerätefälle 11:08: Brief mit „Was du fürchtest: Johanns Druck“ (belegt und Johann anwesend), ohne unbelegte Ängste und ohne Abwesende.
+- 5 Gerätefälle: 4–5 Aufrufe.
+- K-Tests: 57/57.
+- P25-Suite: keine neue Abweichung (Build-Vertrag nur im ungebauten Arbeitsordner).
+
+**Gesamtstatus ROT:** K-05, 11 P25-Altfehler, Android und echtes Modell sind nicht abgenommen.

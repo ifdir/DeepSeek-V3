@@ -1,0 +1,213 @@
+{
+ "vorlage_sha256": "f751a20c70a780f0e5f45f25bdbcf82367c7c04c59e7ca2091217a48e2732a15",
+ "config": 200,
+ "vorher": {
+  "mara_runtime": {
+   "emotion": "wach",
+   "intensity": 0.35,
+   "fear": 0.25,
+   "anger": 0.1,
+   "pain": 0.05,
+   "stress": 0.25,
+   "intent": "",
+   "trust": 0.4,
+   "mobility": 0.9,
+   "affects": null
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.15,
+    "closeness": 0.25,
+    "fear": 0.7
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 0
+ },
+ "puppet": [
+  503,
+  "NATIVE_BOUNDARY_UNAVAILABLE",
+  "Rust-Schreibgrenze konnte nicht geladen werden"
+ ],
+ "nach_tat": {
+  "mara_runtime": {
+   "emotion": "wach",
+   "intensity": 0.35,
+   "fear": 0.25,
+   "anger": 0.1,
+   "pain": 0.05,
+   "stress": 0.25,
+   "intent": "",
+   "trust": 0.4,
+   "mobility": 0.9,
+   "affects": null
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.15,
+    "closeness": 0.25,
+    "fear": 0.7
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 0
+ },
+ "turn1": {
+  "prepare": [
+   503,
+   "NATIVE_BOUNDARY_UNAVAILABLE",
+   "Rust-Schreibgrenze konnte nicht geladen werden"
+  ],
+  "formulate": [
+   422,
+   "TURN_BELEG_UNGUELTIG",
+   null,
+   null
+  ],
+  "commit": [
+   503,
+   "NATIVE_BOUNDARY_UNAVAILABLE",
+   "Rust-Schreibgrenze konnte nicht geladen werden"
+  ],
+  "spiegel_mara": {
+   "runtime": null,
+   "relationsHere": null,
+   "affects": null,
+   "intent": null,
+   "memories": null
+  }
+ },
+ "nach_turn1": {
+  "mara_runtime": {
+   "emotion": "wach",
+   "intensity": 0.35,
+   "fear": 0.25,
+   "anger": 0.1,
+   "pain": 0.05,
+   "stress": 0.25,
+   "intent": "",
+   "trust": 0.4,
+   "mobility": 0.9,
+   "affects": null
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.15,
+    "closeness": 0.25,
+    "fear": 0.7
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 0
+ },
+ "nach_neustart": {
+  "mara_runtime": {
+   "emotion": "wach",
+   "intensity": 0.35,
+   "fear": 0.25,
+   "anger": 0.1,
+   "pain": 0.05,
+   "stress": 0.25,
+   "intent": "",
+   "trust": 0.4,
+   "mobility": 0.9,
+   "affects": null
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.15,
+    "closeness": 0.25,
+    "fear": 0.7
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 0
+ },
+ "turn2": {
+  "prepare": [
+   503,
+   "NATIVE_BOUNDARY_UNAVAILABLE",
+   "Rust-Schreibgrenze konnte nicht geladen werden"
+  ],
+  "formulate": [
+   422,
+   "TURN_BELEG_UNGUELTIG",
+   null,
+   null
+  ],
+  "commit": [
+   503,
+   "NATIVE_BOUNDARY_UNAVAILABLE",
+   "Rust-Schreibgrenze konnte nicht geladen werden"
+  ],
+  "spiegel_mara": {
+   "runtime": null,
+   "relationsHere": null,
+   "affects": null,
+   "intent": null,
+   "memories": null
+  }
+ },
+ "nach_turn2": {
+  "mara_runtime": {
+   "emotion": "wach",
+   "intensity": 0.35,
+   "fear": 0.25,
+   "anger": 0.1,
+   "pain": 0.05,
+   "stress": 0.25,
+   "intent": "",
+   "trust": 0.4,
+   "mobility": 0.9,
+   "affects": null
+  },
+  "beziehung_zu_johann": {
+   "char_g7_mara": {
+    "trust": 0.15,
+    "closeness": 0.25,
+    "fear": 0.7
+   },
+   "char_g7_robert": {
+    "trust": 0.05,
+    "closeness": 0.05,
+    "fear": 0.35
+   }
+  },
+  "turnIndex": 0
+ },
+ "isolation_andere_session_unveraendert": true,
+ "stamm_mara_unveraendert": true,
+ "modellaufrufe": [],
+ "appraisal_log": [],
+ "kriterien": {
+  "G1_tat_serverseitig_gebunden_johann_an_mara_gewalt": false,
+  "G2_wahrnehmung_mara_erlebt_gustav_gesehen_robert_nichts": false,
+  "G3_koerper_schmerz_steigt_beweglichkeit_sinkt": false,
+  "G4_bedeutung_angst_gegen_johann_absicht_abstand_aus_bewertung": false,
+  "G4c_B2_beziehungsrahmen_der_bewertung_nennt_person_und_ereignis": false,
+  "G4b_beziehung_vertrauen_sinkt_furcht_steigt": false,
+  "G6_naechster_zug_brief_enthaelt_beziehung_koerper_erinnerung_gefuehl_absicht": false,
+  "G6b_nach_neustart_brief_enthaelt_dasselbe": false,
+  "G7_figurenantworten_committet": false,
+  "G9_neustart_zustand_unveraendert": true,
+  "G9b_kein_doppeltes_anwenden_im_folgezug": true,
+  "G10_isolation_andere_session_und_stamm_unveraendert": true
+ },
+ "gesamt": "F1 VERLETZT"
+}

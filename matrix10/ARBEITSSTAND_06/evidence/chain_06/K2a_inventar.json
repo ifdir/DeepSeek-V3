@@ -1,0 +1,417 @@
+{
+  "wurzeln": [
+    "_load",
+    "_native_request",
+    "reduce_body_contact_standing",
+    "reduce_restricted_permissions",
+    "reduce_restricted_refusals",
+    "restriction_match"
+  ],
+  "funktionen_die_den_kern_erreichen": 119,
+  "breite_handler_um_kernpfade": 25,
+  "laeuft_weiter": [
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 2582,
+      "try_ende": 2794,
+      "handler_zeile": 2792,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "laeuft_weiter",
+      "funktion": "kernel_regie",
+      "erreicht_ueber": [
+        "_boundary_readings",
+        "_kernel_stored_session"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 3900,
+      "try_ende": 3996,
+      "handler_zeile": 3994,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "laeuft_weiter",
+      "funktion": "_extract_user_plan",
+      "erreicht_ueber": [
+        "_boundary_reference_step",
+        "bind_pronoun_referent"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 2700,
+      "try_ende": 2717,
+      "handler_zeile": 2716,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "laeuft_weiter",
+      "funktion": "kernel_regie",
+      "erreicht_ueber": [
+        "_boundary_readings"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 2996,
+      "try_ende": 3036,
+      "handler_zeile": 3034,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "laeuft_weiter",
+      "funktion": "kernel_puppet",
+      "erreicht_ueber": [
+        "_boundary_reference_step"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 1790,
+      "try_ende": 1798,
+      "handler_zeile": 1794,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "laeuft_weiter",
+      "funktion": "_read",
+      "erreicht_ueber": [
+        "_appraise_perceived"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 2056,
+      "try_ende": 2067,
+      "handler_zeile": 2066,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "laeuft_weiter",
+      "funktion": "kernel_commit",
+      "erreicht_ueber": [
+        "_boundary_readings"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 1778,
+      "try_ende": 1784,
+      "handler_zeile": 1782,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "laeuft_weiter",
+      "funktion": "_read",
+      "erreicht_ueber": [
+        "_goal_theme_step"
+      ]
+    }
+  ],
+  "endet_mit_antwort": [
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 642,
+      "try_ende": 666,
+      "handler_zeile": 661,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "endet_mit_antwort",
+      "funktion": "post_import_mcc",
+      "erreicht_ueber": [
+        "import_mcc"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 1572,
+      "try_ende": 1882,
+      "handler_zeile": 1870,
+      "faengt": [
+        "NativeBoundaryError"
+      ],
+      "art": "endet_mit_antwort",
+      "funktion": "kernel_prepare",
+      "erreicht_ueber": [
+        "_appraise_perceived",
+        "_extract_user_plan",
+        "_goal_theme_step",
+        "_kernel_stored_session",
+        "commit_turn",
+        "kernel_session_response",
+        "prepare_turn"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 1572,
+      "try_ende": 1882,
+      "handler_zeile": 1880,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "endet_mit_antwort",
+      "funktion": "kernel_prepare",
+      "erreicht_ueber": [
+        "_appraise_perceived",
+        "_extract_user_plan",
+        "_goal_theme_step",
+        "_kernel_stored_session",
+        "commit_turn",
+        "kernel_session_response",
+        "prepare_turn"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 1915,
+      "try_ende": 2212,
+      "handler_zeile": 2203,
+      "faengt": [
+        "NativeBoundaryError"
+      ],
+      "art": "endet_mit_antwort",
+      "funktion": "kernel_commit",
+      "erreicht_ueber": [
+        "_boundary_readings",
+        "_extract_user_plan",
+        "_kernel_stored_session",
+        "commit_turn",
+        "kernel_session_response"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 1915,
+      "try_ende": 2212,
+      "handler_zeile": 2210,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "endet_mit_antwort",
+      "funktion": "kernel_commit",
+      "erreicht_ueber": [
+        "_boundary_readings",
+        "_extract_user_plan",
+        "_kernel_stored_session",
+        "commit_turn",
+        "kernel_session_response"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 2402,
+      "try_ende": 2565,
+      "handler_zeile": 2556,
+      "faengt": [
+        "NativeBoundaryError"
+      ],
+      "art": "endet_mit_antwort",
+      "funktion": "kernel_god",
+      "erreicht_ueber": [
+        "_kernel_stored_session",
+        "apply_god",
+        "kernel_session_response"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 2402,
+      "try_ende": 2565,
+      "handler_zeile": 2563,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "endet_mit_antwort",
+      "funktion": "kernel_god",
+      "erreicht_ueber": [
+        "_kernel_stored_session",
+        "apply_god",
+        "kernel_session_response"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 2795,
+      "try_ende": 2928,
+      "handler_zeile": 2926,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "endet_mit_antwort",
+      "funktion": "kernel_regie",
+      "erreicht_ueber": [
+        "_kernel_stored_session",
+        "apply_regie",
+        "kernel_session_response"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 2939,
+      "try_ende": 3165,
+      "handler_zeile": 3156,
+      "faengt": [
+        "NativeBoundaryError"
+      ],
+      "art": "endet_mit_antwort",
+      "funktion": "kernel_puppet",
+      "erreicht_ueber": [
+        "_boundary_reference_step",
+        "_kernel_stored_session",
+        "apply_presence",
+        "commit_puppet",
+        "kernel_session_response"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 2939,
+      "try_ende": 3165,
+      "handler_zeile": 3163,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "endet_mit_antwort",
+      "funktion": "kernel_puppet",
+      "erreicht_ueber": [
+        "_boundary_reference_step",
+        "_kernel_stored_session",
+        "apply_presence",
+        "commit_puppet",
+        "kernel_session_response"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 4029,
+      "try_ende": 4050,
+      "handler_zeile": 4048,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "endet_mit_antwort",
+      "funktion": "kernel_move",
+      "erreicht_ueber": [
+        "_kernel_stored_session",
+        "apply_move",
+        "kernel_session_response"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 4061,
+      "try_ende": 4079,
+      "handler_zeile": 4077,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "endet_mit_antwort",
+      "funktion": "kernel_presence",
+      "erreicht_ueber": [
+        "_kernel_stored_session",
+        "apply_presence",
+        "kernel_session_response"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 4131,
+      "try_ende": 4169,
+      "handler_zeile": 4167,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "endet_mit_antwort",
+      "funktion": "kernel_fate",
+      "erreicht_ueber": [
+        "_kernel_stored_session",
+        "kernel_session_response"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 4177,
+      "try_ende": 4211,
+      "handler_zeile": 4210,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "endet_mit_antwort",
+      "funktion": "kernel_autochat_gate",
+      "erreicht_ueber": [
+        "_kernel_stored_session"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 4234,
+      "try_ende": 4262,
+      "handler_zeile": 4261,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "endet_mit_antwort",
+      "funktion": "kernel_reset",
+      "erreicht_ueber": [
+        "_kernel_stored_session",
+        "reset_session_chat",
+        "reset_session_memory",
+        "reset_session_runtime",
+        "reset_session_uploads"
+      ]
+    }
+  ],
+  "gibt_weiter": [
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 3772,
+      "try_ende": 3789,
+      "handler_zeile": 3787,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "gibt_weiter",
+      "funktion": "_goal_theme_step",
+      "erreicht_ueber": [
+        "_kernel_stored_session",
+        "kernel_session_response"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 3830,
+      "try_ende": 3840,
+      "handler_zeile": 3838,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "gibt_weiter",
+      "funktion": "_appraise_perceived",
+      "erreicht_ueber": [
+        "_kernel_stored_session",
+        "kernel_session_response"
+      ]
+    },
+    {
+      "datei": "matrix_api/app.py",
+      "try_zeile": 1725,
+      "try_ende": 1743,
+      "handler_zeile": 1741,
+      "faengt": [
+        "Exception"
+      ],
+      "art": "gibt_weiter",
+      "funktion": "_read",
+      "erreicht_ueber": [
+        "_kernel_stored_session",
+        "commit_turn",
+        "kernel_session_response"
+      ]
+    }
+  ]
+}

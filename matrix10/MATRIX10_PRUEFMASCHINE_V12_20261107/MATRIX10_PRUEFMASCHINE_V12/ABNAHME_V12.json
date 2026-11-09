@@ -1,0 +1,30 @@
+{
+ "version": "V1.2",
+ "erstellt_utc": "2026-11-07T18:51:59.060754+00:00",
+ "dateien": {
+  "FREIGABE_PRUEFEN_V12.py": "ef56a724c41b45e8471e32cadc75f611e59f770679fb46b36a419cb5f0d34876",
+  "NACHTRAG_01_SOLLQUELLEN_ENTWURF.txt": "c19735fdf37c9fe04d45ebb10200ff6d04c793282e3c3652a239ad3557420b72",
+  "PRUEFMASCHINE_STARTEN_WINDOWS.bat": "e8462605bc2197a67afa3493ce6f00a8049dee85e5faa36c97ee9d7e60323a24",
+  "PRUEFREGELN_V12.json": "50bac2598807374450a27f4658c2c8edd1008b016493e61ae19769c4198401db",
+  "README_ZUERST_LESEN.txt": "4a600f3e0ee6fd26b8a446e7891c8d5b8d9d648112504dc141992668b94fca00",
+  "SELBSTABNAHME_V12.py": "5fa3ec603ef0e8da7a111e1fb21b48cbf5b727536a110cc333da3a09772d7e5b",
+  "basis/basis_P22_fehlschlaege.txt": "1897af50451c0f4fefe2bda2aec119829a6c2b3111e2043b7bd813ab51f81a6f",
+  "basis/basis_P22_typfehler.txt": "0bd6c7173ac97b081a0b1be9ed87ec2138519b522b92caf86a1c44197ac3e66e",
+  "kettenpruefer/kettenpruefer.py": "fd3583d71869c8a6dfe80ca4fb6dae53d08ca8d108f612c468fe7d9e655f62c3",
+  "kettenpruefer/kp_faelle.json": "fd352b89881c44c331804960f17db255f9afdf2511a90f46da8f20f20c10c11d",
+  "kettenpruefer/kp_modellproxy.py": "c95667b33a6f701ea6b53fa4aaad3bc324ba6001f261698065f831466d57c243",
+  "kettenpruefer/kp_mutationen.py": "9fd8ec49d26e0771f933ad5171bbf66b3d20e23368469ffc6415d570c5127526",
+  "kettenpruefer/kp_selbstabnahme_soll.json": "aa76cbe328f25fcec9929cb44e8ae8e163c953ee97a27bcde1047d0c81678c62",
+  "kettenpruefer/kp_ui.js": "c0343b9caf07da6c8692d927fdb118987fdc3275b40f7f78085a02669fe71992",
+  "kettenpruefer/kp_vergleich.py": "d474610bf56dc4648b6af29e56e8841fb669f39a09fa5a82e7011f2dab5fdabc",
+  "modellaufnahmen/P24/aufnahme.jsonl": "5d6de1eba4673014ea97342c474aa232eac8ee32e0651724456dedd490f0662d",
+  "modellaufnahmen/P25/aufnahme.jsonl": "efa2a06fd756a2dc8dd78838c2b695bcf5a04f12831464328fc1ec0cde1a6702",
+  "pm_auswertung.py": "3b9c618935478cc7d4df1bb4fa0848bb5debad24dde8db7116f1f516e4c49039"
+ },
+ "selbstabnahme": {
+  "gesamt": "GRUEN",
+  "proben": 109,
+  "ergebnis_sha256": "57126792db57b350affac7708ec8170409bd47f290b567b5105a66b94365ab3f",
+  "lauf": "SELBSTABNAHME_LAUF_20261107_183415"
+ }
+}

@@ -1,0 +1,235 @@
+{
+  "variante": "ok",
+  "anfragen": [
+    {
+      "anfrage": "POST /api/kernel/commit (Figurenantwort)",
+      "session": "ses_av06",
+      "erreicht_native_grenze": true,
+      "status": 200,
+      "code": null,
+      "erfolgsmeldung": true,
+      "sqlite_unveraendert": false,
+      "meldung": "",
+      "app_stapelzeilen": [
+        187,
+        1407,
+        1521,
+        1859,
+        2044,
+        2090,
+        2137
+      ]
+    },
+    {
+      "anfrage": "POST /api/kernel/prepare (Avatar)",
+      "session": "ses_av06",
+      "erreicht_native_grenze": true,
+      "status": 200,
+      "code": null,
+      "erfolgsmeldung": true,
+      "sqlite_unveraendert": false,
+      "meldung": "",
+      "app_stapelzeilen": [
+        227,
+        1407,
+        1521,
+        1537,
+        1690,
+        1694,
+        1701,
+        1751,
+        1759,
+        1814,
+        3751,
+        3756
+      ]
+    },
+    {
+      "anfrage": "POST /api/kernel/puppet (Johann streichelt Mara)",
+      "session": "ses_v92",
+      "erreicht_native_grenze": true,
+      "status": 200,
+      "code": null,
+      "erfolgsmeldung": true,
+      "sqlite_unveraendert": false,
+      "meldung": "",
+      "app_stapelzeilen": [
+        187,
+        1407,
+        1521,
+        2885,
+        2952,
+        2967,
+        3047,
+        3072,
+        3076,
+        3283,
+        3285,
+        3342
+      ]
+    },
+    {
+      "anfrage": "POST /api/kernel/regie (Johann streichelt Mara)",
+      "session": "ses_v92",
+      "erreicht_native_grenze": true,
+      "status": 200,
+      "code": null,
+      "erfolgsmeldung": true,
+      "sqlite_unveraendert": false,
+      "meldung": "",
+      "app_stapelzeilen": [
+        187,
+        1407,
+        1521,
+        2511,
+        2637,
+        2725,
+        2757,
+        2835,
+        2846,
+        3283,
+        3285
+      ]
+    },
+    {
+      "anfrage": "POST /api/kernel/god (Koerper Mara)",
+      "session": "ses_v92",
+      "erreicht_native_grenze": true,
+      "status": 200,
+      "code": null,
+      "erfolgsmeldung": true,
+      "sqlite_unveraendert": false,
+      "meldung": "",
+      "app_stapelzeilen": [
+        187,
+        1407,
+        1521,
+        2340,
+        2346,
+        2459,
+        2479,
+        2483
+      ]
+    },
+    {
+      "anfrage": "POST /api/kernel/presence",
+      "session": "ses_v92",
+      "erreicht_native_grenze": true,
+      "status": 200,
+      "code": null,
+      "erfolgsmeldung": true,
+      "sqlite_unveraendert": false,
+      "meldung": "",
+      "app_stapelzeilen": [
+        187,
+        1407,
+        1521,
+        3984,
+        3988,
+        3990,
+        3994
+      ]
+    },
+    {
+      "anfrage": "POST /api/kernel/perception",
+      "session": "ses_v92",
+      "erreicht_native_grenze": true,
+      "status": 200,
+      "code": null,
+      "erfolgsmeldung": true,
+      "sqlite_unveraendert": false,
+      "meldung": "",
+      "app_stapelzeilen": [
+        187,
+        1407,
+        1521,
+        4015,
+        4037,
+        4040
+      ]
+    },
+    {
+      "anfrage": "POST /api/kernel/move",
+      "session": "ses_v92",
+      "erreicht_native_grenze": true,
+      "status": 200,
+      "code": null,
+      "erfolgsmeldung": true,
+      "sqlite_unveraendert": false,
+      "meldung": "",
+      "app_stapelzeilen": [
+        187,
+        1407,
+        1521,
+        3952,
+        3959,
+        3961,
+        3965
+      ]
+    },
+    {
+      "anfrage": "POST /api/kernel/fate",
+      "session": "ses_v92",
+      "erreicht_native_grenze": true,
+      "status": 200,
+      "code": null,
+      "erfolgsmeldung": true,
+      "sqlite_unveraendert": true,
+      "meldung": "",
+      "app_stapelzeilen": [
+        187,
+        1407,
+        1521,
+        4054,
+        4080,
+        4084
+      ]
+    },
+    {
+      "anfrage": "POST /api/kernel/autochat-gate",
+      "session": "ses_v92",
+      "erreicht_native_grenze": true,
+      "status": 200,
+      "code": null,
+      "erfolgsmeldung": true,
+      "sqlite_unveraendert": true,
+      "meldung": "",
+      "app_stapelzeilen": [
+        227,
+        1521,
+        4099,
+        4127
+      ]
+    },
+    {
+      "anfrage": "GET /api/sessions/<id>",
+      "session": "ses_v92",
+      "erreicht_native_grenze": true,
+      "status": 200,
+      "code": null,
+      "erfolgsmeldung": true,
+      "sqlite_unveraendert": true,
+      "meldung": "",
+      "app_stapelzeilen": [
+        661
+      ]
+    },
+    {
+      "anfrage": "POST /api/kernel/reset (chat)",
+      "session": "ses_v92",
+      "erreicht_native_grenze": true,
+      "status": 200,
+      "code": null,
+      "erfolgsmeldung": true,
+      "sqlite_unveraendert": false,
+      "meldung": "",
+      "app_stapelzeilen": [
+        187,
+        1521,
+        4158,
+        4161,
+        4176
+      ]
+    }
+  ]
+}
