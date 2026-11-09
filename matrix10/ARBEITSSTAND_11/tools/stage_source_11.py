@@ -22,6 +22,7 @@ BASIS = {   # Datei im Stage-10C-Stand -> SHA-256 der Basis
     "matrix_api/llm_contract.py": "65b5d8f430d034b97102e4f0c26c5ebb7501d6a46c985e8a959a027f159a8112",   # Overlay 10C
     "matrix_api/app.py": "e6c3f6d445453654b4b38ad4bab8e36061151852a396282cc2304dcf03466ae8",   # Overlay 10B
     "matrix_api/kernel.py": "0bad26d267cd195b0093e59e0c6b73f7673cbd09553d0bde8581e9c147e00846",   # Overlay 09 (Stand 11B: Rest/Doppelung)
+    "matrix_api/repos.py": "75f1b1eba70ea88975bfa444962671563b1a5e74abea552c82396eb453e68de1",   # Overlay 07 (Stand 12A: Runtime-Reset leert den Szenenzustand)
     "src/lib/matrix/eingabe-hinweis.ts": "e6d2ca5605a02b7abe0316c6cc54e1ae5cf2ecff0891a8e9af89441a6dce5915",   # P25 (Stand 11C: keine Lesevermerke)
     "tests/test_v92_puppet_kette.py": "883081900f409555281b261fa5b1eb69352d3233f72566c8510636ac1a285644",   # P25 (Stand 11C: C6-Test)
     # P25-Tests, deren Aufrufstruktur Stand 11 anpasst (Lesungen aus der ersten Antwort); Schutzaussagen bleiben

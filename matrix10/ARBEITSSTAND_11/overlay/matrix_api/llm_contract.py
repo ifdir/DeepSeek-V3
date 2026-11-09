@@ -290,6 +290,10 @@ def _parse_llm_json(raw: str) -> tuple[str, str | None] | None:
         "plan": parsed.get("plan") if isinstance(parsed.get("plan"), dict) else None,
         "wirkung": parsed.get("wirkung") if isinstance(parsed.get("wirkung"), dict) else None,
     }
+    if isinstance(parsed.get("handlungen"), list):
+        # Stand 12A: die Taten der action, je mit eigener Wirkung (der Commit bindet jede an ihren Textabschnitt)
+        proposals["handlungen"] = [{k: e.get(k) for k in ("segment", "art", "ziel")} for e in parsed["handlungen"]
+                                   if isinstance(e, dict) and str(e.get("segment") or "").strip()]
     if isinstance(parsed.get("aussagen"), list):
         proposals["aussagen"] = [a for a in parsed["aussagen"] if isinstance(a, dict)]   # V65Z (A04): no silent cut
     # Stand 11a: die Pflichtfelder "pruefung" (Antwort) und aussagen[].lesung werden zu den Lesungen der ersten Antwort
@@ -1669,6 +1673,14 @@ def appraise_events(conn, actor: str, payload: dict[str, Any], *, data: dict[str
             for _p in res["_kausalpruefung"].get("pruefungen") or []:   # Stand 12: Kennung G… -> Fakt-ID (auch bisherige Form)
                 if isinstance(_p, dict) and str(_p.get("factId") or "") in _kurz:
                     _p["factId"] = _kurz[str(_p["factId"])]
+            # Stand 12A (Kettenkarte 12A, live 7x "kausalpruefung_fehlend:absicht"): das Modell wiederholte die bestehende Absicht
+            # (oft umformuliert) ohne Nachweis, statt sie leer zu lassen ("leer, wenn es an vorher.absicht nichts aendert"). Eine
+            # Absicht ohne Nachweis neben einer bestehenden ist "unveraendert" - die bisherige bleibt (wie bisher), kein neuer Vorschlag.
+            # Eine NEUE Absicht ohne Nachweis (keine vorherige) bleibt Vorschlag und wird vom Kernel verworfen.
+            _vor_abs = str(((fig.get("vorher") or {}) if isinstance(fig.get("vorher"), dict) else {}).get("absicht") or "").strip()
+            if (str(res.get("absicht") or "").strip() and _vor_abs
+                    and not any(isinstance(p, dict) and p.get("feld") == "absicht" for p in res["_kausalpruefung"].get("pruefungen") or [])):
+                res["absicht"] = ""
             # Stand 11a: die Absichtsart (frueher INTENT_KIND-Aufruf) aus demselben Pflichtfeld
             _art = res.pop("vorher_absicht_art", None)
             res.pop("lesungen", None)
@@ -2472,18 +2484,23 @@ P_KOMPONENTEN_PRUEFUNG = _obj({
     "beruehrung": _nullable(P_BERUEHRUNG), "bewegung": _nullable(P_BEWEGUNG), "bittebezug": _nullable(P_BITTEBEZUG),
     "erlaubnisbezug": _nullable(P_ERLAUBNISBEZUG), "grenzbezug": _nullable(P_GRENZBEZUG)})
 P_REDE_PRUEFUNG = _obj({"komponentenart": P_KOMPONENTENART, "sprecher": P_SPRECHER})
+# Stand 12A (Kettenkarte 12A, live: in 16/16 Beruehrungen des Planers und 20/35 Taten der Figurenantwort war die Bestaetigung
+# leer, obwohl die Wirkungsart gesetzt war - die Tat blieb ohne Wirkung): wirkung/beruehrung/bewegung sind KEINE getrennten
+# Pruef-Felder mehr; ihre Angaben stehen bei der Tat selbst (P_WIRKUNG_TAT) und der Server leitet daraus dieselben Lesungen ab.
 P_HANDLUNG_PRUEFUNG = _obj({
     "vollzug": P_VOLLZUG, "komponentenart": P_KOMPONENTENART, "koerper": P_KOERPER,
-    "koerperBestaetigung": _nullable(P_KOERPER_BESTAETIGUNG), "wirkung": _nullable(P_WIRKUNG), "beruehrung": _nullable(P_BERUEHRUNG),
-    "bewegung": _nullable(P_BEWEGUNG), "bittebezug": _nullable(P_BITTEBEZUG), "erlaubnisbezug": _nullable(P_ERLAUBNISBEZUG),
-    "grenzbezug": _nullable(P_GRENZBEZUG)})
+    "koerperBestaetigung": _nullable(P_KOERPER_BESTAETIGUNG), "bittebezug": _nullable(P_BITTEBEZUG),
+    "erlaubnisbezug": _nullable(P_ERLAUBNISBEZUG), "grenzbezug": _nullable(P_GRENZBEZUG)})
 # eigene Antwort einer Figur (Formulierung)
 P_ANTWORT_PRUEFUNG = _obj({
-    "koerper": _nullable(P_KOERPER), "koerperBestaetigung": _nullable(P_KOERPER_BESTAETIGUNG), "wirkung": _nullable(P_WIRKUNG),
-    "beruehrung": _nullable(P_BERUEHRUNG), "bewegung": _nullable(P_BEWEGUNG), "grenzumfang": _nullable(P_GRENZUMFANG),
+    "koerper": _nullable(P_KOERPER), "koerperBestaetigung": _nullable(P_KOERPER_BESTAETIGUNG), "grenzumfang": _nullable(P_GRENZUMFANG),
     "offenbarung": _nullable(P_OFFENBARUNG)})
 
 _WIRKUNGEN = ("zaertlich", "gewalt", "fesseln", "befreien", "ortswechsel", "annaeherung", "entfernung", "ohne_koerperwirkung")
+# Stand 12A: die Wirkung EINER Tat mit ihrem Nachweis in einem Eintrag - wirkungBeleg ist Pflicht (Zeichenkette), damit die Art nie
+# ohne Beleg kommt; ob die Tat jetzt geschieht, moeglich ist und ihr Ziel erreicht, entscheidet weiter der Kernel.
+P_WIRKUNG_TAT = {"wirkungBeleg": _S, "versuch": _B, "beruehrt": _B, "beruehrungBeleg": _SN, "gegen": _SN}
+P_HANDLUNG_EINTRAG = _obj({"segment": _S, "art": _E(*_WIRKUNGEN), "ziel": _SN, "zeit": _ZEIT, "geschieht": _B, **P_WIRKUNG_TAT})
 PLAN_SCHEMA: dict[str, Any] = _obj({
     "event_kind": _E("claim", "proposal", "acceptance", "request", "disclosure", "state_change", "revocation", "refusal", "action",
                      "report", "question", "promise", "smalltalk"),
@@ -2505,7 +2522,7 @@ PLAN_SCHEMA: dict[str, Any] = _obj({
         _obj({"typ": _E("rede"), "segment": _S, "akteur": _S, "ziel": _SN, "zeit": _ZEIT, "wirkung": {"type": "null"},
               "bezug": _SN, "einleitung": _SN, "geschieht": {"type": "null"}, "pruefung": P_REDE_PRUEFUNG}),
         _obj({"typ": _E("handlung"), "segment": _S, "akteur": _S, "ziel": _SN, "zeit": _ZEIT,
-              "wirkung": _E(*_WIRKUNGEN), "bezug": _SN, "einleitung": {"type": "null"}, "geschieht": _B,
+              "wirkung": _E(*_WIRKUNGEN), "bezug": _SN, "einleitung": {"type": "null"}, "geschieht": _B, **P_WIRKUNG_TAT,
               "pruefung": P_HANDLUNG_PRUEFUNG})]}},
     "teilstellen": {"type": "array", "items": _obj({"stelle": _S, "pruefung": P_HANDLUNG_PRUEFUNG})},
     "sprache": P_SPRACHE, "namen": P_NAMEN, "grenzumfang": _nullable(P_GRENZUMFANG),
@@ -2532,9 +2549,8 @@ def event_labels(spiegel: dict[str, Any]) -> dict[str, str]:
 FORMULATION_SCHEMA: dict[str, Any] = _obj({
     "speech": _S,
     "action": _SN,
-    "wirkung": _nullable(_obj({"art": {"type": "string", "enum": ["zaertlich", "gewalt", "fesseln", "befreien", "ortswechsel",
-                                                                    "annaeherung", "entfernung", "ohne_koerperwirkung"]},
-                               "ziel": _SN})),
+    # Stand 12A: je eigenstaendige Tat in action ein Eintrag mit eigener Wirkung (statt EINER Wirkung fuer die ganze action)
+    "handlungen": {"type": "array", "items": P_HANDLUNG_EINTRAG},
     "synapsen": {"type": "array", "items": _obj({"raum": _S, "aktivierung": {"type": "number"}, "grund": _S})},
     "emotion": _S,
     "beziehung": _nullable(_obj({"zu": _S, "trust": {"type": "number"}, "closeness": {"type": "number"},
@@ -2619,7 +2635,9 @@ def _try_llm(
         "Ob ein EIGENES Ziel erreicht ist, entscheidest nur du als Figur, und nur ausdruecklich (plan.event_kind acceptance mit refers_to [goal_…]); "
         "Ziele und Angelegenheiten anderer entscheidest du nicht. "
         'Antwort NUR JSON: {"speech": string, "action": string|null, '
-        '"wirkung": {"art": "zaertlich|gewalt|fesseln|befreien|ortswechsel|annaeherung|entfernung|ohne_koerperwirkung", "ziel": string|null}|null, '
+        '"handlungen": [{"segment": string, "art": "zaertlich|gewalt|fesseln|befreien|ortswechsel|annaeherung|entfernung|ohne_koerperwirkung", '
+        '"ziel": string|null, "zeit": "jetzt|vergangen|zukunft|moeglich", "geschieht": bool, "wirkungBeleg": string, "versuch": bool, '
+        '"beruehrt": bool, "beruehrungBeleg": string|null, "gegen": string|null}], '
         '"synapsen": [{"raum": "<Bedeutungsraum>", "aktivierung": 0..1, "grund": string}], '
         '"emotion": string, "beziehung": {"zu": string, "trust": number, '
         '"closeness": number, "fear": number, "grund": string}|null, '
@@ -2646,7 +2664,12 @@ def _try_llm(
         "speech ist die eigene direkte Rede (keine Beschreibung eigener Handlungen); action ist, was du in diesem Moment sichtbar tust und wie (Körper, Blick, Stimme, Zögern), in 1–4 Sätzen. Die übrigen Felder knapp: synapsen höchstens 2, jeder grund wenige Worte. "
         # V59C (AMASTER §28 Schritt 29, §24.6): the semantic class of the
         # action is a proposal; the kernel validates it before any writer.
-        "wirkung beschreibt nur die koerperliche Wirkung deiner action (null ohne action): zaertlich = Beruehrung ohne Verletzung (liebevoll, sexuell oder aufdringlich; ob erwuenscht, entscheidet die Einwilligung der beruehrten Person, nicht diese Klasse); "
+        "handlungen = je eigenstaendige Tat in deiner action ein Eintrag (ohne action: []); segment = genau die Woerter dieser Tat WOERTLICH aus action "
+        "(zwei Taten wie 'stoesst ihn weg und tritt zurueck' sind zwei Eintraege); art = ihre koerperliche Wirkung; wirkungBeleg = die Woerter in segment, "
+        "die genau diese Wirkung ausfuehren, WOERTLICH (bei ohne_koerperwirkung das segment); geschieht = die Tat geschieht jetzt wirklich; "
+        "versuch = jetzt versucht, aber nicht erreicht; beruehrt = sie beruehrt jetzt tatsaechlich den Koerper von ziel (beruehrungBeleg woertlich, sonst null); "
+        "gegen = Flaeche oder Gegenstand, an die ziel gedrueckt wird, woertlich, sonst null. "
+        "art: zaertlich = Beruehrung ohne Verletzung (liebevoll, sexuell oder aufdringlich; ob erwuenscht, entscheidet die Einwilligung der beruehrten Person, nicht diese Klasse); "
         "gewalt = verletzender koerperlicher Angriff; fesseln = jemanden binden, knebeln oder gewaltsam bewegungsunfaehig machen; "
         "befreien = Fesseln loesen; ortswechsel = den Ort verlassen oder an einen anderen Ort gehen; "
         "annaeherung = sich jemandem naehern, naeher ruecken, sich zu jemandem lehnen; entfernung = von jemandem abruecken, Abstand nehmen; "
@@ -5488,6 +5511,38 @@ def namen_lesungen(namen: Any) -> list[dict]:
             for n in (namen if isinstance(namen, list) else []) if isinstance(n, dict) and str(n.get("wortfolge") or "").strip()]
 
 
+_TAT_FELDER = tuple(P_WIRKUNG_TAT)
+
+
+def wirkung_lesungen(e: Any, zu: str, art: Any) -> list[dict]:
+    """Stand 12A: aus der Wirkung EINER Tat (Art, Ziel, Zeit, geschieht, wirkungBeleg, versuch, beruehrt, beruehrungBeleg, gegen) genau
+    die Lesungen, die die vorhandenen Pruefungen lesen (MOVE_CHECK/MOVE_ATTEMPT -> bewegung, EFFECT_CHECK -> wirkung, TOUCH_CONFIRM ->
+    beruehrung), fuer DIESE Tat (zu = ihr Textabschnitt). Keine Entscheidung hier: Beleg woertlich, Faehigkeit, Einwilligung und
+    Ausgang prueft der Kernel unveraendert."""
+    art = str(art or "").strip().lower()
+    if not isinstance(e, dict) or not str(zu or "").strip() or art not in _MOVE_CLASSES + ("zaertlich", "gewalt", "fesseln", "befreien"):
+        return []
+    zeit = str(e.get("zeit") or "jetzt")
+    versuch = bool(e.get("versuch"))
+    jetzt = bool(e.get("geschieht")) and zeit == "jetzt"
+    beleg = str(e.get("wirkungBeleg") or "").strip() or None
+    ziel = e.get("ziel")
+    beruehrt = bool(e.get("beruehrt"))
+    bb = str(e.get("beruehrungBeleg") or "").strip() or None
+    if art in _MOVE_CLASSES:
+        b = {"bestaetigt": jetzt and not versuch and bool(beleg), "zeit": zeit, "ziel": ziel, "beleg": beleg, "versuch": versuch}
+        return [{"lesung": "bewegung", "zu": zu, "antwort": dict(b)}, {"lesung": "bewegungsversuch", "zu": zu, "antwort": dict(b)}]
+    out: list[dict] = []
+    if art in ("gewalt", "fesseln", "befreien"):
+        out.append({"lesung": "wirkung", "zu": zu, "antwort": {
+            "bestaetigt": jetzt and not versuch and bool(beleg), "zeit": zeit, "ziel": ziel, "beleg": beleg, "versuch": versuch,
+            "gegen": e.get("gegen"), "beruehrung": beruehrt, "beruehrungBeleg": (bb or beleg) if beruehrt else None}})
+    if art in ("zaertlich", "gewalt"):
+        out.append({"lesung": "beruehrung", "zu": zu, "antwort": {
+            "beruehrt": jetzt and beruehrt and bool(bb or beleg), "zeit": zeit, "ziel": ziel, "beleg": bb or beleg}})
+    return out
+
+
 def plan_lesungen(parsed: dict, text: str) -> list[dict]:
     """Planer-Antwort: Pflichtfelder je Komponente und Teilstelle + Sprache, Namen, Grenzumfang -> Lesungen. Die Felder werden
     aus dem Plan entfernt - der Kernel sieht die Komponenten wie bisher; eine mitgebrachte freie Liste zaehlt nicht."""
@@ -5497,6 +5552,11 @@ def plan_lesungen(parsed: dict, text: str) -> list[dict]:
     for c in parsed.get("komponenten") if isinstance(parsed.get("komponenten"), list) else []:
         if isinstance(c, dict):
             out += pruefung_lesungen(c.pop("pruefung", None), str(c.get("segment") or ""))
+            if any(k in c for k in _TAT_FELDER):   # Stand 12A: Wirkung der Tat -> ihre Lesungen; die Komponente bleibt wie bisher
+                if str(c.get("typ") or "").lower() == "handlung":
+                    out += wirkung_lesungen(c, str(c.get("segment") or ""), c.get("wirkung"))
+                for k in _TAT_FELDER:
+                    c.pop(k, None)
     for t in parsed.pop("teilstellen", None) or []:
         if isinstance(t, dict):
             out += pruefung_lesungen(t.get("pruefung"), str(t.get("stelle") or ""))
@@ -5522,6 +5582,9 @@ def antwort_lesungen(parsed: dict, speech: str, action: str | None) -> list[dict
         out.append({"lesung": "grenzumfang", "zu": str(g["beleg"]), "antwort": pr["grenzumfang"]})
     if isinstance(pr.get("offenbarung"), dict) and str(speech or "").strip():
         out.append({"lesung": "offenbarung", "zu": str(speech), "antwort": pr["offenbarung"]})
+    for e in parsed.get("handlungen") if isinstance(parsed.get("handlungen"), list) else []:   # Stand 12A: je Tat
+        if isinstance(e, dict):
+            out += wirkung_lesungen(e, str(e.get("segment") or "").strip(), e.get("art"))
     for a in parsed.get("aussagen") if isinstance(parsed.get("aussagen"), list) else []:
         l = a.get("lesung") if isinstance(a, dict) else None
         seg = str((a or {}).get("segment") or "") if isinstance(a, dict) else ""
@@ -5561,7 +5624,7 @@ _NAMEN_TEXT = ("namen = je zusammenhängender Wortfolge, in der der Name einer P
 
 PLAN_PRUEFUNG_RULES = (
     " PRÜFUNG (PFLICHT, AMASTER §24.2/§24.7): Jede Komponente hat das Feld \"pruefung\" - bei rede genau {komponentenart, sprecher}, "
-    "bei handlung genau {vollzug, komponentenart, koerper, koerperBestaetigung, wirkung, beruehrung, bewegung, bittebezug, "
+    "bei handlung genau {vollzug, komponentenart, koerper, koerperBestaetigung, bittebezug, "
     "erlaubnisbezug, grenzbezug}; was nicht zutrifft, ist null. Die segmente zusammen enthalten JEDES Wort der Äußerung: auch ein "
     "Nachsatz nach einer Handlung (etwa eine Bemerkung an die Angesprochene) ist eine eigene rede-Komponente. Jeder beleg ist WÖRTLICH aus der Äußerung kopiert; das System prüft jeden Beleg am Text. Was "
     "du nicht sicher belegen kannst, beantwortest du verneinend bzw. ohne Beleg - nie raten. zeit überall: jetzt|vergangen|zukunft|moeglich. "
@@ -5582,14 +5645,10 @@ PLAN_PRUEFUNG_RULES = (
     "Schlaf; sonst null; das bloße Zeigen eines bestehenden Zustands ist keine Änderung. "
     "koerperBestaetigung: nur wenn koerper eine Änderung nennt, sonst null: {art, inhalt, beleg} - wie sagt der Text an koerper.beleg "
     "genau diese Änderung (art wie oben, zusätzlich ausdruck = zeigt nur einen bestehenden Zustand); inhalt gleich|anders; beleg wörtlich. "
-    "wirkung: nur bei handlung mit wirkung gewalt|fesseln|befreien, sonst null: {bestaetigt, zeit, ziel, beleg, versuch, gegen, "
-    "beruehrung, beruehrungBeleg} - bestaetigt = die Handlung führt genau diese Wirkung jetzt am Körper von ziel aus (ohne beleg false); "
-    "versuch = jetzt versucht, aber nicht erreicht; gegen = Fläche oder Gegenstand, an die ziel gedrückt wird, wörtlich, sonst null; "
-    "beruehrung = nur wenn nicht bestätigt, der Körper von ziel aber jetzt berührt wird (beruehrungBeleg wörtlich). "
-    "beruehrung: nur bei handlung mit wirkung zaertlich|gewalt, sonst null: {beruehrt, zeit, ziel, beleg} - berührt die Handlung jetzt "
-    "tatsächlich den Körper von ziel (beleg = die Stelle des Kontakts). "
-    "bewegung: nur bei handlung mit wirkung annaeherung|entfernung, sonst null: {bestaetigt, zeit, ziel, beleg, versuch} - ändert die "
-    "Handlung jetzt den Abstand zu ziel; versuch = versucht, nicht erreicht. "
+    "Jede handlung-Komponente trägt ihre Wirkung selbst (Stand 12A): wirkungBeleg = die Wörter des segments, die genau die Wirkung "
+    "ausführen, WÖRTLICH (bei ohne_koerperwirkung das segment); versuch = jetzt versucht, aber nicht erreicht; beruehrt = berührt jetzt "
+    "tatsächlich den Körper von ziel (beruehrungBeleg = die Stelle des Kontakts wörtlich, sonst null); gegen = Fläche oder Gegenstand, "
+    "an die ziel gedrückt wird, wörtlich, sonst null. Mehrere Taten mit verschiedener Wirkung sind mehrere handlung-Komponenten. "
     "bittebezug / erlaubnisbezug / grenzbezug: nur bei handlung und nur, wenn 'offen' eine angenommene Bitte, eine Erlaubnis bzw. eine "
     "Grenze nennt, die diese Handlung betreffen kann, sonst null: bittebezug {teile: [{wortlaut, erbeten}]} und erlaubnisbezug {teile: "
     "[{wortlaut, innerhalb}]} zerlegen die Handlung in ihre Teilhandlungen (wörtlich, zusammen die ganze Handlung) - erbeten bzw. "
@@ -5609,16 +5668,13 @@ PLAN_PRUEFUNG_RULES = (
 )
 
 FORMULIERUNG_PRUEFUNG_RULES = (
-    " PRÜFUNG (PFLICHT): Feld \"pruefung\" mit ALLEN Schlüsseln koerper, koerperBestaetigung, wirkung, beruehrung, bewegung, "
+    " PRÜFUNG (PFLICHT): Feld \"pruefung\" mit ALLEN Schlüsseln koerper, koerperBestaetigung, "
     "grenzumfang, offenbarung - für DEINE EIGENE Antwort; was nicht zutrifft, ist null; jeder beleg WÖRTLICH aus deiner action bzw. speech. "
     "koerper (wenn action nicht null): {haltung, schlaf, zeit, beleg} - nur was deine action JETZT an deinem eigenen Körper ändert "
     "(haltung liegend|sitzend|kniend|stehend|kopfstand nur bei Wechsel der Lage des ganzen Körpers; schlaf einschlafen|aufwachen), sonst "
     "null in haltung und schlaf. koerperBestaetigung (nur wenn koerper eine Änderung nennt): {art, inhalt gleich|anders, beleg}; "
     + _ART_TEXT +
     "zusätzlich ausdruck = zeigt nur einen bestehenden Zustand. "
-    "wirkung (nur bei wirkung.art gewalt|fesseln|befreien): {bestaetigt, zeit, ziel, beleg, versuch, gegen, beruehrung, beruehrungBeleg}; "
-    "beruehrung (nur bei zaertlich|gewalt): {beruehrt, zeit, ziel, beleg}; bewegung (nur bei annaeherung|entfernung): {bestaetigt, zeit, "
-    "ziel, beleg, versuch} - jeweils: führt deine action genau das jetzt aus (ohne beleg false). "
     "grenzumfang (nur wenn grenze nicht null): {gegenstand, gegenstand_art person|koerperstelle_oder_art|diese_handlung, richtung "
     "verboten|erlaubt, geltung offen|zeitraum|nicht_genannt, geltung_beleg}. "
     "offenbarung: {offenbart, beleg} - sagt deine speech ausdrücklich etwas, das eines deiner Ziele als noch ungesagt nennt (beleg "

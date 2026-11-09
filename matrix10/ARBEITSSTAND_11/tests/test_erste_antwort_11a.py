@@ -109,9 +109,14 @@ class ErsteAntwort11a(unittest.TestCase):
         rede, handlung = L.PLAN_SCHEMA["properties"]["komponenten"]["items"]["anyOf"]
         self.assertIn("pruefung", rede["required"]); self.assertIn("pruefung", handlung["required"])
         self.assertEqual(sorted(rede["properties"]["pruefung"]["required"]), ["komponentenart", "sprecher"])
+        # Stand 12A: wirkung/beruehrung/bewegung sind keine getrennten Pruef-Felder mehr - ihre Angaben stehen an der Tat selbst
         self.assertEqual(sorted(handlung["properties"]["pruefung"]["required"]),
-                         sorted(["vollzug", "komponentenart", "koerper", "koerperBestaetigung", "wirkung", "beruehrung",
-                                 "bewegung", "bittebezug", "erlaubnisbezug", "grenzbezug"]))
+                         sorted(["vollzug", "komponentenart", "koerper", "koerperBestaetigung", "bittebezug", "erlaubnisbezug", "grenzbezug"]))
+        self.assertTrue({"wirkung", "wirkungBeleg", "versuch", "beruehrt", "beruehrungBeleg", "gegen"} <= set(handlung["required"]))
+        self.assertEqual(handlung["properties"]["wirkungBeleg"], {"type": "string"})   # Beleg Pflicht, nie null
+        tat = L.FORMULATION_SCHEMA["properties"]["handlungen"]["items"]
+        self.assertTrue({"segment", "art", "wirkungBeleg", "geschieht", "versuch", "beruehrt"} <= set(tat["required"]))
+        self.assertNotIn("wirkung", L.FORMULATION_SCHEMA["properties"])
         # Stand 11B: Erleben - Nachweis neben jedem Wert, Pflicht
         a = L.APPRAISAL_SCHEMA
         self.assertTrue({"gefuehl_nachweis", "absicht_nachweis", "vorher_absicht_art"} <= set(a["required"]))
@@ -123,6 +128,10 @@ class ErsteAntwort11a(unittest.TestCase):
         for feld in list(L.P_HANDLUNG_PRUEFUNG["properties"]) + list(L.P_REDE_PRUEFUNG["properties"]):
             abgedeckt |= set(L._PRUEFUNG_LESUNG.get(feld, ()))
         abgedeckt |= {"koerper_bestaetigung"}                                                  # koerperBestaetigung
+        # Stand 12A: bewegung/bewegungsversuch/wirkung/beruehrung kommen aus den Wirkungsfeldern der Tat (Planer und Antwort)
+        if "wirkungBeleg" in L.PLAN_SCHEMA["properties"]["komponenten"]["items"]["anyOf"][1]["properties"] \
+                and "handlungen" in L.FORMULATION_SCHEMA["properties"]:
+            abgedeckt |= {"bewegung", "bewegungsversuch", "wirkung", "beruehrung"}
         abgedeckt |= {n for n in ("sprache", "namen", "grenzumfang") if n in L.PLAN_SCHEMA["required"]}
         for feld in L.P_ANTWORT_PRUEFUNG["properties"]:
             abgedeckt |= set(L._PRUEFUNG_LESUNG.get(feld, ()))

@@ -124,11 +124,15 @@ def figurenzug(sid, speaker, ev, tag, target=None):
 
 
 def spiegel_jetzt(sid, speaker):
-    """Spiegel des naechsten Zuges (prepare ohne formulate/commit)."""
+    """Spiegel des naechsten Zuges (prepare ohne formulate/commit) - Sprecher wie die UI vom Server (autochat-gate)."""
+    g, jg = L7.req("POST", "/api/kernel/autochat-gate", {"userId": "admin", "sessionId": sid, "remaining": 1, "stimulus": ""})
+    speaker = str(jg.get("speakerId") or speaker)
     tr = {"userId": "admin", "sessionId": sid, "speakerId": speaker, "inputActorId": "user", "speakAs": "operator",
           "inputKind": "autochat", "text": "", "roleOverride": "teilnehmer"}
     a, ja = L7.req("POST", "/api/kernel/prepare", {"sessionId": sid, "truth": tr, "speaker": {"id": speaker}})
     sp = ((ja.get("brainContext") or {}).get("spiegel") or {})
+    if a != 200:
+        return a, {"code": ja.get("code"), "message": str(ja.get("message") or "")[:200], "sprecher": speaker}
     keep = ("runtime", "relationsHere", "spatial", "raum", "dialogue", "memories", "stimulusAction", "userUtterance", "consent",
             "grenzen", "bodyState", "currentState")
     return a, {k: sp.get(k) for k in keep if k in sp}

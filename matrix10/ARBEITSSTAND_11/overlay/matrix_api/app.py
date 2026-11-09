@@ -2449,6 +2449,10 @@ def create_app(db_path_arg=None) -> Flask:
                     _pp = {**_pp, "aussagen": [{k: v for k, v in a.items() if k != "pruefung"} for a in _pp["aussagen"] if isinstance(a, dict)]}
                 result = {**result, "proposals": _pp}
                 matrix_live_log.live_log("CONSENT_CHECK", trace_id=trace_id, status="ERROR", error=f"{type(_cc_exc).__name__}: {str(_cc_exc)[:200]}")
+            # Stand 12A (Kettenkarte 12A): jede Tat der Figurenantwort mit IHRER Wirkung - dieselbe Wirkungspruefung und dieselbe
+            # Grenzlesung wie bisher, aber je Textabschnitt; der Kernel bekommt die Taten als eigene Komponenten (eigener Fakt,
+            # eigener Ausgang). Antworten im bisherigen Format (eine "wirkung") laufen unveraendert ueber den Weg oben.
+            result = _taten_je_abschnitt(conn_read, aid, session, truth, speaker, result, natives, trace_id)
             # When prepare committed the input, finish its SAME TurnTruth.
             # Legacy autochat/observer events still use the one-shot writer.
             _raw_tt = str((body.get("truth") or {}).get("id") or "") if isinstance(body.get("truth"), dict) else ""
@@ -2499,7 +2503,7 @@ def create_app(db_path_arg=None) -> Flask:
             matrix_live_log.live_log("TURN_RESPONSE", trace_id=trace_id, source_turn_id=truth.get("id"),
                 speaker=_names.get(str((speaker or {}).get("id") or ""), str((speaker or {}).get("id") or "")),
                 speech=str((result or {}).get("speech") or ""), action=(result or {}).get("action"),
-                proposals={k: _props.get(k) for k in ("wirkung", "emotion", "beziehung", "plan", "synapsen") if k in _props},
+                proposals={k: _props.get(k) for k in ("wirkung", "handlungen", "emotion", "beziehung", "plan", "synapsen") if k in _props},
                 **matrix_live_log.session_delta(session, out, source_turn_id=truth.get("id"), names=_names))
             last = "WRITER"
 
@@ -3662,6 +3666,75 @@ def create_app(db_path_arg=None) -> Flask:
         return _koerper_bestaetigen(conn, aid, {k: res.get(k) for k in ("haltung", "schlaf", "zeit", "beleg")}, text=action,
                                     figur=str((speaker or {}).get("name") or sid), authority="character", data=_kdata,
                                     trace_id=trace_id, quelle="figur")
+
+    def _taten_je_abschnitt(conn, aid, session, truth, speaker, result, natives, trace_id):
+        """Stand 12A (AMASTER §34.1 jede Komponente, §24.2, §43/§43.1; Kettenkarte 12A Bruch 5a/5c/5d): die Taten der Antwort
+        (proposals.handlungen, je segment woertlich aus action) werden je Abschnitt geprueft - _effect_check_step und die
+        Grenzlesung mit DIESEM Abschnitt als Handlung - und als Komponenten an commit_turn gegeben: Rede, dann die action in
+        Textreihenfolge, jede Tat mit ihrer gepruefte Wirkung, Zwischenstuecke ohne eigene Tat als Ausdruck (ohne Koerperwirkung),
+        so dass kein Wort verloren geht. Ein Abschnitt, der nicht woertlich in action steht, wird sichtbar verworfen."""
+        props = result.get("proposals") if isinstance(result, dict) and isinstance(result.get("proposals"), dict) else {}
+        taten = props.get("handlungen") if isinstance(props.get("handlungen"), list) else None
+        action = str((result or {}).get("action") or "") if isinstance(result, dict) else ""
+        if not taten or not action.strip() or isinstance(props.get("wirkung"), dict):
+            return result
+        from matrix_api import scene_state as _ss
+        sid = str((speaker or {}).get("id") or "")
+        names = {str(c.get("id")): str(c.get("name") or "") for c in natives if isinstance(c, dict)}
+        _norm = " ".join(action.split())
+        _klein = _norm.lower()   # gleiche Laenge; Gross-/Kleinschreibung am Satzanfang ist kein anderer Wortlaut
+        stellen: list[tuple[int, int, dict]] = []
+        verworfen: list[dict] = []
+        for e in taten:
+            seg = " ".join(str((e or {}).get("segment") or "").split()).strip().rstrip(".!?;,")
+            pos = _klein.find(seg.lower()) if seg else -1
+            # an eine schon belegte Stelle nicht doppelt binden (zweimal derselbe Wortlaut: die naechste freie Stelle)
+            while pos >= 0 and any(a <= pos < b for a, b, _ in stellen):
+                pos = _klein.find(seg.lower(), pos + 1)
+            if pos >= 0:
+                seg = _norm[pos:pos + len(seg)]   # der Wortlaut der action selbst
+            if pos < 0 or not _ss.literal_in(seg, _norm):
+                verworfen.append({"segment": seg[:120], "art": (e or {}).get("art"), "grund": "abschnitt_nicht_woertlich"})
+                continue
+            w = {"art": str((e or {}).get("art") or "ohne_koerperwirkung"), "ziel": (e or {}).get("ziel")}
+            sub = {"action": seg, "speech": result.get("speech"), "proposals": {"wirkung": w}}
+            try:
+                checked = _effect_check_step(conn, aid, session, truth, speaker, sub, natives, trace_id)
+            except Exception as _exc:
+                checked = kernel.apply_effect_check(w, seg, None) if kernel.effect_check_needed(w, seg) else None
+                matrix_live_log.live_log("EFFECT_CHECK", trace_id=trace_id, status="ERROR", error=f"{type(_exc).__name__}: {str(_exc)[:200]}")
+            wk = checked if isinstance(checked, dict) else dict(w)
+            try:
+                _ok, _kind = kernel.effect_kind_from_wirkung(wk.get("art"))
+                if _ok and _kind in kernel._CONSENT_ACTS:
+                    _v = _boundary_readings(conn, aid, session, sid, names.get(sid, ""), seg, action, natives,
+                                            {"sessionId": session.get("id"), "worldId": session.get("worldId"),
+                                             "sourceTurnId": truth.get("id"), "speakerId": sid}, trace_id=trace_id, where="figur")
+                    if _v is not None:
+                        wk = {**wk, "grenzBezug": _v}
+            except Exception as _gb_exc:
+                matrix_live_log.live_log("BOUNDARY_REFERENCE", trace_id=trace_id, status="ERROR", error=f"{type(_gb_exc).__name__}: {str(_gb_exc)[:200]}")
+            stellen.append((pos, pos + len(seg), wk))
+        if not stellen:
+            matrix_live_log.live_log("TATEN", trace_id=trace_id, figure=names.get(sid, sid), taten=0, verworfen=verworfen)
+            return {**result, "proposals": {**props, "tatenVerworfen": verworfen}} if verworfen else result
+        stellen.sort(key=lambda x: x[0])
+        comps: list[dict] = []
+        if str(result.get("speech") or "").strip():
+            comps.append({"kind": "speech", "event_kind": "speech", "text": str(result.get("speech"))})
+        cur = 0
+        for a, b, wk in stellen:
+            gap = _norm[cur:a].strip(" ,;:-–—")
+            if sum(ch.isalpha() for ch in gap) >= 4:
+                comps.append({"kind": "action", "event_kind": "action", "text": gap, "wirkung": {"art": "ohne_koerperwirkung", "ziel": None}})
+            comps.append({"kind": "action", "event_kind": "action", "text": _norm[a:b], "wirkung": wk})
+            cur = b
+        rest = _norm[cur:].strip(" ,;:-–—")
+        if sum(ch.isalpha() for ch in rest) >= 4:
+            comps.append({"kind": "action", "event_kind": "action", "text": rest, "wirkung": {"art": "ohne_koerperwirkung", "ziel": None}})
+        matrix_live_log.live_log("TATEN", trace_id=trace_id, figure=names.get(sid, sid), taten=len(stellen), verworfen=verworfen,
+                                 komponenten=[{"text": c["text"][:80], "art": (c.get("wirkung") or {}).get("art")} for c in comps if c["kind"] == "action"])
+        return {**result, "components": comps, "proposals": {**props, **({"tatenVerworfen": verworfen} if verworfen else {})}}
 
     def _effect_check_step(conn, aid, session, truth, speaker, result, natives, trace_id):
         """V65I (AMASTER §24.2/§24.7): the body effect the reply proposes for its own

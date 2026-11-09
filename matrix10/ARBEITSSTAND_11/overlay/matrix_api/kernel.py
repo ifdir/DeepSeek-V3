@@ -1444,6 +1444,8 @@ def split_output_components(truth: dict, result: dict, speaker: dict) -> list[di
                     # canonical figure speaker. LLM/client actorId is ignored.
                     "actorId": speaker.get("id"),
                     "targetId": p["targetId"] if "targetId" in p else truth.get("target_id"),
+                    # Stand 12A: die serverseitig gepruefte Wirkung DIESER Tat (app._taten_je_abschnitt), nur fuer Taten
+                    **({"wirkung": copy.deepcopy(p["wirkung"])} if kind in ("action", "physical") and isinstance(p.get("wirkung"), dict) else {}),
                 }
             )
         if out:
@@ -4263,6 +4265,11 @@ def apply_appraisals(session: dict, pending: list[dict], results: dict | None, *
                     actually_written = False
                 if actually_written:
                     already_committed.add((str(belege["factId"]), str(field)))
+                    # Stand 12A (Kettenkarte 12A, live: Johanns Wut ueber DASSELBE Ereignis zweimal angewendet - beim erneuten Pruefen
+                    # eines unvollstaendigen Feldes zitierte das Modell die Rede statt der Handlung desselben Zuges): ein Feld, das fuer
+                    # eines dieser Ereignisse schon geschrieben wurde, gilt fuer jedes Ereignis derselben Bewertung als geschrieben.
+                    for _cf in payload.get("causeFactIds") or []:
+                        already_committed.add((str(_cf), str(field)))
         skipped = [field for field, proof in approved.items() if (str(proof["factId"]), field) in already_committed]
         for field in skipped:
             approved.pop(field)
@@ -6897,6 +6904,33 @@ def _movement_block(session: dict, actor_id: str, target_id: str | None, kind: s
 _CONSENT_ACTS = ("social", "strike", "restrain")
 
 
+def _eskalation_aus_tat(session: dict, fact_id: Any, turn: Any) -> None:
+    """Stand 12A (Kettenkarte 12A Glied 8; Nutzerentscheidung: "was ein menschliches Verhalten machen wuerde"; AMASTER §43.1, §36.5):
+    die Szene eskaliert durch tatsaechlich geschehene, geprueft bedrohliche Ausgaenge EINER Tat - nicht durch Worte. Schlag und
+    Festhalten erhoehen sie schon (scene_state.record_physical, +0,25). Hinzu kommen: eine Beruehrung gegen eine bestehende Ablehnung
+    oder nach einem Widerruf (Einwilligung der Tat, _body_contact_matter: declined/revoked) +0,15, und ein ueberwundener Rueckzug
+    (die Tat erreicht sie wieder, set_spatial: effect.overcomes) +0,10. Ruhige Zuege lassen sie wie bisher abklingen (-0,08). Je Tat
+    hoechstens einmal (effect.eskalation)."""
+    if not fact_id:
+        return
+    f = next((x for x in reversed(session.get("facts") or []) if isinstance(x, dict) and str(x.get("id") or "") == str(fact_id)), None)
+    eff = f.get("effect") if isinstance(f, dict) and isinstance(f.get("effect"), dict) else None
+    if eff is None or "eskalation" in eff or not _scene.validiert(f) or eff.get("outcome") in ("blocked", "attempted"):
+        return
+    delta = 0.0
+    if str((eff.get("consent") or {}).get("state") or "") in ("declined", "revoked"):
+        delta += 0.15
+    if eff.get("overcomes"):
+        delta += 0.10
+    eff["eskalation"] = round(delta, 2)
+    if delta <= 0:
+        return
+    st = _scene.ensure_state(session)
+    if st.get("status") == "closed":
+        return
+    st["escalation"] = round(min(1.0, float(st.get("escalation") or 0) + delta), 3)
+
+
 body_contact_proposition = _scene.body_contact_proposition   # V65S: one reader (scene_state)
 body_contact_state = _scene.body_contact_state
 
@@ -8508,6 +8542,7 @@ def commit_turn(
                                 fact_id=af["id"],
                                 world=world,
                             )
+                            _eskalation_aus_tat(s, af["id"], turn)   # Stand 12A: Szene eskaliert wie fuer einen Menschen
                         # V92 Paket 18/19: only the change of his own body the server's readings validated for this act - through
                         # the ONE writer entry
                         _w = write_body_change(s, str(input_actor), _kchg, fact_id=af["id"], turn=turn, authority=auth, text=comp_text,
@@ -8553,10 +8588,12 @@ def commit_turn(
             comps = [c for c in comps if c.get("kind") != "speech"]
         speech_comp = next((c for c in comps if c.get("kind") == "speech"), None)
         action_comp = next((c for c in comps if c.get("kind") in ("action", "physical") and c.get("validated")), None)
+        # Stand 12A: mehrere Taten einer Antwort (je eigene Komponente) stehen zusammen in der Zeile, in Textreihenfolge
+        _acts_ok = [str(c.get("text") or "") for c in comps if c.get("kind") in ("action", "physical") and c.get("validated")]
         # V65D: a speech that consisted only of a "*…*" act stays empty; the
         # raw provider text is not taken back in as words.
         speech = "" if gagged else ((speech_comp or {}).get("text") or ("" if (speech_comp or {}).get("markerStripped") else result.get("speech")) or "")
-        action = (action_comp or {}).get("text") if action_comp else None
+        action = (" ".join(t for t in _acts_ok if t.strip()) or None) if len(_acts_ok) > 1 else ((action_comp or {}).get("text") if action_comp else None)
         if not str(speech or "").strip() and not action and (response_only or not str(truth.get("text") or "").strip()):
             # No executable answer. For the two-phase API, keep the committed
             # input pending so it can be retried. For pure AutoChat, do not
@@ -8600,6 +8637,10 @@ def commit_turn(
             _interlocutor = str(_lf.get("actorId"))
     for comp in comps:
         text = comp.get("text") or ""
+        # Stand 12A: jede Tat ihre eigene Wirkung (Komponente aus app._taten_je_abschnitt); sonst wie bisher die eine Wirkung der Antwort
+        _c_wirkung = comp.get("wirkung") if isinstance(comp.get("wirkung"), dict) else _out_wirkung
+        _c_effect_valid, _c_effect = (effect_kind_from_wirkung(_c_wirkung.get("art")) if _c_wirkung is not _out_wirkung
+                                      else (_out_effect_valid, _out_effect))
         # One speech/action target decision, based on the utterance and the
         # interlocutor, not the UI target of the previous input. LLM component
         # targetId is only a candidate; it cannot become authority by itself.
@@ -8625,10 +8666,10 @@ def commit_turn(
                     target = next(iter(_in_act)) if len(_in_act) == 1 else None
             elif not target and not bound_target.get("ambiguous") and input_other in ("user", "operator"):
                 target = input_other  # speaking to the operator is not witness knowledge
-            if comp.get("kind") in ("action", "physical") and _out_wirkung and str(_out_wirkung.get("ziel") or "").strip():
+            if comp.get("kind") in ("action", "physical") and _c_wirkung and str(_c_wirkung.get("ziel") or "").strip():
                 # Entity binding of the proposed affected figure (§25): only a
                 # present figure other than the actor; otherwise keep binding.
-                hit = _match_figure(str(_out_wirkung.get("ziel")), _out_present)
+                hit = _match_figure(str(_c_wirkung.get("ziel")), _out_present)
                 if hit and str(hit.get("id")) != str(speaker.get("id")):
                     target = str(hit.get("id"))
             comp = {**comp, "targetId": target}
@@ -8660,8 +8701,8 @@ def commit_turn(
             # Runtime-Mutation triggern. "Ich habe gestern geschlagen"
             # ist Bericht, keine neue körperliche Handlung.
             _kk = comp.get("_koerper") if isinstance(comp.get("_koerper"), dict) else {}
-            fact["effect"] = {"wirkung": copy.deepcopy(_out_wirkung), "effectKind": _out_effect,
-                              "validated": bool(_out_effect_valid)}
+            fact["effect"] = {"wirkung": copy.deepcopy(_c_wirkung), "effectKind": _c_effect,
+                              "validated": bool(_c_effect_valid)}
             if _kk.get("nurAufwachen"):
                 # V92 Paket 19: the act of a sleeping figure is her waking up - no effect on anybody else
                 fact["effect"] = {"wirkung": None, "effectKind": None, "validated": False, "nurAufwachen": True}
@@ -8678,10 +8719,11 @@ def commit_turn(
                     truth=truth,
                     turn=turn,
                     new_facts_out=new_facts,
-                    effect_kind=_out_effect if _out_effect_valid else None,
+                    effect_kind=_c_effect if _c_effect_valid else None,
                     fact_id=fact.get("id"),
                     world=world,
                 )
+                _eskalation_aus_tat(s, fact.get("id"), turn)   # Stand 12A: Szene eskaliert wie fuer einen Menschen
             # V92 Paket 18/19 (unabhaengige Pruefung Paket 17 N1-N9, Paket 18 N3/N4): her action changes her own body only by the
             # change the server's readings validated for it (position, falling asleep, waking up; reading + confirmation at the
             # quote) - never by its words; the audit stays on the action fact; the ONE writer entry
@@ -10217,6 +10259,7 @@ def apply_regie(
                     fact_id=af["id"],
                     world=world,
                 )
+                _eskalation_aus_tat(s, af["id"], turn)   # Stand 12A: Szene eskaliert wie fuer einen Menschen
                 # Defense in depth: physical writer can fail closed as well.
                 # Never call the body writer, create success memories, or call
                 # record_physical after a blocked or unresolved outcome.
@@ -10391,6 +10434,7 @@ def apply_regie(
                     new_facts_out=new_facts,
                     world=world,
                 )
+                _eskalation_aus_tat(s, af["id"], turn)   # Stand 12A: Szene eskaliert wie fuer einen Menschen
             _w = write_body_change(s, actor, _kchg, fact_id=af["id"], turn=turn, authority="regie", text=action, actor_name=actor_name)
             if _w.get("fehler"):
                 af["effect"]["koerperFehler"] = _w["fehler"]
@@ -12566,6 +12610,7 @@ def commit_puppet(
                 fact_id=af["id"],
                 world=world,
             )
+            _eskalation_aus_tat(s, af["id"], turn)   # Stand 12A: Szene eskaliert wie fuer einen Menschen
         # V92 Paket 18/19: only the change of its own body the server's readings validated for this act (reading + confirmation)
         _w = write_body_change(s, str(figure["id"]), _kchg, fact_id=af["id"], turn=turn, authority="puppet", text=a_text,
                                actor_name=str(figure.get("name") or ""))

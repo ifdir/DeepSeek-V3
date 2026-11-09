@@ -68,6 +68,70 @@ class Eigenantrieb12(unittest.TestCase):
         self.assertIn("dein letzter Beitrag", zeilen[1])
 
 
+class TatMitEigenerWirkung12A(unittest.TestCase):
+    """Stand 12A (Kettenkarte 12A Bruch 5a/5c/5d): Art und Nachweis einer Tat in EINEM Eintrag; je Tat eigene Lesungen."""
+
+    def test_planer_rueckzug_mit_beleg_ergibt_bewegungslesung(self):
+        p = {"komponenten": [{"typ": "handlung", "segment": "Ich trete einen Schritt von Johann zurück", "ziel": "Johann Bruckner",
+                              "zeit": "jetzt", "wirkung": "entfernung", "geschieht": True, "wirkungBeleg": "trete einen Schritt von Johann zurück",
+                              "versuch": False, "beruehrt": False, "beruehrungBeleg": None, "gegen": None,
+                              "pruefung": {"vollzug": {"geschieht": True, "art": "tatsaechlich", "beleg": None, "taeter": "figur", "ziel": "Johann Bruckner"}}}]}
+        les = L.plan_lesungen(p, "Ich trete einen Schritt von Johann zurück")
+        bew = [l for l in les if l["lesung"] == "bewegung"]
+        self.assertEqual(len(bew), 1)
+        self.assertEqual(bew[0]["zu"], "Ich trete einen Schritt von Johann zurück")
+        self.assertTrue(bew[0]["antwort"]["bestaetigt"]); self.assertEqual(bew[0]["antwort"]["beleg"], "trete einen Schritt von Johann zurück")
+        self.assertNotIn("wirkungBeleg", p["komponenten"][0])   # der Kernel sieht die Komponente wie bisher
+
+    def test_ohne_beleg_keine_bestaetigung(self):
+        les = L.wirkung_lesungen({"geschieht": True, "zeit": "jetzt", "wirkungBeleg": "", "versuch": False}, "tritt zurück", "entfernung")
+        self.assertFalse(les[0]["antwort"]["bestaetigt"])
+
+    def test_antwort_zwei_taten_je_eigene_lesungen(self):
+        parsed = {"handlungen": [
+            {"segment": "Ich stoße Johann von mir weg", "art": "gewalt", "ziel": "Johann Bruckner", "zeit": "jetzt", "geschieht": True,
+             "wirkungBeleg": "stoße Johann von mir weg", "versuch": False, "beruehrt": True, "beruehrungBeleg": "stoße Johann", "gegen": None},
+            {"segment": "trete zurück", "art": "entfernung", "ziel": "Johann Bruckner", "zeit": "jetzt", "geschieht": True,
+             "wirkungBeleg": "trete zurück", "versuch": False, "beruehrt": False, "beruehrungBeleg": None, "gegen": None}]}
+        les = L.antwort_lesungen(parsed, "", "Ich stoße Johann von mir weg und trete zurück.")
+        self.assertEqual({(l["lesung"], l["zu"]) for l in les},
+                         {("wirkung", "Ich stoße Johann von mir weg"), ("beruehrung", "Ich stoße Johann von mir weg"),
+                          ("bewegung", "trete zurück"), ("bewegungsversuch", "trete zurück")})
+
+    def test_kernel_uebernimmt_wirkung_je_komponente(self):
+        res = {"speech": "Lass mich!", "action": "x", "components": [
+            {"kind": "speech", "text": "Lass mich!"},
+            {"kind": "action", "text": "Ich stoße Johann von mir weg", "wirkung": {"art": "gewalt", "ziel": "Johann Bruckner"}},
+            {"kind": "action", "text": "trete zurück", "wirkung": {"art": "entfernung", "ziel": "Johann Bruckner"}}]}
+        comps = K.split_output_components({"target_id": "j"}, res, M)
+        self.assertEqual([c.get("wirkung", {}).get("art") for c in comps if c["kind"] == "action"], ["gewalt", "entfernung"])
+        self.assertNotIn("wirkung", [c for c in comps if c["kind"] == "speech"][0])
+
+
+class Eskalation12A(unittest.TestCase):
+    """Stand 12A: die Szene eskaliert durch geschehene, bedrohliche Ausgaenge einer Tat - je Tat einmal."""
+
+    def _s(self, eff):
+        s = {"facts": [{"id": "f1", "kind": "action", "validated": True, "effect": eff}]}
+        K._scene.ensure_state(s)["escalation"] = 0.1
+        return s
+
+    def test_beruehrung_gegen_ablehnung_und_ueberwundener_rueckzug(self):
+        s = self._s({"effectKind": "social", "consent": {"state": "declined"}, "overcomes": ["w1"]})
+        K._eskalation_aus_tat(s, "f1", 3)
+        self.assertAlmostEqual(s["sceneState"]["escalation"], 0.35)
+        K._eskalation_aus_tat(s, "f1", 3)   # dieselbe Tat nicht zweimal
+        self.assertAlmostEqual(s["sceneState"]["escalation"], 0.35)
+
+    def test_blockierte_tat_und_worte_eskalieren_nicht(self):
+        s = self._s({"effectKind": "social", "consent": {"state": "declined"}, "outcome": "blocked"})
+        K._eskalation_aus_tat(s, "f1", 3)
+        self.assertAlmostEqual(s["sceneState"]["escalation"], 0.1)
+        s = self._s({"effectKind": "social", "consent": {"state": "unknown"}})
+        K._eskalation_aus_tat(s, "f1", 3)
+        self.assertAlmostEqual(s["sceneState"]["escalation"], 0.1)
+
+
 class ErfundeneKomponente12(unittest.TestCase):
     PLAN = {"event_kind": "claim", "komponenten": [
         {"typ": "rede", "segment": "Ach komm stell dich nicht so an", "akteur": "Johann Bruckner", "ziel": "Mara Nowak", "zeit": "jetzt",
