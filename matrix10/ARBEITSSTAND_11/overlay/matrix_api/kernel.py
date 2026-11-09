@@ -12355,12 +12355,19 @@ def input_binding_outcome(binding: dict | None, amb: list[dict], raw: str = "") 
         _validated_speech = "" if binding.get("speechTargetConflict") else str(binding.get("speech") or "")
         _nothing = not _validated_speech.strip() and not any(
             isinstance(a, dict) and not a.get("targetBindingInvalid") for a in _proposed_actions)
+        # Stand 12 (Live 09.11., "Ach komm stell dich nicht so an": das Modell erfand eine zweite Komponente "lehnt die Beruehrung
+        # ab", die im Eingang nicht steht - der ganze Satz war schon als Rede gelesen, trotzdem wurde NICHTS gespeichert): eine
+        # Komponente, deren Worte nicht im Eingang stehen, ist kein Teil dessen, was die Person geschrieben hat. Sie kippt die Eingabe
+        # nicht, wenn KEIN Rest uebrig ist (der ganze Eingang ist von gepruefen Komponenten gedeckt). Bleibt ein Rest, kann das Modell
+        # eine echte Tat umschrieben haben - dann wie bisher Teilablehnung (sonst wuerde aus der Tat Rede). Sichtbar bleibt sie.
+        _ganz_gelesen = not any(isinstance(a, dict) and str(a.get("grund") or "").startswith("rest_") for a in amb)
         _partial = any(isinstance(a, dict) and (
             a.get("grund") in ("lesung_abgeschnitten", "zerlegung_unvollstaendig")
             # Stand 11B: ein Rest kippt die Eingabe nur, wenn er ungekennzeichnet eine Person nennt (s. _speech_from_components)
             or (a.get("grund") == "rest_ohne_komponente" and a.get("nenntPerson") and not a.get("inMarkierung"))
             or (isinstance(a.get("vorschlag"), dict) and not a.get("readNonEvent")
-                and a.get("grund") not in ("wirkung_unklar",))
+                and a.get("grund") not in ("wirkung_unklar",)
+                and not (a.get("grund") == "segment_nicht_im_eingang" and _ganz_gelesen))
         ) for a in amb) or bool(binding.get("speechTargetConflict"))
         return {"speech": _validated_speech, "actions": _proposed_actions, "ambiguous": amb, "used": True,
                 **({"partial_rejection": True} if _partial else {}),

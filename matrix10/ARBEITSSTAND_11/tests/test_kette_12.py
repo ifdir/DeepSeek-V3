@@ -4,6 +4,8 @@
 - Erleben: kurzer Nachweis wird zu den Prueffeldern des Kernels aufgefaltet; ein woertliches Zitat aus Johanns REDE an der Kennung
   seiner HANDLUNG desselben Zuges gilt fuer die Rede (sonst verwarf der Kernel 9 von 13 Erlebensantworten teilweise);
   unbekannte Quelle -> kein Quelltext (der Kernel verwirft das Feld); bisherige Form: nur Kennung -> Fakt-ID;
+- Eingabe: eine vom Modell erfundene Komponente (Worte nicht im Eingang) kippt eine vollstaendig gelesene Eingabe nicht mehr
+  (Live: "Ach komm stell dich nicht so an" -> 422, nichts gespeichert); bleibt ein Rest, weiter Teilablehnung;
 - Brief: auch fruehere eigene Zeilen sind als "schon gesagt/getan" markiert, nicht nur die letzte.
 Laeuft im tests/-Ordner des Stage-Produkts: MATRIX07_ROOT=<stage> python3 -m pytest <datei>
 """
@@ -64,6 +66,34 @@ class Eigenantrieb12(unittest.TestCase):
         self.assertEqual(len(zeilen), 2)
         self.assertIn("schon gesagt/getan", zeilen[0])
         self.assertIn("dein letzter Beitrag", zeilen[1])
+
+
+class ErfundeneKomponente12(unittest.TestCase):
+    PLAN = {"event_kind": "claim", "komponenten": [
+        {"typ": "rede", "segment": "Ach komm stell dich nicht so an", "akteur": "Johann Bruckner", "ziel": "Mara Nowak", "zeit": "jetzt",
+         "wirkung": None, "bezug": None, "einleitung": None, "geschieht": None,
+         "pruefung": {"komponentenart": {"art": "rede", "beleg": None, "wirkung": None},
+                      "sprecher": {"sprecher": "Johann Bruckner", "beleg": None, "handlung": None, "adressat": "Mara Nowak",
+                                   "ansageRolle": "sprecheransage", "ansageBeleg": None}}},
+        {"typ": "handlung", "segment": "lehnt die Berührung ab", "akteur": "Johann Bruckner", "ziel": "Mara Nowak", "zeit": "jetzt",
+         "wirkung": "ohne_koerperwirkung", "bezug": None, "einleitung": None, "geschieht": True, "pruefung": {}}]}
+
+    def _lies(self, text, plan):
+        return K.bind_puppet_input(text, plan, J, [J, M], ["j", "m"], addressee_id="m")
+
+    def test_vollstaendig_gelesen_wird_gespeichert(self):
+        r = self._lies("Ach komm stell dich nicht so an", self.PLAN)
+        self.assertEqual(r.get("speech"), "Ach komm stell dich nicht so an")
+        self.assertFalse(r.get("partial_rejection"))
+        self.assertEqual(r.get("actions"), [])
+        self.assertIn("segment_nicht_im_eingang", [a.get("grund") for a in r.get("ambiguous") or []])   # sichtbar
+
+    def test_mit_rest_bleibt_teilablehnung(self):
+        import copy
+        p = copy.deepcopy(self.PLAN)
+        p["komponenten"][0]["segment"] = "Ach komm"
+        r = self._lies("Ach komm, ich fasse dir an den Hintern", p)
+        self.assertTrue(r.get("partial_rejection"))
 
 
 class ErlebenKurz12(unittest.TestCase):
